@@ -1,4 +1,4 @@
-[comment]: <> ([![CircleCI](https://circleci.com/gh/Range-Software/range3.svg?style=svg)](https://circleci.com/gh/Range-Software/range3))
+<!-- [CircleCI](https://circleci.com/gh/Range-Software/range3.svg?style=svg)](https://circleci.com/gh/Range-Software/range3) -->
 
 # Range Software - FEA
 Finite Element Analysis
