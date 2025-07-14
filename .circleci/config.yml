@@ -1,69 +1,69 @@
-version: 2
-jobs:
-  build-rhubi:
-    docker:
-      - image: redhat/ubi9
-    steps:
-      - checkout
-      - run:
-          name: Prerequisites
-          command: ./scripts/prereqs_rhubi.sh
-      - run:
-          name: Build
-          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=el$(rpm -E %centos)
-      - run:
-          name: Upload
-          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
-  build-fedora:
-    docker:
-      - image: fedora:36
-    steps:
-      - checkout
-      - run:
-          name: Prerequisites
-          command: ./scripts/prereqs_fedora.sh
-      - run:
-          name: Build
-          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=f$(rpm -E %fedora)
-      - run:
-          name: Upload
-          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
-  build-opensuse:
-    docker:
-      - image: opensuse/tumbleweed
-    steps:
-      - checkout
-      - run:
-          name: Prerequisites
-          command: ./scripts/prereqs_opensuse.sh
-      - run:
-          name: Build
-          command: if [ -e /etc/os-release ]; then . /etc/os-release; else . /usr/lib/os-release; fi && ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=suse$VERSION_ID
-      - run:
-          name: Upload
-          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
-  build-ubuntu:
-    docker:
-      - image: ubuntu:22.04
-    steps:
-      - checkout
-      - run:
-          name: Prerequisites
-          command: ./scripts/prereqs_ubuntu.sh
-      - run:
-          name: Build
-          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=ubuntu$(lsb_release -r -s)
-      - run:
-          name: Alien
-          command: alien -k -d build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm
-      - run:
-          name: Upload
-          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT *.deb $UPLOAD_USER@$UPLOAD_HOST:.
-workflows:
-  version: 2
-  build_all:
-    jobs:
-      - build-fedora
-      - build-opensuse
-      - build-ubuntu
-#      - build-rhubi
+#version: 2
+#jobs:
+#  build-rhubi:
+#    docker:
+#      - image: redhat/ubi9
+#    steps:
+#      - checkout
+#      - run:
+#          name: Prerequisites
+#          command: ./scripts/prereqs_rhubi.sh
+#      - run:
+#          name: Build
+#          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=el$(rpm -E %centos)
+#      - run:
+#          name: Upload
+#          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
+#  build-fedora:
+#    docker:
+#      - image: fedora:36
+#    steps:
+#      - checkout
+#      - run:
+#          name: Prerequisites
+#          command: ./scripts/prereqs_fedora.sh
+#      - run:
+#          name: Build
+#          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=f$(rpm -E %fedora)
+#      - run:
+#          name: Upload
+#          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
+#  build-opensuse:
+#    docker:
+#      - image: opensuse/tumbleweed
+#    steps:
+#      - checkout
+#      - run:
+#          name: Prerequisites
+#          command: ./scripts/prereqs_opensuse.sh
+#      - run:
+#          name: Build
+#          command: if [ -e /etc/os-release ]; then . /etc/os-release; else . /usr/lib/os-release; fi && ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=suse$VERSION_ID
+#      - run:
+#          name: Upload
+#          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm $UPLOAD_USER@$UPLOAD_HOST:.
+#  build-ubuntu:
+#    docker:
+#      - image: ubuntu:22.04
+#    steps:
+#      - checkout
+#      - run:
+#          name: Prerequisites
+#          command: ./scripts/prereqs_ubuntu.sh
+#      - run:
+#          name: Build
+#          command: ./scripts/build.sh --clean --max-nc=2 && ./scripts/create_package.sh --rpm --distro=ubuntu$(lsb_release -r -s)
+#      - run:
+#          name: Alien
+#          command: alien -k -d build-Release/packages/rpmbuild/RPMS/$(uname -m)/*.rpm
+#      - run:
+#          name: Upload
+#          command: scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -P $UPLOAD_PORT *.deb $UPLOAD_USER@$UPLOAD_HOST:.
+#workflows:
+#  version: 2
+#  build_all:
+#    jobs:
+#      - build-fedora
+#      - build-opensuse
+#      - build-ubuntu
+##      - build-rhubi

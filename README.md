@@ -1,32 +1,64 @@
-[![CircleCI](https://circleci.com/gh/Range-Software/range3.svg?style=svg)](https://circleci.com/gh/Range-Software/range3)
+[comment]: <> ([![CircleCI](https://circleci.com/gh/Range-Software/range3.svg?style=svg)](https://circleci.com/gh/Range-Software/range3))
 
-# Range Software
+# Range Software - FEA
 Finite Element Analysis
 
 ![Range Software](http://www.range-software.com/files/common/Range3-CFD.png)
 
 ## Prepare build environment
-Following command will download and install all required packages, therefore it must be executed under priviledged (root) user.
+Initialize all submodules
 ```
-$ sudo ./scripts/prereqs.sh
+git submodule init && git submodule update --remote
 ```
-## Build & Install
-### Linux
+Following command will attempt to download and install all required packages, therefore it must be executed under priviledged (root) user
 ```
-$ ./scripts/build.sh --clean && ./scripts/create_package.sh
+sudo ./src/range-build-tools/prereqs.sh
 ```
-### MacOS
+Next build directory needs to be created
 ```
-$ ./scripts/build.sh --clean && ./scripts/create_mac_app.sh
+mkdir build
 ```
-Above command will produce `./build-Release/packages/range-3.2.8.dmg` which can be installed with following command:
+## Build
 ```
-$ open './build-Release/packages/range-3.2.8.dmg'
+cmake -S src -B build-Release
+cmake --build build-Release --parallel
 ```
+## Create an installation packages and installers
+```
+cmake --build build-Release --target package
+```
+## Installation using generated installers
+### Windows
 
-## Running the software
+### MacOS
+#### Drag & Drop
 ```
-$ $HOME/bin/range-3.2.8/bin/Range
+open './build-Release/range-fea-0.0.1-Darwin.dmg'
+```
+#### GUI Installer
+```
+./build-Release/range-fea-0.0.1-Darwin.run
+```
+#### Self extracting Tar GZip
+```
+./build-Release/range-fea-0.0.1-Darwin.run
+```
+### Linux
+#### GUI Installer
+```
+./build-Release/range-fea-0.0.1-Linux.run
+```
+#### Self extracting Tar GZip
+```
+./build-Release/range-fea-0.0.1-Linux.sh
+```
+#### Debian DEB package
+```
+sudo apt install ./build-Release/range-fea-0.0.1-Linux.deb
+```
+#### RedHat RPM package
+```
+sudo dnf install ./build-Release/range-fea-0.0.1-Linux.rpm
 ```
 
 ## Download

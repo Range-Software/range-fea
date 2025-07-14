@@ -1,0 +1,21 @@
+[Desktop Entry]
+Encoding=UTF-8
+Categories=Application;Engineering;Science;Construction;Math;Physics;
+Exec=/opt/range3/bin/Range
+Icon=/opt/range3/pixmaps/range-fea.svg
+StartupNotify=true
+Terminal=false
+Type=Application
+
+GenericName=Finite Element Analysis
+GenericName[cz]=Konečno prvková analýza
+GenericName[en_US]=Finite Element Analysis
+GenericName[sk]=Konečno prvková analýza
+Comment=Software for engineering simulations
+Comment[cz]=Software pro inženýrske simulace
+Comment[en_US]=Software for engineering simulations
+Comment[sk]=Softvér pre inžinierske simulácie
+Name=Range
+Name[cz]=Range
+Name[en_US]=Range
+Name[sk]=Range

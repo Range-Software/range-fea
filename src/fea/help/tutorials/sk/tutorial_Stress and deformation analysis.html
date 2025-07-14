@@ -1,0 +1,79 @@
+<h1>Stress and deformation analysis</h1>
+<p>This tutorial will demonstrate how to setup and solve <b>Stress analysis</b> problem. For that reason a simple beam will be supported on both ends with load in the middle.</p>
+<h2>1. Load model</h2>
+<p style="background-color: #999999;"><b>Menu:</b> <i>File -> Open Model</i></p>
+<p>This will show and <b>Open model</b> dialog. Select file <b>Beam.tmsh</b> and click <b>Open</b> to load model.</p>
+<p>Since there is no physical problem assigned to this model a <b>Problem task flow</b> dialog window will appear soon after loading of the model is complete.</p>
+<p><center><img src="image-Problem_task_flow-empty.png"/><center></p>
+<p>Click <b>Add problem type</b> button and <b>Problem type selector</b> dialog window will be displayed. Find and check <b>Stress analysis</b> and click <b>Ok</b> button to accept.</p>
+<p><center><img src="image-Problem_type_selector-Stress.png"/><center></p>
+<p><b>Problem task flow</b> should now display 1 iteration of <b>Stress analysis</b>. Click <b>Ok</b> to accept.</p>
+<p><center><img src="image-Problem_task_flow-Stress.png"/><center></p>
+<h2>2. Generate 3D mesh</h2>
+<p>To solve this problem volume mesh must be generated.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Volume -> Generate tetrahedral mesh</i></p>
+<p><center><img src="image-Generate_mesh_dialog.png"/><center></p>
+<p>For now prefilled values are sufficient. Click <b>Ok</b> button to accept.</p>
+<p><center><img src="image-Volume_mesh.png"/><center></p>
+<h2>3. Assign material</h2>
+<p>Material can be assigned only to selected model entity. Entities can be selected in the <b>Model tree</b>. To select multiple entities hold-down the <i>Ctrl</i> while selecting entities. Once all entities are selected then material can be assigned.</p>
+<p><b>Model tree</b> and <b>material list</b> can be seen on screenshot below.</p>
+<p><center><img src="image-GUI_model_and_material.png"/><center></p>
+<p>Material is assigned when check-box in front of the material name is checked.</p>
+<p><i>Note: All model entities must have material assigned.</i></p>
+<h2>4. Assign boundary conditions</h2>
+<p>The boundary conditions are the specified values of the field variables (or related variables such as derivatives) on the boundaries of the field. Boundary conditions can be divided into <b>Explicit</b> and <b>Implicit</b> conditions. <b>Explicit</b> conditions are highlighted with <b>strong</b> font.</p>
+<p>In this tutorial boundary conditions will be applied as followed:</p>
+<p>
+<table border="1">
+<tr><th>Surface entity</th><th>Boundary condition</th></tr>
+<tr><td>Load</td><td>Weight (1000 kg)</td></tr>
+<tr><td>Left</td><td rowspan="2">Displacement (Displacement in all directions = 0 m)</td></tr>
+<tr><td>Right</td></tr>
+</table>
+</p>
+<p>To apply <b>Weight</b> boundary condition follow these steps:</p>
+<p>
+<ol>
+<li>Select <b>Load</b> entity in the <b>Model tree</b>.</li>
+<li>Select and check <b>Weight</b> boundary condition from the <b>Boundary conditions</b> list.</li>
+<li>Replace <b>1</b> with <b>1000</b> [kg] in value field for <b>Weight</b> property.</li>
+</ol>
+</p>
+<p><center><img src="image-Assigned_weight_bc.png"/><center></p>
+<p>To apply <b>Displacement</b> boundary condition follow these steps:</p>
+<p>
+<ol>
+<li>Select <b>Left</b> and <b>Right</b> entities in the <b>Model tree</b>.</li>
+<li>Select and check <b>Displacement</b> boundary condition from the <b>Boundary conditions</b> list.</li>
+<li>Verify that all property values are set to <b>0</b> [m].</li>
+</ol>
+</p>
+<p><center><img src="image-Assigned_displacement_bc.png"/><center></p>
+<h2>5. Assign environment conditions</h2>
+<p>For <b>Weight</b> boundary condition to work properly correct <b>Gravitational acceleration</b> environment condition must be assigned.</p>
+<p>Environment conditions are assigned in the same way as boundary conditions.</p>
+<p><center><img src="image-Assigned_gravity_ec.png"/><center></p>
+<h2>6. Solve problem</h2>
+<p>Once the problem is correctly configured it can be solved.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Solution -> Start solver</i></p>
+<p><center><img src="image-Start_solver.png"/><center></p>
+<p>Click <b>Ok</b> button to start the solver process.</p>
+<p>Solver process is running in the background and all its output is displayed in the <b>Process output</b> tab as it can be seen on the screenshot below.
+<p><center><img src="image-Process_output.png"/><center></p>
+<h2>7. Apply computed results</h2>
+<p>After the solver process is successfully completed computed results should be loaded automatically. To display these results they need to be applied on model entities. This is done in <b>Results</b> tab control. Results are applied to the selected model entities. For this purpose hide all surface entities and show only <b>Volumes</b>.</p>
+<p><center><img src="image-Selected_volume_entity.png"/><center></p>
+<h3>7.1. Displacement</h3>
+<p>From drop-down menu select <b>Displacement</b> (if not already selected). <b>Displacement</b> is a vector variable it can be applied as a <b>Scalar</b> (entity will be colored by its magnitude) and/or as a <b>Displacement</b> (entity will bend). This time select <b>Displacement</b> check-box. And set <b>Scale</b> to <b>500</b> to see the deformation.</p>
+<p><center><img src="image-Applied_displacement.png"/><center></p>
+<h3>7.2. Von Mises Stress</h3>
+<p>Similarly as <b>Displacement</b> apply <b>Von Mises Stress</b> on selected <b>Volume</b> model entity. Additionally select <b>Display value range</b> check-box to display value range in 3D area.</p>
+<p><center><img src="image-Applied_stress.png"/><center></p>
+<h2>8. Produce report</h2>
+<p>Sometimes it is needed to produce a report to publish computed results.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Report -> Create report</i></p>
+<p><center><img src="image-Create_report.png"/><center></p>
+<p>Software can produce reports in multiple formats. This time it is enough to produce only <b>PDF</b> document, so select <b>Portable Document Format (PDF)</b> check-box and click <b>Ok</b> button.</p>
+<p>Generated documents are not displayed automatically. To do so navigate to <b>Documents</b> tree and double click on the document you would like to view.</p>
+<p><center><img src="image-Document_tree.png"/><center></p>

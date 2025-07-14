@@ -1,0 +1,82 @@
+<h1>Contaminant dispersion in fluids</h1>
+<p>This tutorial will demonstrate how to setup advanced multi physics simulation including non-linear iterative problem such as <b>CFD (Computational Fluid Dynamics)</b>.</p>
+<p>To solve <b>contaminant dispersion in fluid</b> following problem types need to be configured:</p>
+<p>
+<ol>
+<li><b>Contaminant dispersion</b> - Calculate distribution of contaminant in the flow field.</li>
+<li><b>Inconpressible viscous flow</b> - Stead-state and transient flow of newtonian fluids.</li>
+</ol>
+</p>
+<p>Since <b>CFD</b> is a nonlinear problem it requires iterative solution. This problem will be solved in two steps:</p>
+<p>
+<ol>
+<li><b>Steady-state</b> - First it is necessary to get "initial" flow field and pressure distribution.</li>
+<li><b>Transient</b> - In second step a <b>time marching</b> will be used to get transient solution.</li>
+</ol>
+</p>
+<h2>1. Load model</h2>
+<p>Load model <b>Channel.tmsh</b>.</p>
+<h2>2. Problem task flow (Step 1)</h2>
+<p>First a converged initial flow is needed. For this reason steady-state solution of the incompressible viscous flow is needed. In <b>Problem task flow</b> dialog select appropriate problem type and set <b># of iterations:</b> to <b>2000</b>. To do so double click on the initial value.</p>
+<p><center><img src="image-CFD-Problem_task_flow_steady.png"/><center></p>
+<h2>3. Generate 3D mesh</h2>
+<p>To solve this problem volume mesh must be generated.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Volume -> Generate tetrahedral mesh</i></p>
+<h2>4. Assign material</h2>
+<p>Assign <b>Water</b> to all model entities.</p>
+<h2>5. Boundary conditions</h2>
+<p>Assign following boundary conditions to model entities.</p>
+<p>
+<table border="1">
+<tr><th>Surface entity</th><th>Boundary conditions</th></tr>
+<tr><td>Walls</td>
+<td>
+<dl><dt><u>Wall</u></dt><dd>N/A</dd></dl>
+</td>
+</tr>
+<tr><td>Inflow</td>
+<td>
+<dl>
+<dt><u>Volumetric flow rate (inflow)</u></dt><dd>Volumetric flow rate = 50 m^3/s</dd>
+</dl>
+</td>
+</tr>
+<tr><td>Outflow</td>
+<td rowspan="2">
+<dl>
+<dt><u>Pressure (implicit)</u></dt><dd>Pressure = 0 Pa</dd>
+</dl>
+</td>
+</tr>
+</table>
+</p>
+<h2>6. Solve problem</h2>
+<p>Do the same as in the previous tutorials.</p>
+<p>It will take some time until solver computes all iterations and find converged solution. Solver convergence can be checked using following action:</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Report -> Solver convergence</i></p>
+<h2>7. Problem task flow (Step 2)</h2>
+<p>Once the solver converges <b>transient</b> problem including <b>Contaminant dispersion</b> can be configured.</p>
+<p>Since <b>Inconpressible viscous flow</b> is nonlinear problem it will always need some nonlinear iterations to be specified to find converged solution for each time-step. <b>Task flow</b> should look-like as shown on the screenshot below.</p>
+<p><center><img src="image-CFD-Problem_task_flow.png"/><center></p>
+<h2>8. Time solver setup</h2>
+<p>Click on <b>Problem setup</b> tab. Enable <b>Time-solver</b> and specify values as shown on the screenshot below.</p>
+<p><center><img src="image-CFD-Problem_time_solver.png"/><center></p>
+<h2>9. Boundary conditions</h2>
+<p>Apply <b>Particle concentration</b> boundary condition to <b>Inflow</b> model entity.</p>
+<p><center><img src="image-CFD-Boundary_conditions.png"/><center></p>
+<p>Do not specify value but click on <b>Edit time dependent values</b> button, to specify time-triggered (time-profile) boundary condition.</p>
+<p>In the <b>Component editor</b> dialog time depended values can be specify. Values are always valid <b>from</b> specified time.</p>
+<p><center><img src="image-CFD-Particle_concentration_condition.png"/><center></p>
+<h2>10. Solve problem (restart)</h2>
+<p>Once the problem is fully configured restart the solver. This is done just like when starting a solver but <b>Restart solver / continue</b> check-box must be selected. This will make the solver to use already computed results as a starting point and continue in time-marching simulation.</p>
+<p><center><img src="image-CFD-Solver_restart.png"/><center></p>
+<h2>11. Model records (results in time)</h2>
+<p>As the solver keeps finding solutions for each time-step, model records are being written. Each record contains solution for given time-step. List of these records can be seen in <b>Model records</b> tree. By double-clicking on the record results for given time-step will be loaded.</p>
+<h2>12. Record video</h2>
+<p>To record a video from computed results go to <b>Model records</b> tree and click on the <b>Record</b> button (Red point at the bottom).</p>
+<p><center><img src="image-CFD-Model_records.png"/><center></p>
+<p>After clicking on <b>Record</b> button <b>Video settings</b> dialog will appear. Click <b>Ok</b> to start video recording process.</p>
+<p><center><img src="image-CFD-Video_settings.png"/><center></p>
+<p>To create a video can take some time since video frames are created from screenshots of <b>3D model area</b> and for each model record must be loaded.</p>
+<p>All produced screenshots and video itself can be found in <b>Documents</b> tree. To view the video double-click on its name <b>Channel.avi</b>.</p>
+<p><center><img src="image-CFD-Documents.png"/><center></p>

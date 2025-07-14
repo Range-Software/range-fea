@@ -1,0 +1,51 @@
+<h1>Generate tetrahedral mesh</h1>
+<p>Generate volume (tetrahedral) mesh.</p>
+<p><b>Volume mesh</b> is required for most <b>problem types</b>.</p>
+<p>3D mesh generator can generate mesh only if:
+<ol>
+<li>Model contains enclosed (watertight) surface.</li>
+<li>Surface elements do not intersect each other.</li>
+</ol>
+</p>
+<p>To generate multiple volume meshes to represent composite material model a separation surface must be included.</p>
+<p>In some cases there might be a need for overriding default settings and specify TetGen parameters directly.</p>
+<h2>GUI</h2>
+<p><center><img src="image-Generate_mesh_dialog.png"/><center></p>
+<ul>
+<li><b>Check surface integrity</b> - useful when generating a 3D mesh from surface model. It can detect surface mesh errors and potential problems.</li>
+<li><b>Reconstruct mesh (reuse current nodes)</b> - keep current nodes and only add new ones if needed.</li>
+<li><b>Keep computed results</b> - all computed results will be mapped/interpolated to new nodes and elements.</li>
+<li><b>Quality mesh</b> - generate 3D mesh to conform with quality criteria.
+    <ul>
+        <li><b>Maximum element volume</b> - maximum volume of each generated element. No element should have higher volume then specified.</li>
+        <li><b>Generate mesh size function</b> - should be used to refine mesh in places where differences in results are found.
+        </li>
+    </ul>
+</li>
+<li><b>TetGen parameters</b> - parameters passed to TetGen mesh generator.</li>
+</ul>
+Following picture shows difference on mesh resolution when adaptive meshing is used.
+<p><center><img src="image-Adaptive_mesh-example.png"/><center></p>
+<h2>Parameters syntax</h2>
+<p><i>pYrq_Aa_miO_S_T_XMwcdzfenvgkJBNEFICQVh</i></p>
+<p>Underscores indicate that numbers may optionally follow certain switches. Do not leave any space between a switch and its numeric parameter.</p>
+<p>An overview of all command line switches and a short description follow.</p>
+<ul>
+<li><b>p</b> - Tetrahedralizes a piecewise linear complex (PLC).</li>
+<li><b>r</b> - Reconstructs a previously generated mesh.</li>
+<li><b>q</b> - Refines mesh (to improve mesh quality).</li>
+<li><b>R</b> - Mesh coarsening (to reduce the mesh elements).</li>
+<li><b>a</b> - Applies a maximum tetrahedron volume constraint.</li>
+<li><b>O</b> - Specifies the level of mesh optimization.</li>
+<li><b>S</b> - Specifies maximum number of added points.</li>
+<li><b>T</b> - Sets a tolerance for coplanar test (default 10−8).</li>
+<li><b>X</b> - Suppresses use of exact arithmetic.</li>
+<li><b>M</b> - No merge of coplanar facets or very close vertices.</li>
+<li><b>w</b> - Generates weighted Delaunay (regular) triangulation.</li>
+<li><b>c</b> - Retains the convex hull of the PLC.</li>
+<li><b>d</b> - Detects self-intersections of facets of the PLC.</li>
+<li><b>n</b> - Outputs tetrahedra neighbors.</li>
+<li><b>C</b> - Checks the consistency of the final mesh.</li>
+<li><b>Q</b> - Quiet: No terminal output except errors.</li>
+<li><b>V</b> - Verbose: Detailed information, more terminal output.</li>
+</ul>

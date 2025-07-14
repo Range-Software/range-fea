@@ -1,0 +1,74 @@
+<h1>Multi physics</h1>
+<p>In this tutorial solving multiple problems on one geometric model. For this purpose <b>Beam model</b> will be used through which a passing electric current will generate heat and deform a model.</p>
+<p>Such engineering problem will require to setup three problem types:</p>
+<p>
+<ol>
+<li><b>Electrostatics</b> - Calculate electric current and produced heat.</li>
+<li><b>Heat transfer</b> - Calculate temperature distribution.</li>
+<li><b>Stress analysis</b> - Calculate thermal expansion (displacements) and resulting stress.</li>
+</ol>
+</p>
+<h2>1. Load model</h2>
+<p>Do the same as in the previous <b>Stress and deformation analysis</b> tutorial.</p>
+<h2>2. Problem task flow</h2>
+<p>The only difference to the process described in previous tutorial is to show how to create a <b>Problem task flow</b>. Everything else is done in the same way.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Problem -> Problem(s) task flow</i></p>
+<p>In <b>Problem type selector</b> select all three problem types and click <b>Ok</b>.</p>
+<p><center><img src="image-Problem_type_selector-Multi.png"/><center></p>
+<p>Your <b>Problem task flow</b> now should look like as on the following picture. If order is not the same or there are more entries, <b>Up</b>, <b>Down</b> and <b>Remove</b> buttons can be used to modify the flow.</p>
+<p><center><img src="image-Problem_task_flow-Multi.png"/><center></p>
+<h2>3. Assign material</h2>
+<p>Do the same as in the previous <b>Stress and deformation analysis</b> tutorial.</p>
+<h2>4. Assign boundary conditions</h2>
+<p>Because there are multiple problem types selected multiple boundary conditions can be assigned to each entity. Assign boundary conditions as described in the following table.</p>
+<p>
+<table border="1">
+<tr><th>Surface entity</th><th>Boundary conditions</th></tr>
+<tr><td>Surface</td>
+<td>
+<dl><dt><u>Simple convection</u></dt><dd>Convection coefficient = 100 W/(m^2*K)</dd><dd>Temperature = 293.15 K</dd></dl>
+</td>
+</tr>
+<tr><td>Load</td>
+<td>
+<dl>
+<dt><u>Electric potential</u></dt><dd>Electric potential = 110 V</dd>
+<dt><u>Simple convection</u></dt><dd>Convection coefficient = 100 W/(m^2*K)</dd><dd>Temperature = 293.15 K</dd>
+</dl>
+</td>
+</tr>
+<tr><td>Left</td>
+<td rowspan="2">
+<dl>
+<dt><u>Displacement</u></dt><dd>Displacement in all directions = 0 m</dd>
+<dt><u>Electric potential</u></dt><dd>Electric potential = -110 V</dd>
+<dt><u>Simple convection</u></dt><dd>Convection coefficient = 100 W/(m^2*K)</dd><dd>Temperature = 293.15 K</dd>
+</dl>
+</td>
+</tr>
+<tr><td>Right</td></tr>
+</table>
+</p>
+<h2>5. Assign environment conditions</h2>
+<p>Assign following environment conditions to all model entities.</p>
+<p>
+<dl>
+<dt><u>Gravitational acceleration</u></dt>
+<dd>Gravitational acceleration in X direction = 0 m/s^2</dd>
+<dd>Gravitational acceleration in Y direction = 0 m/s^2</dd>
+<dd>Gravitational acceleration in Z direction = -9.80665 m/s^2</dd>
+<dt><u>Temperature</u></dt><dd>Temperature = 293.15 K</dd>
+</dl>
+</p>
+<h2>6. Solve problem</h2>
+<p>Do the same as in the previous <b>Stress and deformation analysis</b> tutorial.</p>
+<h2>7. Create a vector field</h2>
+<p><b>Vector field</b> is an entity which will be used to visualize electric field.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Vector field -> Create vector field</i></p>
+<p>Select <b>volume</b> model entity and <b>Electric field</b> as shown on the picture below.</p>
+<p><center><img src="image-Create_vector_field.png"/><center></p>
+<p>Click <b>Ok</b> button to create the <b>Vector field</b>. Once created it will be added to the <b>Model tree</b> and results variables can be applied to it as to any other model entity.</p>
+<h2>8. Apply results</h2>
+<p>Do the same as in the previous <b>Stress and deformation analysis</b> tutorial. Additionally you can apply results to created <b>Vector field</b> entity.</p>
+<p><center><img src="image-Applied_temperature_on_vector_field.png"/><center></p>
+<p><center><img src="image-Applied_temperature_on_volume.png"/><center></p>

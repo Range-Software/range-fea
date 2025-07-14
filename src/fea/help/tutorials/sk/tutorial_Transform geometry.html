@@ -1,0 +1,45 @@
+<h1>Transform geometry</h1>
+<p>This tutorial is a sequel to the <b>Draw cube</b> tutorial and will demonstrate how to scale, rotate and translate whole geometry or only its parts.</p>
+<h2>1. Load model</h2>
+<p>If <b>Cube</b> model is not already loaded it can be don so with <b><i>Open Model</i></b> menu action.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>File -> Open Model</i></p>
+<p>This will show and <b>Open model</b> dialog. Select file <b>Cube.rbm</b> and click <b>Open</b></p>
+<p>Once model is ready its geometry (whole or part) can be modified (transformed).</p>
+<h2>2. Preparation</h2>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Scale, translate, rotate</i></p>
+<p>Once menu item is activated a <b>Transform geometry</b> control will be shown on the right side of the main window where with three tabs <b>Scale</b>, <b>Rotate</b> and <b>Translate</b>.</p>
+<p><center><img src="image-Transform_geometry.png"/><center></p>
+<p>In this tutorial all transformations will be applied consecutively on one side of the cube.</p>
+<p>At this moment all sides of the <b>Cube</b> model are grouped in the same <b>surface entity</b>. Therefore, one side needs to be <b>marked</b> as separate <b>surface entity</b> so the transformations can be applied only on this side and not on the others. This can be done with menu action <b><i>Mark Surface</i></b>. But first cube side needs to be picked.</p>
+<h2>3. Pick a side</h2>
+<p>Press and hold <b><i>Ctrl</i></b> key and click with <b><i>Left mouse button</i></b> on one side of the cube. This will highlight the picked element. Since the <b>Cube</b> model consist of 6 rectangular (Quadrilateral) elements, then one element corresponds to one side of the <b>Cube</b>.</p>
+<h2>4. Mark a surface</h2>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Surface -> Mark surface</i></p>
+<p><center><img src="image-Mark_surface_dialog.png"/><center></p>
+<p>This action will show <b>Mark entity (surface)</b> dialog. Because in previous step one element was <b>picked</b> an option <b><i>Mark only selected and related elements</i></b> is preselected. By clicking <b>Ok</b> button one side of the <b>Cube</b> model will be marked as a separate <b>Surface entity</b>.</p>
+<p><i><b>Note:</b> Any entity can be renamed by <b>double-clicking</b> with <b>Left mouse button</b> on entity name in the <b>Model tree</b> on the left side of the main window.</i></p>
+<p><center><img src="image-Marked_surface.png"/><center></p>
+<h2>5. Scale picked entity (cube side)</h2>
+<p>Pick marked surface and open <b>Transform geometry</b> control widget.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Scale, translate, rotate</i></p>
+<p>Enter following values:</p>
+<p>
+<table>
+<tr><th align="left">Scale:</th><td>0.5</td></tr>
+<tr><th align="left">Scale center:</th><td>Click on <b>Select from picked element/node</b> button.</td></tr>
+<tr><th align="left">Apply to:</th><td>Select <b>Picked entities</b>.</td></tr>
+<tr><th align="left">Include shared nodes:</th><td>Make sure it is checked as well as all child check-boxes.</td></tr>
+</table>
+</p>
+<p>Proper setup can be seen on following screen-shot.</p>
+<p><center><img src="image-Transform_geometry-scale.png"/><center></p>
+<p>Click <b>Ok</b>. Result can be seen on following screen-shot.</p>
+<p><center><img src="image-Scaled_surface.png"/><center></p>
+<h2>6. Rotate picked entity (scaled cube side)</h2>
+<p>By rotating picked surface an extrudes surface can be created. Open <b>Transform geometry</b> control widget.</p>
+<p style="background-color: #999999;"><b>Menu:</b> <i>Geometry -> Surface -> Mark surface</i></p>
+<p>Specify values as shown in following screenshot.</p>
+<p><i>Note: <b>Sweep steps: 6</b> will result in six new segments.</i></p>
+<p><center><img src="image-Transform_geometry-rotate.png"/><center></p>
+<p>Click <b>Ok</b>. Result can be seen on following screen-shot.</p>
+<p><center><img src="image-Rotated_surface.png"/><center></p>

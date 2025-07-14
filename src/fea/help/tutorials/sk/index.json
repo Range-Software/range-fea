@@ -1,0 +1,25 @@
+{
+    "main": "tutorial_index.html",
+    "chapters": [
+        {
+            "title": "Contaminant dispersion in fluids",
+            "file":  "tutorial_Contaminant dispersion in fluids.html"
+        },
+        {
+            "title": "Draw cube",
+            "file":  "tutorial_Draw cube.html"
+        },
+        {
+            "title": "Multiphysics",
+            "file":  "tutorial_Multiphysics.html"
+        },
+        {
+            "title": "Stress and deformation analysis",
+            "file":  "tutorial_Stress and deformation analysis.html"
+        },
+        {
+            "title": "Transform geometry",
+            "file":  "tutorial_Transform geometry.html"
+        }
+    ]
+}
