@@ -41,7 +41,7 @@ open './build-Release/range-fea-0.0.1-Darwin.dmg'
 ```
 #### Self extracting Tar GZip
 ```
-./build-Release/range-fea-0.0.1-Darwin.run
+./build-Release/range-fea-0.0.1-Darwin.sh
 ```
 ### Linux
 #### GUI Installer
