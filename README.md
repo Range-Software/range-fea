@@ -16,7 +16,7 @@ sudo ./src/range-build-tools/prereqs.sh
 ```
 Next build directory needs to be created
 ```
-mkdir build
+mkdir build-Release
 ```
 ## Build
 ```
