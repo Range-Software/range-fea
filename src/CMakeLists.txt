@@ -63,7 +63,7 @@ endif()
 
 find_package(OpenGL REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
 qt_standard_project_setup()
 
 add_library(common_defines INTERFACE)
