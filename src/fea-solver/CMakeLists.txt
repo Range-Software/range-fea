@@ -17,11 +17,7 @@ add_dependencies(fea-solver range-base-lib range-model-lib range-solver-lib)
 
 target_link_libraries(fea-solver
     PRIVATE
-        OpenMP::OpenMP_CXX
-        Qt6::Core
+        range-solver-lib
         Qt6::Network
         common_defines
-        range-base-lib
-        range-model-lib
-        range-solver-lib
 )

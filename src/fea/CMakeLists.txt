@@ -354,23 +354,14 @@ add_dependencies(fea range-base-lib range-model-lib range-solver-lib range-cloud
 
 target_link_libraries(fea
     PRIVATE
+        range-gui-lib
+        range-solver-lib
         OpenGL::GL
-        OpenMP::OpenMP_CXX
-        Qt6::Core
-        Qt6::Concurrent
-        Qt6::Network
-        Qt6::HttpServer
-        Qt6::Widgets
         Qt6::OpenGL
         Qt6::OpenGLWidgets
         Qt6::Multimedia
         Qt6::PrintSupport
         common_defines
-        range-base-lib
-        range-model-lib
-        range-solver-lib
-        range-cloud-lib
-        range-gui-lib
 )
 
 set_target_properties(fea
