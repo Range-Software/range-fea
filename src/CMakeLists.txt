@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 project(RangeFea)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -19,43 +19,51 @@ endif()
 set(BUILD_SHARED_LIBS OFF)
 
 # Open MP configuration -------------------------------------------------------
-if(APPLE)
-    # Allow users to override
-    set(OpenMP_INCLUDES "" CACHE PATH "Manually specify path to omp.h if needed")
-    set(OpenMP_LIBRARY "" CACHE FILEPATH "Manually specify path to libomp if needed")
+if(APPLE AND (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
+    execute_process(COMMAND brew --prefix libomp
+                    OUTPUT_VARIABLE OMP_PREFIX
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-        # macOS + Clang + possibly Homebrew or MacPorts
-        find_path(OpenMP_INCLUDES omp.h
-            HINTS
-                /opt/homebrew/include
-                /opt/homebrew/opt/libomp/include
-                /opt/local/include
-                /usr/local/include
-                /usr/include
-            DOC "Path to OpenMP headers"
-        )
-        find_library(OpenMP_LIBRARY omp
-            HINTS
-                /opt/homebrew/lib
-                /opt/homebrew/opt/libomp/lib
-                /opt/local/lib
-                /usr/local/lib
-                /usr/lib
-            DOC "Path to OpenMP library"
-        )
+    if(NOT OMP_PREFIX)
+        message(FATAL_ERROR "brew --prefix libomp failed. Is libomp installed?")
+    endif()
 
-        if(OpenMP_INCLUDES AND OpenMP_LIBRARY)
-            message(STATUS "Found OpenMP headers at: ${OpenMP_INCLUDES}")
-            message(STATUS "Found OpenMP library at: ${OpenMP_LIBRARY}")
+    message(STATUS "libomp prefix: ${OMP_PREFIX}")
 
-            set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I${OpenMP_INCLUDES}")
-            set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I${OpenMP_INCLUDES}")
-            set(OpenMP_C_LIB_NAMES "omp")
-            set(OpenMP_CXX_LIB_NAMES "omp")
-            set(OpenMP_omp_LIBRARY ${OpenMP_LIBRARY})
-        else()
-            message(WARNING "OpenMP not found. Please install libomp (e.g., brew install libomp).")
+    # macOS + Clang + possibly Homebrew or MacPorts
+    find_path(OpenMP_INCLUDES
+        NAMES omp.h
+        PATHS "${OMP_PREFIX}/include"
+        NO_DEFAULT_PATH
+        NO_CMAKE_FIND_ROOT_PATH
+        REQUIRED
+        DOC "Path to OpenMP headers"
+    )
+    find_library(OpenMP_LIBRARY
+        NAMES omp
+        PATHS "${OMP_PREFIX}/lib"
+        NO_DEFAULT_PATH
+        NO_CMAKE_FIND_ROOT_PATH
+        REQUIRED
+        DOC "Path to OpenMP library"
+    )
+
+    if(OpenMP_INCLUDES AND OpenMP_LIBRARY)
+        message(STATUS "Found OpenMP headers at: ${OpenMP_INCLUDES}")
+        message(STATUS "Found OpenMP library at: ${OpenMP_LIBRARY}")
+
+        set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I${OpenMP_INCLUDES}")
+        set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I${OpenMP_INCLUDES}")
+        set(OpenMP_C_LIB_NAMES "omp")
+        set(OpenMP_CXX_LIB_NAMES "omp")
+        set(OpenMP_omp_LIBRARY ${OpenMP_LIBRARY})
+    else()
+        message(WARNING "OpenMP not found. Please install libomp (e.g., brew install libomp).")
+        if(NOT OpenMP_INCLUDES)
+            message(WARNING "OpenMP header not found.")
+        endif()
+        if(NOT OpenMP_LIBRARY)
+            message(WARNING "OpenMP library not found.")
         endif()
     endif()
 endif()
