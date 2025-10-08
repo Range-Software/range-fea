@@ -156,6 +156,22 @@ add_custom_target(deploy-qt ALL
     VERBATIM
 )
 
+# Put fea-solver into FEA.app/Contents/MacOS on macOS -------------------------
+if(APPLE)
+    # This copies the already-built fea-solver next to the main executable inside the bundle
+    add_custom_target(embed-fea-solver ALL
+        COMMAND ${CMAKE_COMMAND} -E copy
+                $<TARGET_FILE:fea-solver>
+                $<TARGET_FILE_DIR:fea>
+        DEPENDS fea fea-solver
+        COMMENT "Embedding fea-solver into FEA.app/Contents/MacOS"
+        VERBATIM
+    )
+ 
+    # Make sure we copy the solver BEFORE running macdeployqt/codesign
+    add_dependencies(deploy-qt embed-fea-solver)
+endif()
+
 # Create custom .DS_Store on MacOS --------------------------------------------
 if(APPLE)
     set(APP_DIR_OLD "$<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>")
