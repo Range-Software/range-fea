@@ -41,6 +41,11 @@ void ReportGenerator::generateTitle()
     cursor.insertText(problemTypeList,ReportGenerator::getH3Format());
     cursor.insertBlock(blockFormat);
     cursor.insertBlock(blockFormat);
+    cursor.insertText(Application::instance()->getApplicationSettings()->getUserFullName(),ReportGenerator::getH4Format());
+    cursor.insertBlock(blockFormat);
+    cursor.insertText(Application::instance()->getApplicationSettings()->getUserEmail(),ReportGenerator::getTextFormat());
+    cursor.insertBlock(blockFormat);
+    cursor.insertBlock(blockFormat);
     cursor.insertText(QDateTime::currentDateTimeUtc().toLocalTime().toString("MMMM d, yyyy"),ReportGenerator::getTextFormat());
 }
 

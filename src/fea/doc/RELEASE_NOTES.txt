@@ -3,7 +3,10 @@ Version FEA 1.0.0
 
 * GUI: User data directory structure moved into "{Path to user documents}/Range Software/Range" directory
 * GUI: Translated to Slovak language
-* HUI: New software update manager
+* GUI: New software update manager
+* GUI: Configurable user details
+* GUI: Report contains author name and email address
+* GUI: Removed dependency to FFMPEG library
 * ALL: Extensive code optimisation
 
 ------------------------------------------------------------------
