@@ -1,0 +1,129 @@
+name: CI (Linux/macOS/Windows)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x86_64
+            qt_host: linux
+            qt_arch: linux_gcc_64
+          - os: macos-26
+            arch: arm64
+            qt_host: mac
+            qt_arch: clang_64
+          - os: windows-latest
+            arch: x64
+            qt_host: windows
+            qt_arch: win64_msvc2022_64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      # Prep
+      - name: Prep Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build
+
+      - name: Prep macOS
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          brew update
+          brew install ninja || true
+
+      - name: Set up MSVC (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Ensure Ninja (Windows)
+        if: matrix.os == 'windows-latest'
+        run: choco install ninja -y || echo "Ninja already present"
+        shell: pwsh
+
+      # Qt
+      - name: Install Qt 6.10.0 + QtIFW
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.10.0'
+          host: ${{ matrix.qt_host }}
+          target: desktop
+          arch: ${{ matrix.qt_arch }}
+          cache: true
+          aqtversion: '==3.3.*'
+          modules: 'qthttpserver qtwebsockets qtimageformats qtmultimedia'
+          tools: 'tools_ifw'
+
+      - name: Show versions (Unix)
+        if: matrix.os != 'windows-latest'
+        run: |
+          cmake --version
+          qmake -v || true
+
+      - name: Show versions (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          cmake --version
+          qmake -v || Write-Host "qmake not on PATH (ok)"
+        shell: pwsh
+
+      # Configure
+      - name: Configure (Unix)
+        if: matrix.os != 'windows-latest'
+        run: cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release
+        shell: pwsh
+
+      # Build
+      - name: Build (Unix)
+        if: matrix.os != 'windows-latest'
+        run: cmake --build build-Release --parallel
+
+      - name: Build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake --build build-Release --parallel
+        shell: pwsh
+
+      # Package
+      - name: CPack (Unix)
+        if: matrix.os != 'windows-latest'
+        run: cmake --build build-Release --target package --parallel
+        continue-on-error: true
+
+      - name: CPack (Windows)
+        if: matrix.os == 'windows-latest'
+        run: cmake --build build-Release --target package --parallel
+        shell: pwsh
+        continue-on-error: true
+
+      # Artifacts
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ matrix.os }}-${{ matrix.arch }}-packages
+          path: |
+            build-Release/${{ github.event.repository.name }}-*.deb
+            build-Release/${{ github.event.repository.name }}-*.rpm
+            build-Release/${{ github.event.repository.name }}-*.sh
+            build-Release/${{ github.event.repository.name }}-*.run
+            build-Release/${{ github.event.repository.name }}-*.zip
+            build-Release/${{ github.event.repository.name }}-*.tar.gz
+            build-Release/${{ github.event.repository.name }}-*.dmg
+            build-Release/${{ github.event.repository.name }}-*.exe
+          if-no-files-found: error
