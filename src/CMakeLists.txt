@@ -167,13 +167,13 @@ if(APPLE)
         COMMENT "Embedding fea-solver into FEA.app/Contents/MacOS"
         VERBATIM
     )
- 
+
     # Make sure we copy the solver BEFORE running macdeployqt/codesign
     add_dependencies(deploy-qt embed-fea-solver)
 endif()
 
-# Create custom .DS_Store on MacOS --------------------------------------------
 if(APPLE)
+    # Create custom .DS_Store on MacOS ----------------------------------------
     set(APP_DIR_OLD "$<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>")
     set(APP_DIR_TMP "${CMAKE_BINARY_DIR}/${PROJECT_TARGET_NAME}/${PROJECT_SHORT_REL_NAME}_tmp.app")
     set(APP_DIR_NEW "${CMAKE_BINARY_DIR}/${PROJECT_TARGET_NAME}/${PROJECT_SHORT_REL_NAME}.app")
@@ -206,8 +206,16 @@ if(APPLE)
                 --background=${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/range-dmg_background.png
                 --icon=${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.icns
                 --ds-store=${DSSTORE_FILE}
-        DEPENDS app-rename
+        DEPENDS deploy-data
         COMMENT "Generating custom .DS_Store for Drag-and-Drop DMG"
+        VERBATIM
+    )
+
+    # Explicit sign with Hardened Runtime -------------------------------------
+        add_custom_target(codesign ALL
+        COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign ${CODESIGN_ID} "${APP_DIR_NEW}"
+        DEPENDS gen-dsstore
+        COMMENT "Codesign with Hardened Runtime"
         VERBATIM
     )
 endif()

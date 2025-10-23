@@ -4,8 +4,9 @@ on:
   push:
     branches: [ main ]
     tags: ['v*']
+  release:
+    types: [published]
   pull_request:
-
 permissions:
   contents: write
 
@@ -19,7 +20,7 @@ jobs:
             arch: x86_64
             qt_host: linux
             qt_arch: linux_gcc_64
-          - os: macos-26
+          - os: macos-latest
             arch: arm64
             qt_host: mac
             qt_arch: clang_64
@@ -38,7 +39,7 @@ jobs:
 
       # Prep
       - name: Prep Linux
-        if: matrix.os == 'ubuntu-latest'
+        if: startsWith(matrix.os, 'ubuntu-')
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build
@@ -50,11 +51,11 @@ jobs:
           brew install ninja libomp || true
 
       - name: Set up MSVC (Windows)
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows-')
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Ensure Ninja (Windows)
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows-')
         run: choco install ninja -y || echo "Ninja already present"
         shell: pwsh
 
@@ -78,51 +79,130 @@ jobs:
           qmake -v || true
 
       - name: Show versions (Windows)
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows-')
         run: |
           cmake --version
           qmake -v || Write-Host "qmake not on PATH (ok)"
         shell: pwsh
 
+      # --- Import Developer ID cert into an ephemeral keychain ---
+      - name: Create and unlock keychain
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          security create-keychain -p "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+          security unlock-keychain -p "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          security list-keychains -s build.keychain login.keychain
+        env:
+          MAC_KEYCHAIN_PASSWORD: ${{ secrets.MAC_KEYCHAIN_PASSWORD }}
+
+      - name: Import Developer ID certificate (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          base64 -d <<< "$MAC_CERT_P12" > dev.p12
+          security import dev.p12 -k build.keychain -P "$MAC_CERT_P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          # Allow codesign to use the key non-interactively:
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          rm -f dev.p12
+        env:
+          MAC_CERT_P12: ${{ secrets.MAC_CERT_P12 }}
+          MAC_CERT_P12_PASSWORD: ${{ secrets.MAC_CERT_P12_PASSWORD }}
+          MAC_KEYCHAIN_PASSWORD: ${{ secrets.MAC_KEYCHAIN_PASSWORD }}
+
+      - name: Write App Store Connect API key (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          set -euo pipefail
+          mkdir -p $HOME/.private_keys
+          echo "$AC_API_KEY_P8" | base64 -d > $HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8
+          chmod 600 $HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8
+        env:
+          AC_API_KEY_P8: ${{ secrets.AC_API_KEY_P8 }}
+          AC_API_KEY_ID: ${{ secrets.AC_API_KEY_ID }}
+
       # Configure
       - name: Configure (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release
+        if: startsWith(matrix.os, 'ubuntu-')
+        run: |
+          cmake -S src -B build-Release -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release
 
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos-')
         run: |
           OMP_PREFIX="$(brew --prefix libomp)"
-          cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release \
+          cmake -S src -B build-Release -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
             -DOpenMP_INCLUDES="${OMP_PREFIX}/include" \
-            -DOpenMP_LIBRARY="${OMP_PREFIX}/lib/libomp.dylib"
+            -DOpenMP_LIBRARY="${OMP_PREFIX}/lib/libomp.dylib" \
+            -DCODESIGN_ID="$CODESIGN_ID"
+        env:
+          CODESIGN_ID: ${{ secrets.CODESIGN_ID }}
 
       - name: Configure (Windows)
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows-')
         run: cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release
         shell: pwsh
 
       # Build
       - name: Build (Unix)
         if: matrix.os != 'windows-latest'
-        run: cmake --build build-Release --parallel
+        run: cmake --build build-Release --target package --parallel
 
       - name: Build (Windows)
-        if: matrix.os == 'windows-latest'
-        run: cmake --build build-Release --parallel
-        shell: pwsh
-
-      # Package
-      - name: CPack (Unix)
-        if: matrix.os != 'windows-latest'
-        run: cmake --build build-Release --target package --parallel
-        continue-on-error: true
-
-      - name: CPack (Windows)
-        if: matrix.os == 'windows-latest'
+        if: startsWith(matrix.os, 'windows-')
         run: cmake --build build-Release --target package --parallel
         shell: pwsh
-        continue-on-error: true
+
+      # Notarize
+      - name: Notarize DMG with notarytool (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          set -euo pipefail
+          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          echo "DMG: $DMG"
+
+          JSON_OUT="$(mktemp)"
+          xcrun notarytool submit "$DMG" \
+            --key "$HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8" \
+            --key-id "$AC_API_KEY_ID" \
+            --issuer "$AC_API_ISSUER_ID" \
+            --wait --timeout 20m --output-format json > "$JSON_OUT"
+
+          echo "Notarytool output:"
+          cat "$JSON_OUT"
+
+          # Extract submission id and status using plutil (built-in)
+          SUBMISSION_ID=$(plutil -extract id raw -o - "$JSON_OUT")
+          STATUS=$(plutil -extract status raw -o - "$JSON_OUT" 2>/dev/null || echo "")
+
+          echo "Submission ID: $SUBMISSION_ID"
+          echo "Status: $STATUS"
+
+          # Always fetch and print the full log (super helpful when rejected)
+          xcrun notarytool log "$SUBMISSION_ID" \
+            --key "$HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8" \
+            --key-id "$AC_API_KEY_ID" \
+            --issuer "$AC_API_ISSUER_ID" || true
+
+          # Hard fail unless Accepted
+          if [[ "$STATUS" != "Accepted" ]]; then
+            echo "Notarization did not succeed (status=$STATUS). Aborting before staple."
+            exit 1
+          fi
+        env:
+          AC_API_KEY_ID: ${{ secrets.AC_API_KEY_ID }}
+          AC_API_ISSUER_ID: ${{ secrets.AC_API_ISSUER_ID }}
+
+      - name: macOS – staple
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          set -euo pipefail
+          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          xcrun stapler staple "$DMG"
+          # Optional: also staple the app (useful if you ever upload the .app directly)
+          APP_BUNDLE="$(/usr/bin/find build-Release -name '*.app' -maxdepth 2 -print -quit)"
+          xcrun stapler staple "$APP_BUNDLE" || true
 
       # Artifacts
       - name: Upload packages
@@ -142,34 +222,24 @@ jobs:
 
   release:
     name: Publish GitHub Release
-    if: startsWith(github.ref, 'refs/tags/')          # only on tag pushes
-    needs: [build]                                    # wait for all OS builds
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download build artifacts from all OSes
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           pattern: ${{ github.event.repository.name }}-*packages
-          merge-multiple: true                        # put everything into ./artifacts
+          merge-multiple: true
+          path: artifacts
 
-      - name: List what we’ll upload (debug)
-        run: ls -lahR artifacts || ls -lah
+      - name: List files
+        run: ls -lah artifacts
 
-      - name: Create Release and upload assets
+      - name: Create Release & upload assets
         uses: softprops/action-gh-release@v2
         with:
-          # softprops uses the tag automatically; you can add notes if you like:
-          # body: "Release notes for ${{ github.ref_name }}"
-          # draft: true
-          # prerelease: ${{ contains(github.ref_name, '-rc') }}
-          files: |
-            artifacts/*.deb
-            artifacts/*.rpm
-            artifacts/*.sh
-            artifacts/*.run
-            artifacts/*.zip
-            artifacts/*.tar.gz
-            artifacts/*.dmg
-            artifacts/*.exe
-
+          # Mark RC/Beta as prerelease automatically (optional)
+          prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') }}
+          files: artifacts/*
