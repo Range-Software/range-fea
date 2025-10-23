@@ -176,6 +176,7 @@ void PickDetailsTree::populate()
         else if (rPickItems[i].getItemType() == PICK_ITEM_HOLE_ELEMENT)
         {
             itemText = tr("Edge") + " # " + QLocale().toString(rPickItems[i].getElementPosition());
+            delete topItem;
             break;
         }
 
