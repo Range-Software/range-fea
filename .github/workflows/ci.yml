@@ -243,3 +243,37 @@ jobs:
           # Mark RC/Beta as prerelease automatically (optional)
           prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') }}
           files: artifacts/*
+          
+      - name: Prepare Range Cloud client key and certificate
+        run: |
+          set -euo pipefail
+          mkdir -p $HOME/.private_keys
+          echo "$RANGE_CLOUD_KEY_PEM" | base64 -d > $HOME/.private_keys/range_cloud_key.pem
+          chmod 600 $HOME/.private_keys/range_cloud_key.pem
+          echo "$RANGE_CLOUD_CERT_PEM" | base64 -d > $HOME/.private_keys/range_cloud_cert.pem
+          chmod 600 $HOME/.private_keys/range_cloud_cert.pem
+        env:
+          RANGE_CLOUD_KEY_PEM: ${{ secrets.RANGE_CLOUD_KEY_PEM }}
+          RANGE_CLOUD_CERT_PEM: ${{ secrets.RANGE_CLOUD_CERT_PEM }}
+          
+      - name: Publish on Range Cloud
+        run: |
+          set -euo pipefail
+          for f in artifacts/*; do
+            [ -f "$f" ] || continue
+            fileName="$(basename $f)"
+            fileInfo=${fileName#$REPO_NAME}
+            fileVersion=$(echo $fileInfo | cut -d'-' -f2)
+            fileOs=$(echo $fileInfo | cut -d'-' -f3)
+            fileArch=$(echo $fileInfo | cut -d'-' -f4 | cut -d'.' -f1)
+            echo "Uploading: $fileName"
+            curl -X PUT --upload-file $f -o $HOME/response.json --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-upload/?resource-name=$fileName
+            fileId=$(jq -r '.id' $HOME/response.json)
+            echo "Updating file version: $fileName : $fileVersion"
+            curl -X POST -d "$fileVersion" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-version/?resource-id=$fileId
+            echo "Updating file tags: $fileName : $REPO_NAME,$fileOs,$fileArch"
+            curl -X POST -d "$REPO_NAME,$fileOs,$fileArch" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-tags/?resource-id=$fileId
+          done
+        env:
+          RANGE_CLOUD_KEY_PASSWORD: ${{ secrets.RANGE_CLOUD_KEY_PASSWORD }}
+          REPO_NAME: ${{ github.event.repository.name }}

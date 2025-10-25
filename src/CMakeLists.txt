@@ -135,8 +135,8 @@ elseif(APPLE)
         ${MACDEPLOYQT_EXECUTABLE}
         $<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>
     )
-    if(DEFINED APPLE_ID)
-        set(DEPLOY_COMMAND ${DEPLOY_COMMAND} -codesign=${APPLE_ID})
+    if(DEFINED CODESIGN_ID)
+        set(DEPLOY_COMMAND ${DEPLOY_COMMAND} -codesign=${CODESIGN_ID})
     endif()
 else()
     get_filename_component(_qt_dir "${_qt_bin_dir}" DIRECTORY)
@@ -212,12 +212,14 @@ if(APPLE)
     )
 
     # Explicit sign with Hardened Runtime -------------------------------------
+    if(DEFINED CODESIGN_ID)
         add_custom_target(codesign ALL
-        COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign ${CODESIGN_ID} "${APP_DIR_NEW}"
-        DEPENDS gen-dsstore
-        COMMENT "Codesign with Hardened Runtime"
-        VERBATIM
-    )
+            COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign ${CODESIGN_ID} "${APP_DIR_NEW}"
+            DEPENDS gen-dsstore
+            COMMENT "Codesign with Hardened Runtime"
+            VERBATIM
+        )
+    endif()
 endif()
 
 # Install ---------------------------------------------------------------------
@@ -259,8 +261,21 @@ set(CPACK_PACKAGE_RELEASE "1")
 set(CPACK_PACKAGE_CONTACT "${PROJECT_EMAIL}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_HOMEPAGE_URL "${PROJECT_WWW}")
-set(CPACK_SYSTEM_NAME "${CMAKE_HOST_SYSTEM_NAME}")
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}")
+set(_qt_kernel "${CMAKE_SYSTEM_NAME}")
+string(TOLOWER "${_qt_kernel}" _qt_kernel)
+if(_qt_kernel STREQUAL "windows")
+  set(_qt_kernel "winnt")
+endif()
+set(CPACK_SYSTEM_NAME "${_qt_kernel}")
+set(_qt_processor "${CMAKE_SYSTEM_PROCESSOR}")
+string(TOLOWER "${_qt_processor}" _qt_processor)
+if(_qt_processor STREQUAL "AMD64")
+  set(_qt_processor "x86_64")
+endif()
+if(_qt_processor STREQUAL "aarch64")
+  set(_qt_processor "arm64")
+endif()
+set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_SYSTEM_NAME}-${_qt_processor}")
 
 if(APPLE)
     set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_BINARY_DIR}/LICENSE.rtf")
