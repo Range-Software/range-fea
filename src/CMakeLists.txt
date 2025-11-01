@@ -238,6 +238,8 @@ elseif(APPLE)
     install(TARGETS fea-solver BUNDLE DESTINATION bin COMPONENT Application)
 else()
     set(CMAKE_INSTALL_PREFIX "/opt/${PROJECT_FAMILY_NAME}/${PROJECT_SHORT_REL_NAME}" CACHE PATH "Install path prefix" FORCE)
+    set(CPACK_SET_DESTDIR ON)
+    set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
     install(TARGETS fea DESTINATION bin COMPONENT Application)
     install(TARGETS fea-solver DESTINATION bin COMPONENT Application)
@@ -247,6 +249,19 @@ else()
     install(DIRECTORY ${PROJECT_TARGET_NAME}/materials/ DESTINATION materials COMPONENT Application)
     install(DIRECTORY ${_qt_deploy_dir}/ DESTINATION . COMPONENT Application)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
+    install(FILES ${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.svg DESTINATION pixmaps COMPONENT Application)
+
+    # ---- DEB/RPM
+    set(DESKTOP_ABS "${CMAKE_BINARY_DIR}/desktop/${PROJECT_PACKAGE_NAME}.desktop")
+    set(EXEC_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_TARGET_NAME}${DEBUG_EXT}")
+ 
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/app.desktop.in
+        ${DESKTOP_ABS}
+        @ONLY
+    )
+
+    install(FILES ${DESKTOP_ABS} DESTINATION desktop COMPONENT Application)
 endif()
 
 # CPack -----------------------------------------------------------------------
@@ -289,7 +304,8 @@ if(WIN32)
 elseif(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
 else()
-    set(CPACK_GENERATOR "IFW;ZIP;TGZ;STGZ;DEB;RPM")
+    set(CPACK_GENERATOR "STGZ;DEB;RPM")
+    #set(CPACK_GENERATOR "IFW;ZIP;TGZ;STGZ;DEB;RPM")
 endif()
 
 # DEB
@@ -300,6 +316,43 @@ set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
 set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Internet")
 #set(CPACK_RPM_PACKAGE_REQUIRES "glibc >= 2.27")
+
+# Generate scripts from templates (so you can @ONLY-substitute project vars)
+configure_file(${CMAKE_SOURCE_DIR}/range-build-tools/packaging/debian/postinst.in
+               ${CMAKE_BINARY_DIR}/packaging/debian/postinst
+               @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/range-build-tools/packaging/debian/prerm.in
+               ${CMAKE_BINARY_DIR}/packaging/debian/prerm
+               @ONLY)
+
+# Debian control scripts MUST be executable
+file(CHMOD ${CMAKE_BINARY_DIR}/packaging/debian/postinst PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ WORLD_READ)
+file(CHMOD ${CMAKE_BINARY_DIR}/packaging/debian/prerm    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ WORLD_READ)
+
+# Tell CPack-DEB to include them
+# (generic for whole package)
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_BINARY_DIR}/packaging/debian/postinst;${CMAKE_BINARY_DIR}/packaging/debian/prerm")
+
+# If you package by component, use the component-scoped var instead:
+# set(CPACK_DEBIAN_APPLICATION_PACKAGE_CONTROL_EXTRA
+#     "${CMAKE_BINARY_DIR}/packaging/debian/postinst;${CMAKE_BINARY_DIR}/packaging/debian/prerm")
+
+
+# RPM scripts (don’t need +x; CPack embeds their contents)
+configure_file(${CMAKE_SOURCE_DIR}/range-build-tools/packaging/rpm/post.in
+               ${CMAKE_BINARY_DIR}/packaging/rpm/post
+               @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/range-build-tools/packaging/rpm/preun.in
+               ${CMAKE_BINARY_DIR}/packaging/rpm/preun
+               @ONLY)
+
+# Tell CPack-RPM where they are
+set(CPACK_RPM_POST_INSTALL_SCRIPT_FILE "${CMAKE_BINARY_DIR}/packaging/rpm/post")
+set(CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE "${CMAKE_BINARY_DIR}/packaging/rpm/preun")
+
+# If packaging by component "Application", use component-scoped variants:
+# set(CPACK_RPM_APPLICATION_POST_INSTALL_SCRIPT_FILE  "${CMAKE_BINARY_DIR}/packaging/rpm/post")
+# set(CPACK_RPM_APPLICATION_PRE_UNINSTALL_SCRIPT_FILE "${CMAKE_BINARY_DIR}/packaging/rpm/preun")
 
 # DMG
 if(APPLE)
