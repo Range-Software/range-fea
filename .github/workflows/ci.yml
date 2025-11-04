@@ -267,8 +267,8 @@ jobs:
             fileOs=$(echo $fileInfo | cut -d'-' -f3)
             fileArch=$(echo $fileInfo | cut -d'-' -f4 | cut -d'.' -f1)
             echo "Uploading: $fileName"
-            curl -X PUT --upload-file $f -o $HOME/response.json --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-upload/?resource-name=$fileName
-            fileId=$(jq -r '.id' $HOME/response.json)
+            curl -X PUT --upload-file $f -o $HOME/response.json --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-replace/?resource-name=$fileName
+            fileId=$(jq -r '.upload.id' $HOME/response.json)
             echo "Updating file access mode: $fileName : 644"
             curl -X POST -d "{\"user\":6,\"group\":4,\"other\":4}" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-access-mode/?resource-id=$fileId
             echo "Updating file version: $fileName : $fileVersion"
