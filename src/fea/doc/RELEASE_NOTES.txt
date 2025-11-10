@@ -1,4 +1,8 @@
 ------------------------------------------------------------------
+Version FEA 1.0.1
+* ALL: Help and tutorials converted to markdown format
+
+------------------------------------------------------------------
 Version FEA 1.0.0
 
 * GUI: User data directory structure moved into "{Path to user documents}/Range Software/Range" directory

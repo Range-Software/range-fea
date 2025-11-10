@@ -3,6 +3,11 @@ Finite Element Analysis
 
 ![Range Software](http://www.range-software.com/files/common/Range3-CFD.png)
 
+## Help and tutorials
+
+1. [General help](./src/fea/help/general/en/general_index.md)
+2. [Turorials](./src/fea/help/tutorials/en/tutorial_index.md)
+
 ## Prepare build environment
 Initialize all submodules
 ```

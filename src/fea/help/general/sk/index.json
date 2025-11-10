@@ -1,41 +1,41 @@
 {
-    "main": "general_index.html",
+    "main": "general_index.md",
     "chapters": [
         {
-            "title": "Boundary condition",
-            "file":  "general_Boundary condition.html"
+            "title": "1. Model",
+            "file":  "general_Model.md"
         },
         {
-            "title": "Environment condition",
-            "file":  "general_Environment condition.html"
+            "title": "2. Problem",
+            "file":  "general_Problem.md"
         },
         {
-            "title": "Initial condition",
-            "file":  "general_Initial condition.html"
+            "title": "3. Problem type",
+            "file":  "general_Problem_type.md"
         },
         {
-            "title": "Material",
-            "file":  "general_Material.html"
+            "title": "4. Boundary condition",
+            "file":  "general_Boundary_condition.md"
         },
         {
-            "title": "Model",
-            "file":  "general_Model.html"
+            "title": "5. Environment condition",
+            "file":  "general_Environment_condition.md"
         },
         {
-            "title": "Problem",
-            "file":  "general_Problem.html"
+            "title": "6. Initial condition",
+            "file":  "general_Initial_condition.md"
         },
         {
-            "title": "Problem type",
-            "file":  "general_Problem type.html"
+            "title": "7. Material",
+            "file":  "general_Material.md"
         },
         {
-            "title": "Results",
-            "file":  "general_Results.html"
+            "title": "8. Solver",
+            "file":  "general_Solver.md"
         },
         {
-            "title": "Solver",
-            "file":  "general_Solver.html"
+            "title": "9. Results",
+            "file":  "general_Results.md"
         }
     ]
 }
