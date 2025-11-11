@@ -1,6 +1,11 @@
 ------------------------------------------------------------------
 Version FEA 1.0.1
 * ALL: Help and tutorials converted to markdown format
+* GUI: Default proxy type set to "System"
+
+Bug fixes:
+
+* Fixed not working reset to default number and date formatting.
 
 ------------------------------------------------------------------
 Version FEA 1.0.0
@@ -11,7 +16,7 @@ Version FEA 1.0.0
 * GUI: Configurable user details
 * GUI: Report contains author name and email address
 * GUI: Removed dependency to FFMPEG library
-* ALL: Extensive code optimisation
+* ALL: Extensive code optimization
 
 ------------------------------------------------------------------
 Version 3.2.8
@@ -102,7 +107,7 @@ Bug fixes:
 ------------------------------------------------------------------
 Version 3.2.1
 
-* Display notification incons in output area tabs
+* Display notification icons in output area tabs
 
 Bug fixes:
 
