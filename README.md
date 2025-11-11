@@ -36,21 +36,17 @@ cmake --build build-Release --target package
 open './build-Release/range-fea-0.0.1-Darwin-arm64.dmg'
 ```
 ### Linux
-#### GUI Installer
-```
-./build-Release/range-fea-0.0.1-Linux-x86_64.run
-```
 #### Self extracting Tar GZip
 ```
-./build-Release/range-fea-0.0.1-Linux-x86_64.sh
+./build-Release/range-fea-1.0.0-linux-x86_64.sh
 ```
 #### Debian DEB package
 ```
-sudo apt install ./build-Release/range-fea-0.0.1-Linux-x86_64.deb
+sudo apt install ./build-Release/range-fea-1.0.0-linux-x86_64.deb
 ```
 #### RedHat RPM package
 ```
-sudo dnf install ./build-Release/range-fea-0.0.1-Linux-x86_64.rpm
+sudo dnf install ./build-Release/range-fea-1.0.0-linux-x86_64.rpm
 ```
 
 ## Download
