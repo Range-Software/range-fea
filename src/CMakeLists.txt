@@ -71,7 +71,7 @@ endif()
 
 find_package(OpenGL REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
+find_package(Qt6 6.10 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
 qt_standard_project_setup()
 
 add_library(common_defines INTERFACE)
@@ -115,6 +115,14 @@ foreach(tgt IN LISTS all_targets)
     set_debug_suffix_if_needed(${tgt})
 endforeach()
 
+# Define OpenSSL ROOT directory -----------------------------------------------
+
+set(OPENSSL_ROOT "" CACHE PATH "OpenSSL prefix")
+
+if(OPENSSL_ROOT STREQUAL "" AND DEFINED ENV{OPENSSL_ROOT})
+  set(OPENSSL_ROOT "$ENV{OPENSSL_ROOT}" CACHE PATH "OpenSSL prefix" FORCE)
+endif()
+
 # Deploy Qt -------------------------------------------------------------------
 
 get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
@@ -128,6 +136,7 @@ if(WIN32)
         ${WINDEPLOYQT_EXECUTABLE}
         $<TARGET_FILE:${PROJECT_TARGET_NAME}>
         --dir ${_qt_deploy_dir}
+        --force-openssl
     )
 elseif(APPLE)
     find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS "${_qt_bin_dir}")
@@ -135,9 +144,6 @@ elseif(APPLE)
         ${MACDEPLOYQT_EXECUTABLE}
         $<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>
     )
-    if(DEFINED CODESIGN_ID)
-        set(DEPLOY_COMMAND ${DEPLOY_COMMAND} -codesign=${CODESIGN_ID})
-    endif()
 else()
     get_filename_component(_qt_dir "${_qt_bin_dir}" DIRECTORY)
     set(DEPLOY_COMMAND
@@ -156,8 +162,8 @@ add_custom_target(deploy-qt ALL
     VERBATIM
 )
 
-# Put fea-solver into FEA.app/Contents/MacOS on macOS -------------------------
 if(APPLE)
+    # Put fea-solver into FEA.app/Contents/MacOS on macOS ---------------------
     # This copies the already-built fea-solver next to the main executable inside the bundle
     add_custom_target(embed-fea-solver ALL
         COMMAND ${CMAKE_COMMAND} -E copy
@@ -168,11 +174,8 @@ if(APPLE)
         VERBATIM
     )
 
-    # Make sure we copy the solver BEFORE running macdeployqt/codesign
     add_dependencies(deploy-qt embed-fea-solver)
-endif()
 
-if(APPLE)
     # Create custom .DS_Store on MacOS ----------------------------------------
     set(APP_DIR_OLD "$<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>")
     set(APP_DIR_TMP "${CMAKE_BINARY_DIR}/${PROJECT_TARGET_NAME}/${PROJECT_SHORT_REL_NAME}_tmp.app")
@@ -211,12 +214,29 @@ if(APPLE)
         VERBATIM
     )
 
+    # Put openssl tool into Contents/MacOS on macOS ---------------------------
+    if (OPENSSL_ROOT)
+        # This copies the already-built openssl tool next to the main executable inside the bundle
+        add_custom_target(embed-openssl-tool ALL
+            COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/bin/openssl ${APP_DIR_NEW}/Contents/MacOS/
+            COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
+            COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
+            DEPENDS app-rename
+            COMMENT "Embedding openssl-tool"
+            VERBATIM
+        )
+
+        add_dependencies(gen-dsstore embed-openssl-tool)
+    endif()
+
     # Explicit sign with Hardened Runtime -------------------------------------
     if(DEFINED CODESIGN_ID)
         add_custom_target(codesign ALL
-            COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign ${CODESIGN_ID} "${APP_DIR_NEW}"
+            COMMAND /bin/echo "Signing with: ${CODESIGN_ID}"
+            COMMAND /bin/chmod -R u+w "${APP_DIR_NEW}"
+            COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign "${CODESIGN_ID}" "${APP_DIR_NEW}"
             DEPENDS gen-dsstore
-            COMMENT "Codesign with Hardened Runtime"
+            COMMENT "Codesign"
             VERBATIM
         )
     endif()
@@ -235,7 +255,6 @@ if(WIN32)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
 elseif(APPLE)
     install(DIRECTORY ${CMAKE_BINARY_DIR}/${PROJECT_TARGET_NAME}/${PROJECT_SHORT_REL_NAME}.app DESTINATION . USE_SOURCE_PERMISSIONS COMPONENT Application)
-    install(TARGETS fea-solver BUNDLE DESTINATION bin COMPONENT Application)
 else()
     set(CMAKE_INSTALL_PREFIX "/opt/${PROJECT_FAMILY_NAME}/${PROJECT_SHORT_REL_NAME}" CACHE PATH "Install path prefix" FORCE)
     set(CPACK_SET_DESTDIR ON)
@@ -310,11 +329,13 @@ endif()
 
 # DEB
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "openssl, ca-certificates")
 #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.27)")
 
 # RPM
 set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Internet")
+set(CPACK_RPM_PACKAGE_REQUIRES "openssl, ca-certificates")
 #set(CPACK_RPM_PACKAGE_REQUIRES "glibc >= 2.27")
 
 # Generate scripts from templates (so you can @ONLY-substitute project vars)

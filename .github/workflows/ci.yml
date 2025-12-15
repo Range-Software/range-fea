@@ -59,6 +59,32 @@ jobs:
         run: choco install ninja -y || echo "Ninja already present"
         shell: pwsh
 
+      # Install OpenSSL on each platform so Qt/CMake can link against it
+      #- name: Install OpenSSL (Linux)
+      #  if: startsWith(matrix.os, 'ubuntu-')
+      #  run: |
+      #    sudo apt-get update
+      #    # dev headers are needed for linking
+      #    sudo apt-get install -y libssl-dev openssl
+      #    # Common location for libssl headers/libs is /usr
+      #    echo "OPENSSL_ROOT=/usr" >> $GITHUB_ENV
+
+      - name: Install OpenSSL (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          brew update
+          brew install openssl@3 || true
+          # Export prefix for use by later steps
+          echo "OPENSSL_ROOT=$(brew --prefix openssl@3)" >> $GITHUB_ENV
+
+      - name: Install OpenSSL (Windows)
+        if: startsWith(matrix.os, 'windows-')
+        run: |
+          choco install openssl.light -y --params "/InstallDir:C:\OpenSSL" || echo "OpenSSL may already be installed"
+          # Persist OPENSSL_ROOT for later CMake configure step
+          Write-Output "OPENSSL_ROOT=C:\OpenSSL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        shell: pwsh
+
       # Qt
       - name: Install Qt 6.10.0 + QtIFW
         uses: jurplel/install-qt-action@v4
@@ -125,7 +151,10 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu-')
         run: |
           cmake -S src -B build-Release -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=Release \
+            -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT"
+        env:
+          OPENSSL_ROOT: ${{ env.OPENSSL_ROOT }}
 
       - name: Configure (macOS)
         if: startsWith(matrix.os, 'macos-')
@@ -135,13 +164,16 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DOpenMP_INCLUDES="${OMP_PREFIX}/include" \
             -DOpenMP_LIBRARY="${OMP_PREFIX}/lib/libomp.dylib" \
-            -DCODESIGN_ID="$CODESIGN_ID"
+            -DCODESIGN_ID="$CODESIGN_ID" \
+            -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT"
         env:
           CODESIGN_ID: ${{ secrets.CODESIGN_ID }}
+          OPENSSL_ROOT: ${{ env.OPENSSL_ROOT }}
 
       - name: Configure (Windows)
         if: startsWith(matrix.os, 'windows-')
-        run: cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release
+        run: |
+          cmake -S src -B build-Release -G Ninja -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="$env:OPENSSL_ROOT"
         shell: pwsh
 
       # Build
@@ -243,7 +275,7 @@ jobs:
           # Mark RC/Beta as prerelease automatically (optional)
           prerelease: ${{ contains(github.ref_name, '-rc') || contains(github.ref_name, '-beta') }}
           files: artifacts/*
-          
+
       - name: Prepare Range Cloud client key and certificate
         run: |
           set -euo pipefail
@@ -255,7 +287,7 @@ jobs:
         env:
           RANGE_CLOUD_KEY_PEM: ${{ secrets.RANGE_CLOUD_KEY_PEM }}
           RANGE_CLOUD_CERT_PEM: ${{ secrets.RANGE_CLOUD_CERT_PEM }}
-          
+
       - name: Publish on Range Cloud
         run: |
           set -euo pipefail
