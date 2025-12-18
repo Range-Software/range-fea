@@ -15,7 +15,8 @@
     Action::ACTION_GROUP_PROBLEM     | \
     Action::ACTION_GROUP_SOLVER      | \
     Action::ACTION_GROUP_REPORT      | \
-    Action::ACTION_GROUP_APPLICATION   \
+    Action::ACTION_GROUP_APPLICATION | \
+    Action::ACTION_GROUP_CLOUD         \
     )
 
 class Action : public RAction
@@ -37,7 +38,8 @@ class Action : public RAction
             ACTION_GROUP_PROBLEM     = 1 << 4,
             ACTION_GROUP_SOLVER      = 1 << 5,
             ACTION_GROUP_REPORT      = 1 << 6,
-            ACTION_GROUP_APPLICATION = 1 << 7
+            ACTION_GROUP_APPLICATION = 1 << 7,
+            ACTION_GROUP_CLOUD       = 1 << 8
         };
 
         enum Type
@@ -136,6 +138,8 @@ class Action : public RAction
             ACTION_APPLICATION_RELEASE_NOTES,
             ACTION_APPLICATION_HELP,
             ACTION_APPLICATION_QUIT,
+            ACTION_CLOUD_SESSION_MANAGER,
+            ACTION_CLOUD_FILE_MANAGER,
             ACTION_N_TYPES
         };
 
@@ -460,6 +464,12 @@ class Action : public RAction
 
         //! Release notes.
         void onReleaseNotes();
+
+        //! Open cloud session manager.
+        void onCloudSessionManager();
+
+        //! Cloud file manager.
+        void onCloudFileManager();
 
 };
 

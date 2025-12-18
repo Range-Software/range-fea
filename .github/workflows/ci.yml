@@ -86,10 +86,10 @@ jobs:
         shell: pwsh
 
       # Qt
-      - name: Install Qt 6.10.0 + QtIFW
+      - name: Install Qt 6.10.1 + QtIFW
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.0'
+          version: '6.10.1'
           host: ${{ matrix.qt_host }}
           target: desktop
           arch: ${{ matrix.qt_arch }}

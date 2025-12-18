@@ -195,6 +195,8 @@ QString Action::getName(Type type)
         case ACTION_APPLICATION_RELEASE_NOTES:                return "application-release_notes";
         case ACTION_APPLICATION_HELP:                         return "application-help";
         case ACTION_APPLICATION_QUIT:                         return "application-quit";
+        case ACTION_CLOUD_SESSION_MANAGER:                    return "cloud-sessiion_manager";
+        case ACTION_CLOUD_FILE_MANAGER:                       return "cloud-file_manager";
         default: return QString();
     }
 }
@@ -315,6 +317,8 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_RELEASE_NOTES, tr("Release notes"), "", "", ":/icons/logos/pixmaps/range-fea.svg",static_cast<PointerToMemberTrigger>(&Action::onReleaseNotes));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_HELP, tr("Help"), "", "Ctrl+H", ":/icons/file/pixmaps/range-help.svg",static_cast<PointerToMemberTrigger>(&Action::onHelp));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_QUIT, tr("Quit"), "", "Q", ":/icons/application/pixmaps/range-quit.svg",static_cast<PointerToMemberTrigger>(&Action::onQuit), QAction::QuitRole);
+    Action::regDef(actionDef, ACTION_GROUP_CLOUD, ACTION_CLOUD_SESSION_MANAGER, tr("Cloud session manager"), "", "", ":/icons/cloud/pixmaps/range-session_manager.svg", static_cast<PointerToMemberTrigger>(&Action::onCloudSessionManager));
+    Action::regDef(actionDef, ACTION_GROUP_CLOUD, ACTION_CLOUD_FILE_MANAGER, tr("Cloud file manager"), "", "", ":/icons/cloud/pixmaps/range-file_manager.svg", static_cast<PointerToMemberTrigger>(&Action::onCloudFileManager));
 
     return actionDef;
 }
@@ -2272,5 +2276,30 @@ void Action::onReleaseNotes()
     {
         RLogger::error("Failed to display release notes from file \'%s\'.\n",releaseNotesFileName.toUtf8().constData());
     }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onCloudSessionManager()
+{
+    R_LOG_TRACE_IN;
+    RCloudSessionDialog dialog(Application::instance()->getCloudSessionManager()->findSession(Application::instance()->getCloudSessionManager()->findActiveSessionName()),
+                               Application::instance()->getCloudConnectionHandler(),
+                               Application::instance()->getApplicationSettings(),
+                               Application::instance()->getMainWindow());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+        Application::instance()->getCloudSessionManager()->insertSession(dialog.getSessionInfo());
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onCloudFileManager()
+{
+    R_LOG_TRACE_IN;
+    RCloudFileManagerDialog cloudFileManagerDialog(Application::instance()->getCloudConnectionHandler(),
+                                                   Application::instance()->getApplicationSettings(),
+                                                   false,
+                                                   Application::instance()->getMainWindow());
+    cloudFileManagerDialog.exec();
     R_LOG_TRACE_OUT;
 }

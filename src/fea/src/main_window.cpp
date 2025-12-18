@@ -282,9 +282,9 @@ void MainWindow::createMenus()
     this->setMenuBar(menubar);
 
     QMenu *menuFile = new QMenu(menubar);
-    menuFile->setTitle(QApplication::translate("MainWindow", "File"));
+    menuFile->setTitle(tr("File"));
     QMenu *menuFileSession = new QMenu(menuFile);
-    menuFileSession->setTitle(QApplication::translate("MainWindow", "Session"));
+    menuFileSession->setTitle(tr("Session"));
     menuFileSession->setIcon(QIcon(":/icons/file/pixmaps/range-session->svg"));
     menuFileSession->addAction(this->actionList->getAction(Action::ACTION_SESSION_NEW));
     menuFileSession->addAction(this->actionList->getAction(Action::ACTION_SESSION_OPEN));
@@ -297,7 +297,7 @@ void MainWindow::createMenus()
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE_AS));
     QMenu *menuFileExport = new QMenu(menuFile);
-    menuFileExport->setTitle(QApplication::translate("MainWindow", "Export"));
+    menuFileExport->setTitle(tr("Export"));
     menuFileExport->setIcon(QIcon(":/icons/file/pixmaps/range-model_save_as.svg"));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_MSH));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_RAW));
@@ -316,12 +316,12 @@ void MainWindow::createMenus()
     menubar->addAction(menuFile->menuAction());
 
     QMenu *menuGeometry = new QMenu(menubar);
-    menuGeometry->setTitle(QApplication::translate("MainWindow", "Geometry"));
+    menuGeometry->setTitle(tr("Geometry"));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_UNDO));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REDO));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     QMenu *menuGeometryDraw = new QMenu(menuGeometry);
-    menuGeometryDraw->setTitle(QApplication::translate("MainWindow", "Draw"));
+    menuGeometryDraw->setTitle(tr("Draw"));
     menuGeometryDraw->setIcon(QIcon(":/icons/geometry/pixmaps/range-draw_geometry.svg"));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_POINT));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_LINE));
@@ -337,16 +337,16 @@ void MainWindow::createMenus()
     menuGeometry->addAction(menuGeometryDraw->menuAction());
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
 //    QMenu *menuGeometryPoint = new QMenu(menuGeometry);
-//    menuGeometryPoint->setTitle(QApplication::translate("MainWindow", "Point"));
+//    menuGeometryPoint->setTitle(tr("Point"));
 //    menuGeometryPoint->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_point.svg"));
 //    menuGeometry->addAction(menuGeometryPoint->menuAction());
     QMenu *menuGeometryLine = new QMenu(menuGeometry);
-    menuGeometryLine->setTitle(QApplication::translate("MainWindow", "Line"));
+    menuGeometryLine->setTitle(tr("Line"));
     menuGeometryLine->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_line.svg"));
     menuGeometryLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_LINE_GENERATE_FROM_EDGES));
     menuGeometry->addAction(menuGeometryLine->menuAction());
     QMenu *menuGeometrySurface = new QMenu(menuGeometry);
-    menuGeometrySurface->setTitle(QApplication::translate("MainWindow", "Surface"));
+    menuGeometrySurface->setTitle(tr("Surface"));
     menuGeometrySurface->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_surface.svg"));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_MARK));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL));
@@ -358,7 +358,7 @@ void MainWindow::createMenus()
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS));
     QMenu *menuGeometryBoolOperations = new QMenu(menuGeometrySurface);
-    menuGeometryBoolOperations->setTitle(QApplication::translate("MainWindow", "Boolean operations"));
+    menuGeometryBoolOperations->setTitle(tr("Boolean operations"));
     menuGeometryBoolOperations->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_surface_bool_operation.svg"));
     menuGeometryBoolOperations->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_UNION));
     menuGeometryBoolOperations->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE));
@@ -366,37 +366,37 @@ void MainWindow::createMenus()
     menuGeometrySurface->addAction(menuGeometryBoolOperations->menuAction());
     menuGeometry->addAction(menuGeometrySurface->menuAction());
     QMenu *menuGeometryVolume = new QMenu(menuGeometry);
-    menuGeometryVolume->setTitle(QApplication::translate("MainWindow", "Volume"));
+    menuGeometryVolume->setTitle(tr("Volume"));
     menuGeometryVolume->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_volume.svg"));
     menuGeometryVolume->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
     menuGeometry->addAction(menuGeometryVolume->menuAction());
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     QMenu *menuGeometryCut = new QMenu(menuGeometry);
-    menuGeometryCut->setTitle(QApplication::translate("MainWindow", "Cut"));
+    menuGeometryCut->setTitle(tr("Cut"));
     menuGeometryCut->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_cut.svg"));
     menuGeometryCut->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CUT_CREATE));
     menuGeometryCut->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CUT_EDIT));
     menuGeometry->addAction(menuGeometryCut->menuAction());
     QMenu *menuGeometryIso = new QMenu(menuGeometry);
-    menuGeometryIso->setTitle(QApplication::translate("MainWindow", "Iso"));
+    menuGeometryIso->setTitle(tr("Iso"));
     menuGeometryIso->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_iso.svg"));
     menuGeometryIso->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ISO_CREATE));
     menuGeometryIso->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ISO_EDIT));
     menuGeometry->addAction(menuGeometryIso->menuAction());
     QMenu *menuGeometryStreamLine = new QMenu(menuGeometry);
-    menuGeometryStreamLine->setTitle(QApplication::translate("MainWindow", "Stream line"));
+    menuGeometryStreamLine->setTitle(tr("Stream line"));
     menuGeometryStreamLine->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_stream_line.svg"));
     menuGeometryStreamLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_STREAM_LINE_CREATE));
     menuGeometryStreamLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_STREAM_LINE_EDIT));
     menuGeometry->addAction(menuGeometryStreamLine->menuAction());
     QMenu *menuGeometryScalarField = new QMenu(menuGeometry);
-    menuGeometryScalarField->setTitle(QApplication::translate("MainWindow", "Scalar field"));
+    menuGeometryScalarField->setTitle(tr("Scalar field"));
     menuGeometryScalarField->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_scalar_field.svg"));
     menuGeometryScalarField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE));
     menuGeometryScalarField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_EDIT));
     menuGeometry->addAction(menuGeometryScalarField->menuAction());
     QMenu *menuGeometryVectorField = new QMenu(menuGeometry);
-    menuGeometryVectorField->setTitle(QApplication::translate("MainWindow", "Vector field"));
+    menuGeometryVectorField->setTitle(tr("Vector field"));
     menuGeometryVectorField->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_vector_field.svg"));
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE));
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT));
@@ -418,7 +418,7 @@ void MainWindow::createMenus()
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_TRANSFORM));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     QMenu *menuGeometryDevelopement = new QMenu(menuGeometry);
-    menuGeometryDevelopement->setTitle(QApplication::translate("MainWindow", "Special tools"));
+    menuGeometryDevelopement->setTitle(tr("Special tools"));
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_SLIVER_ELEMENTS));
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_INTERSECTED_ELEMENTS));
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_PURGE_UNUSED_NODES));
@@ -432,7 +432,7 @@ void MainWindow::createMenus()
     menubar->addAction(menuGeometry->menuAction());
 
     QMenu *menuProblem = new QMenu(menubar);
-    menuProblem->setTitle(QApplication::translate("MainWindow", "Problem"));
+    menuProblem->setTitle(tr("Problem"));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_TASK_FLOW));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_SOLVER_SETUP));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_DEFINE_MONITORING_POINTS));
@@ -441,7 +441,7 @@ void MainWindow::createMenus()
     menubar->addAction(menuProblem->menuAction());
 
     QMenu *menuSolver = new QMenu(menubar);
-    menuSolver->setTitle(QApplication::translate("MainWindow", "Solution"));
+    menuSolver->setTitle(tr("Solution"));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_START));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_STOP));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_KILL));
@@ -449,7 +449,7 @@ void MainWindow::createMenus()
     menubar->addAction(menuSolver->menuAction());
 
     QMenu *menuReport = new QMenu(menubar);
-    menuReport->setTitle(QApplication::translate("MainWindow", "Report"));
+    menuReport->setTitle(tr("Report"));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_MODEL_STATISTICS));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_SOLVER_LOG));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_CONVERGENCE_GRAPH));
@@ -457,10 +457,14 @@ void MainWindow::createMenus()
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_CREATE_REPORT));
     menubar->addAction(menuReport->menuAction());
 
-    menubar->addSeparator();
+    QMenu *menuCloud = new QMenu(menubar);
+    menuCloud->setTitle(tr("Cloud"));
+    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_SESSION_MANAGER));
+    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
+    menubar->addAction(menuCloud->menuAction());
 
     QMenu *menuHelp = new QMenu(menubar);
-    menuHelp->setTitle(QApplication::translate("MainWindow", "Help"));
+    menuHelp->setTitle(tr("Help"));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_UPDATE));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
@@ -506,6 +510,8 @@ void MainWindow::createToolBars()
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mainToolBar->addWidget(spacer);
 
+    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
+    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));

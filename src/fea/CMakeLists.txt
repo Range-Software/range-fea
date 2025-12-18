@@ -603,6 +603,20 @@ qt_add_resources(fea icons-general
         pixmaps/range-generic_action.svg
 )
 
+qt_add_resources(fea icons-cloud
+    PREFIX "/icons/cloud"
+    FILES
+        pixmaps/range-access_rights.svg
+        pixmaps/range-download.svg
+        pixmaps/range-file_manager.svg
+        pixmaps/range-refresh.svg
+        pixmaps/range-remove.svg
+        pixmaps/range-session_manager.svg
+        pixmaps/range-upload.svg
+        pixmaps/range-upload_replace.svg
+        pixmaps/range-upload_update.svg
+)
+
 qt_add_translations(fea
     TS_FILES
         translations/en.ts

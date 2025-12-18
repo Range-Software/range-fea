@@ -1,5 +1,11 @@
 ------------------------------------------------------------------
+Version FEA 1.1.0
+
+* GUI: Support for Range Cloud
+
+------------------------------------------------------------------
 Version FEA 1.0.1
+
 * ALL: Help and tutorials converted to markdown format
 * GUI: Default proxy type set to "System"
 
@@ -22,7 +28,7 @@ Version FEA 1.0.0
 Version 3.2.8
 
 * ALL: Resolved build warnings
-* ALL: Optimised detection of self-intersecting elements
+* ALL: Optimized detection of self-intersecting elements
 * GUI: Change order of entities in the model tree to "Points,Lines,Surfaces,Volumes,Cuts,ISO surfaces,Stream Lines, Scalar fields,Vector fields"
 * GUI: Append counter to newly created cut name
 * GUI: Improved problem time setup dock.
