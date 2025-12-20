@@ -54,6 +54,7 @@ void DrawEngine::processObjects(const QList<uint> &modelIDs, bool mergeNearNodes
         }
         Application::instance()->getSession()->setModelChanged(modelIDs[i]);
     }
+    qDeleteAll(this->objects);
     this->objects.clear();
     emit this->objectsRemoved();
     R_LOG_TRACE_OUT;
