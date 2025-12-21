@@ -143,6 +143,8 @@ elseif(APPLE)
     set(DEPLOY_COMMAND
         ${MACDEPLOYQT_EXECUTABLE}
         $<TARGET_BUNDLE_DIR:${PROJECT_TARGET_NAME}>
+        -executable=$<TARGET_FILE:fea-solver>
+        -verbose=3
     )
 else()
     get_filename_component(_qt_dir "${_qt_bin_dir}" DIRECTORY)
