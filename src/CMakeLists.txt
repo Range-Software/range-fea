@@ -348,13 +348,13 @@ endif()
 
 # DEB
 set(CPACK_DEBIAN_PACKAGE_SECTION "utils")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "openssl, ca-certificates")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "openssl, ca-certificates, libbrotli1, libdbus-1-3, libegl-mesa0, libegl1, libexpat1, libffi8, libfontconfig1, libfreetype6, libglib2.0-0, libglx0, libglx-mesa0, libgl1, libgl1-mesa-dri, libopengl0, libpcre2-8-0, libuuid1, libx11-6, libx11-xcb1, libxcb-cursor0, libxcb-icccm4, libxcb-image0, libxcb-keysyms1, libxcb-randr0, libxcb-render-util0, libxcb-render0, libxcb-shape0, libxcb-shm0, libxcb-sync1, libxcb-xfixes0, libxcb-xinerama0, libxcb-xkb1, libxcb1, libxi6, libxkbcommon-x11-0, libxkbcommon0, libxrender1, zlib1g, libgomp1, libpulse0")
 #set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.27)")
 
 # RPM
 set(CPACK_RPM_PACKAGE_LICENSE "GPLv3")
 set(CPACK_RPM_PACKAGE_GROUP "Applications/Internet")
-set(CPACK_RPM_PACKAGE_REQUIRES "openssl, ca-certificates")
+set(CPACK_RPM_PACKAGE_REQUIRES "openssl, ca-certificates, brotli-libs, dbus-libs, mesa-libEGL, expat, libffi, fontconfig, freetype, glib2, libglvnd-glx, mesa-libGL, mesa-dri-drivers, libglvnd-opengl, pcre2, libuuid, libX11, libX11-xcb, xcb-util-cursor, xcb-util-wm, xcb-util-image, xcb-util-keysyms, xcb-util-renderutil, libxcb, libXi, libxkbcommon-x11, libxkbcommon, libXrender, zlib, libgomp, pulseaudio-libs")
 #set(CPACK_RPM_PACKAGE_REQUIRES "glibc >= 2.27")
 
 # Generate scripts from templates (so you can @ONLY-substitute project vars)
