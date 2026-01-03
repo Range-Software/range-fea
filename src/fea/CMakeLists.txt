@@ -66,6 +66,7 @@ qt_add_executable(fea
     src/gl_entity.cpp
     src/gl_entity_list.cpp
     src/gl_functions.cpp
+    src/gl_frustum.cpp
     src/gl_grid.cpp
     src/gl_interpolated_element.cpp
     src/gl_interpolated_entity.cpp
@@ -86,6 +87,7 @@ qt_add_executable(fea
     src/gl_text_renderer_item.cpp
     src/gl_texture.cpp
     src/gl_vector_field.cpp
+    src/gl_vertex_buffer.cpp
     src/gl_widget.cpp
     src/graph_data.cpp
     src/graph_dialog.cpp

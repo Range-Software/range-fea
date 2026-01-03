@@ -6,6 +6,7 @@
 #include <QMutex>
 
 #include <rml_model.h>
+#include <rbl_limit_box.h>
 
 #include "pick_item.h"
 #include "pick_value.h"
@@ -397,6 +398,10 @@ class Model : public RModel
         void setColor(REntityGroupType  elementGroupType,
                       uint               position,
                       const QColor      &color);
+
+        //! Compute bounding box for an entity group.
+        //! Returns true if the entity has elements, false if empty.
+        bool computeEntityBounds(REntityGroupType entityType, uint entityIndex, RLimitBox &bounds) const;
 
         //! Lock model for drawing.
         void glDrawLock();

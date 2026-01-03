@@ -64,17 +64,13 @@ void GLElementGroup::setSurfaceThickness(double surfaceThickness)
 
 void GLElementGroup::initialize()
 {
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    // Note: GL_NORMALIZE, point size (10.0f), and line width (1.0f) are now set once
+    // in GLWidget::drawModel() to avoid per-entity state queries and changes.
 
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glPointSize(10.0f));
-    GL_SAFE_CALL(glLineWidth(1.0f));
-
+    // Save lighting state only if we need to disable it for wire mode
     if (this->getData().getDrawWire())
     {
+        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
         GL_SAFE_CALL(glDisable(GL_LIGHTING));
     }
 
@@ -91,10 +87,13 @@ void GLElementGroup::initialize()
 
 void GLElementGroup::finalize()
 {
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
-    GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(glPointSize(this->pointSize));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    // Only restore lighting state if it was modified (wire mode)
+    if (this->getData().getDrawWire())
+    {
+        GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    }
+    // Note: GL_NORMALIZE, point size, and line width don't need restoration
+    // as they're set once in GLWidget::drawModel() and all entities use the same values.
 
     this->texture.unload();
 }
@@ -126,7 +125,12 @@ void GLElementGroup::draw()
             return;
     }
 
-    if (!pGlEntityList->getListValid(GL_ENTITY_LIST_ITEM_NORMAL))
+    // Check if we need to rebuild (either display list or VBO is invalid)
+    bool needsRebuild = pGlEntityList->getUseVBO()
+        ? !pGlEntityList->getVBOValid(GL_ENTITY_LIST_ITEM_NORMAL)
+        : !pGlEntityList->getListValid(GL_ENTITY_LIST_ITEM_NORMAL);
+
+    if (needsRebuild)
     {
         const Model *pModel = this->pParentModel ? this->pParentModel : &Application::instance()->getSession()->getModel(this->getEntityID().getMid());
 
@@ -250,10 +254,21 @@ void GLElementGroup::draw()
             }
         }
 
+        // Start recording to VBO or display list
         if (this->getUseGlList())
         {
-            pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
+            if (pGlEntityList->getUseVBO())
+            {
+                // Use VBO recording for better performance
+                GLFunctions::beginVBORecording(&pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL));
+            }
+            else
+            {
+                // Fall back to display list
+                pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
+            }
         }
+
         for (uint i=0;i<edgeElements.size();i++)
         {
             GLObject::PaintActionMask paintAction = GLObject::Draw;
@@ -309,14 +324,34 @@ void GLElementGroup::draw()
             glElement.setUseGlCullFace(this->getUseGlCullFace());
             glElement.paint(paintAction);
         }
+
+        // End recording
         if (this->getUseGlList())
         {
-            pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
+            if (pGlEntityList->getUseVBO())
+            {
+                GLFunctions::endVBORecording();
+            }
+            else
+            {
+                pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
+            }
         }
     }
+
+    // Render cached geometry
     if (this->getUseGlList())
     {
-        pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
+        if (pGlEntityList->getUseVBO())
+        {
+            // Render VBO
+            pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL).render();
+        }
+        else
+        {
+            // Render display list
+            pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
+        }
     }
 
     if (this->getData().getDrawElementNumbers() || this->getData().getDrawNodeNumbers())

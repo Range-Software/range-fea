@@ -3,8 +3,11 @@
 #include <rbl_logger.h>
 
 #include "gl_functions.h"
+#include "gl_vertex_buffer.h"
 
 static bool insideBeginEnd = false;
+static GLVertexBuffer *currentVBO = nullptr;
+static bool vboRecordingMode = false;
 
 void GLFunctions::printError(const char *command, const char *file, unsigned int line)
 {
@@ -75,11 +78,105 @@ void GLFunctions::printError(const char *command, const char *file, unsigned int
 void GLFunctions::begin(GLenum mode)
 {
     insideBeginEnd = true;
-    glBegin(mode);
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->beginRecording(mode);
+    }
+    else
+    {
+        glBegin(mode);
+    }
 }
 
 void GLFunctions::end()
 {
-    GL_SAFE_CALL(glEnd());
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->endRecording();
+    }
+    else
+    {
+        GL_SAFE_CALL(glEnd());
+    }
     insideBeginEnd = false;
+}
+
+void GLFunctions::normal3f(GLfloat x, GLfloat y, GLfloat z)
+{
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->setNormal(x, y, z);
+    }
+    else
+    {
+        glNormal3f(x, y, z);
+    }
+}
+
+void GLFunctions::normal3d(GLdouble x, GLdouble y, GLdouble z)
+{
+    normal3f(GLfloat(x), GLfloat(y), GLfloat(z));
+}
+
+void GLFunctions::vertex3f(GLfloat x, GLfloat y, GLfloat z)
+{
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->addVertex(x, y, z);
+    }
+    else
+    {
+        glVertex3f(x, y, z);
+    }
+}
+
+void GLFunctions::vertex3d(GLdouble x, GLdouble y, GLdouble z)
+{
+    vertex3f(GLfloat(x), GLfloat(y), GLfloat(z));
+}
+
+void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
+{
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->setColor(r, g, b, a);
+    }
+    else
+    {
+        glColor4ub(r, g, b, a);
+    }
+}
+
+void GLFunctions::texCoord1f(GLfloat t)
+{
+    if (vboRecordingMode && currentVBO)
+    {
+        currentVBO->setTexCoord(t);
+    }
+    else
+    {
+        glTexCoord1f(t);
+    }
+}
+
+void GLFunctions::beginVBORecording(GLVertexBuffer *buffer)
+{
+    currentVBO = buffer;
+    vboRecordingMode = (buffer != nullptr);
+}
+
+void GLFunctions::endVBORecording()
+{
+    currentVBO = nullptr;
+    vboRecordingMode = false;
+}
+
+bool GLFunctions::isRecordingVBO()
+{
+    return vboRecordingMode;
+}
+
+GLVertexBuffer *GLFunctions::getCurrentVBO()
+{
+    return currentVBO;
 }

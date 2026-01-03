@@ -1,4 +1,5 @@
 #include <QString>
+#include <limits>
 
 #include <rbl_progress.h>
 
@@ -17,6 +18,7 @@
 #include "gl_vector_field.h"
 #include "gl_scalar_field.h"
 #include "gl_widget.h"
+#include "gl_frustum.h"
 #include "application.h"
 
 const int Model::ConsolidateActionAll = Model::ConsolidateSurfaceNeighbors |
@@ -1827,6 +1829,77 @@ void Model::setColor(REntityGroupType elementGroupType, uint position, const QCo
     }
 }
 
+bool Model::computeEntityBounds(REntityGroupType entityType, uint entityIndex, RLimitBox &bounds) const
+{
+    const RElementGroup *pElementGroup = nullptr;
+
+    switch (entityType)
+    {
+        case R_ENTITY_GROUP_POINT:
+            if (entityIndex < this->getNPoints())
+            {
+                pElementGroup = &this->getPoint(entityIndex);
+            }
+            break;
+        case R_ENTITY_GROUP_LINE:
+            if (entityIndex < this->getNLines())
+            {
+                pElementGroup = &this->getLine(entityIndex);
+            }
+            break;
+        case R_ENTITY_GROUP_SURFACE:
+            if (entityIndex < this->getNSurfaces())
+            {
+                pElementGroup = &this->getSurface(entityIndex);
+            }
+            break;
+        case R_ENTITY_GROUP_VOLUME:
+            if (entityIndex < this->getNVolumes())
+            {
+                pElementGroup = &this->getVolume(entityIndex);
+            }
+            break;
+        default:
+            return false;
+    }
+
+    if (!pElementGroup || pElementGroup->size() == 0)
+    {
+        return false;
+    }
+
+    double xMin = std::numeric_limits<double>::max();
+    double xMax = std::numeric_limits<double>::lowest();
+    double yMin = std::numeric_limits<double>::max();
+    double yMax = std::numeric_limits<double>::lowest();
+    double zMin = std::numeric_limits<double>::max();
+    double zMax = std::numeric_limits<double>::lowest();
+
+    // Iterate through all elements in the group
+    for (uint i = 0; i < pElementGroup->size(); i++)
+    {
+        uint elementID = pElementGroup->get(i);
+        const RElement &element = this->getElement(elementID);
+
+        // Check all nodes of the element
+        for (uint j = 0; j < element.size(); j++)
+        {
+            uint nodeID = element.getNodeId(j);
+            const RNode &node = this->getNode(nodeID);
+
+            xMin = std::min(xMin, node.getX());
+            xMax = std::max(xMax, node.getX());
+            yMin = std::min(yMin, node.getY());
+            yMax = std::max(yMax, node.getY());
+            zMin = std::min(zMin, node.getZ());
+            zMax = std::max(zMax, node.getZ());
+        }
+    }
+
+    bounds.setLimits(xMin, xMax, yMin, yMax, zMin, zMax);
+    return true;
+}
+
 void Model::glDrawLock()
 {
     R_LOG_TRACE_IN;
@@ -1867,11 +1940,25 @@ void Model::glDraw(GLWidget *glWidget) const
         GL_SAFE_CALL(glGetIntegerv(GL_DEPTH_FUNC, &depthFunc));
         GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
 
+        // Extract view frustum for culling (after model scale is applied)
+        GLFrustum frustum;
+        frustum.extractFromGL();
+
         uint modelID = Application::instance()->getSession()->findModelByPtr(this);
 
         // Draw volume entities.
         for (uint i=0;i<this->getNVolumes();i++)
         {
+            // Frustum culling: skip entities outside the view
+            RLimitBox bounds;
+            if (this->computeEntityBounds(R_ENTITY_GROUP_VOLUME, i, bounds))
+            {
+                if (!frustum.intersectsBox(bounds))
+                {
+                    continue; // Entity is outside frustum, skip rendering
+                }
+            }
+
             GLElementGroup glElementGroup(glWidget,this->getVolume(i),SessionEntityID(modelID,R_ENTITY_GROUP_VOLUME,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setUseGlList(true);
@@ -1881,6 +1968,16 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw surface entities.
         for (uint i=0;i<this->getNSurfaces();i++)
         {
+            // Frustum culling: skip entities outside the view
+            RLimitBox bounds;
+            if (this->computeEntityBounds(R_ENTITY_GROUP_SURFACE, i, bounds))
+            {
+                if (!frustum.intersectsBox(bounds))
+                {
+                    continue; // Entity is outside frustum, skip rendering
+                }
+            }
+
             GLElementGroup glElementGroup(glWidget,this->getSurface(i),SessionEntityID(modelID,R_ENTITY_GROUP_SURFACE,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
@@ -1892,6 +1989,16 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw line entities.
         for (uint i=0;i<this->getNLines();i++)
         {
+            // Frustum culling: skip entities outside the view
+            RLimitBox bounds;
+            if (this->computeEntityBounds(R_ENTITY_GROUP_LINE, i, bounds))
+            {
+                if (!frustum.intersectsBox(bounds))
+                {
+                    continue; // Entity is outside frustum, skip rendering
+                }
+            }
+
             GLElementGroup glElementGroup(glWidget,this->getLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_LINE,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setLineCrossArea(this->getLine(i).getCrossArea());
@@ -1902,6 +2009,16 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw point entities.
         for (uint i=0;i<this->getNPoints();i++)
         {
+            // Frustum culling: skip entities outside the view
+            RLimitBox bounds;
+            if (this->computeEntityBounds(R_ENTITY_GROUP_POINT, i, bounds))
+            {
+                if (!frustum.intersectsBox(bounds))
+                {
+                    continue; // Entity is outside frustum, skip rendering
+                }
+            }
+
             GLElementGroup glElementGroup(glWidget,this->getPoint(i),SessionEntityID(modelID,R_ENTITY_GROUP_POINT,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setPointVolume(this->getPoint(i).getVolume());

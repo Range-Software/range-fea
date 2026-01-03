@@ -97,17 +97,20 @@ void GLObject::paint(PaintActionMask paintActionMask)
 
 void GLObject::glNormalVector(const RR3Vector &vector)
 {
-    GL_SAFE_CALL(glNormal3d(vector[0],vector[1],vector[2]));
+    // Use wrapper that supports VBO recording
+    GLFunctions::normal3d(vector[0], vector[1], vector[2]);
 }
 
 void GLObject::glVertexVector(const RR3Vector &vector)
 {
-    GL_SAFE_CALL(glVertex3d(vector[0],vector[1],vector[2]));
+    // Use wrapper that supports VBO recording
+    GLFunctions::vertex3d(vector[0], vector[1], vector[2]);
 }
 
 void GLObject::glVertexNode(const RNode &node)
 {
-    GL_SAFE_CALL(glVertex3d(node.getX(),node.getY(),node.getZ()));
+    // Use wrapper that supports VBO recording
+    GLFunctions::vertex3d(node.getX(), node.getY(), node.getZ());
 }
 
 void GLObject::initialize()

@@ -106,6 +106,10 @@ class GLWidget : public QOpenGLWidget
         bool useGlCullFace;
         //! Model draw time in milliseconds;
         qint64 modelDrawTime;
+        //! Flag indicating lights need to be updated.
+        bool lightsNeedUpdate;
+        //! Cached number of lights for change detection.
+        uint cachedNLights;
 
     public:
 

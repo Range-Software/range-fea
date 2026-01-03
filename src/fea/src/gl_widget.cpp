@@ -49,7 +49,9 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       clippingPlaneEnabled(false),
       clippingPlaneDistance(0.5),
       showRotationSphere(false),
-      useGlCullFace(true)
+      useGlCullFace(true),
+      lightsNeedUpdate(true),
+      cachedNLights(0)
 {
     R_LOG_TRACE_IN;
     this->desktopDevicePixelRatio = Application::instance()->getMainWindow()->devicePixelRatio();
@@ -147,15 +149,18 @@ void GLWidget::paintGL()
     GL_SAFE_CALL(glPushMatrix());
     GL_SAFE_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-    if (this->displayProperties.getBgGradient())
-    {
-        this->drawBackgroundGradient();
-    }
-
+    // Set common GL state once per frame (reduces redundant state changes)
     GL_SAFE_CALL(glEnable(GL_DEPTH_TEST));
     GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
     GL_SAFE_CALL(glEnable(GL_MULTISAMPLE));
     GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
+    GL_SAFE_CALL(glEnable(GL_BLEND));
+    GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    if (this->displayProperties.getBgGradient())
+    {
+        this->drawBackgroundGradient();
+    }
 
     this->drawModel();
 
@@ -197,11 +202,8 @@ void GLWidget::drawBackgroundGradient()
     GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
 
     GL_SAFE_CALL(glDisable(GL_LIGHTING));
-    GL_SAFE_CALL(glEnable(GL_BLEND));
-    GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
     GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
+    // Note: GL_BLEND, glBlendFunc, glShadeModel, glDepthFunc already set in paintGL()
 
     GLFunctions::begin(GL_QUADS);
 
@@ -243,18 +245,30 @@ void GLWidget::drawModel()
         GL_SAFE_CALL(glClipPlane(GL_CLIP_PLANE0,clippingPlane));
     }
 
-    RLogger::trace("Show lights\n");
+    // Only update lights when they change (cached lighting setup)
     GL_SAFE_CALL(glEnable(GL_LIGHTING));
-    for (uint i=0;i<this->displayProperties.getNLights();i++)
+    if (this->lightsNeedUpdate || this->cachedNLights != this->displayProperties.getNLights())
     {
-        this->showLight(this->displayProperties.getLight(i));
+        RLogger::trace("Updating lights\n");
+        // Disable all lights first if count changed
+        if (this->cachedNLights != this->displayProperties.getNLights())
+        {
+            for (uint i=0;i<8;i++)
+            {
+                GL_SAFE_CALL(glDisable(GL_LIGHT0 + i));
+            }
+        }
+        for (uint i=0;i<this->displayProperties.getNLights();i++)
+        {
+            this->showLight(this->displayProperties.getLight(i));
+        }
+        GL_SAFE_CALL(glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1.0));
+        GL_SAFE_CALL(glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE));
+        GL_SAFE_CALL(glEnable(GL_COLOR_MATERIAL));
+        GL_SAFE_CALL(glMaterialf(GL_FRONT, GL_SHININESS, 1.0));
+        this->cachedNLights = this->displayProperties.getNLights();
+        this->lightsNeedUpdate = false;
     }
-    GL_SAFE_CALL(glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1.0));
-
-    GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
-    GL_SAFE_CALL(glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE));
-    GL_SAFE_CALL(glEnable(GL_COLOR_MATERIAL));
-    GL_SAFE_CALL(glMaterialf(GL_FRONT, GL_SHININESS, 1.0));
 
     RLogger::trace("Apply transformations\n");
     this->applyTransformations();
@@ -262,9 +276,7 @@ void GLWidget::drawModel()
     GL_SAFE_CALL(glMultMatrixd(this->gMatrix));
     GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, this->gMatrix));
 
-    GL_SAFE_CALL(glEnable(GL_BLEND));
-    GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
+    // Note: GL_BLEND, glBlendFunc, glShadeModel already set in paintGL()
 
     GL_SAFE_CALL(glHint(GL_POINT_SMOOTH_HINT,GL_DONT_CARE));
     GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT,GL_DONT_CARE));
@@ -298,6 +310,10 @@ void GLWidget::drawModel()
     GL_SAFE_CALL(glEnable(GL_POINT_SMOOTH));
     GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
     GL_SAFE_CALL(glDisable(GL_POLYGON_SMOOTH));
+
+    // Set default point/line sizes for entity rendering (avoids per-entity state queries)
+    GL_SAFE_CALL(glPointSize(10.0f));
+    GL_SAFE_CALL(glLineWidth(1.0f));
 
     // Apply model scale
     GL_SAFE_CALL(glScaled(GLdouble(this->mscale),GLdouble(this->mscale),GLdouble(this->mscale)));

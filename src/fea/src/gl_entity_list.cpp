@@ -2,12 +2,14 @@
 
 GLEntityList::GLEntityList()
     : GLList(GL_ENTITY_LIST_ITEM_N_LISTS)
+    , useVBO(true)  // Enable VBO by default for better performance
 {
     this->_init();
 }
 
 GLEntityList::GLEntityList(const GLEntityList &glEntityList)
     : GLList(glEntityList)
+    , useVBO(true)
 {
     this->_init(&glEntityList);
 }
@@ -27,6 +29,50 @@ void GLEntityList::_init(const GLEntityList *pGlEntityList)
 {
     if (pGlEntityList)
     {
-
+        this->useVBO = pGlEntityList->useVBO;
     }
+}
+
+bool GLEntityList::getUseVBO() const
+{
+    return this->useVBO;
+}
+
+void GLEntityList::setUseVBO(bool useVBO)
+{
+    this->useVBO = useVBO;
+}
+
+GLVertexBuffer &GLEntityList::getVBO(GLuint listPosition)
+{
+    return this->vbo[listPosition];
+}
+
+const GLVertexBuffer &GLEntityList::getVBO(GLuint listPosition) const
+{
+    return this->vbo[listPosition];
+}
+
+bool GLEntityList::getVBOValid(GLuint listPosition) const
+{
+    if (listPosition >= GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        return false;
+    }
+    return this->vbo[listPosition].isValid();
+}
+
+void GLEntityList::setVBOInvalid(GLuint listPosition)
+{
+    if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        this->vbo[listPosition].invalidate();
+    }
+}
+
+void GLEntityList::setListInvalid(GLuint listPosition)
+{
+    // Invalidate both display list and VBO
+    GLList::setListInvalid(listPosition);
+    this->setVBOInvalid(listPosition);
 }
