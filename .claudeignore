@@ -1,0 +1,65 @@
+  # Build directories
+  build-*/
+  build/
+  cmake-build-*/
+
+  # Generated files
+  *.o
+  *.a
+  *.so
+  *.dylib
+  *.dll
+  *.exe
+  *.app
+  moc_*.cpp
+  ui_*.h
+  qrc_*.cpp
+  *_autogen/
+
+  # Package outputs
+  *.deb
+  *.rpm
+  *.dmg
+  *.tar.gz
+  *.zip
+
+  # IDE/Editor files
+  .idea/
+  .vscode/
+  *.pro.user
+  *.creator.user
+  CMakeUserPresets.json
+
+  # Dependencies/Submodules
+  src/TetGen/
+
+  # Translation binaries
+  *.qm
+
+  # OS files
+  .DS_Store
+  Thumbs.db
+
+  # Logs and temp files
+  *.log
+  *.tmp
+  *.swp
+  *~
+
+  # Documentation builds
+  docs/_build/
+  html/
+  latex/
+
+  # Test outputs
+  Testing/
+  CTestTestfile.cmake
+
+  This ignores:
+  - Build artifacts - compiled objects, libraries, executables
+  - CMake generated files - autogen, moc, ui files
+  - TetGen submodule - third-party mesh generator (large, external)
+  - IDE configs - project-specific settings
+  - Package outputs - installers you create
+  - OS junk - .DS_Store, etc.
+
