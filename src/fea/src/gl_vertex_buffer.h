@@ -40,6 +40,8 @@ class GLVertexBuffer
 
         //! VBO handle for vertex data.
         GLuint vboId;
+        //! VAO handle for vertex attribute state.
+        GLuint vaoId;
         //! Number of vertices in the buffer.
         GLsizei vertexCount;
         //! Primitive type for rendering.
