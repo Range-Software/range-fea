@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_element_base.h"
+#include "gl_state_cache.h"
 
 void GLElementBase::_init(const GLElementBase *pGlElement)
 {
@@ -112,31 +113,34 @@ void GLElementBase::initialize()
         return;
     }
 
-    GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmoothEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    GLStateCache &cache = GLStateCache::instance();
+
+    // Save current state from cache (no GPU query)
+    this->lineSmoothEnabled = cache.getLineSmooth();
+    this->lightingEnabled = cache.getLighting();
+    this->normalize = cache.getNormalize();
+    this->pointSize = cache.getPointSize();
+    this->lineWidth = cache.getLineWidth();
 
     switch (this->getDrawMode())
     {
         case GL_ELEMENT_DRAW_TEXT:
         {
-            GL_SAFE_CALL(glDisable(GL_NORMALIZE));
-            GL_SAFE_CALL(glPointSize(15.0f));
-            GL_SAFE_CALL(glLineWidth(2.0f));
-            GL_SAFE_CALL(glDisable(GL_LIGHTING));
+            cache.disableNormalize();
+            cache.setPointSize(15.0f);
+            cache.setLineWidth(2.0f);
+            cache.disableLighting();
             break;
         }
         case GL_ELEMENT_DRAW_NORMAL:
         default:
         {
-            GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-            GL_SAFE_CALL(glPointSize(this->nodePointSize));
-            GL_SAFE_CALL(glLineWidth(this->edgeLineWidth));
+            cache.enableNormalize();
+            cache.setPointSize(this->nodePointSize);
+            cache.setLineWidth(this->edgeLineWidth);
             if (this->elementGroupData.getDrawWire())
             {
-                GL_SAFE_CALL(glDisable(GL_LIGHTING));
+                cache.disableLighting();
             }
             break;
         }
@@ -150,9 +154,12 @@ void GLElementBase::finalize()
         return;
     }
 
-    GL_SAFE_CALL(this->lineSmoothEnabled ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
-    GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(glPointSize(this->pointSize));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    GLStateCache &cache = GLStateCache::instance();
+
+    // Restore saved state via cache (only makes GL calls if state changed)
+    cache.setLineSmooth(this->lineSmoothEnabled);
+    cache.setLighting(this->lightingEnabled);
+    cache.setNormalize(this->normalize);
+    cache.setPointSize(this->pointSize);
+    cache.setLineWidth(this->lineWidth);
 }

@@ -17,6 +17,7 @@
 #include "gl_point.h"
 #include "gl_rotation_sphere.h"
 #include "gl_functions.h"
+#include "gl_state_cache.h"
 #include "pick_list.h"
 #include "application.h"
 #include "application_settings.h"
@@ -156,6 +157,9 @@ void GLWidget::paintGL()
     GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
     GL_SAFE_CALL(glEnable(GL_BLEND));
     GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+    // Initialize state cache once per frame (reads current GL state)
+    GLStateCache::instance().initialize();
 
     if (this->displayProperties.getBgGradient())
     {

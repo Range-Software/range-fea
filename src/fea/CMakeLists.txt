@@ -83,6 +83,7 @@ qt_add_executable(fea
     src/gl_simplex_polygon.cpp
     src/gl_simplex_segment.cpp
     src/gl_simplex_tetrahedra.cpp
+    src/gl_state_cache.cpp
     src/gl_text_renderer.cpp
     src/gl_text_renderer_item.cpp
     src/gl_texture.cpp
@@ -259,6 +260,7 @@ qt_add_executable(fea
     src/gl_simplex_polygon.h
     src/gl_simplex_segment.h
     src/gl_simplex_tetrahedra.h
+    src/gl_state_cache.h
     src/gl_text_renderer.h
     src/gl_text_renderer_item.h
     src/gl_texture.h
