@@ -22,6 +22,10 @@ class GLStateCache
         GLboolean blend;
         GLboolean texture1D;
         GLboolean texture2D;
+        GLboolean cullFace;
+
+        //! Cached integer states.
+        GLenum cullFaceMode;
 
         //! Cached float states.
         GLfloat pointSize;
@@ -57,6 +61,10 @@ class GLStateCache
         GLboolean getBlend() const;
         GLboolean getTexture1D() const;
         GLboolean getTexture2D() const;
+        GLboolean getCullFace() const;
+
+        // Integer state getters (no GPU query)
+        GLenum getCullFaceMode() const;
 
         // Float state getters (no GPU query)
         GLfloat getPointSize() const;
@@ -70,6 +78,8 @@ class GLStateCache
         void setBlend(GLboolean enabled);
         void setTexture1D(GLboolean enabled);
         void setTexture2D(GLboolean enabled);
+        void setCullFace(GLboolean enabled);
+        void setCullFaceMode(GLenum mode);
         void setPointSize(GLfloat size);
         void setLineWidth(GLfloat width);
 
@@ -88,6 +98,8 @@ class GLStateCache
         void disableTexture1D();
         void enableTexture2D();
         void disableTexture2D();
+        void enableCullFace();
+        void disableCullFace();
 
 };
 

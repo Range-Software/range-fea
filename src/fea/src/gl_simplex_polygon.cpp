@@ -2,6 +2,7 @@
 
 #include "gl_functions.h"
 #include "gl_simplex_polygon.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLSimplexPolygon::_init(const GLSimplexPolygon *pGlPolygon)
@@ -152,25 +153,25 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     GLObject::glNormalVector(normal);
 
+    GLStateCache &cache = GLStateCache::instance();
+
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        cache.enableTexture1D();
     }
 
-    GLboolean cullState;
-    GLint cullMode;
-
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE,&cullState));
-    GL_SAFE_CALL(glGetIntegerv(GL_CULL_FACE_MODE,&cullMode));
+    // Save current cull state from cache (no GPU query)
+    GLboolean cullState = cache.getCullFace();
+    GLenum cullMode = cache.getCullFaceMode();
 
     if (this->useGlCullFace)
     {
-        GL_SAFE_CALL(glEnable(GL_CULL_FACE));
-        GL_SAFE_CALL(glCullFace(GL_BACK));
+        cache.enableCullFace();
+        cache.setCullFaceMode(GL_BACK);
     }
     else
     {
-        GL_SAFE_CALL(glDisable(GL_CULL_FACE));
+        cache.disableCullFace();
     }
 
     GLFunctions::begin(GL_POLYGON);
@@ -222,12 +223,12 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     if (this->useGlCullFace)
     {
-        GL_SAFE_CALL(glCullFace(GL_FRONT));
+        cache.setCullFaceMode(GL_FRONT);
     }
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        cache.disableTexture1D();
     }
 
     if (this->useGlCullFace)
@@ -244,8 +245,9 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         GLFunctions::end();
     }
 
-    GL_SAFE_CALL(glCullFace(GLenum(cullMode)));
-    GL_SAFE_CALL(cullState ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
+    // Restore cull state via cache (only makes GL calls if state changed)
+    cache.setCullFaceMode(cullMode);
+    cache.setCullFace(cullState);
 }
 
 void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::vector<RNode> &nodes2, bool volumeElement, bool useTexture)
@@ -256,9 +258,11 @@ void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
     GLObject::glNormalVector(normal);
 
+    GLStateCache &cache = GLStateCache::instance();
+
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        cache.enableTexture1D();
     }
 
     GLFunctions::begin(GL_LINE_LOOP);
@@ -300,7 +304,7 @@ void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        cache.disableTexture1D();
     }
 }
 

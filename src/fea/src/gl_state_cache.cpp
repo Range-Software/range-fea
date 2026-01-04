@@ -9,6 +9,8 @@ GLStateCache::GLStateCache()
     , blend(GL_FALSE)
     , texture1D(GL_FALSE)
     , texture2D(GL_FALSE)
+    , cullFace(GL_FALSE)
+    , cullFaceMode(GL_BACK)
     , pointSize(1.0f)
     , lineWidth(1.0f)
     , initialized(false)
@@ -31,6 +33,10 @@ void GLStateCache::initialize()
     GL_SAFE_CALL(glGetBooleanv(GL_BLEND, &this->blend));
     GL_SAFE_CALL(glGetBooleanv(GL_TEXTURE_1D, &this->texture1D));
     GL_SAFE_CALL(glGetBooleanv(GL_TEXTURE_2D, &this->texture2D));
+    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFace));
+    GLint cullModeInt;
+    GL_SAFE_CALL(glGetIntegerv(GL_CULL_FACE_MODE, &cullModeInt));
+    this->cullFaceMode = GLenum(cullModeInt);
     GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
     this->initialized = true;
@@ -54,6 +60,10 @@ GLboolean GLStateCache::getDepthTest() const { return this->depthTest; }
 GLboolean GLStateCache::getBlend() const { return this->blend; }
 GLboolean GLStateCache::getTexture1D() const { return this->texture1D; }
 GLboolean GLStateCache::getTexture2D() const { return this->texture2D; }
+GLboolean GLStateCache::getCullFace() const { return this->cullFace; }
+
+// Integer state getters
+GLenum GLStateCache::getCullFaceMode() const { return this->cullFaceMode; }
 
 // Float state getters
 GLfloat GLStateCache::getPointSize() const { return this->pointSize; }
@@ -123,6 +133,24 @@ void GLStateCache::setTexture2D(GLboolean enabled)
     }
 }
 
+void GLStateCache::setCullFace(GLboolean enabled)
+{
+    if (this->cullFace != enabled)
+    {
+        this->cullFace = enabled;
+        GL_SAFE_CALL(enabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
+    }
+}
+
+void GLStateCache::setCullFaceMode(GLenum mode)
+{
+    if (this->cullFaceMode != mode)
+    {
+        this->cullFaceMode = mode;
+        GL_SAFE_CALL(glCullFace(mode));
+    }
+}
+
 void GLStateCache::setPointSize(GLfloat size)
 {
     if (this->pointSize != size)
@@ -156,3 +184,5 @@ void GLStateCache::enableTexture1D() { this->setTexture1D(GL_TRUE); }
 void GLStateCache::disableTexture1D() { this->setTexture1D(GL_FALSE); }
 void GLStateCache::enableTexture2D() { this->setTexture2D(GL_TRUE); }
 void GLStateCache::disableTexture2D() { this->setTexture2D(GL_FALSE); }
+void GLStateCache::enableCullFace() { this->setCullFace(GL_TRUE); }
+void GLStateCache::disableCullFace() { this->setCullFace(GL_FALSE); }
