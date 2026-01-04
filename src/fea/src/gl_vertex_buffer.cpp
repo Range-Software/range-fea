@@ -85,19 +85,21 @@ void GLVertexBuffer::endRecording()
         return;
     }
 
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
     // Generate VBO if needed
     if (this->vboId == 0)
     {
-        GL_SAFE_CALL(glGenBuffers(1, &this->vboId));
+        GL_SAFE_CALL(f->glGenBuffers(1, &this->vboId));
     }
 
     // Upload data to GPU
-    GL_SAFE_CALL(glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
-    GL_SAFE_CALL(glBufferData(GL_ARRAY_BUFFER,
-                              GLsizeiptr(this->vertices.size() * sizeof(GLVertexData)),
-                              this->vertices.data(),
-                              GL_STATIC_DRAW));
-    GL_SAFE_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
+    GL_SAFE_CALL(f->glBufferData(GL_ARRAY_BUFFER,
+                                 GLsizeiptr(this->vertices.size() * sizeof(GLVertexData)),
+                                 this->vertices.data(),
+                                 GL_STATIC_DRAW));
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     this->vertexCount = GLsizei(this->vertices.size());
     this->valid = true;
@@ -157,7 +159,9 @@ void GLVertexBuffer::render() const
         return;
     }
 
-    GL_SAFE_CALL(glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
 
     // Set up vertex attribute pointers
     GL_SAFE_CALL(glEnableClientState(GL_VERTEX_ARRAY));
@@ -190,14 +194,15 @@ void GLVertexBuffer::render() const
     GL_SAFE_CALL(glDisableClientState(GL_COLOR_ARRAY));
     GL_SAFE_CALL(glDisableClientState(GL_TEXTURE_COORD_ARRAY));
 
-    GL_SAFE_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void GLVertexBuffer::release()
 {
     if (this->vboId != 0)
     {
-        GL_SAFE_CALL(glDeleteBuffers(1, &this->vboId));
+        QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+        GL_SAFE_CALL(f->glDeleteBuffers(1, &this->vboId));
         this->vboId = 0;
     }
     this->valid = false;
