@@ -25,20 +25,20 @@ GLStateCache &GLStateCache::instance()
 
 void GLStateCache::initialize()
 {
-    // Read current OpenGL state once
-    GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmooth));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lighting));
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
-    GL_SAFE_CALL(glGetBooleanv(GL_DEPTH_TEST, &this->depthTest));
-    GL_SAFE_CALL(glGetBooleanv(GL_BLEND, &this->blend));
-    GL_SAFE_CALL(glGetBooleanv(GL_TEXTURE_1D, &this->texture1D));
-    GL_SAFE_CALL(glGetBooleanv(GL_TEXTURE_2D, &this->texture2D));
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFace));
-    GLint cullModeInt;
-    GL_SAFE_CALL(glGetIntegerv(GL_CULL_FACE_MODE, &cullModeInt));
-    this->cullFaceMode = GLenum(cullModeInt);
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    // Write-through cache: set known default state without GPU queries.
+    // GPU state is set in GLWidget::paintGL() at frame start, so we just
+    // mirror those values here. This avoids expensive CPU-GPU sync points.
+    this->lineSmooth = GL_FALSE;
+    this->lighting = GL_TRUE;
+    this->normalize = GL_FALSE;
+    this->depthTest = GL_TRUE;
+    this->blend = GL_TRUE;
+    this->texture1D = GL_FALSE;
+    this->texture2D = GL_FALSE;
+    this->cullFace = GL_FALSE;
+    this->cullFaceMode = GL_BACK;
+    this->pointSize = 10.0f;
+    this->lineWidth = 1.0f;
     this->initialized = true;
 }
 

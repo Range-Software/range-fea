@@ -1,6 +1,7 @@
 #include "gl_functions.h"
 #include "gl_element_group.h"
 #include "gl_element.h"
+#include "gl_state_cache.h"
 #include "model.h"
 #include "application.h"
 
@@ -70,8 +71,9 @@ void GLElementGroup::initialize()
     // Save lighting state only if we need to disable it for wire mode
     if (this->getData().getDrawWire())
     {
-        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        // Use cache instead of GPU query (avoids CPU-GPU sync)
+        this->lightingEnabled = GLStateCache::instance().getLighting();
+        GLStateCache::instance().disableLighting();
     }
 
     const Model *pModel = this->pParentModel ? this->pParentModel : &Application::instance()->getSession()->getModel(this->getEntityID().getMid());
@@ -90,7 +92,8 @@ void GLElementGroup::finalize()
     // Only restore lighting state if it was modified (wire mode)
     if (this->getData().getDrawWire())
     {
-        GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+        // Use cache to restore (only makes GL call if state actually changes)
+        GLStateCache::instance().setLighting(this->lightingEnabled);
     }
     // Note: GL_NORMALIZE, point size, and line width don't need restoration
     // as they're set once in GLWidget::drawModel() and all entities use the same values.
