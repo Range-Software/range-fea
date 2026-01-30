@@ -405,6 +405,16 @@ if(APPLE)
     set(CPACK_DMG_FORMAT "UDZO")
     set(CPACK_DMG_CREATE_APPLICATIONS_LINK "ON")
     set(CPACK_DMG_DS_STORE "${DSSTORE_FILE}")
+
+    # Sign DMG after creation
+    if(DEFINED CODESIGN_ID)
+        configure_file(
+            ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/macos/sign_dmg.cmake.in
+            ${CMAKE_BINARY_DIR}/packaging/macos/sign_dmg.cmake
+            @ONLY
+        )
+        set(CPACK_POST_BUILD_SCRIPTS "${CMAKE_BINARY_DIR}/packaging/macos/sign_dmg.cmake")
+    endif()
 endif()
 
 # IFW

@@ -67,19 +67,22 @@ class CentralTabWidget : public QTabWidget
         //! Set text and icon for given tab.
         void setTabTitle(CentralTabWidget::Type tabType, RMessage::Type messageType = RMessage::Type::None, const QString &additionalText = QString());
 
+        //! Convert message to string.
+        static QString messageToString(const RMessage &message);
+
     private slots:
 
         //! Print application info message.
-        void onInfoPrinted(const QString &message);
+        void onInfoPrinted(const RMessage &message);
 
         //! Print application notice message.
-        void onNoticePrinted(const QString &message);
+        void onNoticePrinted(const RMessage &message);
 
         //! Print application warning message.
-        void onWarningPrinted(const QString &message);
+        void onWarningPrinted(const RMessage &message);
 
         //! Print application error message.
-        void onErrorPrinted(const QString &message);
+        void onErrorPrinted(const RMessage &message);
 
         //! Print process standard output message.
         void onProcessReadyStandardOutput(const QString &message);

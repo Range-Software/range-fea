@@ -174,7 +174,12 @@ void CentralTabWidget::setTabTitle(CentralTabWidget::Type tabType, RMessage::Typ
     this->setTabText(tabPosition,defaultText);
 }
 
-void CentralTabWidget::onInfoPrinted(const QString &message)
+QString CentralTabWidget::messageToString(const RMessage &message)
+{
+    return QString("[%1] %2").arg(RMessage::aTimeToString(message.getAtime()),message);
+}
+
+void CentralTabWidget::onInfoPrinted(const RMessage &message)
 {
     QScrollBar *sb = this->applicationOutputBrowser->verticalScrollBar();
     int scrollBarValue = sb->value();
@@ -183,7 +188,7 @@ void CentralTabWidget::onInfoPrinted(const QString &message)
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
     this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->applicationOutputBrowser->insertPlainText(message);
+    this->applicationOutputBrowser->insertPlainText(CentralTabWidget::messageToString(message));
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     if (scrollBarAtMax)
     {
@@ -194,19 +199,19 @@ void CentralTabWidget::onInfoPrinted(const QString &message)
     this->setTabTitle(CentralTabWidget::ApplicationOutput,RMessage::Type::Info);
 }
 
-void CentralTabWidget::onNoticePrinted(const QString &message)
+void CentralTabWidget::onNoticePrinted(const RMessage &message)
 {
-    QMessageBox::information(this,tr("Notice"),QString(message).replace("NOTICE: ",""));
+    QMessageBox::information(this,tr("Notice"),QString(CentralTabWidget::messageToString(message)).replace("NOTICE: ",""));
 }
 
-void CentralTabWidget::onWarningPrinted(const QString &message)
+void CentralTabWidget::onWarningPrinted(const RMessage &message)
 {
     QTextCharFormat charFormat = this->applicationOutputBrowser->currentCharFormat();
 
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
     this->applicationOutputBrowser->setTextColor(QColor(170,0,0));
-    this->applicationOutputBrowser->insertPlainText(message);
+    this->applicationOutputBrowser->insertPlainText(CentralTabWidget::messageToString(message));
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
     this->applicationOutputBrowser->setCurrentCharFormat(charFormat);
@@ -215,14 +220,14 @@ void CentralTabWidget::onWarningPrinted(const QString &message)
     this->setTabTitle(CentralTabWidget::ApplicationOutput,RMessage::Type::Warning);
 }
 
-void CentralTabWidget::onErrorPrinted(const QString &message)
+void CentralTabWidget::onErrorPrinted(const RMessage &message)
 {
     QTextCharFormat charFormat = this->applicationOutputBrowser->currentCharFormat();
 
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     this->applicationOutputBrowser->setTextBackgroundColor(QColor(170,0,0));
     this->applicationOutputBrowser->setTextColor(QColor(255,255,255));
-    this->applicationOutputBrowser->insertPlainText(message);
+    this->applicationOutputBrowser->insertPlainText(CentralTabWidget::messageToString(message));
     this->applicationOutputBrowser->moveCursor(QTextCursor::End);
     this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
     this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
