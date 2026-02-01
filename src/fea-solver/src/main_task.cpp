@@ -15,7 +15,7 @@ MainTask::MainTask(QObject *parent) :
 {
 }
 
-void MainTask::run(void)
+void MainTask::run()
 {
     QCoreApplication *application = (QCoreApplication*)this->parent();
 
@@ -23,21 +23,21 @@ void MainTask::run(void)
 
     try
     {
-//        QString rangeAccount = settings.value("application/rangeAccount").toString();
-//        QString rangePassword = settings.value("application/rangePassword").toString();
-
         // Process command line arguments.
         QList<RArgumentOption> validOptions;
-        validOptions.append(RArgumentOption("file",RArgumentOption::Path,QVariant(),"File name",RArgumentOption::Category::Mandatory,false));
-        validOptions.append(RArgumentOption("log-file",RArgumentOption::Path,QVariant(),"Log file name",RArgumentOption::Category::Logger,false));
-        validOptions.append(RArgumentOption("convergence-file",RArgumentOption::Path,QVariant(),"Convergence file name",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("monitoring-file",RArgumentOption::Path,QVariant(),"Monitoring file name",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("nthreads",RArgumentOption::Integer,QVariant(1),"Number of threads to use",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("restart",RArgumentOption::Switch,QVariant(),"Restart solver",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("task-id",RArgumentOption::Path,QVariant(),"Task ID for inter process communication",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("task-server",RArgumentOption::Path,QVariant(),"Task server for inter process communication",RArgumentOption::Category::Optional,false));
-        validOptions.append(RArgumentOption("log-debug",RArgumentOption::Switch,QVariant(),"Switch on debug log level",RArgumentOption::Category::Logger,false));
-        validOptions.append(RArgumentOption("log-trace",RArgumentOption::Switch,QVariant(),"Switch on trace log level",RArgumentOption::Category::Logger,false));
+
+        validOptions.append(RArgumentOption("file",RArgumentOption::Path,QVariant(),"File name",RArgumentOption::Mandatory,false));
+        validOptions.append(RArgumentOption("log-file",RArgumentOption::Path,QVariant(),"Log file name",RArgumentOption::Logger,false));
+        validOptions.append(RArgumentOption("convergence-file",RArgumentOption::Path,QVariant(),"Convergence file name",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("monitoring-file",RArgumentOption::Path,QVariant(),"Monitoring file name",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("nthreads",RArgumentOption::Integer,QVariant(1),"Number of threads to use",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("restart",RArgumentOption::Switch,QVariant(),"Restart solver",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("task-id",RArgumentOption::Path,QVariant(),"Task ID for inter process communication",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("task-server",RArgumentOption::Path,QVariant(),"Task server for inter process communication",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("log-debug",RArgumentOption::Switch,QVariant(),"Switch on debug log level",RArgumentOption::Logger,false));
+        validOptions.append(RArgumentOption("log-trace",RArgumentOption::Switch,QVariant(),"Switch on trace log level",RArgumentOption::Logger,false));
+        validOptions.append(RArgumentOption("log-ssl",RArgumentOption::Switch,QVariant(),"Enable Qt debug logging",RArgumentOption::Logger,false));
+        validOptions.append(RArgumentOption("log-qt",RArgumentOption::Switch,QVariant(),"Enable Qt SSL debug logging",RArgumentOption::Logger,false));
 
         RArgumentsParser argumentsParser(QCoreApplication::arguments(),validOptions,false);
 
@@ -62,6 +62,30 @@ void MainTask::run(void)
         if (argumentsParser.isSet("log-trace"))
         {
             RLogger::getInstance().setLevel(R_LOG_LEVEL_TRACE);
+        }
+        if (argumentsParser.isSet("log-qt") ||
+            argumentsParser.isSet("log-ssl"))
+        {
+            RLogger::installQtMessageHandler();
+            RLogger::debug("Qt message handler installed\n");
+
+            if (argumentsParser.isSet("log-qt"))
+            {
+                QLoggingCategory::setFilterRules("qt.*=true");
+                RLogger::debug("All Qt logging enabled\n");
+            }
+            else if (argumentsParser.isSet("log-ssl"))
+            {
+                QLoggingCategory::setFilterRules(
+                    "qt.network.ssl.debug=true\n"
+                    "qt.network.ssl.info=true\n"
+                    "qt.network.ssl.warning=true\n"
+                    "qt.tlsbackend.ossl.debug=true\n"
+                    "qt.tlsbackend.ossl.info=true\n"
+                    "qt.tlsbackend.ossl.warning=true"
+                    );
+                RLogger::debug("SSL logging enabled\n");
+            }
         }
         if (argumentsParser.isSet("log-file"))
         {

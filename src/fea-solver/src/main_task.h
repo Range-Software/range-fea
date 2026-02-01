@@ -13,12 +13,12 @@ class MainTask : public QObject
 
         //! Constructor.
         explicit MainTask(QObject *parent = nullptr);
-        
+
     protected slots:
 
         //! Run task.
-        void run(void);
-        
+        void run();
+
 };
 
 #endif // MAIN_TASK_H
