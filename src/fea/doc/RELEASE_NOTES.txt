@@ -1,40 +1,42 @@
 ------------------------------------------------------------------
 Version 1.1.1
 
-* GUI: Print time-stamps in output window
+- Print time-stamps in output window
+- Log Qt debug messages
 
 Bug fixes:
 
+- Automatic file synchronization with Range Cloud
 
 ------------------------------------------------------------------
 Version 1.1.0
 
-* GUI: Support for Range Cloud
-* SOLVER: Solver optimizations
+- Support for Range Cloud
+- Solver optimizations
 
 Bug fixes:
 
-* GUI: Fixed memory leak in draw object widget
-* SOLVER: Fixed incorrect deployment on MacOS
+- Fixed memory leak in draw object widget
+- Fixed incorrect deployment on MacOS
 
 ------------------------------------------------------------------
 Version 1.0.1
 
-* ALL: Help and tutorials converted to markdown format
-* GUI: Default proxy type set to "System"
+- Help and tutorials converted to markdown format
+- Default proxy type set to "System"
 
 Bug fixes:
 
-* Fixed not working reset to default number and date formatting.
+- Fixed not working reset to default number and date formatting.
 
 ------------------------------------------------------------------
 Version 1.0.0
 
-* GUI: User data directory structure moved into "{Path to user documents}/Range Software/Range" directory
-* GUI: Translated to Slovak language
-* GUI: New software update manager
-* GUI: Configurable user details
-* GUI: Report contains author name and email address
-* GUI: Removed dependency to FFMPEG library
-* ALL: Extensive code optimization
+- User data directory structure moved into "{Path to user documents}/Range Software/Range" directory
+- Translated to Slovak language
+- New software update manager
+- Configurable user details
+- Report contains author name and email address
+- Removed dependency to FFMPEG library
+- Extensive code optimization
 
