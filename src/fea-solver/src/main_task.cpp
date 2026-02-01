@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QLoggingCategory>
 #include <QSettings>
 
 #include <rbl_arguments_parser.h>
