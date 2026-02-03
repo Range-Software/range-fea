@@ -1,4 +1,10 @@
 ------------------------------------------------------------------
+Version 1.1.2
+
+- Automatic client certificate renewal
+- Show warning when client certificate is about to expire
+
+------------------------------------------------------------------
 Version 1.1.1
 
 - Print time-stamps in output window
