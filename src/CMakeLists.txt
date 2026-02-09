@@ -123,6 +123,13 @@ if(OPENSSL_ROOT STREQUAL "" AND DEFINED ENV{OPENSSL_ROOT})
   set(OPENSSL_ROOT "$ENV{OPENSSL_ROOT}" CACHE PATH "OpenSSL prefix" FORCE)
 endif()
 
+# Resolve symlinks so install_name_tool -change matches the actual embedded paths
+if(OPENSSL_ROOT AND APPLE)
+  file(REAL_PATH "${OPENSSL_ROOT}" OPENSSL_ROOT_REAL)
+else()
+  set(OPENSSL_ROOT_REAL "${OPENSSL_ROOT}")
+endif()
+
 # Deploy Qt -------------------------------------------------------------------
 
 get_target_property(_qmake_executable Qt6::qmake IMPORTED_LOCATION)
@@ -220,11 +227,11 @@ elseif(APPLE)
             # Fix dylib identities
             COMMAND install_name_tool -id @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libcrypto.3.dylib
             COMMAND install_name_tool -id @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
-            # Fix libssl -> libcrypto reference
-            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
+            # Fix libssl -> libcrypto reference (use REAL path to match what's embedded in the binary)
+            COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
             # Fix openssl binary references and add rpath
-            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libssl.3.dylib @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
-            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+            COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libssl.3.dylib @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+            COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
             COMMAND install_name_tool -add_rpath @executable_path/../Frameworks ${APP_DIR_NEW}/Contents/MacOS/openssl
             DEPENDS deploy-qt
             COMMENT "Embedding openssl-tool"
