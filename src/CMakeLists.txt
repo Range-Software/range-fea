@@ -217,6 +217,15 @@ elseif(APPLE)
             COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/bin/openssl ${APP_DIR_NEW}/Contents/MacOS/
             COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
             COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
+            # Fix dylib identities
+            COMMAND install_name_tool -id @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libcrypto.3.dylib
+            COMMAND install_name_tool -id @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
+            # Fix libssl -> libcrypto reference
+            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
+            # Fix openssl binary references and add rpath
+            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libssl.3.dylib @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+            COMMAND install_name_tool -change ${OPENSSL_ROOT}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+            COMMAND install_name_tool -add_rpath @executable_path/../Frameworks ${APP_DIR_NEW}/Contents/MacOS/openssl
             DEPENDS deploy-qt
             COMMENT "Embedding openssl-tool"
             VERBATIM
