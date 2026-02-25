@@ -1,3 +1,6 @@
+#include <cstdint>
+#include <vector>
+
 #include "gl_functions.h"
 #include "gl_element_group.h"
 #include "gl_element.h"
@@ -245,78 +248,54 @@ void GLElementGroup::draw()
             }
         } // R_PROBLEM_RADIATIVE_HEAT
 
+        // Suggestion 3: parallel edgeElements filter — two-pass, read-only model access
+        const int nTotal = int(this->size());
+        std::vector<uint8_t> isEdge(uint(nTotal), 0);
+#pragma omp parallel for schedule(static)
+        for (int k=0;k<nTotal;k++)
+        {
+            isEdge[uint(k)] = pModel->elementIsOnEdge(this->get(uint(k))) ? 1 : 0;
+        }
         RUVector edgeElements;
-        edgeElements.reserve(this->size());
-
-        for (uint i=0;i<this->size();i++)
+        edgeElements.reserve(uint(nTotal));
+        for (int k=0;k<nTotal;k++)
         {
-            uint elementID = this->get(i);
-            if (pModel->elementIsOnEdge(elementID))
+            if (isEdge[uint(k)])
             {
-                edgeElements.push_back(elementID);
+                edgeElements.push_back(this->get(uint(k)));
             }
         }
 
-        // Start recording to VBO or display list
-        if (this->getUseGlList())
+        // Suggestion 1: parallel precompute — pure CPU, read-only model access
+        std::vector<GLElementPrecomputedData> precomputed(edgeElements.size());
+#pragma omp parallel for schedule(dynamic, 16)
+        for (int i=0;i<int(edgeElements.size());i++)
         {
-            if (pGlEntityList->getUseVBO())
-            {
-                // Use VBO recording for better performance
-                GLFunctions::beginVBORecording(&pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL));
-            }
-            else
-            {
-                // Fall back to display list
-                pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
-            }
-        }
+            uint elementID = edgeElements[uint(i)];
 
-        for (uint i=0;i<edgeElements.size();i++)
-        {
-            GLObject::PaintActionMask paintAction = GLObject::Draw;
-            paintAction = (i == 0) ? paintAction | GLObject::Initialize : paintAction;
-            paintAction = (i+1 == edgeElements.size()) ? paintAction | GLObject::Finalize : paintAction;
-
-            if (i+1 < edgeElements.size())
-            {
-                if (i > 0)
-                {
-                    if (pModel->getElement(edgeElements[i-1]).getType() != pModel->getElement(edgeElements[i]).getType())
-                    {
-                        paintAction |= GLObject::Initialize;
-                    }
-                }
-                if (pModel->getElement(edgeElements[i]).getType() != pModel->getElement(edgeElements[i+1]).getType())
-                {
-                    paintAction |= GLObject::Finalize;
-                }
-            }
-
-            uint elementID = edgeElements[i];
-
-            QColor color;
+            QColor elementColor;
             if (colorByPatch || colorByViewFactor)
             {
                 const RPatchBook &rPatchBook = pModel->getViewFactorMatrix().getPatchBook();
                 uint patchID = rPatchBook.findPatchID(elementID);
                 if (patchID == RConstants::eod)
                 {
-                    continue;
+                    continue; // precomputed[i].valid stays false
                 }
-                color = patchColors[int(patchID)];
+                elementColor = patchColors[int(patchID)];
             }
             else
             {
                 int r,g,b,a;
                 this->getData().getColor(r,g,b,a);
-                color.setRgb(r,g,b,a);
+                elementColor.setRgb(r,g,b,a);
             }
+
             GLElement glElement(this->getGLWidget(),
                                 pModel,
                                 elementID,
                                 this->getData(),
-                                color,
+                                elementColor,
                                 GL_ELEMENT_DRAW_NORMAL);
             glElement.setApplyEnvironmentSettings(false);
             glElement.setScalarVariable(pScalarVariable);
@@ -325,6 +304,78 @@ void GLElementGroup::draw()
             glElement.setLineCrossArea(this->lineCrossArea);
             glElement.setSurfaceThickness(this->surfaceThickness);
             glElement.setUseGlCullFace(this->getUseGlCullFace());
+            precomputed[uint(i)] = glElement.precompute();
+        }
+
+        // Compact: build ordered list of valid indices (filters out patchID misses)
+        std::vector<int> validIndices;
+        validIndices.reserve(edgeElements.size());
+        for (int i=0;i<int(edgeElements.size());i++)
+        {
+            if (precomputed[uint(i)].valid)
+            {
+                validIndices.push_back(i);
+            }
+        }
+
+        // Start recording to VBO or display list
+        if (this->getUseGlList())
+        {
+            if (pGlEntityList->getUseVBO())
+            {
+                GLFunctions::beginVBORecording(&pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL));
+            }
+            else
+            {
+                pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
+            }
+        }
+
+        // Serial GL recording from pre-computed data
+        for (int vi=0;vi<int(validIndices.size());vi++)
+        {
+            int i = validIndices[uint(vi)];
+
+            GLObject::PaintActionMask paintAction = GLObject::Draw;
+            if (vi == 0)
+            {
+                paintAction = paintAction | GLObject::Initialize;
+            }
+            if (vi+1 == int(validIndices.size()))
+            {
+                paintAction = paintAction | GLObject::Finalize;
+            }
+            if (vi > 0)
+            {
+                int prevI = validIndices[uint(vi-1)];
+                if (pModel->getElement(edgeElements[uint(prevI)]).getType() !=
+                    pModel->getElement(edgeElements[uint(i)]).getType())
+                {
+                    paintAction = paintAction | GLObject::Initialize;
+                }
+            }
+            if (vi+1 < int(validIndices.size()))
+            {
+                int nextI = validIndices[uint(vi+1)];
+                if (pModel->getElement(edgeElements[uint(i)]).getType() !=
+                    pModel->getElement(edgeElements[uint(nextI)]).getType())
+                {
+                    paintAction = paintAction | GLObject::Finalize;
+                }
+            }
+
+            GLElement glElement(this->getGLWidget(),
+                                pModel,
+                                edgeElements[uint(i)],
+                                this->getData(),
+                                precomputed[uint(i)].color,
+                                GL_ELEMENT_DRAW_NORMAL);
+            glElement.setApplyEnvironmentSettings(false);
+            glElement.setPointVolume(this->pointVolume);
+            glElement.setLineCrossArea(this->lineCrossArea);
+            glElement.setSurfaceThickness(this->surfaceThickness);
+            glElement.setUseGlCullFace(this->getUseGlCullFace());
+            glElement.setPrecomputedData(&precomputed[uint(i)]);
             glElement.paint(paintAction);
         }
 

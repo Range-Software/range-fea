@@ -8,6 +8,7 @@
 
 void GLElement::_init(const GLElement *pGlElement)
 {
+    this->pPrecomputed = nullptr; // never copy the precomputed pointer
     if (pGlElement)
     {
         this->pointVolume = pGlElement->pointVolume;
@@ -60,8 +61,158 @@ void GLElement::setSurfaceThickness(double surfaceThickness)
     this->surfaceThickness = surfaceThickness;
 }
 
+void GLElement::setPrecomputedData(const GLElementPrecomputedData *pData)
+{
+    this->pPrecomputed = pData;
+}
+
+GLElementPrecomputedData GLElement::precompute() const
+{
+    GLElementPrecomputedData data;
+    if (!this->pModel)
+    {
+        return data;
+    }
+
+    data.type = this->getType();
+    data.useGlCullFace = this->getUseGlCullFace();
+    data.pointVolume = this->pointVolume;
+    data.lineCrossArea = this->lineCrossArea;
+    data.surfaceThickness = this->surfaceThickness;
+    data.color = this->color;
+
+    // Fetch node positions
+    uint nn = this->size();
+    data.nodes.resize(nn);
+    for (uint i = 0; i < nn; i++)
+    {
+        data.nodes[i] = this->pModel->getNode(this->getNodeId(i)).toVector();
+    }
+
+    // Apply displacement
+    if (this->pDisplacementVariable)
+    {
+        std::vector<RR3Vector> dispValues;
+        this->findDisplacementNodeValues(this->elementID, *this->pDisplacementVariable, dispValues);
+        if (dispValues.size() == nn)
+        {
+            for (uint i = 0; i < nn; i++)
+            {
+                RNode n(data.nodes[i]);
+                n.move(dispValues[i]);
+                data.nodes[i] = n.toVector();
+            }
+        }
+    }
+
+    // Scalar texture coordinates
+    if (this->pScalarVariable)
+    {
+        this->findScalarNodeValues(this->elementID, *this->pScalarVariable, data.textureCoords);
+    }
+
+    // Edge node flags (tetrahedra only)
+    if (data.type == R_ELEMENT_TETRA1)
+    {
+        data.edgeNodes.resize(nn);
+        for (uint i = 0; i < nn; i++)
+        {
+            data.edgeNodes[i] = this->pModel->nodeIsOnEdge(this->getNodeId(i));
+        }
+    }
+
+    // Draw mask (assumes GL_ELEMENT_DRAW_NORMAL mode)
+    if (this->elementGroupData.getDrawWire())
+    {
+        data.drawMask |= GLSimplex::Wired;
+    }
+    else
+    {
+        data.drawMask |= GLSimplex::Normal;
+    }
+    if (this->elementGroupData.getDrawEdges())
+    {
+        data.drawMask |= GLSimplex::ElementEdges;
+    }
+    if (this->elementGroupData.getDrawNodes())
+    {
+        data.drawMask |= GLSimplex::ElementNodes;
+    }
+
+    data.valid = true;
+    return data;
+}
+
+void GLElement::drawFromPrecomputed(const GLElementPrecomputedData &data)
+{
+    switch (data.type)
+    {
+        case R_ELEMENT_POINT:
+        {
+            GLSimplexPoint point(this->getGLWidget(), data.nodes, data.pointVolume);
+            if (!data.textureCoords.empty())
+            {
+                point.setNodeTextureCoordinates(data.textureCoords);
+            }
+            point.setDrawType(data.drawMask);
+            point.setColor(data.color);
+            point.paint();
+            break;
+        }
+        case R_ELEMENT_TRUSS1:
+        {
+            GLSimplexSegment segment(this->getGLWidget(), data.nodes, data.lineCrossArea);
+            if (!data.textureCoords.empty())
+            {
+                segment.setNodeTextureCoordinates(data.textureCoords);
+            }
+            segment.setDrawType(data.drawMask);
+            segment.setColor(data.color);
+            segment.paint();
+            break;
+        }
+        case R_ELEMENT_TRI1:
+        case R_ELEMENT_QUAD1:
+        {
+            GLSimplexPolygon polygon(this->getGLWidget(), data.nodes, data.surfaceThickness);
+            polygon.setUseGlCullFace(data.useGlCullFace);
+            if (!data.textureCoords.empty())
+            {
+                polygon.setNodeTextureCoordinates(data.textureCoords);
+            }
+            polygon.setDrawType(data.drawMask);
+            polygon.setColor(data.color);
+            polygon.paint();
+            break;
+        }
+        case R_ELEMENT_TETRA1:
+        {
+            GLSimplexTetrahedra tetra(this->getGLWidget(), data.nodes);
+            if (!data.edgeNodes.empty())
+            {
+                tetra.setEdgeNodes(data.edgeNodes);
+            }
+            if (!data.textureCoords.empty())
+            {
+                tetra.setNodeTextureCoordinates(data.textureCoords);
+            }
+            tetra.setDrawType(data.drawMask);
+            tetra.setColor(data.color);
+            tetra.paint();
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 void GLElement::draw()
 {
+    if (this->pPrecomputed)
+    {
+        this->drawFromPrecomputed(*this->pPrecomputed);
+        return;
+    }
     if (!this->pModel)
     {
         return;
