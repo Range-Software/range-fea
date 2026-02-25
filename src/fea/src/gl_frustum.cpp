@@ -30,7 +30,10 @@ void GLFrustum::extractFromGL()
     glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
     glGetDoublev(GL_PROJECTION_MATRIX, projection);
 
-    // Multiply projection * modelview to get combined matrix
+    // Multiply projection * modelview to get combined matrix.
+    // OpenGL matrices are column-major: element at (row r, col c) is stored at index c*4+r.
+    // For C = A * B: C[i*4+j] = sum_k A[k*4+j] * B[i*4+k]
+    // where i=col, j=row. Here A=projection, B=modelview.
     for (int i = 0; i < 4; i++)
     {
         for (int j = 0; j < 4; j++)
@@ -38,7 +41,7 @@ void GLFrustum::extractFromGL()
             mvp[i * 4 + j] = 0.0;
             for (int k = 0; k < 4; k++)
             {
-                mvp[i * 4 + j] += projection[i * 4 + k] * modelview[k * 4 + j];
+                mvp[i * 4 + j] += projection[k * 4 + j] * modelview[i * 4 + k];
             }
         }
     }

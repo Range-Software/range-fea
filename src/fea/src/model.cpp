@@ -18,7 +18,6 @@
 #include "gl_vector_field.h"
 #include "gl_scalar_field.h"
 #include "gl_widget.h"
-#include "gl_frustum.h"
 #include "application.h"
 
 const int Model::ConsolidateActionAll = Model::ConsolidateSurfaceNeighbors |
@@ -145,7 +144,13 @@ void Model::insertModel(const Model &model, bool mergeNearNodes, double toleranc
         // Adjust node IDs.
         for (uint j=0;j<this->elements[ne+i].size();j++)
         {
-            this->elements[ne+i].setNodeId(j,nodeBook[int(this->elements[ne+i].getNodeId(j))]);
+            uint srcNodeId = this->elements[ne+i].getNodeId(j);
+            if (int(srcNodeId) >= nodeBook.size())
+            {
+                throw RError(RError::Type::Application,R_ERROR_REF,
+                             "Element %u references invalid node %u in source model.",i,srcNodeId);
+            }
+            this->elements[ne+i].setNodeId(j,nodeBook[int(srcNodeId)]);
         }
         this->RResults::addElement();
     }
@@ -467,6 +472,13 @@ void Model::autoMarkSurfaces(double angle)
         this->markSurfaceNeighbors(i,angle,this->surfaceNeigs,marks);
     }
 
+    if (this->getNSurfaces() == 0)
+    {
+        RProgressFinalize();
+        RLogger::unindent();
+        return;
+    }
+
     REntityGroupData data = this->getSurface(0).getData();
     RMaterial material = this->getSurface(0).getMaterial();
     double thickness = this->getSurface(0).getThickness();
@@ -534,6 +546,10 @@ void Model::markSurface(double angle, QList<uint> elementIDs)
 
     for (int i=0;i<elementIDs.size();i++)
     {
+        if (elementIDs[i] >= marks.size())
+        {
+            continue;
+        }
         marks[elementIDs[i]] = nMark;
         this->markSurfaceNeighbors(elementIDs[i],angle,this->surfaceNeigs,marks);
     }
@@ -607,6 +623,10 @@ void Model::closeSurfaceHole(QList<uint> edgeIDs)
 
     for (int i=0;i<elementIDs.size();i++)
     {
+        if (int(elementIDs[i]) >= this->holeElements.size())
+        {
+            continue;
+        }
         nodeIDs.append(this->holeElements[int(elementIDs[i])].getNodeId(0));
     }
 
@@ -625,7 +645,12 @@ void Model::closeSurfaceHole(QList<uint> edgeIDs)
             patchElements[j].swapNodeIds(1,2);
             for (uint k=0;k<patchElements[j].size();k++)
             {
-                patchElements[j].setNodeId(k,nodeIDs[int(patchElements[j].getNodeId(k))]);
+                uint patchNodeIdx = patchElements[j].getNodeId(k);
+                if (int(patchNodeIdx) >= nodeIDs.size())
+                {
+                    break;
+                }
+                patchElements[j].setNodeId(k,nodeIDs[int(patchNodeIdx)]);
             }
             this->addElement(patchElements[j]);
         }
@@ -841,7 +866,8 @@ uint Model::fixSliverElements(double edgeRatio)
 
 void Model::updateSliverElements(double edgeRatio)
 {
-    this->sliverElements = this->findSliverElements(edgeRatio);
+    const QList<uint> sl = this->findSliverElements(edgeRatio);
+    this->sliverElements = QSet<uint>(sl.begin(), sl.end());
     int ni = this->sliverElements.size();
     if (ni == 0)
     {
@@ -855,7 +881,8 @@ void Model::updateSliverElements(double edgeRatio)
 
 void Model::updateIntersectedElements()
 {
-    this->intersectedElements = this->findIntersectedElements();
+    const QList<uint> ie = this->findIntersectedElements();
+    this->intersectedElements = QSet<uint>(ie.begin(), ie.end());
     int ni = this->intersectedElements.size();
     if (ni == 0)
     {
@@ -896,9 +923,8 @@ bool Model::exportSliverElements() const
     std::vector<uint> nodeBook;
     nodeBook.resize(this->getNNodes(),RConstants::eod);
 
-    for (int i=0;i<this->sliverElements.size();i++)
+    for (uint elementID : this->sliverElements)
     {
-        uint elementID = this->sliverElements[i];
         const RElement &rElement = this->getElement(elementID);
         for (uint j=0;j<rElement.size();j++)
         {
@@ -918,9 +944,8 @@ bool Model::exportSliverElements() const
         }
     }
 
-    for (int i=0;i<this->sliverElements.size();i++)
+    for (uint elementID : this->sliverElements)
     {
-        uint elementID = this->sliverElements[i];
         RElement element = this->getElement(elementID);
         for (uint j=0;j<element.size();j++)
         {
@@ -951,9 +976,8 @@ bool Model::exportIntersectedElements() const
     std::vector<uint> nodeBook;
     nodeBook.resize(this->getNNodes(),RConstants::eod);
 
-    for (int i=0;i<this->intersectedElements.size();i++)
+    for (uint elementID : this->intersectedElements)
     {
-        uint elementID = this->intersectedElements[i];
         const RElement &rElement = this->getElement(elementID);
         for (uint j=0;j<rElement.size();j++)
         {
@@ -973,9 +997,8 @@ bool Model::exportIntersectedElements() const
         }
     }
 
-    for (int i=0;i<this->intersectedElements.size();i++)
+    for (uint elementID : this->intersectedElements)
     {
-        uint elementID = this->intersectedElements[i];
         RElement element = this->getElement(elementID);
         for (uint j=0;j<element.size();j++)
         {
@@ -985,7 +1008,7 @@ bool Model::exportIntersectedElements() const
     }
 
     model.setName(this->getName() + " - intersected");
-    model.setDescription("Reuslt of element intersections");
+    model.setDescription("Result of element intersections");
     model.consolidate(Model::ConsolidateActionAll);
 
     Application::instance()->getSession()->addModel(model);
@@ -1024,12 +1047,12 @@ bool Model::boolUnion(uint nIterations, QList<uint> surfaceEntityIDs)
 
 bool Model::isSliver(uint elementID) const
 {
-    return (this->sliverElements.indexOf(elementID) >= 0);
+    return this->sliverElements.contains(elementID);
 }
 
 bool Model::isIntersected(uint elementID) const
 {
-    return (this->intersectedElements.indexOf(elementID) >= 0);
+    return this->intersectedElements.contains(elementID);
 }
 
 bool Model::isSelected(bool selected) const
@@ -1940,25 +1963,11 @@ void Model::glDraw(GLWidget *glWidget) const
         GL_SAFE_CALL(glGetIntegerv(GL_DEPTH_FUNC, &depthFunc));
         GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
 
-        // Extract view frustum for culling (after model scale is applied)
-        GLFrustum frustum;
-        frustum.extractFromGL();
-
         uint modelID = Application::instance()->getSession()->findModelByPtr(this);
 
         // Draw volume entities.
         for (uint i=0;i<this->getNVolumes();i++)
         {
-            // Frustum culling: skip entities outside the view
-            RLimitBox bounds;
-            if (this->computeEntityBounds(R_ENTITY_GROUP_VOLUME, i, bounds))
-            {
-                if (!frustum.intersectsBox(bounds))
-                {
-                    continue; // Entity is outside frustum, skip rendering
-                }
-            }
-
             GLElementGroup glElementGroup(glWidget,this->getVolume(i),SessionEntityID(modelID,R_ENTITY_GROUP_VOLUME,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setUseGlList(true);
@@ -1968,16 +1977,6 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw surface entities.
         for (uint i=0;i<this->getNSurfaces();i++)
         {
-            // Frustum culling: skip entities outside the view
-            RLimitBox bounds;
-            if (this->computeEntityBounds(R_ENTITY_GROUP_SURFACE, i, bounds))
-            {
-                if (!frustum.intersectsBox(bounds))
-                {
-                    continue; // Entity is outside frustum, skip rendering
-                }
-            }
-
             GLElementGroup glElementGroup(glWidget,this->getSurface(i),SessionEntityID(modelID,R_ENTITY_GROUP_SURFACE,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
@@ -1989,16 +1988,6 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw line entities.
         for (uint i=0;i<this->getNLines();i++)
         {
-            // Frustum culling: skip entities outside the view
-            RLimitBox bounds;
-            if (this->computeEntityBounds(R_ENTITY_GROUP_LINE, i, bounds))
-            {
-                if (!frustum.intersectsBox(bounds))
-                {
-                    continue; // Entity is outside frustum, skip rendering
-                }
-            }
-
             GLElementGroup glElementGroup(glWidget,this->getLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_LINE,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setLineCrossArea(this->getLine(i).getCrossArea());
@@ -2009,16 +1998,6 @@ void Model::glDraw(GLWidget *glWidget) const
         // Draw point entities.
         for (uint i=0;i<this->getNPoints();i++)
         {
-            // Frustum culling: skip entities outside the view
-            RLimitBox bounds;
-            if (this->computeEntityBounds(R_ENTITY_GROUP_POINT, i, bounds))
-            {
-                if (!frustum.intersectsBox(bounds))
-                {
-                    continue; // Entity is outside frustum, skip rendering
-                }
-            }
-
             GLElementGroup glElementGroup(glWidget,this->getPoint(i),SessionEntityID(modelID,R_ENTITY_GROUP_POINT,i));
             glElementGroup.setParentModel(this);
             glElementGroup.setPointVolume(this->getPoint(i).getVolume());
@@ -2109,11 +2088,11 @@ void Model::glDraw(GLWidget *glWidget) const
             //Draw sliver elements.
             REntityGroupData sliverGroupData;
             sliverGroupData.setDrawWire(true);
-            for (int i=0;i<this->sliverElements.size();i++)
+            for (uint elementID : this->sliverElements)
             {
                 GLElement glElement(glWidget,
                                     this,
-                                    this->sliverElements[i],
+                                    elementID,
                                     sliverGroupData,
                                     QColor(255,100,0),
                                     GL_ELEMENT_DRAW_NORMAL);
@@ -2125,11 +2104,11 @@ void Model::glDraw(GLWidget *glWidget) const
             //Draw intersected elements.
             REntityGroupData intersectedGroupData;
             intersectedGroupData.setDrawWire(true);
-            for (int i=0;i<this->intersectedElements.size();i++)
+            for (uint elementID : this->intersectedElements)
             {
                 GLElement glElement(glWidget,
                                     this,
-                                    this->intersectedElements[i],
+                                    elementID,
                                     intersectedGroupData,
                                     Qt::red,
                                     GL_ELEMENT_DRAW_NORMAL);
@@ -2592,6 +2571,42 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
 
     std::vector<RNode> dispNodes(this->getNodes());
 
+    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    for (uint i=0;i<this->getNEntityGroups();i++)
+    {
+        REntityGroupType entityType = this->getEntityGroupType(i);
+        if (!REntityGroup::typeIsElementGroup(entityType))
+        {
+            continue;
+        }
+        const REntityGroup *pEntity = this->getEntityGroupPtr(i);
+        if (!pEntity || !pEntity->getData().getVisible())
+        {
+            continue;
+        }
+        uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+        if (displacementVarPosition == RConstants::eod)
+        {
+            continue;
+        }
+        const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
+        const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
+        for (uint j=0;j<pElementGroup->size();j++)
+        {
+            uint elementID = pElementGroup->get(j);
+            const RElement &rElement = this->getElement(elementID);
+            std::vector<RR3Vector> displacementValues;
+            rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
+            for (uint k=0;k<rElement.size();k++)
+            {
+                uint nodeID = rElement.getNodeId(k);
+                dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
+                dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
+                dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+            }
+        }
+    }
+
 #pragma omp parallel default(shared)
     {
         for (uint i=0;i<this->getNEntityGroups();i++)
@@ -2609,13 +2624,6 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
                 continue;
             }
 
-            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
-            const RVariable *pDisplacementVariable = nullptr;
-            if (displacementVarPosition != RConstants::eod)
-            {
-                pDisplacementVariable = &this->getVariable(displacementVarPosition);
-            }
-
             if (REntityGroup::typeIsElementGroup(entityType))
             {
                 const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
@@ -2626,19 +2634,6 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
                 {
                     uint elementID = pElementGroup->get(uint(j));
                     const RElement &rElement = this->getElement(elementID);
-
-                    if (pDisplacementVariable)
-                    {
-                        std::vector<RR3Vector> displacementValues;
-                        rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
-                        for (uint k=0;k<rElement.size();k++)
-                        {
-                            uint nodeID = rElement.getNodeId(k);
-                            dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
-                            dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
-                            dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
-                        }
-                    }
 
                     double distance;
                     if (rElement.findPickDistance(dispNodes,position,direction,tolerance,distance))
@@ -2659,7 +2654,12 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
             {
                 const RInterpolatedEntity *pIEntity = static_cast<const RInterpolatedEntity*>(pEntity);
 
-                std::vector<RR3Vector> nodeDisplacementValues;
+                uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+                const RVariable *pDisplacementVariable = nullptr;
+                if (displacementVarPosition != RConstants::eod)
+                {
+                    pDisplacementVariable = &this->getVariable(displacementVarPosition);
+                }
 
 #pragma omp barrier
 #pragma omp for
@@ -2669,6 +2669,7 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
 
                     if (pDisplacementVariable)
                     {
+                        std::vector<RR3Vector> nodeDisplacementValues;
                         iElement.findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,nodeDisplacementValues);
                         for (uint k=0;k<iElement.size();k++)
                         {
@@ -2705,6 +2706,42 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
 
     RSegment ray(RNode(position),RNode(position[0]+direction[0],position[1]+direction[1],position[2]+direction[2]));
 
+    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    for (uint i=0;i<this->getNEntityGroups();i++)
+    {
+        REntityGroupType entityType = this->getEntityGroupType(i);
+        if (!REntityGroup::typeIsElementGroup(entityType))
+        {
+            continue;
+        }
+        const REntityGroup *pEntity = this->getEntityGroupPtr(i);
+        if (!pEntity || !pEntity->getData().getVisible())
+        {
+            continue;
+        }
+        uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+        if (displacementVarPosition == RConstants::eod)
+        {
+            continue;
+        }
+        const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
+        const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
+        for (uint j=0;j<pElementGroup->size();j++)
+        {
+            uint elementID = pElementGroup->get(j);
+            const RElement &rElement = this->getElement(elementID);
+            std::vector<RR3Vector> displacementValues;
+            rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
+            for (uint k=0;k<rElement.size();k++)
+            {
+                uint nodeID = rElement.getNodeId(k);
+                dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
+                dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
+                dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+            }
+        }
+    }
+
 #pragma omp parallel default(shared)
     {
         for (uint i=0;i<this->getNEntityGroups();i++)
@@ -2722,13 +2759,6 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
                 continue;
             }
 
-            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
-            const RVariable *pDisplacementVariable = nullptr;
-            if (displacementVarPosition != RConstants::eod)
-            {
-                pDisplacementVariable = &this->getVariable(displacementVarPosition);
-            }
-
             if (REntityGroup::typeIsElementGroup(entityType))
             {
                 const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
@@ -2739,19 +2769,6 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
                 {
                     uint elementID = pElementGroup->get(uint(j));
                     const RElement &rElement = this->getElement(elementID);
-
-                    if (pDisplacementVariable)
-                    {
-                        std::vector<RR3Vector> displacementValues;
-                        rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
-                        for (uint k=0;k<rElement.size();k++)
-                        {
-                            uint nodeID = rElement.getNodeId(k);
-                            dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
-                            dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
-                            dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
-                        }
-                    }
 
                     for (uint k=0;k<rElement.size();k++)
                     {
@@ -2779,7 +2796,12 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
             {
                 const RInterpolatedEntity *pIEntity = static_cast<const RInterpolatedEntity*>(pEntity);
 
-                std::vector<RR3Vector> nodeDisplacementValues;
+                uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+                const RVariable *pDisplacementVariable = nullptr;
+                if (displacementVarPosition != RConstants::eod)
+                {
+                    pDisplacementVariable = &this->getVariable(displacementVarPosition);
+                }
 
 #pragma omp barrier
 #pragma omp for
@@ -2789,6 +2811,7 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
 
                     if (pDisplacementVariable)
                     {
+                        std::vector<RR3Vector> nodeDisplacementValues;
                         iElement.findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,nodeDisplacementValues);
                         for (uint k=0;k<iElement.size();k++)
                         {
@@ -3164,6 +3187,10 @@ uint Model::getUndoStackSize() const
 
 void Model::undo(uint revision)
 {
+    if (this->undoStack.size() < int(revision) + 1)
+    {
+        return;
+    }
     for (uint i=0;i<revision;i++)
     {
         this->redoStack.push(this->undoStack.pop());
@@ -3188,6 +3215,10 @@ uint Model::getRedoStackSize() const
 
 void Model::redo(uint revision)
 {
+    if (this->redoStack.size() < int(revision) + 1)
+    {
+        return;
+    }
     for (uint i=0;i<revision;i++)
     {
         this->undoStack.push(this->redoStack.pop());
@@ -3396,31 +3427,30 @@ QList<RElement> Model::generateEdgeElements(const QSet<uint> &edgeNodeIDs, const
         }
     }
 
-    for (int i=edgeElements.size()-1;i>=0;i--)
+    // Build node → containing-element map for efficient interior-edge detection.
+    // An edge is interior (shared by ≥ 2 elements) if the intersection of its nodes'
+    // element-sets has size ≥ 2. This replaces an O(|edgeElements|×|elementIDs|) scan
+    // with an O(|elementIDs|×nodes_per_element) build + O(|edgeElements|) filter.
+    QHash<uint, QSet<uint>> nodeToElements;
+    nodeToElements.reserve(int(elementIDs.size()) * 4);
+    foreach (uint elementID, elementIDs)
     {
-        bool keepElement = true;
-        uint nElementsFound = 0;
-        foreach (uint elementID, elementIDs)
+        const RElement &rElem = this->getElement(elementID);
+        for (uint j = 0; j < rElem.size(); j++)
         {
-            uint nFound = 0;
-            for (uint j=0;j<edgeElements[i].size();j++)
-            {
-                if (this->getElement(elementID).hasNodeId(edgeElements[i].getNodeId(j)))
-                {
-                    nFound ++;
-                }
-            }
-            if (nFound == edgeElements[i].size())
-            {
-                nElementsFound++;
-            }
-            if (nElementsFound >= 2)
-            {
-                keepElement = false;
-                break;
-            }
+            nodeToElements[rElem.getNodeId(j)].insert(elementID);
         }
-        if (!keepElement)
+    }
+
+    for (int i = edgeElements.size()-1; i >= 0; i--)
+    {
+        const RElement &edge = edgeElements[i];
+        QSet<uint> containing = nodeToElements.value(edge.getNodeId(0));
+        for (uint k = 1; k < edge.size(); k++)
+        {
+            containing &= nodeToElements.value(edge.getNodeId(k));
+        }
+        if (containing.size() >= 2)
         {
             edgeElements.removeAt(i);
         }
@@ -3502,7 +3532,7 @@ void Model::createSweepEdgeElements(const QList<RElement> &edgeElements, const Q
 
 QVector<RElement> Model::findEdgeElements(double separationAngle) const
 {
-    RLogger::info("Finding hole elements\n");
+    RLogger::info("Finding edge elements\n");
     RLogger::indent();
 
     double radAngle = R_DEG_TO_RAD(separationAngle);
@@ -3524,9 +3554,16 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
         cElement.findNormal(this->getNodes(),cn[0],cn[1],cn[2]);
 
         // Inspect neighboring elements.
+        // Only process pairs where neID > i to avoid emitting each shared feature
+        // edge twice (surfaceNeigs is bidirectional: j∈neigs[i] implies i∈neigs[j]).
         for (uint j=0;j<surfaceNeigs[i].getNRows();j++)
         {
             uint neID = this->surfaceNeigs[i][j];
+
+            if (neID <= i)
+            {
+                continue;
+            }
 
             if (!R_ELEMENT_TYPE_IS_SURFACE(this->getElement(neID).getType()))
             {
@@ -3558,24 +3595,24 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
             }
         }
 
-        // Inspect nodes that have no neighbor
+        // Inspect edges that have no neighbor (open boundary edges).
         std::vector<RElement> edges = cElement.generateEdgeElements();
         for (uint j=0;j<edges.size();j++)
         {
+            if (edges[j].size() < 2)
+            {
+                continue;
+            }
             bool edgeHasNoNeighbor = true;
             for (uint k=0;k<surfaceNeigs[i].getNRows();k++)
             {
-                if (edges[j].size() < 2)
-                {
-                    continue;
-                }
                 uint neID = this->surfaceNeigs[i][k];
                 const RElement &nElement = this->getElement(neID);
                 if (nElement.hasNodeId(edges[j].getNodeId(0)) && nElement.hasNodeId(edges[j].getNodeId(1)))
                 {
                     edgeHasNoNeighbor = false;
+                    break;
                 }
-
             }
             if (edgeHasNoNeighbor)
             {
@@ -3601,46 +3638,62 @@ QVector<RElement> Model::findHoleElements() const
         return QVector<RElement>();
     }
 
+    // Encode a pair of node IDs as a single quint64 with the smaller ID in the high bits,
+    // giving a canonical (orientation-independent) key for each undirected edge.
+    auto edgeKey = [](uint n0, uint n1) -> quint64
+    {
+        if (n0 > n1)
+        {
+            std::swap(n0, n1);
+        }
+        return (quint64(n0) << 32) | quint64(n1);
+    };
 
-    QVector<RElement> elementList;
-
-    for (uint i=0;i<this->surfaceNeigs.size();i++)
+    // First pass: count how many surface elements each edge is adjacent to.
+    // Shared interior edges appear twice; boundary (hole) edges appear once.
+    // This replaces the original O(N × A² × B) triple-nested loop (with repeated
+    // generateEdgeElements() calls) with a single O(N × A) pass.
+    QHash<quint64, uint> edgeCount;
+    edgeCount.reserve(int(this->surfaceNeigs.size()) * 3);
+    for (uint i = 0; i < this->surfaceNeigs.size(); i++)
     {
         if (RElementGroup::getGroupType(this->getElement(i).getType()) != R_ENTITY_GROUP_SURFACE)
         {
             continue;
         }
-        if (this->surfaceNeigs[i].size() == this->getElement(i).size())
+        std::vector<RElement> edges = this->getElement(i).generateEdgeElements();
+        for (const RElement &e : edges)
+        {
+            if (e.size() < 2)
+            {
+                continue;
+            }
+            edgeCount[edgeKey(e.getNodeId(0), e.getNodeId(1))]++;
+        }
+    }
+
+    // Second pass: collect edges that appear exactly once — these are hole (boundary) edges.
+    QVector<RElement> elementList;
+    for (uint i = 0; i < this->surfaceNeigs.size(); i++)
+    {
+        if (RElementGroup::getGroupType(this->getElement(i).getType()) != R_ENTITY_GROUP_SURFACE)
         {
             continue;
         }
-        std::vector<RElement> edgeElements = this->getElement(i).generateEdgeElements();
-        for (uint j=0;j<edgeElements.size();j++)
+        std::vector<RElement> edges = this->getElement(i).generateEdgeElements();
+        for (const RElement &e : edges)
         {
-            bool edgeFound = false;
-            for (uint k=0;k<this->surfaceNeigs[i].size();k++)
+            if (e.size() < 2)
             {
-                std::vector<RElement> neighborEdgeElements = this->getElement(this->surfaceNeigs[i][k]).generateEdgeElements();
-                for (uint l=0;l<neighborEdgeElements.size();l++)
-                {
-                    if (edgeElements[j] == neighborEdgeElements[l])
-                    {
-                        edgeFound = true;
-                        break;
-                    }
-                }
-                if (edgeFound)
-                {
-                    break;
-                }
+                continue;
             }
-            if (!edgeFound)
+            if (edgeCount.value(edgeKey(e.getNodeId(0), e.getNodeId(1))) == 1)
             {
-                elementList.push_back(edgeElements[j]);
+                elementList.push_back(e);
             }
         }
     }
-    RLogger::unindent();
 
+    RLogger::unindent();
     return elementList;
 } /* Model::findHoleElements */

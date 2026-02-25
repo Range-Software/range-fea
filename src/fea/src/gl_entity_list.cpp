@@ -2,14 +2,14 @@
 
 GLEntityList::GLEntityList()
     : GLList(GL_ENTITY_LIST_ITEM_N_LISTS)
-    , useVBO(true)  // Enable VBO by default for better performance
+    , useVBO(false)  // VBO disabled: VAO + legacy client-state mixing is incompatible
 {
     this->_init();
 }
 
 GLEntityList::GLEntityList(const GLEntityList &glEntityList)
     : GLList(glEntityList)
-    , useVBO(true)
+    , useVBO(false)
 {
     this->_init(&glEntityList);
 }

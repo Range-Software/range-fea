@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <QColor>
+#include <QSet>
 #include <QStack>
 #include <QMutex>
 
@@ -47,10 +48,10 @@ class Model : public RModel
         QVector<RElement> edgeElements;
         //! Set of hole elements.
         QVector<RElement> holeElements;
-        //! List of sliver elements.
-        QList<uint> sliverElements;
-        //! List of intersected elements.
-        QList<uint> intersectedElements;
+        //! Set of sliver elements.
+        QSet<uint> sliverElements;
+        //! Set of intersected elements.
+        QSet<uint> intersectedElements;
         //! Model filename.
         QString fileName;
         //! Mesh generator input object.
