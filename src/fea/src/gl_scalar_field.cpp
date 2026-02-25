@@ -4,6 +4,7 @@
 #include "gl_functions.h"
 #include "gl_scalar_field.h"
 #include "gl_point.h"
+#include "gl_state_cache.h"
 #include "application.h"
 
 class ScalarFieldItem
@@ -77,10 +78,10 @@ void GLScalarField::initialize()
         return;
     }
 
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
 
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
     GL_SAFE_CALL(glDisable(GL_NORMALIZE));
 }
 
@@ -91,7 +92,7 @@ void GLScalarField::finalize()
         return;
     }
 
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
 }
 
@@ -143,7 +144,7 @@ void GLScalarField::draw()
             {
                 GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
                 this->getGLWidget()->qglColor(QColor(255,255,255,255));
-                GL_SAFE_CALL(glTexCoord1d(scalarField[i].scaleValue));
+                GLFunctions::texCoord1f(GLfloat(scalarField[i].scaleValue));
             }
             else
             {

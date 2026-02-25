@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_node.h"
+#include "gl_state_cache.h"
 
 GLNode::GLNode(GLWidget *glWidget) : GLObject(glWidget)
 {
@@ -35,19 +36,16 @@ void GLNode::_init(const GLNode *pGlNode)
 
 void GLNode::initialize()
 {
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
 
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
     GL_SAFE_CALL(glPointSize(10.0f));
 }
 
 void GLNode::finalize()
 {
-    if (this->lightingEnabled)
-    {
-        GL_SAFE_CALL(glEnable(GL_LIGHTING));
-    }
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(glPointSize(this->pointSize));
 }
 

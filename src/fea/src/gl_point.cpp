@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_point.h"
+#include "gl_state_cache.h"
 
 void GLPoint::_init(const GLPoint *pGlPoint)
 {
@@ -39,24 +40,17 @@ void GLPoint::initialize()
 {
     // Save current settings
     GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->prevPointSize));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     // Initialize environment
     GL_SAFE_CALL(glPointSize(this->pointSize));
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
 }
 
 void GLPoint::finalize()
 {
     GL_SAFE_CALL(glPointSize(this->prevPointSize));
 
-    if (this->lightingEnabled)
-    {
-        GL_SAFE_CALL(glEnable(GL_LIGHTING));
-    }
-    else
-    {
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
-    }
+    GLStateCache::instance().setLighting(this->lightingEnabled);
 }
 
 void GLPoint::draw()

@@ -10,6 +10,7 @@
 #include "color.h"
 #include "color_scale.h"
 #include "gl_functions.h"
+#include "gl_state_cache.h"
 #include "gl_element.h"
 #include "gl_element_group.h"
 #include "gl_line.h"
@@ -2144,11 +2145,11 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
         GLboolean lightingEnabled;
         GLfloat pointSize;
 
-        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
+        lightingEnabled = GLStateCache::instance().getLighting();
         GL_SAFE_CALL(glGetIntegerv(GL_DEPTH_FUNC, &depthFunc));
         GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &pointSize));
 
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLStateCache::instance().disableLighting();
         GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
         GL_SAFE_CALL(glPointSize(10.0));
 
@@ -2324,10 +2325,7 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
             }
         }
 
-        if (lightingEnabled)
-        {
-            GL_SAFE_CALL(glEnable(GL_LIGHTING));
-        }
+        GLStateCache::instance().setLighting(lightingEnabled);
         GL_SAFE_CALL(glDepthFunc(GLenum(depthFunc)));
         GL_SAFE_CALL(glPointSize(pointSize));
     }

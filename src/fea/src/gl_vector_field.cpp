@@ -5,6 +5,7 @@
 #include "gl_functions.h"
 #include "gl_vector_field.h"
 #include "gl_arrow.h"
+#include "gl_state_cache.h"
 #include "gl_texture.h"
 #include "application.h"
 
@@ -76,7 +77,7 @@ void GLVectorField::initialize()
         return;
     }
 
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
 
@@ -87,7 +88,7 @@ void GLVectorField::initialize()
     }
     else
     {
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLStateCache::instance().disableLighting();
         GL_SAFE_CALL(glDisable(GL_NORMALIZE));
     }
 }
@@ -99,7 +100,7 @@ void GLVectorField::finalize()
         return;
     }
 
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
     GL_SAFE_CALL(glLineWidth(this->lineWidth));
 }
@@ -145,7 +146,7 @@ void GLVectorField::draw()
             {
                 GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
                 this->getGLWidget()->qglColor(QColor(255,255,255,255));
-                GL_SAFE_CALL(glTexCoord1d(vectorField[i].scaleValue));
+                GLFunctions::texCoord1f(GLfloat(vectorField[i].scaleValue));
             }
             else
             {

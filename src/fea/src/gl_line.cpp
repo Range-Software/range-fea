@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_line.h"
+#include "gl_state_cache.h"
 
 
 void GLLine::_init(const GLLine *pGlLine)
@@ -42,18 +43,18 @@ void GLLine::initialize()
 {
     // Save current settings
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
     // Initialize environment
     GL_SAFE_CALL(glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
     GL_SAFE_CALL(glLineWidth(this->width));
 }
 
 void GLLine::finalize()
 {
     GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) :glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(glLineWidth(this->lineWidth));
 }
 

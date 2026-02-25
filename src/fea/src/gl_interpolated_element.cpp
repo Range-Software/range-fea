@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_interpolated_element.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLInterpolatedElement::_init(const GLInterpolatedElement *pGlElement)
@@ -107,71 +108,68 @@ void GLInterpolatedElement::drawNormal()
     if (this->size() == 1)
     {
         // Points.
-        GLboolean lightingEnabled;
-        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+        GLStateCache::instance().disableLighting();
         GLFunctions::begin(GL_LINE_LOOP);
         for (uint j=0;j<this->size();j++)
         {
             if (validScalarValues)
             {
-                GL_SAFE_CALL(glTexCoord1d(scalarValues[j]));
+                GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
             }
             GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
         }
         GLFunctions::end();
-        GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+        GLStateCache::instance().setLighting(lightingEnabled);
 
     }
     else if (this->size() == 2)
     {
         // Lines.
-        GLboolean lightingEnabled;
-        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+        GLStateCache::instance().disableLighting();
         GLFunctions::begin(GL_LINE_STRIP);
         for (uint j=0;j<this->size();j++)
         {
             if (validScalarValues)
             {
-                GL_SAFE_CALL(glTexCoord1d(scalarValues[j]));
+                GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
             }
             GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
         }
         GLFunctions::end();
-        GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+        GLStateCache::instance().setLighting(lightingEnabled);
     }
     else if (this->size() > 2)
     {
         // Polygons.
         if (this->getElementGroupData().getDrawWire())
         {
-            GLboolean lightingEnabled;
-            GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-            GL_SAFE_CALL(glDisable(GL_LIGHTING));
+            GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+            GLStateCache::instance().disableLighting();
             GLFunctions::begin(GL_LINE_LOOP);
             for (uint j=0;j<this->size();j++)
             {
                 if (validScalarValues)
                 {
-                    GL_SAFE_CALL(glTexCoord1d(scalarValues[j]));
+                    GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
                 }
                 GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
             }
             GLFunctions::end();
-            GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+            GLStateCache::instance().setLighting(lightingEnabled);
         }
         else
         {
             RTriangle triangle(this->at(0),this->at(1),this->at(2));
             GL_SAFE_CALL(glNormal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]));
 
-            GLFunctions::begin(GL_POLYGON);
+            GLFunctions::begin(GL_TRIANGLE_FAN);
             for (uint j=0;j<this->size();j++)
             {
                 if (validScalarValues)
                 {
-                    GL_SAFE_CALL(glTexCoord1d(scalarValues[j]));
+                    GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
                 }
                 GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
             }
@@ -188,9 +186,8 @@ void GLInterpolatedElement::drawNormal()
     {
         if (this->getElementGroupData().getDrawEdges() && !this->getElementGroupData().getDrawWire())
         {
-            GLboolean lightingEnabled;
-            GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-            GL_SAFE_CALL(glDisable(GL_LIGHTING));
+            GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+            GLStateCache::instance().disableLighting();
             this->getGLWidget()->qglColor(QColor(Qt::black));
             GLFunctions::begin(GL_LINE_LOOP);
             for (uint j=0;j<this->size();j++)
@@ -198,15 +195,14 @@ void GLInterpolatedElement::drawNormal()
                 GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
             }
             GLFunctions::end();
-            GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+            GLStateCache::instance().setLighting(lightingEnabled);
         }
     }
 
     if (this->getElementGroupData().getDrawNodes())
     {
-        GLboolean lightingEnabled;
-        GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+        GLStateCache::instance().disableLighting();
         this->getGLWidget()->qglColor(QColor(Qt::black));
         GLFunctions::begin(GL_POINTS);
         for (uint j=0;j<this->size();j++)
@@ -214,6 +210,6 @@ void GLInterpolatedElement::drawNormal()
             GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
         }
         GLFunctions::end();
-        GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+        GLStateCache::instance().setLighting(lightingEnabled);
     }
 }

@@ -1,6 +1,7 @@
 #include "gl_functions.h"
 #include "gl_interpolated_entity.h"
 #include "gl_interpolated_element.h"
+#include "gl_state_cache.h"
 #include "application.h"
 
 
@@ -49,13 +50,13 @@ void GLInterpolatedEntity::initialize()
         return;
     }
 
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
     GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
 
     GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glEnable(GL_LIGHTING));
+    GLStateCache::instance().enableLighting();
     GL_SAFE_CALL(glPointSize(10.0f));
     GL_SAFE_CALL(glLineWidth(1.0f));
 }
@@ -67,7 +68,7 @@ void GLInterpolatedEntity::finalize()
         return;
     }
 
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
     GL_SAFE_CALL(glPointSize(this->pointSize));
     GL_SAFE_CALL(glLineWidth(this->lineWidth));

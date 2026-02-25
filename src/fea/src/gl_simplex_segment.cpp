@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_simplex_segment.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLSimplexSegment::_init(const GLSimplexSegment *pGlSegment)
@@ -173,8 +174,7 @@ void GLSimplexSegment::draw()
 
 void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::vector<RNode> &nodes2, bool volumeElement, bool useTexture)
 {
-    GLboolean lightingEnabled;
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
+    GLboolean lightingEnabled = GLStateCache::instance().getLighting();
 
     if (useTexture)
     {
@@ -189,9 +189,9 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         }
-        GLFunctions::begin(GL_POLYGON);
+        GLFunctions::begin(GL_TRIANGLE_FAN);
         for (uint i=0;i<nn;i++)
         {
             GLObject::glVertexNode(nodes1[i]);
@@ -200,16 +200,16 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         }
-        GLFunctions::begin(GL_POLYGON);
+        GLFunctions::begin(GL_TRIANGLE_FAN);
         for (uint i=0;i<nn;i++)
         {
             GLObject::glVertexNode(nodes2[i]);
         }
         GLFunctions::end();
 
-        GLFunctions::begin(GL_QUADS);
+        GLFunctions::begin(GL_TRIANGLES);
         for (uint i=0;i<nn;i++)
         {
             uint n1 = i;
@@ -217,34 +217,37 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
             GLObject::glNormalVector(RTriangle(nodes1[n1],nodes1[n2],nodes2[n2]).getNormal());
 
-            if (useTexture)
-            {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
-            }
+            // Triangle 1: nodes1[n1], nodes1[n2], nodes2[n2]
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
             GLObject::glVertexNode(nodes1[n1]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
             GLObject::glVertexNode(nodes1[n2]);
-            if (useTexture)
-            {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
-            }
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
             GLObject::glVertexNode(nodes2[n2]);
+
+            // Triangle 2: nodes1[n1], nodes2[n2], nodes2[n1]
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
+            GLObject::glVertexNode(nodes1[n1]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
+            GLObject::glVertexNode(nodes2[n2]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
             GLObject::glVertexNode(nodes2[n1]);
         }
         GLFunctions::end();
     }
     else
     {
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLStateCache::instance().disableLighting();
 
         GLFunctions::begin(GL_LINES);
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         }
         GLObject::glVertexNode(this->nodes[0]);
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         }
         GLObject::glVertexNode(this->nodes[1]);
         GLFunctions::end();
@@ -255,15 +258,13 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
         GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
     }
 
-    GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(lightingEnabled);
 }
 
 void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::vector<RNode> &nodes2, bool volumeElement, bool useTexture)
 {
-    GLboolean lightingEnabled;
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+    GLStateCache::instance().disableLighting();
 
     if (useTexture)
     {
@@ -276,7 +277,7 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         }
         GLFunctions::begin(GL_LINES);
         for (uint i=0;i<nn;i++)
@@ -294,7 +295,7 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         }
         GLFunctions::begin(GL_LINES);
         for (uint i=0;i<nn;i++)
@@ -315,12 +316,12 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
         {
             if (useTexture)
             {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+                GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
             }
             GLObject::glVertexNode(nodes1[i]);
             if (useTexture)
             {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+                GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
             }
             GLObject::glVertexNode(nodes2[i]);
         }
@@ -331,12 +332,12 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
         GLFunctions::begin(GL_LINES);
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         }
         GLObject::glVertexNode(this->nodes[0]);
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         }
         GLObject::glVertexNode(this->nodes[1]);
         GLFunctions::end();
@@ -347,7 +348,7 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
         GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
     }
 
-    GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(lightingEnabled);
 }
 
 void GLSimplexSegment::drawNodes()

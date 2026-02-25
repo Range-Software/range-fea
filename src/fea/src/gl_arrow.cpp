@@ -3,6 +3,7 @@
 #include "gl_functions.h"
 #include "gl_arrow.h"
 #include "gl_line.h"
+#include "gl_state_cache.h"
 
 void GLArrow::_init(const GLArrow *pGlArrow)
 {
@@ -103,9 +104,8 @@ void GLArrow::drawHead()
         const RElement &rElement = raw.getElement(i);
         if (RElementGroup::getGroupType(rElement.getType()) == R_ENTITY_GROUP_LINE)
         {
-            GLboolean lightingEnabled;
-            GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-            GL_SAFE_CALL(glDisable(GL_LIGHTING));
+            GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+            GLStateCache::instance().disableLighting();
 
             GLFunctions::begin(GL_LINES);
             GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
@@ -116,10 +116,7 @@ void GLArrow::drawHead()
                                     raw.getNode(rElement.getNodeId(1)).getZ()));
             GLFunctions::end();
 
-            if (lightingEnabled)
-            {
-                GL_SAFE_CALL(glEnable(GL_LIGHTING));
-            }
+            GLStateCache::instance().setLighting(lightingEnabled);
         }
         if (RElementGroup::getGroupType(rElement.getType()) == R_ENTITY_GROUP_SURFACE)
         {

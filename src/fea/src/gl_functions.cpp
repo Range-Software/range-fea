@@ -161,12 +161,22 @@ void GLFunctions::texCoord1f(GLfloat t)
 
 void GLFunctions::beginVBORecording(GLVertexBuffer *buffer)
 {
+    if (buffer)
+    {
+        // Clear any leftover CPU data from a previous (possibly interrupted) session.
+        buffer->reset();
+    }
     currentVBO = buffer;
     vboRecordingMode = (buffer != nullptr);
 }
 
 void GLFunctions::endVBORecording()
 {
+    if (currentVBO)
+    {
+        // Upload all accumulated batches to the GPU in one call.
+        currentVBO->uploadToGPU();
+    }
     currentVBO = nullptr;
     vboRecordingMode = false;
 }

@@ -1,5 +1,6 @@
 #include "gl_state_cache.h"
 #include "gl_functions.h"
+#include "gl_shader_program.h"
 
 GLStateCache::GLStateCache()
     : lineSmooth(GL_FALSE)
@@ -14,6 +15,7 @@ GLStateCache::GLStateCache()
     , pointSize(1.0f)
     , lineWidth(1.0f)
     , initialized(false)
+    , shaderProgram(nullptr)
 {
 }
 
@@ -86,6 +88,16 @@ void GLStateCache::setLighting(GLboolean enabled)
         this->lighting = enabled;
         GL_SAFE_CALL(enabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
     }
+    // Keep the shader uniform in sync regardless of whether the GL state changed.
+    if (this->shaderProgram)
+    {
+        this->shaderProgram->setUniformBool("uUseLighting", enabled == GL_TRUE);
+    }
+}
+
+void GLStateCache::setShaderProgram(GLShaderProgram *prog)
+{
+    this->shaderProgram = prog;
 }
 
 void GLStateCache::setNormalize(GLboolean enabled)

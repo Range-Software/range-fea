@@ -19,7 +19,10 @@ struct GLVertexData
 };
 
 //! OpenGL Vertex Buffer Object manager.
-//! Replaces display lists with modern VBO-based rendering for better performance.
+//! Uses fixed-function VBO rendering (glVertexPointer / glDrawArrays) compatible
+//! with the legacy pipeline.  A session of GL recording produces multiple
+//! glBegin/glEnd batches; all batches are accumulated CPU-side and uploaded to
+//! the GPU in a single glBufferData call at the end of the session.
 class GLVertexBuffer
 {
 
@@ -36,22 +39,32 @@ class GLVertexBuffer
             Polygon = GL_POLYGON
         };
 
+        //! One glBegin/glEnd primitive batch within the buffer.
+        struct Batch
+        {
+            GLenum  primitiveType;
+            GLint   start;   //!< First vertex index in the uploaded VBO.
+            GLsizei count;   //!< Number of vertices in this batch.
+        };
+
     protected:
 
         //! VBO handle for vertex data.
         GLuint vboId;
-        //! VAO handle for vertex attribute state.
-        GLuint vaoId;
-        //! Number of vertices in the buffer.
+        //! Total uploaded vertex count (valid after uploadToGPU).
         GLsizei vertexCount;
-        //! Primitive type for rendering.
-        GLenum primitiveType;
         //! Whether the VBO is valid and ready for rendering.
         bool valid;
-        //! Accumulated vertex data (before upload to GPU).
+        //! Accumulated vertex data (CPU-side; cleared after uploadToGPU).
         std::vector<GLVertexData> vertices;
-        //! Whether we're currently recording vertices.
+        //! Recorded primitive batches (retained after upload for render()).
+        std::vector<Batch> batches;
+        //! Whether we're currently recording vertices for a batch.
         bool recording;
+        //! Start index in vertices[] of the current in-progress batch.
+        GLint currentBatchStart;
+        //! Primitive type of the current in-progress batch.
+        GLenum currentBatchPrimitive;
         //! Current normal for vertices being added.
         GLfloat currentNormal[3];
         //! Current color for vertices being added.
@@ -81,14 +94,22 @@ class GLVertexBuffer
         //! Check if VBO is valid and ready for rendering.
         bool isValid() const;
 
-        //! Invalidate the VBO (will be rebuilt on next use).
+        //! Mark as invalid so it will be rebuilt next frame.
         void invalidate();
 
-        //! Begin recording vertices for a primitive type.
+        //! Reset CPU-side buffers ready for a fresh recording session.
+        //! Does not release the existing GPU buffer (it will be reused).
+        void reset();
+
+        //! Begin recording vertices for a new primitive batch.
         void beginRecording(GLenum primitive);
 
-        //! End recording and upload data to GPU.
+        //! End recording the current primitive batch (CPU-side only).
         void endRecording();
+
+        //! Upload all accumulated CPU-side batches to the GPU VBO.
+        //! Call once after all primitives have been recorded.
+        void uploadToGPU();
 
         //! Set current normal (applies to subsequent vertices).
         void setNormal(GLfloat x, GLfloat y, GLfloat z);
@@ -102,13 +123,13 @@ class GLVertexBuffer
         //! Add a vertex with current normal, color, and texcoord.
         void addVertex(GLfloat x, GLfloat y, GLfloat z);
 
-        //! Render the VBO contents.
+        //! Render the VBO contents using fixed-function client-state arrays.
         void render() const;
 
         //! Delete GPU resources.
         void release();
 
-        //! Get number of vertices.
+        //! Get total number of uploaded vertices.
         GLsizei getVertexCount() const;
 
         //! Check if recording is in progress.

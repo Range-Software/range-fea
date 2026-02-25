@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QFileDialog>
+#include <QMatrix4x4>
 #include <QPainter>
 #include <QGuiApplication>
 //#include <QDesktopWidget>
@@ -29,6 +30,33 @@
 const GLsizei GLWidget::lAxisWpWidth = 100;
 const GLsizei GLWidget::lAxisWpHeight = 100;
 
+// ---------------------------------------------------------------------------
+// Matrix conversion helpers (file-scope, not exposed in the header).
+// OpenGL matrices are stored column-major: element at (row r, col c) is at
+// index c*4+r.  QMatrix4x4::constData() returns the same column-major layout.
+// ---------------------------------------------------------------------------
+
+// Build a QMatrix4x4 from a column-major GL double[16] array.
+static QMatrix4x4 matrixFromGL(const double m[16])
+{
+    // QMatrix4x4(m11,m12,...) constructor takes values in ROW-major order.
+    return QMatrix4x4(float(m[0]), float(m[4]), float(m[8]),  float(m[12]),
+                      float(m[1]), float(m[5]), float(m[9]),  float(m[13]),
+                      float(m[2]), float(m[6]), float(m[10]), float(m[14]),
+                      float(m[3]), float(m[7]), float(m[11]), float(m[15]));
+}
+
+// Write a QMatrix4x4 into a column-major GL double[16] array.
+static void matrixToGL(const QMatrix4x4 &m, double out[16])
+{
+    // constData() returns data in column-major order — direct assignment.
+    const float *d = m.constData();
+    for (int i = 0; i < 16; i++)
+    {
+        out[i] = double(d[i]);
+    }
+}
+
 GLWidget::GLWidget(uint modelID, QWidget *parent)
     : QOpenGLWidget(parent),
       modelID(modelID),
@@ -52,8 +80,11 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       showRotationSphere(false),
       useGlCullFace(true),
       lightsNeedUpdate(true),
-      cachedNLights(0)
+      cachedNLights(0),
+      currentGLColor(Qt::white)
 {
+    // Initialise projMatrix to identity (column-major).
+    for (int i = 0; i < 16; i++) this->projMatrix[i] = (i % 5 == 0) ? 1.0 : 0.0;
     R_LOG_TRACE_IN;
     this->desktopDevicePixelRatio = Application::instance()->getMainWindow()->devicePixelRatio();
 
@@ -124,6 +155,17 @@ void GLWidget::initializeGL()
 {
     R_LOG_TRACE_IN;
     this->resetView(-45.0, 0.0, -135.0);
+
+    // Load GLSL shader programs (require an active GL context).
+    if (!this->mainShaderProgram.load(":/shaders/main.vert", ":/shaders/main.frag"))
+    {
+        RLogger::warning("GLWidget: failed to load main shader program\n");
+    }
+    if (!this->flatShaderProgram.load(":/shaders/flat.vert", ":/shaders/flat.frag"))
+    {
+        RLogger::warning("GLWidget: failed to load flat shader program\n");
+    }
+
     R_LOG_TRACE_OUT;
 }
 
@@ -209,7 +251,7 @@ void GLWidget::drawBackgroundGradient()
     GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
     // Note: GL_BLEND, glBlendFunc, glShadeModel, glDepthFunc already set in paintGL()
 
-    GLFunctions::begin(GL_QUADS);
+    GLFunctions::begin(GL_TRIANGLE_FAN);
 
     this->qglColor(QColor(255,255,255,0));
     GL_SAFE_CALL(glVertex3d( 1.0,  0.3, 0.0));
@@ -236,6 +278,13 @@ void GLWidget::drawModel()
     GLdouble winScale = this->calculateViewDepth();
 
     GL_SAFE_CALL(glOrtho(-1.0, 1.0, -winRatio, winRatio, -winScale, winScale));
+
+    // Cache the projection matrix CPU-side (same parameters as glOrtho above).
+    {
+        QMatrix4x4 pm;
+        pm.ortho(-1.0f, 1.0f, float(-winRatio), float(winRatio), float(-winScale), float(winScale));
+        matrixToGL(pm, this->projMatrix);
+    }
 
     GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
     GL_SAFE_CALL(glLoadIdentity());
@@ -275,10 +324,10 @@ void GLWidget::drawModel()
     }
 
     RLogger::trace("Apply transformations\n");
+    // applyTransformations() updates this->gMatrix CPU-side (no GL readback).
     this->applyTransformations();
-
-    GL_SAFE_CALL(glMultMatrixd(this->gMatrix));
-    GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, this->gMatrix));
+    // Upload the updated accumulated matrix directly — no glMultMatrixd+glGetDoublev.
+    GL_SAFE_CALL(glLoadMatrixd(this->gMatrix));
 
     // Note: GL_BLEND, glBlendFunc, glShadeModel already set in paintGL()
 
@@ -327,6 +376,45 @@ void GLWidget::drawModel()
         GL_SAFE_CALL(glEnable(GL_CLIP_PLANE0));
     }
 
+    // Bind the GLSL shader for model rendering and upload frame uniforms.
+    // Full modelview = accumulated rotation/translation matrix × model scale.
+    if (this->mainShaderProgram.isValid())
+    {
+        QMatrix4x4 mv = matrixFromGL(this->gMatrix);
+        mv.scale(float(this->mscale));
+
+        this->mainShaderProgram.bind();
+        GLStateCache::instance().setShaderProgram(&this->mainShaderProgram);
+
+        this->mainShaderProgram.setUniformMatrix4x4("uProjection", matrixFromGL(this->projMatrix));
+        this->mainShaderProgram.setUniformMatrix4x4("uModelView", mv);
+
+        // Upload light parameters (directional lights — lightPs[3] == 0 always).
+        uint nLights = this->displayProperties.getNLights();
+        this->mainShaderProgram.setUniformInt("uNumLights", int(nLights));
+        for (uint i = 0; i < nLights; i++)
+        {
+            const RGLLight &light = this->displayProperties.getLight(i);
+            char buf[64];
+
+            const RR3Vector &pos = light.getPosition();
+            snprintf(buf, sizeof(buf), "uLights[%u].position", i);
+            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(float(pos[0]), float(pos[1]), float(pos[2])));
+
+            const QColor &amb = light.getAmbient();
+            snprintf(buf, sizeof(buf), "uLights[%u].ambient", i);
+            this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(amb.redF()), float(amb.greenF()), float(amb.blueF()), float(amb.alphaF())));
+
+            const QColor &dif = light.getDiffuse();
+            snprintf(buf, sizeof(buf), "uLights[%u].diffuse", i);
+            this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(dif.redF()), float(dif.greenF()), float(dif.blueF()), float(dif.alphaF())));
+        }
+
+        this->mainShaderProgram.setUniformBool("uUseLighting", true);
+        this->mainShaderProgram.setUniformBool("uUseTexture", false);
+        this->mainShaderProgram.setUniformInt("uColorMap", 0);
+    }
+
     if (Application::instance()->getSession()->getModel(this->getModelID()).glDrawTrylock())
     {
         RLogger::trace("Draw model\n");
@@ -342,6 +430,13 @@ void GLWidget::drawModel()
         Application::instance()->getSession()->getModel(this->getModelID()).glDrawUnlock();
 
         this->modelDrawTime = modelDrawStopWatch.getMiliSeconds();
+    }
+
+    // Release shader — subsequent non-model drawing uses fixed-function pipeline.
+    if (this->mainShaderProgram.isValid())
+    {
+        this->mainShaderProgram.release();
+        GLStateCache::instance().setShaderProgram(nullptr);
     }
 
     if (this->clippingPlaneEnabled)
@@ -501,17 +596,19 @@ void GLWidget::drawModel()
         GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
 
         GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
-        GL_SAFE_CALL(glLoadIdentity());
 
-        if (this->drx != 0.0f) {
-            GL_SAFE_CALL(glRotatef(this->drx, 1.0f, 0.0f, 0.0f));
+        // Update lMatrix CPU-side (same rotation increments, no translation).
+        {
+            QMatrix4x4 lDelta;
+            if (this->drx != 0.0f)
+                lDelta.rotate(this->drx, 1.0f, 0.0f, 0.0f);
+            if (this->dry != 0.0f)
+                lDelta.rotate(this->dry, 0.0f, 1.0f, 0.0f);
+            QMatrix4x4 lNew = lDelta * matrixFromGL(this->lMatrix);
+            matrixToGL(lNew, this->lMatrix);
         }
-        if (this->dry != 0.0f) {
-            GL_SAFE_CALL(glRotatef(this->dry, 0.0f, 1.0f, 0.0f));
-        }
-
-        GL_SAFE_CALL(glMultMatrixd(this->lMatrix));
-        GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, this->lMatrix));
+        // Upload directly — no glLoadIdentity+glRotatef+glMultMatrixd+glGetDoublev.
+        GL_SAFE_CALL(glLoadMatrixd(this->lMatrix));
 
         // Draw local axis.
         GLAxis lAxis(this,GL_AXIS_LOCAL);
@@ -868,32 +965,38 @@ void GLWidget::drawInfoBox(QPainter &painter, bool drawBox)
 void GLWidget::applyTransformations()
 {
     R_LOG_TRACE_IN;
+
+    // Compose incremental transforms into a delta matrix — no GL matrix-stack calls.
+    QMatrix4x4 delta;
     if (this->dtx != 0.0f || this->dty != 0.0f || this->dtz != 0.0f)
     {
-        glTranslatef(this->dtx, this->dty, this->dtz);
+        delta.translate(this->dtx, this->dty, this->dtz);
     }
-
     if (this->drx != 0.0f)
     {
-        glRotatef(this->drx, 1.0f, 0.0f, 0.0f);
+        delta.rotate(this->drx, 1.0f, 0.0f, 0.0f);
     }
     if (this->dry != 0.0f)
     {
-        glRotatef(this->dry, 0.0f, 1.0f, 0.0f);
+        delta.rotate(this->dry, 0.0f, 1.0f, 0.0f);
     }
-
     if (this->dscale != 0.0f && this->dscale != -1.0f)
     {
-        this->scale *= 1.0f+this->dscale;
+        this->scale *= 1.0f + this->dscale;
         if (this->scale < 1e4f)
         {
-            glScalef(1.0f+this->dscale,1.0f+this->dscale,1.0f+this->dscale);
+            delta.scale(1.0f + this->dscale, 1.0f + this->dscale, 1.0f + this->dscale);
         }
         else
         {
-            this->scale /= 1.0f+this->dscale;
+            this->scale /= 1.0f + this->dscale;
         }
     }
+
+    // Compose: new_gMatrix = delta * old_gMatrix (no glGetDoublev readback).
+    QMatrix4x4 gNew = delta * matrixFromGL(this->gMatrix);
+    matrixToGL(gNew, this->gMatrix);
+
     R_LOG_TRACE_OUT;
 }
 
@@ -1421,17 +1524,19 @@ void GLWidget::resetView(float xRotation, float yRotation, float zRotation)
     yPosition *= double(this->mscale);
     zPosition *= double(this->mscale);
 
-    glLoadIdentity ();
+    // Build the initial view matrix entirely on the CPU — no GL readback needed.
+    QMatrix4x4 m;
+    m.rotate(xRotation, 1.0f, 0.0f, 0.0f);
+    m.rotate(yRotation, 0.0f, 1.0f, 0.0f);
+    m.rotate(zRotation, 0.0f, 0.0f, 1.0f);
 
-    glRotatef (xRotation, 1.0f, 0.0f, 0.0f);
-    glRotatef (yRotation, 0.0f, 1.0f, 0.0f);
-    glRotatef (zRotation, 0.0f, 0.0f, 1.0f);
+    // lMatrix = rotation only (used for the local-axis indicator).
+    matrixToGL(m, this->lMatrix);
 
-    glGetDoublev (GL_MODELVIEW_MATRIX, this->lMatrix);
+    m.translate(float(-xPosition), float(-yPosition), float(-zPosition));
 
-    glTranslated (-xPosition,-yPosition,-zPosition);
-
-    glGetDoublev (GL_MODELVIEW_MATRIX, this->gMatrix);
+    // gMatrix = rotation + translation (used for the main scene).
+    matrixToGL(m, this->gMatrix);
 
     this->update();
     R_LOG_TRACE_OUT;
@@ -2033,6 +2138,7 @@ void GLWidget::takeScreenShot(const QString &fileName)
 void GLWidget::qglColor(const QColor &color)
 {
     R_LOG_TRACE_IN;
+    this->currentGLColor = color;
     GL_SAFE_CALL(glColor4d(color.redF(),color.greenF(),color.blueF(),color.alphaF()));
     R_LOG_TRACE_OUT;
 }
@@ -2050,27 +2156,22 @@ void GLWidget::qglClearColor(const QColor &clearColor)
 void GLWidget::renderText(double x, double y, double z, const QString &str, const QFont &font)
 {
     R_LOG_TRACE_IN;
-    // Identify x and y locations to render text within widget
+    // Project the 3D point to 2D screen coordinates.
+    // We still need the current modelview (it changes per-draw-call for mscale etc.),
+    // but we use the cached projMatrix to avoid that readback.
     int height = this->height();
-    GLdouble model[4][4], proj[4][4];
+    GLdouble model[16];
     GLint view[4];
-    GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, &model[0][0]));
-    GL_SAFE_CALL(glGetDoublev(GL_PROJECTION_MATRIX, &proj[0][0]));
+    GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, model));
     GL_SAFE_CALL(glGetIntegerv(GL_VIEWPORT, &view[0]));
     GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
     this->project(x, y, z,
-                  &model[0][0], &proj[0][0], &view[0],
+                  model, this->projMatrix, &view[0],
                   &textPosX, &textPosY, &textPosZ);
     textPosY = height - textPosY; // y is inverted
 
-    // Retrieve last OpenGL color to use as a font color
-    GLdouble glColor[4];
-    GL_SAFE_CALL(glGetDoublev(GL_CURRENT_COLOR, glColor));
-    QColor fontColor;
-    fontColor.setRedF(qreal(glColor[0]));
-    fontColor.setGreenF(qreal(glColor[1]));
-    fontColor.setBlueF(qreal(glColor[2]));
-    fontColor.setAlphaF(qreal(glColor[3]));
+    // Use the cached draw color instead of glGetDoublev(GL_CURRENT_COLOR).
+    QColor fontColor = this->currentGLColor;
 
     this->glTextRenderer.add(GLTextRendererItem(fontColor,font,QPointF(textPosX, textPosY)," " + str));
     R_LOG_TRACE_OUT;

@@ -1,6 +1,7 @@
 #include "gl_functions.h"
 #include "gl_simplex_point.h"
 #include "draw_engine_sphere.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLSimplexPoint::_init(const GLSimplexPoint *pGlPoint)
@@ -103,13 +104,12 @@ void GLSimplexPoint::draw()
 
 void GLSimplexPoint::drawNormal(const RModelRaw &sphereModel, bool volumeElement, bool useTexture)
 {
-    GLboolean lightingEnabled;
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
+    GLboolean lightingEnabled = GLStateCache::instance().getLighting();
 
     if (useTexture)
     {
         GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
-        GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
     }
 
     if (volumeElement)
@@ -134,7 +134,7 @@ void GLSimplexPoint::drawNormal(const RModelRaw &sphereModel, bool volumeElement
     }
     else
     {
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLStateCache::instance().disableLighting();
 
         GLFunctions::begin(GL_POINTS);
         GLObject::glVertexNode(this->nodes[0]);
@@ -146,20 +146,18 @@ void GLSimplexPoint::drawNormal(const RModelRaw &sphereModel, bool volumeElement
         GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
     }
 
-    GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(lightingEnabled);
 }
 
 void GLSimplexPoint::drawWired(const RModelRaw &sphereModel, bool volumeElement, bool useTexture)
 {
-    GLboolean lightingEnabled;
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &lightingEnabled));
-
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLboolean lightingEnabled = GLStateCache::instance().getLighting();
+    GLStateCache::instance().disableLighting();
 
     if (useTexture)
     {
         GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
-        GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
     }
 
     if (volumeElement)
@@ -180,7 +178,7 @@ void GLSimplexPoint::drawWired(const RModelRaw &sphereModel, bool volumeElement,
     }
     else
     {
-        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GLStateCache::instance().disableLighting();
 
         GLFunctions::begin(GL_POINTS);
         GLObject::glVertexNode(this->nodes[0]);
@@ -192,7 +190,7 @@ void GLSimplexPoint::drawWired(const RModelRaw &sphereModel, bool volumeElement,
         GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
     }
 
-    GL_SAFE_CALL(lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(lightingEnabled);
 }
 
 void GLSimplexPoint::drawNodes(const RModelRaw &, bool)

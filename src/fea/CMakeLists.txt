@@ -67,6 +67,7 @@ qt_add_executable(fea
     src/gl_entity_list.cpp
     src/gl_functions.cpp
     src/gl_frustum.cpp
+    src/gl_shader_program.cpp
     src/gl_grid.cpp
     src/gl_interpolated_element.cpp
     src/gl_interpolated_entity.cpp
@@ -260,6 +261,7 @@ qt_add_executable(fea
     src/gl_simplex_polygon.h
     src/gl_simplex_segment.h
     src/gl_simplex_tetrahedra.h
+    src/gl_shader_program.h
     src/gl_state_cache.h
     src/gl_text_renderer.h
     src/gl_text_renderer_item.h
@@ -619,6 +621,15 @@ qt_add_resources(fea icons-cloud
         pixmaps/range-upload.svg
         pixmaps/range-upload_replace.svg
         pixmaps/range-upload_update.svg
+)
+
+qt_add_resources(fea shaders
+    PREFIX "/shaders"
+    FILES
+        src/shaders/main.vert
+        src/shaders/main.frag
+        src/shaders/flat.vert
+        src/shaders/flat.frag
 )
 
 qt_add_translations(fea

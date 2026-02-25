@@ -2,7 +2,7 @@
 
 GLEntityList::GLEntityList()
     : GLList(GL_ENTITY_LIST_ITEM_N_LISTS)
-    , useVBO(false)  // VBO disabled: VAO + legacy client-state mixing is incompatible
+    , useVBO(false)
 {
     this->_init();
 }

@@ -130,44 +130,44 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
     if (this->edgeNodes[0] && this->edgeNodes[2] && this->edgeNodes[1])
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[2]),RNode(this->nodes[1])).getNormal()));
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 013
     if (this->edgeNodes[0] && this->edgeNodes[1] && this->edgeNodes[3])
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[1]),RNode(this->nodes[3])).getNormal()));
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
     }
     // 032
     if (this->edgeNodes[0] && this->edgeNodes[3] && this->edgeNodes[2])
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[3]),RNode(this->nodes[2])).getNormal()));
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
     }
     // 123
     if (this->edgeNodes[1] && this->edgeNodes[2] && this->edgeNodes[3])
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[1]),RNode(this->nodes[2]),RNode(this->nodes[3])).getNormal()));
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
     }
     GLFunctions::end();
@@ -195,49 +195,49 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
     // 01
     if (this->edgeNodes[0] && this->edgeNodes[1])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 12
     if (this->edgeNodes[1] && this->edgeNodes[2])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
     }
     // 20
     if (this->edgeNodes[2] && this->edgeNodes[0])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
     }
     // 30
     if (this->edgeNodes[3] && this->edgeNodes[0])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[0]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
     }
     // 31
     if (this->edgeNodes[3] && this->edgeNodes[1])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[1]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 32
     if (this->edgeNodes[3] && this->edgeNodes[2])
     {
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[3]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
-        if (useTexture) GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[2]));
+        if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
     }
     GLFunctions::end();

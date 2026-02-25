@@ -174,12 +174,12 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         cache.disableCullFace();
     }
 
-    GLFunctions::begin(GL_POLYGON);
+    GLFunctions::begin(GL_TRIANGLE_FAN);
     for (uint i=0;i<nn;i++)
     {
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[i]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
         }
         GLObject::glVertexNode(nodes1[i]);
     }
@@ -187,34 +187,29 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     if (volumeElement)
     {
-        GLFunctions::begin(GL_QUADS);
+        GLFunctions::begin(GL_TRIANGLES);
 
         for (uint i=0;i<nn;i++)
         {
             uint n1 = i;
-            uint n2 = i+1;
-            if (n2 == nn)
-            {
-                n2 = 0;
-            }
+            uint n2 = (i + 1 == nn) ? 0 : i + 1;
 
             GLObject::glNormalVector(RTriangle(nodes1[n2],nodes1[n1],nodes2[n1]).getNormal());
 
-            if (useTexture)
-            {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[n2]));
-            }
+            // Triangle 1: nodes1[n2], nodes1[n1], nodes2[n1]
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n2]));
             GLObject::glVertexNode(nodes1[n2]);
-            if (useTexture)
-            {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[n1]));
-            }
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n1]));
             GLObject::glVertexNode(nodes1[n1]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n1]));
             GLObject::glVertexNode(nodes2[n1]);
-            if (useTexture)
-            {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[n2]));
-            }
+
+            // Triangle 2: nodes1[n2], nodes2[n1], nodes2[n2]
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n2]));
+            GLObject::glVertexNode(nodes1[n2]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n1]));
+            GLObject::glVertexNode(nodes2[n1]);
+            if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[n2]));
             GLObject::glVertexNode(nodes2[n2]);
         }
 
@@ -237,7 +232,7 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
         GLObject::glNormalVector(normal);
 
-        GLFunctions::begin(GL_POLYGON);
+        GLFunctions::begin(GL_TRIANGLE_FAN);
         for (uint i=0;i<nn;i++)
         {
             GLObject::glVertexNode(nodes2[i]);
@@ -270,7 +265,7 @@ void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::ve
     {
         if (useTexture)
         {
-            GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[i]));
+            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
         }
         GLObject::glVertexNode(nodes1[i]);
     }
@@ -283,7 +278,7 @@ void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::ve
         {
             if (useTexture)
             {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[i]));
+                GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
             }
             GLObject::glVertexNode(nodes2[i]);
         }
@@ -294,7 +289,7 @@ void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::ve
         {
             if (useTexture)
             {
-                GL_SAFE_CALL(glTexCoord1d(this->nodeTextureCoordinates[i]));
+                GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
             }
             GLObject::glVertexNode(nodes1[i]);
             GLObject::glVertexNode(nodes2[i]);

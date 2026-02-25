@@ -1,6 +1,7 @@
 #include "gl_functions.h"
 #include "gl_cut_plane.h"
 #include "gl_arrow.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLCutPlane::_init(const GLCutPlane *pGlCutPlane)
@@ -55,7 +56,7 @@ void GLCutPlane::initialize()
     GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmoothEnabled));
     GL_SAFE_CALL(glGetIntegerv(GL_LINE_SMOOTH_HINT, &this->lineSmoothHint));
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
     GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
     // Initialize environment
@@ -63,7 +64,7 @@ void GLCutPlane::initialize()
     GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
     GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE));
     GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
     GL_SAFE_CALL(glDisable(GL_CULL_FACE));
     GL_SAFE_CALL(glLineWidth(1.0f));
 }
@@ -74,7 +75,7 @@ void GLCutPlane::finalize()
     GL_SAFE_CALL(this->depthTestEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST));
     GL_SAFE_CALL(this->lineSmoothEnabled ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH));
     GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
     GL_SAFE_CALL(glLineWidth(this->lineWidth));
     GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, this->lineSmoothHint));
@@ -84,13 +85,13 @@ void GLCutPlane::draw()
 {
     GLfloat cutScale = this->getSize();
 
-    GL_SAFE_CALL(glEnable(GL_LIGHTING));
+    GLStateCache::instance().enableLighting();
     this->getGLWidget()->qglColor(QColor(255,100,0,255));
     RR3Vector direction(this->normal);
     direction *= 0.5;
     GLArrow glArrow(this->glWidget,this->position,direction,true,true);
     glArrow.paint();
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
 
     RRMatrix R;
 
@@ -117,7 +118,7 @@ void GLCutPlane::draw()
     this->getGLWidget()->qglColor(QColor(255,255,255,100));
 
     GL_SAFE_CALL(glNormal3d(this->normal[0],this->normal[1],this->normal[2]));
-    GLFunctions::begin(GL_QUADS);
+    GLFunctions::begin(GL_TRIANGLE_FAN);
     GL_SAFE_CALL(glVertex3d(n1.getX(),n1.getY(),n1.getZ()));
     GL_SAFE_CALL(glVertex3d(n2.getX(),n2.getY(),n2.getZ()));
     GL_SAFE_CALL(glVertex3d(n3.getX(),n3.getY(),n3.getZ()));

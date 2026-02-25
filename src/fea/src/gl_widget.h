@@ -12,9 +12,13 @@
 
 #include <QOpenGLWidget>
 
+#include <QColor>
+#include <QMatrix4x4>
+
 #include "gl_display_properties.h"
 #include "gl_acion_event.h"
 #include "gl_model_list.h"
+#include "gl_shader_program.h"
 #include "gl_text_renderer.h"
 #include "session_entity_id.h"
 #include "session_node_id.h"
@@ -110,6 +114,14 @@ class GLWidget : public QOpenGLWidget
         bool lightsNeedUpdate;
         //! Cached number of lights for change detection.
         uint cachedNLights;
+        //! Lit geometry shader program (Phong lighting in fragment shader).
+        GLShaderProgram mainShaderProgram;
+        //! Unlit geometry shader program (flat color / texture passthrough).
+        GLShaderProgram flatShaderProgram;
+        //! Cached projection matrix (column-major, updated each frame in drawModel).
+        double projMatrix[16];
+        //! Last color set via qglColor() — used by renderText() instead of glGetDoublev.
+        QColor currentGLColor;
 
     public:
 

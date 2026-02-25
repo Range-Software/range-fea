@@ -7,6 +7,9 @@
 
 #include <QtOpenGL>
 
+// Forward declaration — avoids pulling in gl_shader_program.h everywhere.
+class GLShaderProgram;
+
 //! Singleton class that caches OpenGL state to avoid expensive glGet*() queries.
 //! Instead of querying the GPU for current state, we track state changes in software.
 class GLStateCache
@@ -33,6 +36,10 @@ class GLStateCache
 
         //! Whether the cache has been initialized.
         bool initialized;
+
+        //! Currently bound shader program (nullptr when fixed-function pipeline active).
+        //! When non-null, setLighting() also updates the uUseLighting uniform.
+        GLShaderProgram *shaderProgram;
 
     private:
 
@@ -69,6 +76,10 @@ class GLStateCache
         // Float state getters (no GPU query)
         GLfloat getPointSize() const;
         GLfloat getLineWidth() const;
+
+        //! Register the currently bound shader so setLighting() can sync uUseLighting.
+        //! Pass nullptr when the shader is released (fixed-function rendering active).
+        void setShaderProgram(GLShaderProgram *prog);
 
         // State setters (updates cache and makes GL call only if changed)
         void setLineSmooth(GLboolean enabled);

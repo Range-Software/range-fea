@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_rotation_sphere.h"
+#include "gl_state_cache.h"
 
 
 void GLRotationSphere::_init(const GLRotationSphere *pGlRotationSphere)
@@ -44,7 +45,7 @@ void GLRotationSphere::initialize()
     GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmoothEnabled));
     GL_SAFE_CALL(glGetIntegerv(GL_LINE_SMOOTH_HINT, &this->lineSmoothHint));
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LIGHTING, &this->lightingEnabled));
+    this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
     GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
     // Initialize environment
@@ -52,7 +53,7 @@ void GLRotationSphere::initialize()
     GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
     GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE));
     GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
+    GLStateCache::instance().disableLighting();
     GL_SAFE_CALL(glDisable(GL_CULL_FACE));
     GL_SAFE_CALL(glLineWidth(1.0f));
 }
@@ -62,7 +63,7 @@ void GLRotationSphere::finalize()
     GL_SAFE_CALL(this->depthTestEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST));
     GL_SAFE_CALL(this->lineSmoothEnabled ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH));
     GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(this->lightingEnabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
+    GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
     GL_SAFE_CALL(glLineWidth(this->lineWidth));
     GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GLenum(this->lineSmoothHint)));
