@@ -53,6 +53,29 @@ void GLModelList::clear()
     this->glIsoList.clear();
 }
 
+void GLModelList::invalidateAll()
+{
+    auto invalidateVector = [](QVector<GLEntityList> &v)
+    {
+        for (GLEntityList &list : v)
+        {
+            for (GLuint i = 0; i < GL_ENTITY_LIST_ITEM_N_LISTS; i++)
+            {
+                list.setListInvalid(i);
+            }
+        }
+    };
+    invalidateVector(this->glPointList);
+    invalidateVector(this->glLineList);
+    invalidateVector(this->glSurfaceList);
+    invalidateVector(this->glVolumeList);
+    invalidateVector(this->glVectorFieldList);
+    invalidateVector(this->glScalarFieldList);
+    invalidateVector(this->glStreamLineList);
+    invalidateVector(this->glCutList);
+    invalidateVector(this->glIsoList);
+}
+
 uint GLModelList::getNGlPointLists() const
 {
     return uint(this->glPointList.size());
@@ -62,7 +85,6 @@ void GLModelList::setNGlPointLists(uint nGlEntityLists)
 {
     if (this->glPointList.size() != int(nGlEntityLists))
     {
-        this->glPointList.clear();
         this->glPointList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -94,7 +116,6 @@ void GLModelList::setNGlLineLists(uint nGlEntityLists)
 {
     if (this->glLineList.size() != int(nGlEntityLists))
     {
-        this->glLineList.clear();
         this->glLineList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -126,7 +147,6 @@ void GLModelList::setNGlSurfaceLists(uint nGlEntityLists)
 {
     if (this->glSurfaceList.size() != int(nGlEntityLists))
     {
-        this->glSurfaceList.clear();
         this->glSurfaceList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -158,7 +178,6 @@ void GLModelList::setNGlVolumeLists(uint nGlEntityLists)
 {
     if (this->glVolumeList.size() != int(nGlEntityLists))
     {
-        this->glVolumeList.clear();
         this->glVolumeList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -190,7 +209,6 @@ void GLModelList::setNGlVectorFieldLists(uint nGlEntityLists)
 {
     if (this->glVectorFieldList.size() != int(nGlEntityLists))
     {
-        this->glVectorFieldList.clear();
         this->glVectorFieldList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -222,7 +240,6 @@ void GLModelList::setNGlScalarFieldLists(uint nGlEntityLists)
 {
     if (this->glScalarFieldList.size() != int(nGlEntityLists))
     {
-        this->glScalarFieldList.clear();
         this->glScalarFieldList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -254,7 +271,6 @@ void GLModelList::setNGlStreamLineLists(uint nGlEntityLists)
 {
     if (this->glStreamLineList.size() != int(nGlEntityLists))
     {
-        this->glStreamLineList.clear();
         this->glStreamLineList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -286,7 +302,6 @@ void GLModelList::setNGlCutLists(uint nGlEntityLists)
 {
     if (this->glCutList.size() != int(nGlEntityLists))
     {
-        this->glCutList.clear();
         this->glCutList.resize(GLsizei(nGlEntityLists));
     }
 }
@@ -318,7 +333,6 @@ void GLModelList::setNGlIsoLists(uint nGlEntityLists)
 {
     if (this->glIsoList.size() != int(nGlEntityLists))
     {
-        this->glIsoList.clear();
         this->glIsoList.resize(GLsizei(nGlEntityLists));
     }
 }

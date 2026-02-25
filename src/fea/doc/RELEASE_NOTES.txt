@@ -1,6 +1,7 @@
 ------------------------------------------------------------------
 Version 1.1.3
 
+- Performance improvements in OpenGL model drawing
 - Performance improvements in mesh repair functions
 
 Bug fixes:

@@ -1786,7 +1786,7 @@ void GLWidget::onResultsChanged(uint modelID)
         R_LOG_TRACE_OUT;
         return;
     }
-    this->glModelList.clear();
+    this->glModelList.invalidateAll();
     this->update();
     R_LOG_TRACE_OUT;
 }

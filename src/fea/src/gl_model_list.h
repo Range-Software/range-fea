@@ -43,6 +43,9 @@ class GLModelList
         //! Clear list content.
         void clear();
 
+        //! Mark all list slots as invalid without destroying cached GL resources.
+        void invalidateAll();
+
         //! Return number of OpenGL point lists.
         uint getNGlPointLists() const;
 
