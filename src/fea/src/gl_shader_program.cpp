@@ -29,6 +29,14 @@ bool GLShaderProgram::load(const QString &vertexPath, const QString &fragmentPat
         return false;
     }
 
+    // Bind standard vertex attribute locations before linking.
+    // These match the glVertexAttribPointer calls in GLVertexBuffer::uploadToGPU().
+    // GLSL 1.30 does not support layout(location=N), so explicit binding is required.
+    this->program.bindAttributeLocation("aPosition", 0);
+    this->program.bindAttributeLocation("aNormal",   1);
+    this->program.bindAttributeLocation("aColor",    2);
+    this->program.bindAttributeLocation("aTexCoord", 3);
+
     if (!this->program.link())
     {
         RLogger::error("GLShaderProgram: link failed: %s\n",

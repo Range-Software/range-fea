@@ -291,13 +291,6 @@ void GLWidget::drawModel()
 
     GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
 
-    if (this->clippingPlaneEnabled)
-    {
-        RLogger::trace("Clipping plane\n");
-        const GLdouble clippingPlane[4] = { 0.0, 0.0, -1.0, - GLdouble(this->scale)  + 2.0 * this->clippingPlaneDistance * GLdouble(this->scale) };
-        GL_SAFE_CALL(glClipPlane(GL_CLIP_PLANE0,clippingPlane));
-    }
-
     // Only update lights when they change (cached lighting setup)
     GL_SAFE_CALL(glEnable(GL_LIGHTING));
     if (this->lightsNeedUpdate || this->cachedNLights != this->displayProperties.getNLights())
@@ -413,6 +406,12 @@ void GLWidget::drawModel()
         this->mainShaderProgram.setUniformBool("uUseLighting", true);
         this->mainShaderProgram.setUniformBool("uUseTexture", false);
         this->mainShaderProgram.setUniformInt("uColorMap", 0);
+
+        // Upload clip plane — replaces glClipPlane(GL_CLIP_PLANE0, ...).
+        QVector4D clipPlane(0.0f, 0.0f, -1.0f,
+                            float(-this->scale + 2.0 * this->clippingPlaneDistance * this->scale));
+        this->mainShaderProgram.setUniformBool("uClipEnabled", this->clippingPlaneEnabled);
+        this->mainShaderProgram.setUniformVector4D("uClipPlane", clipPlane);
     }
 
     if (Application::instance()->getSession()->getModel(this->getModelID()).glDrawTrylock())
@@ -2139,7 +2138,8 @@ void GLWidget::qglColor(const QColor &color)
 {
     R_LOG_TRACE_IN;
     this->currentGLColor = color;
-    GL_SAFE_CALL(glColor4d(color.redF(),color.greenF(),color.blueF(),color.alphaF()));
+    // Route through GLFunctions so the colour is captured during VBO recording.
+    GLFunctions::color4ub(GLubyte(color.red()), GLubyte(color.green()), GLubyte(color.blue()), GLubyte(color.alpha()));
     R_LOG_TRACE_OUT;
 }
 

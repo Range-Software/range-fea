@@ -398,12 +398,10 @@ void GLElementGroup::draw()
     {
         if (pGlEntityList->getUseVBO())
         {
-            // Render VBO
             pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL).render();
         }
         else
         {
-            // Render display list
             pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
         }
     }
