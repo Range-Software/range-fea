@@ -51,8 +51,6 @@ class GLVertexBuffer
 
         //! VBO handle for vertex data.
         GLuint vboId;
-        //! VAO that records the attribute layout (created once in uploadToGPU).
-        GLuint vaoId;
         //! Total uploaded vertex count (valid after uploadToGPU).
         GLsizei vertexCount;
         //! Whether the VBO is valid and ready for rendering.

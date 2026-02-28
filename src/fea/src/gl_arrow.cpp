@@ -108,12 +108,12 @@ void GLArrow::drawHead()
             GLStateCache::instance().disableLighting();
 
             GLFunctions::begin(GL_LINES);
-            GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
-                                    raw.getNode(rElement.getNodeId(0)).getY(),
-                                    raw.getNode(rElement.getNodeId(0)).getZ()));
-            GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
-                                    raw.getNode(rElement.getNodeId(1)).getY(),
-                                    raw.getNode(rElement.getNodeId(1)).getZ()));
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
+                                  raw.getNode(rElement.getNodeId(0)).getY(),
+                                  raw.getNode(rElement.getNodeId(0)).getZ());
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
+                                  raw.getNode(rElement.getNodeId(1)).getY(),
+                                  raw.getNode(rElement.getNodeId(1)).getZ());
             GLFunctions::end();
 
             GLStateCache::instance().setLighting(lightingEnabled);
@@ -123,17 +123,17 @@ void GLArrow::drawHead()
             RTriangle triangle(raw.getNode(rElement.getNodeId(0)),
                                raw.getNode(rElement.getNodeId(1)),
                                raw.getNode(rElement.getNodeId(2)));
-            GL_SAFE_CALL(glNormal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]));
+            GLFunctions::normal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]);
             GLFunctions::begin(GL_TRIANGLES);
-            GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
-                                    raw.getNode(rElement.getNodeId(0)).getY(),
-                                    raw.getNode(rElement.getNodeId(0)).getZ()));
-            GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
-                                    raw.getNode(rElement.getNodeId(1)).getY(),
-                                    raw.getNode(rElement.getNodeId(1)).getZ()));
-            GL_SAFE_CALL(glVertex3d(raw.getNode(rElement.getNodeId(2)).getX(),
-                                    raw.getNode(rElement.getNodeId(2)).getY(),
-                                    raw.getNode(rElement.getNodeId(2)).getZ()));
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
+                                  raw.getNode(rElement.getNodeId(0)).getY(),
+                                  raw.getNode(rElement.getNodeId(0)).getZ());
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
+                                  raw.getNode(rElement.getNodeId(1)).getY(),
+                                  raw.getNode(rElement.getNodeId(1)).getZ());
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(2)).getX(),
+                                  raw.getNode(rElement.getNodeId(2)).getY(),
+                                  raw.getNode(rElement.getNodeId(2)).getZ());
             GLFunctions::end();
         }
     }

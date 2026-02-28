@@ -56,6 +56,6 @@ void GLPoint::finalize()
 void GLPoint::draw()
 {
     GLFunctions::begin(GL_POINTS);
-    GL_SAFE_CALL(glVertex3d(this->position[0],this->position[1],this->position[2]));
+    GLFunctions::vertex3d(this->position[0],this->position[1],this->position[2]);
     GLFunctions::end();
 }

@@ -131,10 +131,7 @@ void GLElementGroup::draw()
             return;
     }
 
-    // Check if we need to rebuild (either display list or VBO is invalid)
-    bool needsRebuild = pGlEntityList->getUseVBO()
-        ? !pGlEntityList->getVBOValid(GL_ENTITY_LIST_ITEM_NORMAL)
-        : !pGlEntityList->getListValid(GL_ENTITY_LIST_ITEM_NORMAL);
+    bool needsRebuild = !pGlEntityList->getVBOValid(GL_ENTITY_LIST_ITEM_NORMAL);
 
     if (needsRebuild)
     {
@@ -318,17 +315,10 @@ void GLElementGroup::draw()
             }
         }
 
-        // Start recording to VBO or display list
+        // Start recording to VBO
         if (this->getUseGlList())
         {
-            if (pGlEntityList->getUseVBO())
-            {
-                GLFunctions::beginVBORecording(&pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL));
-            }
-            else
-            {
-                pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
-            }
+            GLFunctions::beginVBORecording(&pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL));
         }
 
         // Serial GL recording from pre-computed data
@@ -382,28 +372,14 @@ void GLElementGroup::draw()
         // End recording
         if (this->getUseGlList())
         {
-            if (pGlEntityList->getUseVBO())
-            {
-                GLFunctions::endVBORecording();
-            }
-            else
-            {
-                pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
-            }
+            GLFunctions::endVBORecording();
         }
     }
 
     // Render cached geometry
     if (this->getUseGlList())
     {
-        if (pGlEntityList->getUseVBO())
-        {
-            pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL).render();
-        }
-        else
-        {
-            pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
-        }
+        pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL).render();
     }
 
     if (this->getData().getDrawElementNumbers() || this->getData().getDrawNodeNumbers())

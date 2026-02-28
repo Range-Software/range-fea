@@ -117,7 +117,7 @@ void GLInterpolatedElement::drawNormal()
             {
                 GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
             }
-            GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+            GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
         }
         GLFunctions::end();
         GLStateCache::instance().setLighting(lightingEnabled);
@@ -135,7 +135,7 @@ void GLInterpolatedElement::drawNormal()
             {
                 GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
             }
-            GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+            GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
         }
         GLFunctions::end();
         GLStateCache::instance().setLighting(lightingEnabled);
@@ -154,7 +154,7 @@ void GLInterpolatedElement::drawNormal()
                 {
                     GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
                 }
-                GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+                GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
             }
             GLFunctions::end();
             GLStateCache::instance().setLighting(lightingEnabled);
@@ -162,7 +162,7 @@ void GLInterpolatedElement::drawNormal()
         else
         {
             RTriangle triangle(this->at(0),this->at(1),this->at(2));
-            GL_SAFE_CALL(glNormal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]));
+            GLFunctions::normal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]);
 
             GLFunctions::begin(GL_TRIANGLE_FAN);
             for (uint j=0;j<this->size();j++)
@@ -171,7 +171,7 @@ void GLInterpolatedElement::drawNormal()
                 {
                     GLFunctions::texCoord1f(GLfloat(scalarValues[j]));
                 }
-                GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+                GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
             }
             GLFunctions::end();
         }
@@ -192,7 +192,7 @@ void GLInterpolatedElement::drawNormal()
             GLFunctions::begin(GL_LINE_LOOP);
             for (uint j=0;j<this->size();j++)
             {
-                GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+                GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
             }
             GLFunctions::end();
             GLStateCache::instance().setLighting(lightingEnabled);
@@ -207,7 +207,7 @@ void GLInterpolatedElement::drawNormal()
         GLFunctions::begin(GL_POINTS);
         for (uint j=0;j<this->size();j++)
         {
-            GL_SAFE_CALL(glVertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ()));
+            GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
         }
         GLFunctions::end();
         GLStateCache::instance().setLighting(lightingEnabled);

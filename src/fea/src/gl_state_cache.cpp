@@ -88,8 +88,10 @@ void GLStateCache::setLighting(GLboolean enabled)
         this->lighting = enabled;
         GL_SAFE_CALL(enabled ? glEnable(GL_LIGHTING) : glDisable(GL_LIGHTING));
     }
-    // Keep the shader uniform in sync regardless of whether the GL state changed.
-    if (this->shaderProgram)
+    // Keep the shader uniform in sync (mirrors setTexture1D() pattern).
+    // Guard against VBO recording: per-element enable/disable should not corrupt
+    // the per-draw-call uniform.
+    if (this->shaderProgram && !GLFunctions::isRecordingVBO())
     {
         this->shaderProgram->setUniformBool("uUseLighting", enabled == GL_TRUE);
     }

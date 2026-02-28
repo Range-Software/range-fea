@@ -52,6 +52,6 @@ void GLNode::finalize()
 void GLNode::draw()
 {
     GLFunctions::begin(GL_POINTS);
-    GL_SAFE_CALL(glVertex3d(this->getX(),this->getY(),this->getZ()));
+    GLFunctions::vertex3d(this->getX(),this->getY(),this->getZ());
     GLFunctions::end();
 }

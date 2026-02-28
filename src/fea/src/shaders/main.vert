@@ -30,7 +30,11 @@ void main()
     gl_ClipDistance[0] = uClipEnabled ? dot(worldPos, uClipPlane) : 1.0;
 
     vFragPos  = worldPos.xyz;
-    vNormal   = mat3(transpose(inverse(mat3(uModelView)))) * aNormal;
+    // Normal matrix: transpose(inverse(mat3(uModelView))).
+    // inverse() is GLSL 1.40+; avoid it here.  For the rigid-body + uniform-scale
+    // transforms used in FEA viewing, mat3(uModelView) * aNormal gives the correct
+    // eye-space normal direction — any uniform scale cancels after normalize().
+    vNormal   = mat3(uModelView) * aNormal;
     vColor    = aColor;
     vTexCoord = aTexCoord;
 }

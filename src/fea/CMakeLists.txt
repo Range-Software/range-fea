@@ -65,7 +65,6 @@ qt_add_executable(fea
     src/gl_element_group.cpp
     src/gl_entity.cpp
     src/gl_entity_list.cpp
-    src/gl_list.cpp
     src/gl_functions.cpp
     src/gl_frustum.cpp
     src/gl_shader_program.cpp
@@ -244,7 +243,6 @@ qt_add_executable(fea
     src/gl_element_group.h
     src/gl_entity.h
     src/gl_entity_list.h
-    src/gl_list.h
     src/gl_functions.h
     src/gl_grid.h
     src/gl_interpolated_element.h

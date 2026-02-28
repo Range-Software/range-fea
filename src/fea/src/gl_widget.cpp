@@ -392,7 +392,10 @@ void GLWidget::drawModel()
 
             const RR3Vector &pos = light.getPosition();
             snprintf(buf, sizeof(buf), "uLights[%u].position", i);
-            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(float(pos[0]), float(pos[1]), float(pos[2])));
+            // Transform world-space light direction to eye space, exactly as glLightfv() did
+            // when called with the view matrix active.  w=0 = directional; scale cancels on normalize().
+            QVector4D eyePos = mv * QVector4D(float(pos[0]), float(pos[1]), float(pos[2]), 0.0f);
+            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(eyePos.x(), eyePos.y(), eyePos.z()));
 
             const QColor &amb = light.getAmbient();
             snprintf(buf, sizeof(buf), "uLights[%u].ambient", i);

@@ -1,46 +1,27 @@
 #include "gl_entity_list.h"
+#include "gl_functions.h"
 
 GLEntityList::GLEntityList()
-    : GLList(GL_ENTITY_LIST_ITEM_N_LISTS)
-    , useVBO(false)
 {
-    this->_init();
 }
 
-GLEntityList::GLEntityList(const GLEntityList &glEntityList)
-    : GLList(glEntityList)
-    , useVBO(false)
+GLEntityList::GLEntityList(const GLEntityList &)
 {
-    this->_init(&glEntityList);
+    // GPU resources are not copied — new entity list starts invalid.
 }
 
 GLEntityList::~GLEntityList()
 {
 }
 
-GLList &GLEntityList::operator =(const GLEntityList &glEntityList)
+GLEntityList &GLEntityList::operator =(const GLEntityList &)
 {
-    this->GLList::operator =(glEntityList);
-    this->_init(&glEntityList);
-    return (*this);
-}
-
-void GLEntityList::_init(const GLEntityList *pGlEntityList)
-{
-    if (pGlEntityList)
+    // GPU resources are not copied — destination list starts invalid.
+    for (int i = 0; i < GL_ENTITY_LIST_ITEM_N_LISTS; i++)
     {
-        this->useVBO = pGlEntityList->useVBO;
+        this->vbo[i].invalidate();
     }
-}
-
-bool GLEntityList::getUseVBO() const
-{
-    return this->useVBO;
-}
-
-void GLEntityList::setUseVBO(bool useVBO)
-{
-    this->useVBO = useVBO;
+    return (*this);
 }
 
 GLVertexBuffer &GLEntityList::getVBO(GLuint listPosition)
@@ -72,7 +53,33 @@ void GLEntityList::setVBOInvalid(GLuint listPosition)
 
 void GLEntityList::setListInvalid(GLuint listPosition)
 {
-    // Invalidate both display list and VBO
-    GLList::setListInvalid(listPosition);
     this->setVBOInvalid(listPosition);
+}
+
+// Compat stubs
+
+bool GLEntityList::getListValid(GLuint listPosition) const
+{
+    return this->getVBOValid(listPosition);
+}
+
+void GLEntityList::newList(GLuint listPosition, GLenum)
+{
+    if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        GLFunctions::beginVBORecording(&this->vbo[listPosition]);
+    }
+}
+
+void GLEntityList::endList(GLuint)
+{
+    GLFunctions::endVBORecording();
+}
+
+void GLEntityList::callList(GLuint listPosition) const
+{
+    if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        this->vbo[listPosition].render();
+    }
 }
