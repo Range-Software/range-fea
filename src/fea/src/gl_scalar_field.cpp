@@ -142,7 +142,7 @@ void GLScalarField::draw()
 
             if (scalarField[i].validScaleValue)
             {
-                GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+                GLStateCache::instance().enableTexture1D();
                 this->getGLWidget()->qglColor(QColor(255,255,255,255));
                 GLFunctions::texCoord1f(GLfloat(scalarField[i].scaleValue));
             }
@@ -158,7 +158,7 @@ void GLScalarField::draw()
 
             if (scalarField[i].validScaleValue)
             {
-                GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+                GLStateCache::instance().disableTexture1D();
             }
         }
 

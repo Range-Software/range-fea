@@ -144,7 +144,7 @@ void GLVectorField::draw()
         {
             if (vectorField[i].validScaleValue)
             {
-                GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+                GLStateCache::instance().enableTexture1D();
                 this->getGLWidget()->qglColor(QColor(255,255,255,255));
                 GLFunctions::texCoord1f(GLfloat(vectorField[i].scaleValue));
             }
@@ -158,7 +158,7 @@ void GLVectorField::draw()
             arrow.paint();
             if (vectorField[i].validScaleValue)
             {
-                GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+                GLStateCache::instance().disableTexture1D();
             }
         }
 

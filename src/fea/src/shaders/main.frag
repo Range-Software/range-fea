@@ -1,9 +1,9 @@
-#version 130
+#version 120
 
-in vec4  vColor;
-in vec3  vNormal;
-in vec3  vFragPos;
-in float vTexCoord;
+varying vec4  vColor;
+varying vec3  vNormal;
+varying vec3  vFragPos;
+varying float vTexCoord;
 
 uniform bool      uUseTexture;
 uniform bool      uUseLighting;
@@ -22,7 +22,7 @@ uniform Light uLights[8];
 
 void main()
 {
-    vec4 baseColor = uUseTexture ? texture(uColorMap, vTexCoord) : vColor;
+    vec4 baseColor = uUseTexture ? texture1D(uColorMap, vTexCoord) : vColor;
 
     if (!uUseLighting || uNumLights == 0)
     {

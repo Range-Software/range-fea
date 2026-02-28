@@ -2,6 +2,7 @@
 #include "gl_interpolated_entity.h"
 #include "gl_interpolated_element.h"
 #include "gl_state_cache.h"
+#include "gl_widget.h"
 #include "application.h"
 
 
@@ -142,7 +143,10 @@ void GLInterpolatedEntity::draw()
         pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
     }
 
+    // Cut/iso/stream entities are two-sided (no "inside" concept — don't render back faces as silver).
+    this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", true);
     pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
+    this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", false);
 
     this->texture.unload();
 }

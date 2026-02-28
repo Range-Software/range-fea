@@ -1,5 +1,7 @@
 #include "gl_shader_program.h"
 
+#include <QFile>
+
 #include <rbl_logger.h>
 
 GLShaderProgram::GLShaderProgram()
@@ -13,25 +15,56 @@ GLShaderProgram::~GLShaderProgram()
 
 bool GLShaderProgram::load(const QString &vertexPath, const QString &fragmentPath)
 {
-    if (!this->program.addShaderFromSourceFile(QOpenGLShader::Vertex, vertexPath))
+    // Read and log the actual source so we can confirm what the driver sees.
+    QFile vf(vertexPath);
+    if (!vf.open(QIODevice::ReadOnly))
     {
-        RLogger::error("GLShaderProgram: vertex shader '%s' failed: %s\n",
+        RLogger::error("GLShaderProgram: cannot open vertex shader resource '%s'\n",
+                       vertexPath.toUtf8().constData());
+        return false;
+    }
+    QByteArray vertSrc = vf.readAll();
+    vf.close();
+    RLogger::info("GLShaderProgram: vertex shader '%s' (%d bytes):\n%s\n",
+                  vertexPath.toUtf8().constData(),
+                  vertSrc.size(),
+                  vertSrc.constData());
+
+    if (!this->program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertSrc))
+    {
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: vertex shader '%s' compile failed (log %d chars): [%s]\n",
                        vertexPath.toUtf8().constData(),
-                       this->program.log().toUtf8().constData());
+                       log.size(),
+                       log.toUtf8().constData());
         return false;
     }
 
-    if (!this->program.addShaderFromSourceFile(QOpenGLShader::Fragment, fragmentPath))
+    QFile ff(fragmentPath);
+    if (!ff.open(QIODevice::ReadOnly))
     {
-        RLogger::error("GLShaderProgram: fragment shader '%s' failed: %s\n",
+        RLogger::error("GLShaderProgram: cannot open fragment shader resource '%s'\n",
+                       fragmentPath.toUtf8().constData());
+        return false;
+    }
+    QByteArray fragSrc = ff.readAll();
+    ff.close();
+    RLogger::info("GLShaderProgram: fragment shader '%s' (%d bytes):\n%s\n",
+                  fragmentPath.toUtf8().constData(),
+                  fragSrc.size(),
+                  fragSrc.constData());
+
+    if (!this->program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragSrc))
+    {
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: fragment shader '%s' compile failed (log %d chars): [%s]\n",
                        fragmentPath.toUtf8().constData(),
-                       this->program.log().toUtf8().constData());
+                       log.size(),
+                       log.toUtf8().constData());
         return false;
     }
 
-    // Bind standard vertex attribute locations before linking.
-    // These match the glVertexAttribPointer calls in GLVertexBuffer::uploadToGPU().
-    // GLSL 1.30 does not support layout(location=N), so explicit binding is required.
+    // Bind explicit attribute locations before linking.
     this->program.bindAttributeLocation("aPosition", 0);
     this->program.bindAttributeLocation("aNormal",   1);
     this->program.bindAttributeLocation("aColor",    2);
@@ -39,11 +72,54 @@ bool GLShaderProgram::load(const QString &vertexPath, const QString &fragmentPat
 
     if (!this->program.link())
     {
-        RLogger::error("GLShaderProgram: link failed: %s\n",
-                       this->program.log().toUtf8().constData());
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: link failed (log %d chars): [%s]\n",
+                       log.size(),
+                       log.toUtf8().constData());
         return false;
     }
 
+    RLogger::info("GLShaderProgram: '%s' + '%s' linked OK\n",
+                  vertexPath.toUtf8().constData(),
+                  fragmentPath.toUtf8().constData());
+    return true;
+}
+
+bool GLShaderProgram::loadFromSource(const char *vertSrc, const char *fragSrc)
+{
+    if (!this->program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertSrc))
+    {
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: vertex compile failed (log %d chars): [%s]\n",
+                       log.size(),
+                       log.toUtf8().constData());
+        return false;
+    }
+
+    if (!this->program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragSrc))
+    {
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: fragment compile failed (log %d chars): [%s]\n",
+                       log.size(),
+                       log.toUtf8().constData());
+        return false;
+    }
+
+    this->program.bindAttributeLocation("aPosition", 0);
+    this->program.bindAttributeLocation("aNormal",   1);
+    this->program.bindAttributeLocation("aColor",    2);
+    this->program.bindAttributeLocation("aTexCoord", 3);
+
+    if (!this->program.link())
+    {
+        QString log = this->program.log();
+        RLogger::error("GLShaderProgram: link failed (log %d chars): [%s]\n",
+                       log.size(),
+                       log.toUtf8().constData());
+        return false;
+    }
+
+    RLogger::info("GLShaderProgram: loaded from source OK\n");
     return true;
 }
 

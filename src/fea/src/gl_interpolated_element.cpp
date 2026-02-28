@@ -97,7 +97,7 @@ void GLInterpolatedElement::drawNormal()
     int r = 255, g = 255, b = 255, a = 255;
     if (validScalarValues)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().enableTexture1D();
     }
     else
     {
@@ -179,7 +179,7 @@ void GLInterpolatedElement::drawNormal()
 
     if (validScalarValues)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().disableTexture1D();
     }
 
     if (this->size() > 2)

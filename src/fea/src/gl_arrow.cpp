@@ -123,17 +123,18 @@ void GLArrow::drawHead()
             RTriangle triangle(raw.getNode(rElement.getNodeId(0)),
                                raw.getNode(rElement.getNodeId(1)),
                                raw.getNode(rElement.getNodeId(2)));
-            GLFunctions::normal3d(triangle.getNormal()[0],triangle.getNormal()[1],triangle.getNormal()[2]);
+            // Flip winding (0,2,1) and negate normal so triangles are front-facing (CCW).
+            GLFunctions::normal3d(-triangle.getNormal()[0],-triangle.getNormal()[1],-triangle.getNormal()[2]);
             GLFunctions::begin(GL_TRIANGLES);
             GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(0)).getX(),
                                   raw.getNode(rElement.getNodeId(0)).getY(),
                                   raw.getNode(rElement.getNodeId(0)).getZ());
-            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
-                                  raw.getNode(rElement.getNodeId(1)).getY(),
-                                  raw.getNode(rElement.getNodeId(1)).getZ());
             GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(2)).getX(),
                                   raw.getNode(rElement.getNodeId(2)).getY(),
                                   raw.getNode(rElement.getNodeId(2)).getZ());
+            GLFunctions::vertex3d(raw.getNode(rElement.getNodeId(1)).getX(),
+                                  raw.getNode(rElement.getNodeId(1)).getY(),
+                                  raw.getNode(rElement.getNodeId(1)).getZ());
             GLFunctions::end();
         }
     }

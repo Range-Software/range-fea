@@ -1,16 +1,15 @@
-#version 130
+#version 120
 
 // For unlit geometry (wireframes, axes, text anchors, etc.)
 uniform mat4 uProjection;
 uniform mat4 uModelView;
 
-// Vertex attributes — fed by glVertexAttribPointer (replaces deprecated client arrays).
-in vec3  aPosition;   // layout location 0
-in vec4  aColor;      // layout location 2 — UNSIGNED_BYTE normalised to [0,1]
-in float aTexCoord;   // layout location 3
+attribute vec3  aPosition;
+attribute vec4  aColor;
+attribute float aTexCoord;
 
-out vec4  vColor;
-out float vTexCoord;
+varying vec4  vColor;
+varying float vTexCoord;
 
 void main()
 {

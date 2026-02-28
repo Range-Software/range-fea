@@ -156,14 +156,115 @@ void GLWidget::initializeGL()
     R_LOG_TRACE_IN;
     this->resetView(-45.0, 0.0, -135.0);
 
+    RLogger::info("GL_VERSION  : %s\n", glGetString(GL_VERSION));
+    RLogger::info("GL_RENDERER : %s\n", glGetString(GL_RENDERER));
+    RLogger::info("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    // GLSL 1.20 shader sources embedded directly to avoid Qt resource system issues
+    // on Apple's Metal-backed OpenGL 2.1 driver.
+    static const char kMainVert[] = R"GLSL(
+#version 120
+uniform mat4 uProjection;
+uniform mat4 uModelView;
+attribute vec3  aPosition;
+attribute vec3  aNormal;
+attribute vec4  aColor;
+attribute float aTexCoord;
+varying vec4  vColor;
+varying vec3  vNormal;
+varying vec3  vFragPos;
+varying float vTexCoord;
+void main()
+{
+    vec4 worldPos = uModelView * vec4(aPosition, 1.0);
+    gl_Position   = uProjection * worldPos;
+    vFragPos  = worldPos.xyz;
+    vNormal   = mat3(uModelView) * aNormal;
+    vColor    = aColor;
+    vTexCoord = aTexCoord;
+}
+)GLSL";
+
+    static const char kMainFrag[] = R"GLSL(
+#version 120
+varying vec4  vColor;
+varying vec3  vNormal;
+varying vec3  vFragPos;
+varying float vTexCoord;
+uniform bool      uUseTexture;
+uniform bool      uUseLighting;
+uniform bool      uTwoSided;
+uniform sampler1D uColorMap;
+struct Light { vec3 position; vec4 ambient; vec4 diffuse; };
+uniform int   uNumLights;
+uniform Light uLights[8];
+void main()
+{
+    // Back faces: silver for solid surfaces; two-sided (cut planes, iso surfaces) use flipped normal.
+    if (!gl_FrontFacing && !uTwoSided) { gl_FragColor = vec4(0.75, 0.75, 0.75, 1.0); return; }
+    // vTexCoord < 0 is a sentinel: use vertex colour (e.g. black edges over a textured face).
+    vec4 baseColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
+    if (!uUseLighting || uNumLights == 0) { gl_FragColor = baseColor; return; }
+    // Flip normal for back faces so lighting looks correct from the viewer's side.
+    vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
+    vec4 result = vec4(0.0);
+    for (int i = 0; i < uNumLights; i++)
+    {
+        vec3  lightDir = normalize(uLights[i].position);
+        float diff     = max(dot(norm, lightDir), 0.0);
+        result += uLights[i].ambient  * baseColor;
+        result += diff * uLights[i].diffuse * baseColor;
+    }
+    gl_FragColor = vec4(result.rgb, baseColor.a);
+}
+)GLSL";
+
+    static const char kFlatVert[] = R"GLSL(
+#version 120
+uniform mat4 uProjection;
+uniform mat4 uModelView;
+attribute vec3  aPosition;
+attribute vec4  aColor;
+attribute float aTexCoord;
+varying vec4  vColor;
+varying float vTexCoord;
+void main()
+{
+    gl_Position = uProjection * uModelView * vec4(aPosition, 1.0);
+    vColor      = aColor;
+    vTexCoord   = aTexCoord;
+}
+)GLSL";
+
+    static const char kFlatFrag[] = R"GLSL(
+#version 120
+varying vec4  vColor;
+varying float vTexCoord;
+uniform bool      uUseTexture;
+uniform sampler1D uColorMap;
+void main()
+{
+    // vTexCoord < 0 is a sentinel: use vertex colour, not the texture.
+    gl_FragColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
+}
+)GLSL";
+
     // Load GLSL shader programs (require an active GL context).
-    if (!this->mainShaderProgram.load(":/shaders/main.vert", ":/shaders/main.frag"))
+    if (!this->mainShaderProgram.loadFromSource(kMainVert, kMainFrag))
     {
         RLogger::warning("GLWidget: failed to load main shader program\n");
     }
-    if (!this->flatShaderProgram.load(":/shaders/flat.vert", ":/shaders/flat.frag"))
+    else
+    {
+        RLogger::info("GLWidget: main shader loaded OK\n");
+    }
+    if (!this->flatShaderProgram.loadFromSource(kFlatVert, kFlatFrag))
     {
         RLogger::warning("GLWidget: failed to load flat shader program\n");
+    }
+    else
+    {
+        RLogger::info("GLWidget: flat shader loaded OK\n");
     }
 
     R_LOG_TRACE_OUT;
@@ -319,6 +420,17 @@ void GLWidget::drawModel()
     RLogger::trace("Apply transformations\n");
     // applyTransformations() updates this->gMatrix CPU-side (no GL readback).
     this->applyTransformations();
+    if (this->clippingPlaneEnabled)
+    {
+        // Set clip plane while modelview = identity so the plane equation is
+        // specified directly in eye space.  glClipPlane transforms by M^{-T},
+        // which is identity here, so the stored plane equals what we pass in.
+        const GLdouble clippingPlane[4] = {
+            0.0, 0.0, -1.0,
+            -GLdouble(this->scale) + 2.0 * this->clippingPlaneDistance * GLdouble(this->scale)
+        };
+        GL_SAFE_CALL(glClipPlane(GL_CLIP_PLANE0, clippingPlane));
+    }
     // Upload the updated accumulated matrix directly — no glMultMatrixd+glGetDoublev.
     GL_SAFE_CALL(glLoadMatrixd(this->gMatrix));
 
@@ -382,39 +494,39 @@ void GLWidget::drawModel()
         this->mainShaderProgram.setUniformMatrix4x4("uProjection", matrixFromGL(this->projMatrix));
         this->mainShaderProgram.setUniformMatrix4x4("uModelView", mv);
 
-        // Upload light parameters (directional lights — lightPs[3] == 0 always).
-        uint nLights = this->displayProperties.getNLights();
-        this->mainShaderProgram.setUniformInt("uNumLights", int(nLights));
-        for (uint i = 0; i < nLights; i++)
+        // Upload light parameters — only enabled lights (matches original glEnable(GL_LIGHTi) behaviour).
+        // Positions are uploaded as-is (camera-relative/eye-space) because the original glLightfv()
+        // calls were made before glLoadMatrixd(gMatrix), i.e. with identity modelview.
+        uint nUpload = 0;
+        for (uint i = 0; i < this->displayProperties.getNLights(); i++)
         {
             const RGLLight &light = this->displayProperties.getLight(i);
+            if (!light.getEnabled())
+            {
+                continue;
+            }
             char buf[64];
 
             const RR3Vector &pos = light.getPosition();
-            snprintf(buf, sizeof(buf), "uLights[%u].position", i);
-            // Transform world-space light direction to eye space, exactly as glLightfv() did
-            // when called with the view matrix active.  w=0 = directional; scale cancels on normalize().
-            QVector4D eyePos = mv * QVector4D(float(pos[0]), float(pos[1]), float(pos[2]), 0.0f);
-            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(eyePos.x(), eyePos.y(), eyePos.z()));
+            snprintf(buf, sizeof(buf), "uLights[%u].position", nUpload);
+            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(float(pos[0]), float(pos[1]), float(pos[2])));
 
             const QColor &amb = light.getAmbient();
-            snprintf(buf, sizeof(buf), "uLights[%u].ambient", i);
+            snprintf(buf, sizeof(buf), "uLights[%u].ambient", nUpload);
             this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(amb.redF()), float(amb.greenF()), float(amb.blueF()), float(amb.alphaF())));
 
             const QColor &dif = light.getDiffuse();
-            snprintf(buf, sizeof(buf), "uLights[%u].diffuse", i);
+            snprintf(buf, sizeof(buf), "uLights[%u].diffuse", nUpload);
             this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(dif.redF()), float(dif.greenF()), float(dif.blueF()), float(dif.alphaF())));
+
+            nUpload++;
         }
+        this->mainShaderProgram.setUniformInt("uNumLights", int(nUpload));
 
         this->mainShaderProgram.setUniformBool("uUseLighting", true);
         this->mainShaderProgram.setUniformBool("uUseTexture", false);
+        this->mainShaderProgram.setUniformBool("uTwoSided", false);
         this->mainShaderProgram.setUniformInt("uColorMap", 0);
-
-        // Upload clip plane — replaces glClipPlane(GL_CLIP_PLANE0, ...).
-        QVector4D clipPlane(0.0f, 0.0f, -1.0f,
-                            float(-this->scale + 2.0 * this->clippingPlaneDistance * this->scale));
-        this->mainShaderProgram.setUniformBool("uClipEnabled", this->clippingPlaneEnabled);
-        this->mainShaderProgram.setUniformVector4D("uClipPlane", clipPlane);
     }
 
     if (Application::instance()->getSession()->getModel(this->getModelID()).glDrawTrylock())
@@ -2135,6 +2247,11 @@ void GLWidget::takeScreenShot(const QString &fileName)
         screenShot.save(saveFileName, format.toUtf8().constData());
     }
     R_LOG_TRACE_OUT;
+}
+
+GLShaderProgram &GLWidget::getMainShaderProgram()
+{
+    return this->mainShaderProgram;
 }
 
 void GLWidget::qglColor(const QColor &color)

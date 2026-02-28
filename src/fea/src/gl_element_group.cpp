@@ -376,10 +376,10 @@ void GLElementGroup::draw()
         }
     }
 
-    // Render cached geometry
+    // Render cached geometry — route through callList() so uUseTexture is set correctly.
     if (this->getUseGlList())
     {
-        pGlEntityList->getVBO(GL_ENTITY_LIST_ITEM_NORMAL).render();
+        pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
     }
 
     if (this->getData().getDrawElementNumbers() || this->getData().getDrawNodeNumbers())

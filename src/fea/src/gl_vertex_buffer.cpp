@@ -28,6 +28,7 @@ void GLVertexBuffer::_init(const GLVertexBuffer *pBuffer)
     this->currentColor[2] = 255;
     this->currentColor[3] = 255;
     this->currentTexCoord = 0.0f;
+    this->usesTexture = false;
 
     if (pBuffer)
     {
@@ -74,6 +75,7 @@ void GLVertexBuffer::reset()
     this->valid = false;
     this->recording = false;
     this->currentBatchStart = 0;
+    this->usesTexture = false;
 }
 
 void GLVertexBuffer::beginRecording(GLenum primitive)
@@ -187,10 +189,7 @@ void GLVertexBuffer::render() const
         return;
     }
 
-    // Bind VBO and set up generic vertex attribute pointers for the shader.
-    // Uses only OpenGL 2.0 APIs (QOpenGLFunctions) — no VAO required.
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
-
     GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
 
     // aPosition — location 0
@@ -203,7 +202,7 @@ void GLVertexBuffer::render() const
     GL_SAFE_CALL(f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
         reinterpret_cast<const void*>(offsetof(GLVertexData, normal))));
 
-    // aColor — location 2 (UNSIGNED_BYTE normalised to [0,1] in shader)
+    // aColor — location 2 (GL_UNSIGNED_BYTE, normalised to [0,1])
     GL_SAFE_CALL(f->glEnableVertexAttribArray(2));
     GL_SAFE_CALL(f->glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLVertexData),
         reinterpret_cast<const void*>(offsetof(GLVertexData, color))));
@@ -213,15 +212,34 @@ void GLVertexBuffer::render() const
     GL_SAFE_CALL(f->glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
         reinterpret_cast<const void*>(offsetof(GLVertexData, texCoord))));
 
+    // Enable polygon offset for filled primitives so that overlaid edge lines
+    // (recorded after the faces) always pass the depth test with GL_LEQUAL.
+    GL_SAFE_CALL(glEnable(GL_POLYGON_OFFSET_FILL));
+    GL_SAFE_CALL(glPolygonOffset(1.0f, 1.0f));
+
     for (const Batch &batch : this->batches)
     {
+        if (batch.primitiveType == GL_LINES      ||
+            batch.primitiveType == GL_LINE_LOOP  ||
+            batch.primitiveType == GL_LINE_STRIP ||
+            batch.primitiveType == GL_POINTS)
+        {
+            // Non-fill primitive: disable offset so lines/points sit in front.
+            GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
+        }
+        else
+        {
+            GL_SAFE_CALL(glEnable(GL_POLYGON_OFFSET_FILL));
+        }
         glDrawArrays(batch.primitiveType, batch.start, batch.count);
     }
 
-    GL_SAFE_CALL(f->glDisableVertexAttribArray(0));
-    GL_SAFE_CALL(f->glDisableVertexAttribArray(1));
-    GL_SAFE_CALL(f->glDisableVertexAttribArray(2));
+    GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
+
     GL_SAFE_CALL(f->glDisableVertexAttribArray(3));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(2));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(1));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(0));
     GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
@@ -251,6 +269,16 @@ GLsizei GLVertexBuffer::getVertexCount() const
 bool GLVertexBuffer::isRecording() const
 {
     return this->recording;
+}
+
+void GLVertexBuffer::setUsesTexture(bool t)
+{
+    this->usesTexture = t;
+}
+
+bool GLVertexBuffer::getUsesTexture() const
+{
+    return this->usesTexture;
 }
 
 // GLVertexBufferList implementation

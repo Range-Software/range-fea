@@ -623,6 +623,7 @@ qt_add_resources(fea icons-cloud
 
 qt_add_resources(fea shaders
     PREFIX "/shaders"
+    BASE "src/shaders"
     FILES
         src/shaders/main.vert
         src/shaders/main.frag

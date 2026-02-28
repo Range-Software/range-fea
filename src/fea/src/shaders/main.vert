@@ -1,39 +1,24 @@
-#version 130
+#version 120
 
-// Projection and modelview matrices — replaces the deprecated GL matrix stack.
-// Uploaded each frame by GLWidget::drawModel() via GLShaderProgram.
 uniform mat4 uProjection;
 uniform mat4 uModelView;
 
-// Clip plane — replaces deprecated glClipPlane() / GL_CLIP_PLANE0.
-uniform vec4 uClipPlane;    // Eye-space clip plane equation (xyz=normal, w=offset).
-uniform bool uClipEnabled;  // Whether clipping is active.
+attribute vec3  aPosition;
+attribute vec3  aNormal;
+attribute vec4  aColor;     // UNSIGNED_BYTE, normalised to [0,1] by GL driver
+attribute float aTexCoord;
 
-// Vertex attributes — fed by glVertexAttribPointer (replaces deprecated client arrays).
-in vec3  aPosition;   // layout location 0
-in vec3  aNormal;     // layout location 1
-in vec4  aColor;      // layout location 2 — UNSIGNED_BYTE normalised to [0,1]
-in float aTexCoord;   // layout location 3
-
-// Per-fragment outputs
-out vec4  vColor;
-out vec3  vNormal;
-out vec3  vFragPos;
-out float vTexCoord;
+varying vec4  vColor;
+varying vec3  vNormal;
+varying vec3  vFragPos;
+varying float vTexCoord;
 
 void main()
 {
     vec4 worldPos = uModelView * vec4(aPosition, 1.0);
     gl_Position   = uProjection * worldPos;
 
-    // Write clip distance — positive = inside, negative = clipped.
-    gl_ClipDistance[0] = uClipEnabled ? dot(worldPos, uClipPlane) : 1.0;
-
     vFragPos  = worldPos.xyz;
-    // Normal matrix: transpose(inverse(mat3(uModelView))).
-    // inverse() is GLSL 1.40+; avoid it here.  For the rigid-body + uniform-scale
-    // transforms used in FEA viewing, mat3(uModelView) * aNormal gives the correct
-    // eye-space normal direction — any uniform scale cancels after normalize().
     vNormal   = mat3(uModelView) * aNormal;
     vColor    = aColor;
     vTexCoord = aTexCoord;

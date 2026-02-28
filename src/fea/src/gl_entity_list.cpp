@@ -1,5 +1,6 @@
 #include "gl_entity_list.h"
 #include "gl_functions.h"
+#include "gl_state_cache.h"
 
 GLEntityList::GLEntityList()
 {
@@ -80,6 +81,12 @@ void GLEntityList::callList(GLuint listPosition) const
 {
     if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
     {
-        this->vbo[listPosition].render();
+        const GLVertexBuffer &vbo = this->vbo[listPosition];
+        // Sync uUseTexture with what was recorded: textured VBOs use the 1D colour-map
+        // sampler, non-textured VBOs use the per-vertex colour attribute.
+        GLStateCache::instance().setTexture1D(vbo.getUsesTexture() ? GL_TRUE : GL_FALSE);
+        vbo.render();
+        // Always reset after render so subsequent draws default to non-textured.
+        GLStateCache::instance().setTexture1D(GL_FALSE);
     }
 }

@@ -71,6 +71,9 @@ class GLVertexBuffer
         GLubyte currentColor[4];
         //! Current texture coordinate.
         GLfloat currentTexCoord;
+        //! Whether any geometry recorded into this VBO used the 1D texture (colour map).
+        //! Set during recording; used by callList() to drive uUseTexture uniform.
+        bool usesTexture;
 
     private:
 
@@ -134,6 +137,12 @@ class GLVertexBuffer
 
         //! Check if recording is in progress.
         bool isRecording() const;
+
+        //! Mark this VBO as containing texture-mapped geometry (drives uUseTexture uniform).
+        void setUsesTexture(bool t);
+
+        //! Return true if the VBO contains texture-mapped geometry.
+        bool getUsesTexture() const;
 
 };
 

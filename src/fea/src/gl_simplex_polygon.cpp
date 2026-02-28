@@ -123,16 +123,7 @@ void GLSimplexPolygon::draw()
 
         this->getGLWidget()->renderText(x,y,z,QLocale().toString(this->id),QFont("Courier",8));
     }
-    if (drawTypeMask & GLSimplex::ElementEdges)
-    {
-        this->getGLWidget()->qglColor(Qt::black);
-        this->drawWired(nodes1,nodes2,volumeElement,useTexture);
-    }
-    if (drawTypeMask & GLSimplex::ElementNodes)
-    {
-        this->getGLWidget()->qglColor(Qt::black);
-        this->drawNodes(nodes1,nodes2,volumeElement);
-    }
+    // Draw filled faces first so edges recorded afterwards render on top with GL_LEQUAL.
     if (drawTypeMask & GLSimplex::Wired)
     {
         this->getGLWidget()->qglColor(useTexture ? Qt::white : this->color);
@@ -142,6 +133,18 @@ void GLSimplexPolygon::draw()
     {
         this->getGLWidget()->qglColor(useTexture ? Qt::white : this->color);
         this->drawNormal(nodes1,nodes2,volumeElement,useTexture);
+    }
+    if (drawTypeMask & GLSimplex::ElementEdges)
+    {
+        this->getGLWidget()->qglColor(Qt::black);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
+        this->drawWired(nodes1,nodes2,volumeElement,false); // never textured — edges are always black
+    }
+    if (drawTypeMask & GLSimplex::ElementNodes)
+    {
+        this->getGLWidget()->qglColor(Qt::black);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
+        this->drawNodes(nodes1,nodes2,volumeElement);
     }
 }
 
@@ -226,7 +229,12 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         cache.disableTexture1D();
     }
 
-    if (this->useGlCullFace)
+    // Draw back face (white) only for the legacy display-list / immediate path.
+    // During VBO recording every batch is rendered with the same cull mode at
+    // draw time, so a white batch with the same vertices as the front-face batch
+    // would overwrite the correct element colour on all front-facing polygons.
+    // The shader's gl_FrontFacing two-sided Phong already handles back faces.
+    if (this->useGlCullFace && !GLFunctions::isRecordingVBO())
     {
         this->getGLWidget()->qglColor(Qt::white);
 

@@ -1,6 +1,7 @@
 #include "gl_state_cache.h"
 #include "gl_functions.h"
 #include "gl_shader_program.h"
+#include "gl_vertex_buffer.h"
 
 GLStateCache::GLStateCache()
     : lineSmooth(GL_FALSE)
@@ -136,13 +137,23 @@ void GLStateCache::setTexture1D(GLboolean enabled)
         this->texture1D = enabled;
         GL_SAFE_CALL(enabled ? glEnable(GL_TEXTURE_1D) : glDisable(GL_TEXTURE_1D));
     }
-    // Keep the shader uniform in sync (mirrors setLighting() pattern).
-    // Guard against VBO recording: during recording the enable/disable is per-element
-    // and the uniform is a single value for the whole draw call, so skip the sync
-    // and let the caller set uUseTexture explicitly before VBO.render().
-    if (this->shaderProgram && !GLFunctions::isRecordingVBO())
+    if (this->shaderProgram)
     {
-        this->shaderProgram->setUniformBool("uUseTexture", enabled == GL_TRUE);
+        if (GLFunctions::isRecordingVBO())
+        {
+            // During recording: mark the current VBO so callList() can set uUseTexture
+            // correctly at render time.  The uniform is per-draw-call and cannot be set
+            // mid-recording, so we defer it to render time via the usesTexture flag.
+            if (enabled == GL_TRUE && GLFunctions::getCurrentVBO())
+            {
+                GLFunctions::getCurrentVBO()->setUsesTexture(true);
+            }
+        }
+        else
+        {
+            // Not recording: update the shader uniform directly.
+            this->shaderProgram->setUniformBool("uUseTexture", enabled == GL_TRUE);
+        }
     }
 }
 
