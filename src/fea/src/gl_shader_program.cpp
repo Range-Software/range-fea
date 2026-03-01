@@ -25,10 +25,6 @@ bool GLShaderProgram::load(const QString &vertexPath, const QString &fragmentPat
     }
     QByteArray vertSrc = vf.readAll();
     vf.close();
-    RLogger::info("GLShaderProgram: vertex shader '%s' (%d bytes):\n%s\n",
-                  vertexPath.toUtf8().constData(),
-                  vertSrc.size(),
-                  vertSrc.constData());
 
     if (!this->program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertSrc))
     {
@@ -49,10 +45,6 @@ bool GLShaderProgram::load(const QString &vertexPath, const QString &fragmentPat
     }
     QByteArray fragSrc = ff.readAll();
     ff.close();
-    RLogger::info("GLShaderProgram: fragment shader '%s' (%d bytes):\n%s\n",
-                  fragmentPath.toUtf8().constData(),
-                  fragSrc.size(),
-                  fragSrc.constData());
 
     if (!this->program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragSrc))
     {

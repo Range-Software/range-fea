@@ -186,30 +186,26 @@ void GLInterpolatedElement::drawNormal()
     {
         if (this->getElementGroupData().getDrawEdges() && !this->getElementGroupData().getDrawWire())
         {
-            GLboolean lightingEnabled = GLStateCache::instance().getLighting();
-            GLStateCache::instance().disableLighting();
             this->getGLWidget()->qglColor(QColor(Qt::black));
+            GLFunctions::texCoord1f(-1.0f);
             GLFunctions::begin(GL_LINE_LOOP);
             for (uint j=0;j<this->size();j++)
             {
                 GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
             }
             GLFunctions::end();
-            GLStateCache::instance().setLighting(lightingEnabled);
         }
     }
 
     if (this->getElementGroupData().getDrawNodes())
     {
-        GLboolean lightingEnabled = GLStateCache::instance().getLighting();
-        GLStateCache::instance().disableLighting();
         this->getGLWidget()->qglColor(QColor(Qt::black));
+        GLFunctions::texCoord1f(-1.0f);
         GLFunctions::begin(GL_POINTS);
         for (uint j=0;j<this->size();j++)
         {
             GLFunctions::vertex3d(nodes[j].getX(),nodes[j].getY(),nodes[j].getZ());
         }
         GLFunctions::end();
-        GLStateCache::instance().setLighting(lightingEnabled);
     }
 }

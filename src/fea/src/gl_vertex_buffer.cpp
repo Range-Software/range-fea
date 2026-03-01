@@ -9,6 +9,7 @@
 
 #include "gl_vertex_buffer.h"
 #include "gl_functions.h"
+#include "gl_state_cache.h"
 
 // GLVertexBuffer implementation
 
@@ -219,10 +220,11 @@ void GLVertexBuffer::render() const
 
     for (const Batch &batch : this->batches)
     {
-        if (batch.primitiveType == GL_LINES      ||
-            batch.primitiveType == GL_LINE_LOOP  ||
-            batch.primitiveType == GL_LINE_STRIP ||
-            batch.primitiveType == GL_POINTS)
+        bool isLinePrimitive = (batch.primitiveType == GL_LINES      ||
+                                batch.primitiveType == GL_LINE_LOOP  ||
+                                batch.primitiveType == GL_LINE_STRIP ||
+                                batch.primitiveType == GL_POINTS);
+        if (isLinePrimitive)
         {
             // Non-fill primitive: disable offset so lines/points sit in front.
             GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
@@ -231,8 +233,11 @@ void GLVertexBuffer::render() const
         {
             GL_SAFE_CALL(glEnable(GL_POLYGON_OFFSET_FILL));
         }
+        GLStateCache::instance().setLighting(isLinePrimitive ? GL_FALSE : GL_TRUE);
         glDrawArrays(batch.primitiveType, batch.start, batch.count);
     }
+    // Restore default lighting state for subsequent VBO renders.
+    GLStateCache::instance().setLighting(GL_TRUE);
 
     GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
 

@@ -1,11 +1,10 @@
 #version 120
 
-// For unlit geometry (wireframes, axes, text anchors, etc.)
 uniform mat4 uProjection;
 uniform mat4 uModelView;
 
 attribute vec3  aPosition;
-attribute vec4  aColor;
+attribute vec4  aColor;      // UNSIGNED_BYTE, normalised to [0,1] by GL driver
 attribute float aTexCoord;
 
 varying vec4  vColor;

@@ -160,107 +160,25 @@ void GLWidget::initializeGL()
     RLogger::info("GL_RENDERER : %s\n", glGetString(GL_RENDERER));
     RLogger::info("GL_SHADING_LANGUAGE_VERSION: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-    // GLSL 1.20 shader sources embedded directly to avoid Qt resource system issues
-    // on Apple's Metal-backed OpenGL 2.1 driver.
-    static const char kMainVert[] = R"GLSL(
-#version 120
-uniform mat4 uProjection;
-uniform mat4 uModelView;
-attribute vec3  aPosition;
-attribute vec3  aNormal;
-attribute vec4  aColor;
-attribute float aTexCoord;
-varying vec4  vColor;
-varying vec3  vNormal;
-varying vec3  vFragPos;
-varying float vTexCoord;
-void main()
-{
-    vec4 worldPos = uModelView * vec4(aPosition, 1.0);
-    gl_Position   = uProjection * worldPos;
-    vFragPos  = worldPos.xyz;
-    vNormal   = mat3(uModelView) * aNormal;
-    vColor    = aColor;
-    vTexCoord = aTexCoord;
-}
-)GLSL";
+    // Load GLSL shader programs from Qt resources (require an active GL context).
+    static const char *kMainVertPath = ":/shaders/main.vert";
+    static const char *kMainFragPath = ":/shaders/main.frag";
+    static const char *kFlatVertPath = ":/shaders/flat.vert";
+    static const char *kFlatFragPath = ":/shaders/flat.frag";
 
-    static const char kMainFrag[] = R"GLSL(
-#version 120
-varying vec4  vColor;
-varying vec3  vNormal;
-varying vec3  vFragPos;
-varying float vTexCoord;
-uniform bool      uUseTexture;
-uniform bool      uUseLighting;
-uniform bool      uTwoSided;
-uniform sampler1D uColorMap;
-struct Light { vec3 position; vec4 ambient; vec4 diffuse; };
-uniform int   uNumLights;
-uniform Light uLights[8];
-void main()
-{
-    // Back faces: silver for solid surfaces; two-sided (cut planes, iso surfaces) use flipped normal.
-    if (!gl_FrontFacing && !uTwoSided) { gl_FragColor = vec4(0.75, 0.75, 0.75, 1.0); return; }
-    // vTexCoord < 0 is a sentinel: use vertex colour (e.g. black edges over a textured face).
-    vec4 baseColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
-    if (!uUseLighting || uNumLights == 0) { gl_FragColor = baseColor; return; }
-    // Flip normal for back faces so lighting looks correct from the viewer's side.
-    vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
-    vec4 result = vec4(0.0);
-    for (int i = 0; i < uNumLights; i++)
+    if (!this->mainShaderProgram.load(kMainVertPath, kMainFragPath))
     {
-        vec3  lightDir = normalize(uLights[i].position);
-        float diff     = max(dot(norm, lightDir), 0.0);
-        result += uLights[i].ambient  * baseColor;
-        result += diff * uLights[i].diffuse * baseColor;
-    }
-    gl_FragColor = vec4(result.rgb, baseColor.a);
-}
-)GLSL";
-
-    static const char kFlatVert[] = R"GLSL(
-#version 120
-uniform mat4 uProjection;
-uniform mat4 uModelView;
-attribute vec3  aPosition;
-attribute vec4  aColor;
-attribute float aTexCoord;
-varying vec4  vColor;
-varying float vTexCoord;
-void main()
-{
-    gl_Position = uProjection * uModelView * vec4(aPosition, 1.0);
-    vColor      = aColor;
-    vTexCoord   = aTexCoord;
-}
-)GLSL";
-
-    static const char kFlatFrag[] = R"GLSL(
-#version 120
-varying vec4  vColor;
-varying float vTexCoord;
-uniform bool      uUseTexture;
-uniform sampler1D uColorMap;
-void main()
-{
-    // vTexCoord < 0 is a sentinel: use vertex colour, not the texture.
-    gl_FragColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
-}
-)GLSL";
-
-    // Load GLSL shader programs (require an active GL context).
-    if (!this->mainShaderProgram.loadFromSource(kMainVert, kMainFrag))
-    {
-        RLogger::warning("GLWidget: failed to load main shader program\n");
+        RLogger::warning("GLWidget: failed to load main shader program ('%s' + '%s')\n",
+                         kMainVertPath, kMainFragPath);
     }
     else
     {
         RLogger::info("GLWidget: main shader loaded OK\n");
     }
-    if (!this->flatShaderProgram.loadFromSource(kFlatVert, kFlatFrag))
+    if (!this->flatShaderProgram.load(kFlatVertPath, kFlatFragPath))
     {
-        RLogger::warning("GLWidget: failed to load flat shader program\n");
+        RLogger::warning("GLWidget: failed to load flat shader program ('%s' + '%s')\n",
+                         kFlatVertPath, kFlatFragPath);
     }
     else
     {

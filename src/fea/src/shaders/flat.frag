@@ -8,5 +8,6 @@ uniform sampler1D uColorMap;
 
 void main()
 {
-    gl_FragColor = uUseTexture ? texture1D(uColorMap, vTexCoord) : vColor;
+    // vTexCoord < 0 is a sentinel: use vertex colour, not the texture.
+    gl_FragColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
 }
