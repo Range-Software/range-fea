@@ -837,7 +837,14 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
 
     QList<QString> messages;
 
-    messages.push_back(rModel.getName() + " (" + rModel.getDescription() + ")");
+    if (rModel.getDescription().isEmpty())
+    {
+        messages.push_back(rModel.getName());
+    }
+    else
+    {
+        messages.push_back(rModel.getName() + " (" + rModel.getDescription() + ")");
+    }
     messages.push_back(QString());
 
     if (rModel.getNSlivers() > 0)

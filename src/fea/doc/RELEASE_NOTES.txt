@@ -4,6 +4,10 @@ Version 1.2.0
 - Replace the legacy display-list / immediate-mode rendering pipeline with a fully VBO-based backend and GLSL 1.20 shaders
 - Enable transparent surfaces
 
+Bug fixes:
+
+- Do not display empty "()" in model info box area when no model comment is set
+
 ------------------------------------------------------------------
 Version 1.1.3
 
