@@ -99,7 +99,7 @@ void ColorComboBox::onCurrentIndexChanged(int index)
     if (index == 0)
     {
         // Select custom color.
-        QColor color = QColorDialog::getColor(this->color,this->parentWidget(),"Choose entity color",QColorDialog::ShowAlphaChannel);
+        QColor color = QColorDialog::getColor(this->color,this->parentWidget(),"Choose entity color");
         if (color.isValid())
         {
             this->setColor(color);

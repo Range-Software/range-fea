@@ -1966,95 +1966,132 @@ void Model::glDraw(GLWidget *glWidget) const
 
         uint modelID = Application::instance()->getSession()->findModelByPtr(this);
 
-        // Draw volume entities.
-        for (uint i=0;i<this->getNVolumes();i++)
+        // Returns true when the entity group has a semi-transparent entity color (alpha < 255).
+        // Colormap (textured) entities also honour this: alpha from group data controls overall opacity.
+        auto entityIsTransparent = [](const auto &eg)
         {
-            GLElementGroup glElementGroup(glWidget,this->getVolume(i),SessionEntityID(modelID,R_ENTITY_GROUP_VOLUME,i));
-            glElementGroup.setParentModel(this);
-            glElementGroup.setUseGlList(true);
-            glElementGroup.paint();
-        }
+            int r = 0, g = 0, b = 0, a = 255;
+            eg.getData().getColor(r, g, b, a);
+            return a < 255;
+        };
 
-        // Draw surface entities.
-        for (uint i=0;i<this->getNSurfaces();i++)
+        // Two-pass rendering for correct alpha blending:
+        //   Pass 0 (opaque)      — depth writes ON,  draw entities with alpha == 255
+        //   Pass 1 (transparent) — depth writes OFF, draw entities with alpha <  255
+        // Opaque geometry fills the depth buffer first so transparent surfaces
+        // correctly blend against whatever is visible behind them.
+        for (int pass = 0; pass < 2; pass++)
         {
-            GLElementGroup glElementGroup(glWidget,this->getSurface(i),SessionEntityID(modelID,R_ENTITY_GROUP_SURFACE,i));
-            glElementGroup.setParentModel(this);
-            glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
-            glElementGroup.setUseGlList(true);
-            glElementGroup.setUseGlCullFace(glWidget->getUseGlCullFace());
-            glElementGroup.paint();
-        }
+            const bool transparentPass = (pass == 1);
+            if (transparentPass)
+            {
+                GL_SAFE_CALL(glDepthMask(GL_FALSE));
+            }
 
-        // Draw line entities.
-        for (uint i=0;i<this->getNLines();i++)
-        {
-            GLElementGroup glElementGroup(glWidget,this->getLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_LINE,i));
-            glElementGroup.setParentModel(this);
-            glElementGroup.setLineCrossArea(this->getLine(i).getCrossArea());
-            glElementGroup.setUseGlList(true);
-            glElementGroup.paint();
-        }
+            // Draw volume entities.
+            for (uint i=0;i<this->getNVolumes();i++)
+            {
+                if (entityIsTransparent(this->getVolume(i)) != transparentPass) { continue; }
+                GLElementGroup glElementGroup(glWidget,this->getVolume(i),SessionEntityID(modelID,R_ENTITY_GROUP_VOLUME,i));
+                glElementGroup.setParentModel(this);
+                glElementGroup.setUseGlList(true);
+                glElementGroup.paint();
+            }
 
-        // Draw point entities.
-        for (uint i=0;i<this->getNPoints();i++)
-        {
-            GLElementGroup glElementGroup(glWidget,this->getPoint(i),SessionEntityID(modelID,R_ENTITY_GROUP_POINT,i));
-            glElementGroup.setParentModel(this);
-            glElementGroup.setPointVolume(this->getPoint(i).getVolume());
-            glElementGroup.setUseGlList(true);
-            glElementGroup.paint();
-        }
+            // Draw surface entities.
+            for (uint i=0;i<this->getNSurfaces();i++)
+            {
+                if (entityIsTransparent(this->getSurface(i)) != transparentPass) { continue; }
+                GLElementGroup glElementGroup(glWidget,this->getSurface(i),SessionEntityID(modelID,R_ENTITY_GROUP_SURFACE,i));
+                glElementGroup.setParentModel(this);
+                glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
+                glElementGroup.setUseGlList(true);
+                glElementGroup.setUseGlCullFace(glWidget->getUseGlCullFace());
+                glElementGroup.paint();
+            }
 
-        // Draw vector field entities.
-        for (uint i=0;i<this->getNVectorFields();i++)
-        {
-            GLVectorField glVectorField(glWidget,this->getVectorField(i),SessionEntityID(modelID,R_ENTITY_GROUP_VECTOR_FIELD,i));
-            glVectorField.setApplyEnvironmentSettings(false);
-            glVectorField.setParentModel(this);
-            glVectorField.setUseGlList(true);
-            glVectorField.paint();
-        }
+            // Draw line entities.
+            for (uint i=0;i<this->getNLines();i++)
+            {
+                if (entityIsTransparent(this->getLine(i)) != transparentPass) { continue; }
+                GLElementGroup glElementGroup(glWidget,this->getLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_LINE,i));
+                glElementGroup.setParentModel(this);
+                glElementGroup.setLineCrossArea(this->getLine(i).getCrossArea());
+                glElementGroup.setUseGlList(true);
+                glElementGroup.paint();
+            }
 
-        // Draw scalar field entities.
-        for (uint i=0;i<this->getNScalarFields();i++)
-        {
-            GLScalarField glScalarField(glWidget,this->getScalarField(i),SessionEntityID(modelID,R_ENTITY_GROUP_SCALAR_FIELD,i));
-            glScalarField.setApplyEnvironmentSettings(false);
-            glScalarField.setParentModel(this);
-            glScalarField.setUseGlList(true);
-            glScalarField.paint();
-        }
+            // Draw point entities.
+            for (uint i=0;i<this->getNPoints();i++)
+            {
+                if (entityIsTransparent(this->getPoint(i)) != transparentPass) { continue; }
+                GLElementGroup glElementGroup(glWidget,this->getPoint(i),SessionEntityID(modelID,R_ENTITY_GROUP_POINT,i));
+                glElementGroup.setParentModel(this);
+                glElementGroup.setPointVolume(this->getPoint(i).getVolume());
+                glElementGroup.setUseGlList(true);
+                glElementGroup.paint();
+            }
 
-        // Draw stream line entities.
-        for (uint i=0;i<this->getNStreamLines();i++)
-        {
-            GLInterpolatedEntity glStreamLine(glWidget,this->getStreamLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_STREAM_LINE,i));
-            glStreamLine.setApplyEnvironmentSettings(false);
-            glStreamLine.setParentModel(this);
-            glStreamLine.setUseGlList(true);
-            glStreamLine.paint();
-        }
+            // Draw vector field entities.
+            for (uint i=0;i<this->getNVectorFields();i++)
+            {
+                if (entityIsTransparent(this->getVectorField(i)) != transparentPass) { continue; }
+                GLVectorField glVectorField(glWidget,this->getVectorField(i),SessionEntityID(modelID,R_ENTITY_GROUP_VECTOR_FIELD,i));
+                glVectorField.setApplyEnvironmentSettings(false);
+                glVectorField.setParentModel(this);
+                glVectorField.setUseGlList(true);
+                glVectorField.paint();
+            }
 
-        // Draw cuts entities.
-        for (uint i=0;i<this->getNCuts();i++)
-        {
-            GLInterpolatedEntity glCut(glWidget,this->getCut(i),SessionEntityID(modelID,R_ENTITY_GROUP_CUT,i));
-            glCut.setApplyEnvironmentSettings(false);
-            glCut.setParentModel(this);
-            glCut.setUseGlList(true);
-            glCut.paint();
-        }
+            // Draw scalar field entities.
+            for (uint i=0;i<this->getNScalarFields();i++)
+            {
+                if (entityIsTransparent(this->getScalarField(i)) != transparentPass) { continue; }
+                GLScalarField glScalarField(glWidget,this->getScalarField(i),SessionEntityID(modelID,R_ENTITY_GROUP_SCALAR_FIELD,i));
+                glScalarField.setApplyEnvironmentSettings(false);
+                glScalarField.setParentModel(this);
+                glScalarField.setUseGlList(true);
+                glScalarField.paint();
+            }
 
-        // Draw isos entities.
-        for (uint i=0;i<this->getNIsos();i++)
-        {
-            GLInterpolatedEntity glIso(glWidget,this->getIso(i),SessionEntityID(modelID,R_ENTITY_GROUP_ISO,i));
-            glIso.setApplyEnvironmentSettings(false);
-            glIso.setParentModel(this);
-            glIso.setUseGlList(true);
-            glIso.paint();
-        }
+            // Draw stream line entities.
+            for (uint i=0;i<this->getNStreamLines();i++)
+            {
+                if (entityIsTransparent(this->getStreamLine(i)) != transparentPass) { continue; }
+                GLInterpolatedEntity glStreamLine(glWidget,this->getStreamLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_STREAM_LINE,i));
+                glStreamLine.setApplyEnvironmentSettings(false);
+                glStreamLine.setParentModel(this);
+                glStreamLine.setUseGlList(true);
+                glStreamLine.paint();
+            }
+
+            // Draw cuts entities.
+            for (uint i=0;i<this->getNCuts();i++)
+            {
+                if (entityIsTransparent(this->getCut(i)) != transparentPass) { continue; }
+                GLInterpolatedEntity glCut(glWidget,this->getCut(i),SessionEntityID(modelID,R_ENTITY_GROUP_CUT,i));
+                glCut.setApplyEnvironmentSettings(false);
+                glCut.setParentModel(this);
+                glCut.setUseGlList(true);
+                glCut.paint();
+            }
+
+            // Draw isos entities.
+            for (uint i=0;i<this->getNIsos();i++)
+            {
+                if (entityIsTransparent(this->getIso(i)) != transparentPass) { continue; }
+                GLInterpolatedEntity glIso(glWidget,this->getIso(i),SessionEntityID(modelID,R_ENTITY_GROUP_ISO,i));
+                glIso.setApplyEnvironmentSettings(false);
+                glIso.setParentModel(this);
+                glIso.setUseGlList(true);
+                glIso.paint();
+            }
+
+            if (transparentPass)
+            {
+                GL_SAFE_CALL(glDepthMask(GL_TRUE));
+            }
+        } // two-pass loop
 
         if (glWidget->getGLDisplayProperties().getShowModelEdges())
         {

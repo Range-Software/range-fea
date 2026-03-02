@@ -1,4 +1,9 @@
 ------------------------------------------------------------------
+Version 1.2.0
+
+- Replace the legacy display-list / immediate-mode rendering pipeline with a fully VBO-based backend and GLSL 1.20 shaders
+
+------------------------------------------------------------------
 Version 1.1.3
 
 - Performance improvements in OpenGL model drawing

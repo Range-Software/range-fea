@@ -1,7 +1,6 @@
 #ifndef GL_ENTITY_LIST_H
 #define GL_ENTITY_LIST_H
 
-#include "gl_list.h"
 #include "gl_vertex_buffer.h"
 
 typedef enum _GLEntityListItemType
@@ -12,22 +11,13 @@ typedef enum _GLEntityListItemType
     GL_ENTITY_LIST_ITEM_N_LISTS
 } GLEntityListItemType;
 
-class GLEntityList : public GLList
+class GLEntityList
 {
 
-    protected:
-
-        //! VBO for each list type (replaces display lists for better performance).
-        GLVertexBuffer vbo[GL_ENTITY_LIST_ITEM_N_LISTS];
-        //! Whether to use VBO instead of display list.
-        bool useVBO;
-
-    private:
-
-        //! Internal initialization function.
-        void _init (const GLEntityList *pGlEntityList = nullptr);
-
     public:
+
+        //! VBO for each list type.
+        GLVertexBuffer vbo[GL_ENTITY_LIST_ITEM_N_LISTS];
 
         //! Constructor.
         GLEntityList();
@@ -39,13 +29,7 @@ class GLEntityList : public GLList
         ~GLEntityList();
 
         //! Assignment operator.
-        GLList & operator = (const GLEntityList &glEntityList);
-
-        //! Get whether VBO mode is enabled.
-        bool getUseVBO() const;
-
-        //! Set whether to use VBO mode.
-        void setUseVBO(bool useVBO);
+        GLEntityList & operator = (const GLEntityList &glEntityList);
 
         //! Get VBO for the specified list type.
         GLVertexBuffer &getVBO(GLuint listPosition);
@@ -59,9 +43,15 @@ class GLEntityList : public GLList
         //! Invalidate VBO for the specified list type.
         void setVBOInvalid(GLuint listPosition);
 
-        //! Invalidate both display list and VBO for the specified position.
-        //! Overrides GLList::setListInvalid to also invalidate VBO.
+        //! Invalidate VBO for the specified list type (alias for setVBOInvalid).
         void setListInvalid(GLuint listPosition);
+
+        // Compat stubs — used by gl_scalar_field, gl_vector_field, gl_interpolated_entity.
+        // These redirect to the VBO path so those callers need no changes.
+        bool getListValid(GLuint listPosition) const;
+        void newList(GLuint listPosition, GLenum mode = GL_COMPILE);
+        void endList(GLuint listPosition);
+        void callList(GLuint listPosition) const;
 };
 
 #endif /* GL_ENTITY_LIST_H */

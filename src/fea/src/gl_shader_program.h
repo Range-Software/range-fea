@@ -27,6 +27,10 @@ class GLShaderProgram
         //! Must be called with a current OpenGL context.
         bool load(const QString &vertexPath, const QString &fragmentPath);
 
+        //! Load vertex and fragment shaders from source strings.
+        //! Must be called with a current OpenGL context.
+        bool loadFromSource(const char *vertSrc, const char *fragSrc);
+
         //! Bind the program for rendering. Returns false if the program is not linked.
         bool bind();
 

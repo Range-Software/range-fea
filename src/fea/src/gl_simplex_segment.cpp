@@ -158,6 +158,7 @@ void GLSimplexSegment::draw()
     if (this->drawTypeMask & GLSimplex::ElementNodes)
     {
         this->getGLWidget()->qglColor(Qt::black);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
         this->drawNodes();
     }
     if (this->drawTypeMask & GLSimplex::Wired)

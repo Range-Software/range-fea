@@ -170,6 +170,9 @@ class GLWidget : public QOpenGLWidget
         //! Take screenshot.
         void takeScreenShot(const QString &fileName);
 
+        //! Return reference to the main (lit) shader program.
+        GLShaderProgram &getMainShaderProgram();
+
         //! Set OpenGL color.
         void qglColor(const QColor &color);
 

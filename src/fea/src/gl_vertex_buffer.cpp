@@ -4,19 +4,18 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include <QOpenGLExtraFunctions>
 #include <QOpenGLFunctions>
 #include <QOpenGLContext>
 
 #include "gl_vertex_buffer.h"
 #include "gl_functions.h"
+#include "gl_state_cache.h"
 
 // GLVertexBuffer implementation
 
 void GLVertexBuffer::_init(const GLVertexBuffer *pBuffer)
 {
     this->vboId = 0;
-    this->vaoId = 0;
     this->vertexCount = 0;
     this->valid = false;
     this->recording = false;
@@ -30,6 +29,7 @@ void GLVertexBuffer::_init(const GLVertexBuffer *pBuffer)
     this->currentColor[2] = 255;
     this->currentColor[3] = 255;
     this->currentTexCoord = 0.0f;
+    this->usesTexture = false;
 
     if (pBuffer)
     {
@@ -76,6 +76,7 @@ void GLVertexBuffer::reset()
     this->valid = false;
     this->recording = false;
     this->currentBatchStart = 0;
+    this->usesTexture = false;
 }
 
 void GLVertexBuffer::beginRecording(GLenum primitive)
@@ -116,7 +117,6 @@ void GLVertexBuffer::uploadToGPU()
 
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     QOpenGLFunctions *f = ctx->functions();
-    QOpenGLExtraFunctions *ef = ctx->extraFunctions();
 
     // Generate VBO if needed (reuse existing handle if present).
     if (this->vboId == 0)
@@ -130,36 +130,6 @@ void GLVertexBuffer::uploadToGPU()
                                  GLsizeiptr(this->vertices.size() * sizeof(GLVertexData)),
                                  this->vertices.data(),
                                  GL_STATIC_DRAW));
-
-    // Create the VAO (or recreate it after a reset) and record the attribute layout
-    // while the VBO is still bound so the VAO captures the binding.
-    if (this->vaoId == 0)
-    {
-        GL_SAFE_CALL(ef->glGenVertexArrays(1, &this->vaoId));
-    }
-    GL_SAFE_CALL(ef->glBindVertexArray(this->vaoId));
-
-    // aPosition — location 0
-    GL_SAFE_CALL(f->glEnableVertexAttribArray(0));
-    GL_SAFE_CALL(f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
-        reinterpret_cast<const void*>(offsetof(GLVertexData, position))));
-
-    // aNormal — location 1
-    GL_SAFE_CALL(f->glEnableVertexAttribArray(1));
-    GL_SAFE_CALL(f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
-        reinterpret_cast<const void*>(offsetof(GLVertexData, normal))));
-
-    // aColor — location 2 (UNSIGNED_BYTE normalised to [0,1] in shader)
-    GL_SAFE_CALL(f->glEnableVertexAttribArray(2));
-    GL_SAFE_CALL(f->glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLVertexData),
-        reinterpret_cast<const void*>(offsetof(GLVertexData, color))));
-
-    // aTexCoord — location 3
-    GL_SAFE_CALL(f->glEnableVertexAttribArray(3));
-    GL_SAFE_CALL(f->glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
-        reinterpret_cast<const void*>(offsetof(GLVertexData, texCoord))));
-
-    GL_SAFE_CALL(ef->glBindVertexArray(0));
     GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, 0));
 
     this->vertexCount = GLsizei(this->vertices.size());
@@ -215,23 +185,67 @@ void GLVertexBuffer::addVertex(GLfloat x, GLfloat y, GLfloat z)
 
 void GLVertexBuffer::render() const
 {
-    if (!this->valid || this->vaoId == 0 || this->batches.empty())
+    if (!this->valid || this->vboId == 0 || this->batches.empty())
     {
         return;
     }
 
-    // The VAO already encapsulates the VBO binding and all attribute pointers
-    // recorded in uploadToGPU(). Just bind it and draw.
-    QOpenGLExtraFunctions *ef = QOpenGLContext::currentContext()->extraFunctions();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, this->vboId));
 
-    GL_SAFE_CALL(ef->glBindVertexArray(this->vaoId));
+    // aPosition — location 0
+    GL_SAFE_CALL(f->glEnableVertexAttribArray(0));
+    GL_SAFE_CALL(f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
+        reinterpret_cast<const void*>(offsetof(GLVertexData, position))));
+
+    // aNormal — location 1
+    GL_SAFE_CALL(f->glEnableVertexAttribArray(1));
+    GL_SAFE_CALL(f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
+        reinterpret_cast<const void*>(offsetof(GLVertexData, normal))));
+
+    // aColor — location 2 (GL_UNSIGNED_BYTE, normalised to [0,1])
+    GL_SAFE_CALL(f->glEnableVertexAttribArray(2));
+    GL_SAFE_CALL(f->glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(GLVertexData),
+        reinterpret_cast<const void*>(offsetof(GLVertexData, color))));
+
+    // aTexCoord — location 3
+    GL_SAFE_CALL(f->glEnableVertexAttribArray(3));
+    GL_SAFE_CALL(f->glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(GLVertexData),
+        reinterpret_cast<const void*>(offsetof(GLVertexData, texCoord))));
+
+    // Enable polygon offset for filled primitives so that overlaid edge lines
+    // (recorded after the faces) always pass the depth test with GL_LEQUAL.
+    GL_SAFE_CALL(glEnable(GL_POLYGON_OFFSET_FILL));
+    GL_SAFE_CALL(glPolygonOffset(1.0f, 1.0f));
 
     for (const Batch &batch : this->batches)
     {
+        bool isLinePrimitive = (batch.primitiveType == GL_LINES      ||
+                                batch.primitiveType == GL_LINE_LOOP  ||
+                                batch.primitiveType == GL_LINE_STRIP ||
+                                batch.primitiveType == GL_POINTS);
+        if (isLinePrimitive)
+        {
+            // Non-fill primitive: disable offset so lines/points sit in front.
+            GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
+        }
+        else
+        {
+            GL_SAFE_CALL(glEnable(GL_POLYGON_OFFSET_FILL));
+        }
+        GLStateCache::instance().setLighting(isLinePrimitive ? GL_FALSE : GL_TRUE);
         glDrawArrays(batch.primitiveType, batch.start, batch.count);
     }
+    // Restore default lighting state for subsequent VBO renders.
+    GLStateCache::instance().setLighting(GL_TRUE);
 
-    GL_SAFE_CALL(ef->glBindVertexArray(0));
+    GL_SAFE_CALL(glDisable(GL_POLYGON_OFFSET_FILL));
+
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(3));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(2));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(1));
+    GL_SAFE_CALL(f->glDisableVertexAttribArray(0));
+    GL_SAFE_CALL(f->glBindBuffer(GL_ARRAY_BUFFER, 0));
 }
 
 void GLVertexBuffer::release()
@@ -240,12 +254,6 @@ void GLVertexBuffer::release()
     if (ctx)
     {
         QOpenGLFunctions *f = ctx->functions();
-        QOpenGLExtraFunctions *ef = ctx->extraFunctions();
-        if (this->vaoId != 0)
-        {
-            GL_SAFE_CALL(ef->glDeleteVertexArrays(1, &this->vaoId));
-            this->vaoId = 0;
-        }
         if (this->vboId != 0)
         {
             GL_SAFE_CALL(f->glDeleteBuffers(1, &this->vboId));
@@ -266,6 +274,16 @@ GLsizei GLVertexBuffer::getVertexCount() const
 bool GLVertexBuffer::isRecording() const
 {
     return this->recording;
+}
+
+void GLVertexBuffer::setUsesTexture(bool t)
+{
+    this->usesTexture = t;
+}
+
+bool GLVertexBuffer::getUsesTexture() const
+{
+    return this->usesTexture;
 }
 
 // GLVertexBufferList implementation

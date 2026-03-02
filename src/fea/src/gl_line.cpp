@@ -61,7 +61,7 @@ void GLLine::finalize()
 void GLLine::draw()
 {
     GLFunctions::begin(GL_LINES);
-    GL_SAFE_CALL(glVertex3d(this->start[0],this->start[1],this->start[2]));
-    GL_SAFE_CALL(glVertex3d(this->end[0],this->end[1],this->end[2]));
+    GLFunctions::vertex3d(this->start[0],this->start[1],this->start[2]);
+    GLFunctions::vertex3d(this->end[0],this->end[1],this->end[2]);
     GLFunctions::end();
 }
