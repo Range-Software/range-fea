@@ -1975,17 +1975,25 @@ void Model::glDraw(GLWidget *glWidget) const
             return a < 255;
         };
 
-        // Two-pass rendering for correct alpha blending:
-        //   Pass 0 (opaque)      — depth writes ON,  draw entities with alpha == 255
-        //   Pass 1 (transparent) — depth writes OFF, draw entities with alpha <  255
-        // Opaque geometry fills the depth buffer first so transparent surfaces
-        // correctly blend against whatever is visible behind them.
-        for (int pass = 0; pass < 2; pass++)
+        // Three-pass rendering for correct alpha blending with silver back-faces:
+        //   Pass 0 — opaque     (alpha=255): depth writes ON,  normal cull state
+        //   Pass 1 — transp. back  faces:   depth writes OFF, GL_FRONT culled → back faces drawn (silver)
+        //   Pass 2 — transp. front faces:   depth writes OFF, GL_BACK  culled → front faces drawn (entity color)
+        // Drawing back faces before front faces gives correct layering for convex transparent shells
+        // without needing per-triangle depth sorting.
+        GLStateCache &stateCache = GLStateCache::instance();
+        for (int pass = 0; pass < 3; pass++)
         {
-            const bool transparentPass = (pass == 1);
-            if (transparentPass)
+            const bool transparentPass = (pass >= 1);
+            if (pass == 1)
             {
                 GL_SAFE_CALL(glDepthMask(GL_FALSE));
+                stateCache.enableCullFace();
+                stateCache.setCullFaceMode(GL_FRONT);  // cull front → draw back (silver)
+            }
+            else if (pass == 2)
+            {
+                stateCache.setCullFaceMode(GL_BACK);   // cull back → draw front (entity color)
             }
 
             // Draw volume entities.
@@ -2087,11 +2095,12 @@ void Model::glDraw(GLWidget *glWidget) const
                 glIso.paint();
             }
 
-            if (transparentPass)
+            if (pass == 2)
             {
                 GL_SAFE_CALL(glDepthMask(GL_TRUE));
+                stateCache.disableCullFace();
             }
-        } // two-pass loop
+        } // three-pass loop
 
         if (glWidget->getGLDisplayProperties().getShowModelEdges())
         {

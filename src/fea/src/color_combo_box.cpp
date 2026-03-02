@@ -37,12 +37,12 @@ QColor ColorComboBox::getColor()
 
 void ColorComboBox::setColor(const QColor &color)
 {
-    this->setColorName(color.name());
+    this->setColorName(color.name(QColor::HexArgb));
 }
 
 QString ColorComboBox::getColorName()
 {
-    return this->getColor().name();
+    return this->getColor().name(QColor::HexArgb);
 }
 
 void ColorComboBox::setColorName(const QString &colorName)
@@ -73,7 +73,7 @@ QIcon ColorComboBox::createIcon(const QString &colorName)
 
 void ColorComboBox::addColor(const QColor &color)
 {
-    this->addColor(color.name());
+    this->addColor(color.name(QColor::HexArgb));
 }
 
 void ColorComboBox::addColor(const QString &colorName)
@@ -99,7 +99,7 @@ void ColorComboBox::onCurrentIndexChanged(int index)
     if (index == 0)
     {
         // Select custom color.
-        QColor color = QColorDialog::getColor(this->color,this->parentWidget(),"Choose entity color");
+        QColor color = QColorDialog::getColor(this->color,this->parentWidget(),"Choose entity color",QColorDialog::ShowAlphaChannel);
         if (color.isValid())
         {
             this->setColor(color);
