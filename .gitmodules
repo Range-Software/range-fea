@@ -2,6 +2,10 @@
 	path = src/range-base-lib
 	url = ../range-base-lib
     branch = main
+[submodule "src/range-mesh-lib"]
+	path = src/range-mesh-lib
+	url = ../range-mesh-lib
+	branch = main
 [submodule "range-model-lib"]
 	path = src/range-model-lib
 	url = ../range-model-lib
