@@ -111,6 +111,7 @@ QString Action::getName(Type type)
         case ACTION_MODEL_OPEN:                               return "model-open";
         case ACTION_MODEL_SAVE:                               return "model-save";
         case ACTION_MODEL_SAVE_AS:                            return "model-save_as";
+        case ACTION_MODEL_EXPORT_STEP:                        return "model-export_step";
         case ACTION_MODEL_EXPORT_MSH:                         return "model-export_msh";
         case ACTION_MODEL_EXPORT_RAW:                         return "model-export_raw";
         case ACTION_MODEL_EXPORT_STL_ASCII:                   return "model-export_stl_ascii";
@@ -233,6 +234,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_OPEN, tr("Open model"), tr("Open previously saved model."), "Ctrl+O", ":/icons/file/pixmaps/range-model_open.svg",static_cast<PointerToMemberTrigger>(&Action::onModelOpen));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_SAVE, tr("Save model"), tr("Save selected model."), "Ctrl+S", ":/icons/file/pixmaps/range-model_save.svg",static_cast<PointerToMemberTrigger>(&Action::onModelSave));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_SAVE_AS, tr("Save model as"), tr("Save selected model under a different filename."), "Ctrl+Shift+S", ":/icons/file/pixmaps/range-model_save_as.svg",static_cast<PointerToMemberTrigger>(&Action::onModelSaveAs));
+    Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STEP, tr("Export STEP model"), "", "", ":/icons/file/pixmaps/range-model_export_step.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStep));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_MSH, tr("Export MSH model"), "", "", ":/icons/file/pixmaps/range-model_export_msh.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportMsh));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_RAW, tr("Export RAW model"), "", "", ":/icons/file/pixmaps/range-model_export_raw.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportRaw));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STL_ASCII, tr("Export STL model (ascii)"), "", "", ":/icons/file/pixmaps/range-model_export_stl.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStlAscii));
@@ -457,9 +459,10 @@ void Action::onModelOpen()
     R_LOG_TRACE_IN;
     QString binaryExtension = RModel::getDefaultFileExtension(true);
     QString asciiExtension = RModel::getDefaultFileExtension(false);
-    QString dialogDesc = "All supported files (*." + binaryExtension + " *." + asciiExtension + " *.tmsh *.bmsh *.raw *.stl);;"
+    QString dialogDesc = "All supported files (*." + binaryExtension + " *." + asciiExtension + " *.tmsh *.bmsh *.step *.raw *.stl);;"
                        + "Range model files (*." + binaryExtension + " *." + asciiExtension + ");;" +
                        + "Old Range model mesh files (*.tmsh *.bmsh);;"
+                       + "STEP model files (*.step);;"
                        + "RAW triangle files (*.raw);;"
                        + "STL triangle files (*.stl);;"
                        + "Any files (*)";
@@ -475,6 +478,10 @@ void Action::onModelOpen()
         if (extension == "tmsh" || extension == "bmsh")
         {
             modelIOType = MODEL_IO_MSH_IMPORT;
+        }
+        else if (extension == "step")
+        {
+            modelIOType = MODEL_IO_STEP_IMPORT;
         }
         else if (extension == "raw")
         {
@@ -525,6 +532,27 @@ void Action::onModelSaveAs()
         if (!fileName.isEmpty())
         {
             RJobManager::getInstance().submit(new ModelIO(MODEL_IO_SAVE, fileName, &model));
+        }
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onModelExportStep()
+{
+    R_LOG_TRACE_IN;
+    QDir dataDir(Application::instance()->getApplicationSettings()->getDataDir());
+    QList<uint> selectedModelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+    for (int i=0;i<selectedModelIDs.size();i++)
+    {
+        Model *pModel = Application::instance()->getSession()->getModelPtr(selectedModelIDs[i]);
+        QString fileName = dataDir.filePath(pModel->getName() + ".step");
+        fileName = QFileDialog::getSaveFileName(Application::instance()->getMainWindow(),
+                                                tr("Export model to STEP file"),
+                                                fileName,
+                                                "STEP triangle files (*.step);;Any files (*)");
+        if (!fileName.isEmpty())
+        {
+            RJobManager::getInstance().submit(new ModelIO(MODEL_IO_STEP_EXPORT, fileName, pModel));
         }
     }
     R_LOG_TRACE_OUT;

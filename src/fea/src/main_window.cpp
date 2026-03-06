@@ -299,6 +299,7 @@ void MainWindow::createMenus()
     QMenu *menuFileExport = new QMenu(menuFile);
     menuFileExport->setTitle(tr("Export"));
     menuFileExport->setIcon(QIcon(":/icons/file/pixmaps/range-model_save_as.svg"));
+    menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STEP));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_MSH));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_RAW));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII));

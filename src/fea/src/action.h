@@ -54,6 +54,7 @@ class Action : public RAction
             ACTION_MODEL_OPEN,
             ACTION_MODEL_SAVE,
             ACTION_MODEL_SAVE_AS,
+            ACTION_MODEL_EXPORT_STEP,
             ACTION_MODEL_EXPORT_MSH,
             ACTION_MODEL_EXPORT_RAW,
             ACTION_MODEL_EXPORT_STL_ASCII,
@@ -212,6 +213,9 @@ class Action : public RAction
 
         //! Save model as.
         void onModelSaveAs();
+
+        //! Export STEP model.
+        void onModelExportStep();
 
         //! Export MSH model.
         void onModelExportMsh();

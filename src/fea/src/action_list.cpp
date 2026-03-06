@@ -13,6 +13,7 @@ void ActionList::processAvailability()
 {
     this->getAction(Action::ACTION_MODEL_SAVE)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_SAVE_AS)->setEnabled(false);
+    this->getAction(Action::ACTION_MODEL_EXPORT_STEP)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_EXPORT_MSH)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_EXPORT_RAW)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII)->setEnabled(false);
@@ -98,6 +99,7 @@ void ActionList::processAvailability()
     {
         this->getAction(Action::ACTION_MODEL_SAVE)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_SAVE_AS)->setEnabled(true);
+        this->getAction(Action::ACTION_MODEL_EXPORT_STEP)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_EXPORT_MSH)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_EXPORT_RAW)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII)->setEnabled(true);

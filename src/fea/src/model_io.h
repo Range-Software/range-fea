@@ -23,6 +23,8 @@ typedef enum _ModelIOType
     MODEL_IO_STL_ASCII_EXPORT,
     MODEL_IO_STL_BINARY_EXPORT,
     MODEL_IO_STL_IMPORT,
+    MODEL_IO_STEP_EXPORT,
+    MODEL_IO_STEP_IMPORT,
     MODEL_IO_N_TYPES
 } ModelIOType;
 
@@ -78,6 +80,12 @@ class ModelIO : public RJob
 
         //! Import model from STL.
         static void importStl(Model &rModel, const QString &fileName);
+
+        //! Export model to STEP.
+        static void exportStep(Model &rModel, const QString &fileName);
+
+        //! Import model from STEP.
+        static void importStep(Model &rModel, const QString &fileName);
 
     protected:
 

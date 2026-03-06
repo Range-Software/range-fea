@@ -2,6 +2,7 @@
 #include <QFileDialog>
 
 #include <rml_file_manager.h>
+#include <rml_model_step.h>
 
 #include "model_io.h"
 #include "application.h"
@@ -287,6 +288,58 @@ void ModelIO::importStl(Model &rModel, const QString &fileName)
     R_LOG_TRACE_OUT;
 }
 
+void ModelIO::exportStep(Model &rModel, const QString &fileName)
+{
+    R_LOG_TRACE_IN;
+    RModelStep modelStep;
+    rModel.exportTo(modelStep);
+
+    RLogger::info("Exporting STEP file '%s'.\n", fileName.toUtf8().constData());
+    RLogger::indent();
+
+    try
+    {
+        modelStep.write(fileName);
+
+        RLogger::unindent();
+        RLogger::info("STEP file '%s' has been successfully exported.\n", fileName.toUtf8().constData());
+    }
+    catch (const RError &error)
+    {
+        RLogger::unindent();
+        RLogger::error("Failed to export STEP file '%s'.\n", fileName.toUtf8().constData());
+        throw error;
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void ModelIO::importStep(Model &rModel, const QString &fileName)
+{
+    R_LOG_TRACE_IN;
+    RModelStep modelStep;
+    double tolerance = 0.0;
+
+    RLogger::info("Importing STEP file '%s'.\n", fileName.toUtf8().constData());
+    RLogger::indent();
+
+    try
+    {
+        modelStep.read(fileName, tolerance);
+
+        rModel = Model(modelStep);
+
+        RLogger::unindent();
+        RLogger::info("STEP file '%s' has been successfully imported.\n", fileName.toUtf8().constData());
+    }
+    catch (const RError &error)
+    {
+        RLogger::unindent();
+        RLogger::error("Failed to import STEP file '%s'.\n", fileName.toUtf8().constData());
+        throw error;
+    }
+    R_LOG_TRACE_OUT;
+}
+
 int ModelIO::perform()
 {
     R_LOG_TRACE_IN;
@@ -353,6 +406,16 @@ int ModelIO::perform()
         {
             Model model;
             ModelIO::importStl(model,this->fileName);
+            Application::instance()->getSession()->addModel(model);
+        }
+        else if (this->type == MODEL_IO_STEP_EXPORT)
+        {
+            ModelIO::exportStep((*this->pModel),this->fileName);
+        }
+        else if (this->type == MODEL_IO_STEP_IMPORT)
+        {
+            Model model;
+            ModelIO::importStep(model,this->fileName);
             Application::instance()->getSession()->addModel(model);
         }
     }
