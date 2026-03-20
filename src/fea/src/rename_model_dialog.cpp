@@ -36,7 +36,12 @@ RenameModelDialog::RenameModelDialog(uint modelId, QWidget *parent)
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
     QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    okButton->setEnabled(!this->editName->text().isEmpty());
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
+
+    QObject::connect(this->editName,&QLineEdit::textChanged,okButton,[okButton](const QString &text){
+        okButton->setEnabled(!text.trimmed().isEmpty());
+    });
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
@@ -48,19 +53,9 @@ int RenameModelDialog::exec()
 
     if (retVal == QDialog::Accepted)
     {
-        Application::instance()->getSession()->getModel(this->modelId).setName(this->getName());
-        Application::instance()->getSession()->getModel(this->modelId).setDescription(this->getDescription());
+        Application::instance()->getSession()->getModel(this->modelId).setName(this->editName->text());
+        Application::instance()->getSession()->getModel(this->modelId).setDescription(this->editDesc->text());
         Application::instance()->getSession()->setModelChanged(this->modelId);
     }
     return retVal;
-}
-
-QString RenameModelDialog::getName() const
-{
-    return this->editName->text().isEmpty() ? tr("New model") : this->editName->text();
-}
-
-QString RenameModelDialog::getDescription() const
-{
-    return this->editDesc->text().isEmpty() ? tr("New model") : this->editDesc->text();
 }

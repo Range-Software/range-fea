@@ -39,7 +39,12 @@ NewModelDialog::NewModelDialog(QWidget *parent) :
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
     QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    okButton->setEnabled(!this->editName->text().isEmpty());
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
+
+    QObject::connect(this->editName,&QLineEdit::textChanged,okButton,[okButton](const QString &text){
+        okButton->setEnabled(!text.trimmed().isEmpty());
+    });
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
@@ -52,20 +57,10 @@ int NewModelDialog::exec()
     if (retVal == QDialog::Accepted)
     {
         Model *pNewModel = new Model;
-        pNewModel->setName(this->getName());
-        pNewModel->setDescription(this->getDescription());
+        pNewModel->setName(this->editName->text());
+        pNewModel->setDescription(this->editDesc->text());
         
         RJobManager::getInstance().submit(new ModelIO(MODEL_IO_ADD, QString(), pNewModel));
     }
     return retVal;
-}
-
-QString NewModelDialog::getName() const
-{
-    return this->editName->text().isEmpty() ? tr("New model") : this->editName->text();
-}
-
-QString NewModelDialog::getDescription() const
-{
-    return this->editDesc->text().isEmpty() ? tr("New model") : this->editDesc->text();
 }

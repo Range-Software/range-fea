@@ -22,14 +22,6 @@ class NewModelDialog : public QDialog
 
         //! Execute dialog.
         int exec();
-
-    private:
-
-        //! Return model name.
-        QString getName() const;
-
-        //! Return model description.
-        QString getDescription() const;
         
 };
 
