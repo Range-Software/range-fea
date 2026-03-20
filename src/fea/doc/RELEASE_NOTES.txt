@@ -8,6 +8,7 @@ Bug fixes:
 
 - Do not display empty "()" in model info box area when no model comment is set
 - Do not allow to accept empty model name when renaming a model or creating a new model
+- Cannot pick hole edges
 
 ------------------------------------------------------------------
 Version 1.1.3

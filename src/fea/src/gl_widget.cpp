@@ -464,13 +464,6 @@ void GLWidget::drawModel()
         this->modelDrawTime = modelDrawStopWatch.getMiliSeconds();
     }
 
-    // Release shader — subsequent non-model drawing uses fixed-function pipeline.
-    if (this->mainShaderProgram.isValid())
-    {
-        this->mainShaderProgram.release();
-        GLStateCache::instance().setShaderProgram(nullptr);
-    }
-
     if (this->clippingPlaneEnabled)
     {
         GL_SAFE_CALL(glDisable(GL_CLIP_PLANE0));
@@ -527,12 +520,19 @@ void GLWidget::drawModel()
         gGrid.paint();
     }
 
-    // Draw draw-engine objects
+    // Draw draw-engine objects (shader must still be bound for VBO normal/lighting to work)
     RLogger::trace("Draw engine objects\n");
     const DrawEngine *pDrawEngine = Application::instance()->getSession()->getDrawEngine();
     for (uint i=0;i<pDrawEngine->getNObjects();i++)
     {
         pDrawEngine->getObject(i)->glDraw(this);
+    }
+
+    // Release shader — draw-engine objects above need it, everything below uses fixed-function.
+    if (this->mainShaderProgram.isValid())
+    {
+        this->mainShaderProgram.release();
+        GLStateCache::instance().setShaderProgram(nullptr);
     }
 
     // Draw nodes to move

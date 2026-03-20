@@ -2,6 +2,9 @@
 
 #include <rbl_logger.h>
 
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+
 #include "gl_functions.h"
 #include "gl_vertex_buffer.h"
 
@@ -110,6 +113,11 @@ void GLFunctions::normal3f(GLfloat x, GLfloat y, GLfloat z)
     else
     {
         glNormal3f(x, y, z);
+        // Also feed aNormal (location 1) so immediate-mode draws work with the GLSL shader.
+        if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
+        {
+            ctx->functions()->glVertexAttrib3f(1, x, y, z);
+        }
     }
 }
 
@@ -144,6 +152,12 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     else
     {
         glColor4ub(r, g, b, a);
+        // Also feed aColor (location 2) so immediate-mode draws work with the GLSL shader.
+        if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
+        {
+            ctx->functions()->glVertexAttrib4f(2,
+                r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+        }
     }
 }
 
