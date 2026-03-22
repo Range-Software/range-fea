@@ -191,7 +191,7 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: |
           set -euo pipefail
-          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          DMG="$(/usr/bin/find build-Release -maxdepth 1 -name '*.dmg' -print -quit)"
           echo "DMG: $DMG"
 
           JSON_OUT="$(mktemp)"
@@ -230,7 +230,7 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: |
           set -euo pipefail
-          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          DMG="$(/usr/bin/find build-Release -maxdepth 1 -name '*.dmg' -print -quit)"
           xcrun stapler staple "$DMG"
           # Optional: also staple the app (useful if you ever upload the .app directly)
           APP_BUNDLE="$(/usr/bin/find build-Release -name '*.app' -maxdepth 2 -print -quit)"
