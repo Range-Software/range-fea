@@ -1,7 +1,7 @@
-# Close hole
+# Zatvoriť otvor
 
-Close hole in the surface.
+Uzavrie otvor v ploche.
 
-To close a hole it's edge must be selected (picked) first.
+Na zatvorenie otvoru musí byť jeho hrana najprv vybratá (označená).
 
-![Surface hole](image-surface_hole.png)
+![Otvor v ploche](image-surface_hole.png)

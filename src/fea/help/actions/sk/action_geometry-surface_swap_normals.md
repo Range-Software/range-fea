@@ -1,4 +1,3 @@
-# Swap normals
+# Vymeniť normály
 
-Swap normals of all selected surface entities.
-
+Vymení normály všetkých vybratých plošných entít.

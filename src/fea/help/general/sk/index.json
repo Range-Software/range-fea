@@ -6,35 +6,35 @@
             "file":  "general_Model.md"
         },
         {
-            "title": "2. Problem",
+            "title": "2. Problém",
             "file":  "general_Problem.md"
         },
         {
-            "title": "3. Problem type",
+            "title": "3. Typ problému",
             "file":  "general_Problem_type.md"
         },
         {
-            "title": "4. Boundary condition",
+            "title": "4. Okrajová podmienka",
             "file":  "general_Boundary_condition.md"
         },
         {
-            "title": "5. Environment condition",
+            "title": "5. Podmienka prostredia",
             "file":  "general_Environment_condition.md"
         },
         {
-            "title": "6. Initial condition",
+            "title": "6. Počiatočná podmienka",
             "file":  "general_Initial_condition.md"
         },
         {
-            "title": "7. Material",
+            "title": "7. Materiál",
             "file":  "general_Material.md"
         },
         {
-            "title": "8. Solver",
+            "title": "8. Riešič",
             "file":  "general_Solver.md"
         },
         {
-            "title": "9. Results",
+            "title": "9. Výsledky",
             "file":  "general_Results.md"
         }
     ]

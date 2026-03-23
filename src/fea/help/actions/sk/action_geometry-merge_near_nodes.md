@@ -1,4 +1,3 @@
-# Merge near nodes
+# Zlúčiť blízke uzly
 
-Merge nodes into one whose distance from each other is smaller then specified tolerance.
-
+Zlúči uzly do jedného, ak je ich vzájomná vzdialenosť menšia ako zadaná tolerancia.

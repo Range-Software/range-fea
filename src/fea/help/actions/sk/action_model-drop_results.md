@@ -1,4 +1,3 @@
-# Drop Results
+# Zahodiť výsledky
 
-Drop results and/or delete records (model files) for selected model
-
+Zahodí výsledky a/alebo vymaže záznamy (súbory modelu) pre vybraný model.

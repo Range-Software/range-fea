@@ -1,2 +1,2 @@
 
-# Remove duplicate elements
+# Odstrániť duplicitné prvky

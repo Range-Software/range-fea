@@ -1,4 +1,3 @@
-# Export STL model (ascii)
+# Exportovať STL model (ascii)
 
-Export selected model to **STL (ASCII)** type file.
-
+Exportuje vybraný model do súboru typu **STL (ASCII)**.

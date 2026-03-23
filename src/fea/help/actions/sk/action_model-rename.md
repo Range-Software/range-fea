@@ -1,4 +1,3 @@
-# Rename Model
+# Premenovať model
 
-Change model name and description.
-
+Zmení názov a popis modelu.

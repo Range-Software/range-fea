@@ -1,1 +1,1 @@
-# Create scalar field
+# Vytvoriť skalárne pole

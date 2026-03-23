@@ -1,4 +1,3 @@
-# Export sliver elements
+# Exportovať deformované prvky
 
-Result of this action is new model containing only sliver elements from selected model.
-
+Výsledkom tejto akcie je nový model obsahujúci iba deformované prvky z vybraného modelu.

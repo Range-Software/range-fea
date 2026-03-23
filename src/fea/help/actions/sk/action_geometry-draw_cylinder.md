@@ -1,10 +1,9 @@
-# Draw cylinder
+# Kresliť valec
 
-Draw a **cylinder** object.
-
-
-**Cylinder** object is a surface entity made of **triangle** elements.
+Nakreslí objekt **valec**.
 
 
-**Cone** can be created by setting either top or bottom radius to **0**.
+Objekt **valec** je plošná entita zložená z **trojuholníkových** prvkov.
 
+
+**Kužeľ** možno vytvoriť nastavením horného alebo dolného polomeru na **0**.

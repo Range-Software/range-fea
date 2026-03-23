@@ -1,10 +1,10 @@
-# Create vector field
+# Vytvoriť vektorové pole
 
-**Vector field**:
+**Vektorové pole**:
 
-- Helps to visualize fields such as velocity, electric and magnetic field, heat flow and forces.
-- Can be created on any model entity or interpolated surface such as **Cuts** and **ISO surfaces**.
+- Pomáha vizualizovať polia, ako sú rýchlosť, elektrické a magnetické pole, tepelný tok a sily.
+- Možno ho vytvoriť na akejkoľvek entite modelu alebo interpolovanej ploche, ako sú **Rezy** a **ISO plochy**.
 
-![Vector field](image-vector_field.png)
+![Vektorové pole](image-vector_field.png)
 
-![Vector field - force](image-vector_field-force.png)
+![Vektorové pole – sila](image-vector_field-force.png)

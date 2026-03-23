@@ -1,3 +1,3 @@
-# Edit stream line
+# Upraviť prúdnicu
 
-Change foundation parameters of selected **Stream line**.
+Zmení základné parametre vybranej **Prúdnice**.

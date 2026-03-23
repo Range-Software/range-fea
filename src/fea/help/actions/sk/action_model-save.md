@@ -1,2 +1,2 @@
-# Save Model
-Save selected model.
+# Uložiť model
+Uloží vybraný model.

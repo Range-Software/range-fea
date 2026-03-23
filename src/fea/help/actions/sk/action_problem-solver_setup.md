@@ -1,4 +1,3 @@
-# Setup Problem(s) matrix solver
+# Nastaviť maticový riešič problémov
 
-Configure matrix solver details for selected model. Options can differ based on applied **Problem type**.
-
+Konfiguruje detaily maticového riešiča pre vybraný model. Možnosti sa môžu líšiť v závislosti od aplikovaného **Typu problému**.

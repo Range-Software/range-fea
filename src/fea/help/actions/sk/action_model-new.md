@@ -1,2 +1,2 @@
-# New Model
-Create a new empty model.
+# Nový model
+Vytvorí nový prázdny model.

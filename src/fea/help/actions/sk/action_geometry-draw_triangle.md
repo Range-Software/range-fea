@@ -1,7 +1,6 @@
-# Draw triangle
+# Kresliť trojuholník
 
-Draw a **triangle** object.
+Nakreslí objekt **trojuholník**.
 
 
-**Triangle** object is a surface entity with one triangle (simplex) element that consist of three nodes.
-
+Objekt **trojuholník** je plošná entita s jedným trojuholníkovým (simplexovým) prvkom pozostávajúcim z troch uzlov.

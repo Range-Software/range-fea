@@ -1,10 +1,9 @@
-# Problem(s) task flow
+# Postup riešenia problémov
 
-Configure **Problem task flow**.
-
-
-**Problem task** represents actual physical problem such as **Stress analysis**, **Electro-statics** and etc.
+Konfiguruje **Postup riešenia problémov**.
 
 
-**Problem task flow** is a list or tree of different **problem tasks** and defines an order and a number of executions of each **problem task**. This is a place where number of iterations for nonlinear problems can be set.
+**Úloha problému** predstavuje skutočný fyzikálny problém, ako napríklad **Analýza napätia**, **Elektrostatika** atď.
 
+
+**Postup riešenia problémov** je zoznam alebo strom rôznych **úloh problémov** a definuje poradie a počet vykonaní každej **úlohy problému**. Tu možno nastaviť počet iterácií pre nelineárne problémy.

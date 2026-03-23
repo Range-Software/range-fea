@@ -1,10 +1,9 @@
-# Draw hexahedron
+# Kresliť hexaeder
 
-Draw a **hexahedron** object.
-
-
-**Hexahedron** object is a surface entity made of at least 6 **quadrilateral** elements.
+Nakreslí objekt **hexaeder**.
 
 
-Number of elements is defined by number of axial divisions.
+Objekt **hexaeder** je plošná entita zložená najmenej zo 6 **štvoruholníkových** prvkov.
 
+
+Počet prvkov je definovaný počtom osových delení.

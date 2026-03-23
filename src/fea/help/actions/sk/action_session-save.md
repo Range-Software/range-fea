@@ -1,2 +1,2 @@
-# Save Session
-Save current **Session**.
+# Uložiť reláciu
+Uloží aktuálnu **Reláciu**.

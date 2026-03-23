@@ -1,4 +1,3 @@
-# Remove element
+# Odstrániť prvok
 
-Remove selected (picked) element.
-
+Odstráni vybraný (označený) prvok.

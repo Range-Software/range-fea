@@ -1,2 +1,2 @@
-# Save Session As
-Save current **Session** under different filename.
+# Uložiť reláciu ako
+Uloží aktuálnu **Reláciu** pod iným názvom súboru.

@@ -1,4 +1,3 @@
-# Close model
+# Zatvoriť model
 
-Close selected model.
-
+Zatvorí vybraný model.

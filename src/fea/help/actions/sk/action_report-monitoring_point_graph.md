@@ -1,4 +1,3 @@
-# Monitoring points
+# Monitorovacie body
 
-Show computed values at specified monitoring points.
-
+Zobrazí vypočítané hodnoty v zadaných monitorovacích bodoch.

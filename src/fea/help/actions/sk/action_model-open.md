@@ -1,2 +1,2 @@
-# Open Model
-Open previously saved model.
+# Otvoriť model
+Otvorí predtým uložený model.

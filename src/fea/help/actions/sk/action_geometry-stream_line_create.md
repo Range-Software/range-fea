@@ -1,3 +1,3 @@
-# Create stream line
+# Vytvoriť prúdnicu
 
-![Stream line](image-stream_line.png)
+![Prúdnica](image-stream_line.png)

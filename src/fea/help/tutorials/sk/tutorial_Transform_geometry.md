@@ -1,77 +1,77 @@
-# Transform geometry
+# Transformovať geometriu
 
-This tutorial is a sequel to the **Draw cube** tutorial and will demonstrate how to scale, rotate and translate whole geometry or only its parts.
+Tento tutoriál nadväzuje na tutoriál **Kresliť kocku** a demonštruje, ako škálovať, otáčať a posúvať celú geometriu alebo len jej časti.
 
-## 1. Load model
+## 1. Načítať model
 
-If **Cube** model is not already loaded it can be don so with **_Open Model_** menu action.
+Ak model **Kocka** ešte nie je načítaný, možno ho otvoriť pomocou akcie menu **_Otvoriť model_**.
 
-**Menu:** _File -> Open Model_
+**Menu:** _Súbor -> Otvoriť model_
 
-This will show and **Open model** dialog. Select file **Cube.rbm** and click **Open**
+Zobrazí sa dialóg **Otvoriť model**. Vyberte súbor **Cube.rbm** a kliknite na **Otvoriť**.
 
-Once model is ready its geometry (whole or part) can be modified (transformed).
+Keď je model pripravený, jeho geometriu (celú alebo jej časť) možno upraviť (transformovať).
 
-## 2. Preparation
+## 2. Príprava
 
-**Menu:** _Geometry -> Scale, translate, rotate_
+**Menu:** _Geometria -> Škálovanie, posun, rotácia_
 
-Once menu item is activated a **Transform geometry** control will be shown on the right side of the main window where with three tabs **Scale**, **Rotate** and **Translate**.
+Po aktivácii položky menu sa na pravej strane hlavného okna zobrazí ovládací prvok **Transformovať geometriu** s troma záložkami: **Škálovanie**, **Rotácia** a **Posun**.
 
-![Transform geometry](image-Transform_geometry.png)
+![Transformovať geometriu](image-Transform_geometry.png)
 
-In this tutorial all transformations will be applied consecutively on one side of the cube.
+V tomto tutoriáli budú všetky transformácie postupne aplikované na jednu stranu kocky.
 
-At this moment all sides of the **Cube** model are grouped in the same **surface entity**. Therefore, one side needs to be **marked** as separate **surface entity** so the transformations can be applied only on this side and not on the others. This can be done with menu action **_Mark Surface_**. But first cube side needs to be picked.
+V tejto chvíli sú všetky strany modelu **Kocka** zoskupené v rovnakej **plošnej entite**. Preto je potrebné jednu stranu **označiť** ako samostatnú **plošnú entitu**, aby bolo možné aplikovať transformácie len na túto stranu a nie na ostatné. Možno to urobiť pomocou akcie menu **_Označiť plochu_**. Najprv je však potrebné vybrať stranu kocky.
 
-## 3. Pick a side
+## 3. Vybrať stranu
 
-Press and hold **_Ctrl_** key and click with **_Left mouse button_** on one side of the cube. This will highlight the picked element. Since the **Cube** model consist of 6 rectangular (Quadrilateral) elements, then one element corresponds to one side of the **Cube**.
+Stlačte a podržte kláves **_Ctrl_** a kliknite **_ľavým tlačidlom myši_** na jednu stranu kocky. Tým sa vybratý prvok zvýrazní. Keďže model **Kocka** pozostáva zo 6 obdĺžnikových (štvoruholníkových) prvkov, jeden prvok zodpovedá jednej strane **Kocky**.
 
-## 4. Mark a surface
+## 4. Označiť plochu
 
-**Menu:** _Geometry -> Surface -> Mark surface_
+**Menu:** _Geometria -> Plocha -> Označiť plochu_
 
-![Mark surface dialog](image-Mark_surface_dialog.png)
+![Dialóg označenia plochy](image-Mark_surface_dialog.png)
 
-This action will show **Mark entity (surface)** dialog. Because in previous step one element was **picked** an option **_Mark only selected and related elements_** is preselected. By clicking **Ok** button one side of the **Cube** model will be marked as a separate **Surface entity**.
+Táto akcia zobrazí dialóg **Označiť entitu (plochu)**. Keďže v predchádzajúcom kroku bol vybratý jeden prvok, je predvolene vybraná možnosť **_Označiť iba vybrané a súvisiace prvky_**. Kliknutím na tlačidlo **Ok** bude jedna strana modelu **Kocka** označená ako samostatná **Plošná entita**.
 
-_**Note:** Any entity can be renamed by **double-clicking** with **Left mouse button** on entity name in the **Model tree** on the left side of the main window._
+_**Poznámka:** Akúkoľvek entitu možno premenovať **dvojitým kliknutím** **ľavým tlačidlom myši** na názov entity v **Strome modelu** na ľavej strane hlavného okna._
 
-![Marked surface](image-Marked_surface.png)
+![Označená plocha](image-Marked_surface.png)
 
-## 5. Scale picked entity (cube side)
+## 5. Škálovať vybratú entitu (stranu kocky)
 
-Pick marked surface and open **Transform geometry** control widget.
+Vyberte označenú plochu a otvorte ovládací prvok **Transformovať geometriu**.
 
-**Menu:** _Geometry -> Scale, translate, rotate_
+**Menu:** _Geometria -> Škálovanie, posun, rotácia_
 
-1. Check **Same scale in all directions**
-2. Set **Scale** value to 0.5.
-3. Click on **Select from picked element/node** button.
-4. In **Apply to** group select **Picked entities**.
-5. Make sure **Include shared nodes** is checked as well as its **all** child check-boxes.
+1. Zaškrtnite **Rovnaké škálovanie vo všetkých smeroch**.
+2. Nastavte hodnotu **Mierka** na 0,5.
+3. Kliknite na tlačidlo **Vybrať z označeného prvku/uzla**.
+4. V skupine **Použiť na** vyberte **Vybraté entity**.
+5. Uistite sa, že je zaškrtnutá možnosť **Zahrnúť zdieľané uzly** spolu so všetkými jej podriadeným zaškrtávacími políčkami.
 
-Proper setup can be seen on following screen-shot.
+Správne nastavenie je zobrazené na nasledujúcej snímke obrazovky.
 
-![Transform geometry - scale](image-Transform_geometry-scale.png)
+![Transformovať geometriu – škálovanie](image-Transform_geometry-scale.png)
 
-Click **Ok**. Result can be seen on following screen-shot.
+Kliknite na **Ok**. Výsledok je zobrazený na nasledujúcej snímke obrazovky.
 
-![Scaled surface](image-Scaled_surface.png)
+![Škálovaná plocha](image-Scaled_surface.png)
 
-## 6. Rotate picked entity (scaled cube side)
+## 6. Otočiť vybratú entitu (škálovanú stranu kocky)
 
-By rotating picked surface an extrudes surface can be created. Open **Transform geometry** control widget.
+Otočením vybranej plochy možno vytvoriť vytiahnutú plochu. Otvorte ovládací prvok **Transformovať geometriu**.
 
-**Menu:** _Geometry -> Surface -> Mark surface_
+**Menu:** _Geometria -> Plocha -> Označiť plochu_
 
-Specify values as shown in following screenshot.
+Zadajte hodnoty podľa nasledujúcej snímky obrazovky.
 
-_Note: **Sweep steps: 6** will result in six new segments._
+_Poznámka: **Počet krokov rozmetania: 6** vytvorí šesť nových segmentov._
 
-![Transform geometry - rotate](image-Transform_geometry-rotate.png)
+![Transformovať geometriu – rotácia](image-Transform_geometry-rotate.png)
 
-Click **Ok**. Result can be seen on following screen-shot.
+Kliknite na **Ok**. Výsledok je zobrazený na nasledujúcej snímke obrazovky.
 
-![Rotated surface](image-Rotated_surface.png)
+![Otočená plocha](image-Rotated_surface.png)

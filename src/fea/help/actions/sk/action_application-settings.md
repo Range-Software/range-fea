@@ -1,4 +1,3 @@
-# Application settings
+# Nastavenia aplikácie
 
-Configure application behavior, paths, keyboard shortcuts and your **Range-Software** online account.
-
+Konfiguruje správanie aplikácie, cesty, klávesové skratky a váš online účet **Range-Software**.

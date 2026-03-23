@@ -1,1 +1,1 @@
-# Consolidate geometry
+# Konsolidovať geometriu

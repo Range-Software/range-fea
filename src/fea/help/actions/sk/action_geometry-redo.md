@@ -1,4 +1,3 @@
-# Redo
+# Znova
 
-Redo last undone model action.
-
+Zopakuje poslednú vratenú akciu s modelom.

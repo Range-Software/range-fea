@@ -1,13 +1,13 @@
-# Mark surface
+# Označiť plochu
 
-Boundary, initial and environment conditions can be applied only on entities (Points, Lines, Surfaces and Volumes), therefore it is necessary to split one surface into multiple logical surfaces. This process is called **marking**.
+Okrajové, počiatočné a podmienky prostredia možno aplikovať iba na entity (Body, Čiary, Plochy a Objemy), preto je potrebné rozdeliť jednu plochu na viacero logických plôch. Tento proces sa nazýva **označovanie**.
 
-![Mark surface dialog](image-Mark_surface_dialog.png)
+![Dialóg označenia plochy](image-Mark_surface_dialog.png)
 
-## Auto-mark all entities
+## Automaticky označiť všetky entity
 
-All surface elements will be inspected and grouped to surface entities based on **segregation angle**.
+Všetky povrchové prvky budú preskúmané a zoskupené do plošných entít na základe **uhla segregácie**.
 
-## Mark only selected and related elements
+## Označiť iba vybraté a súvisiace prvky
 
-All surface elements neighboring with selected (picked) elements (including) will be inspected and grouped to surface entity based on **segregation angle**.
+Všetky povrchové prvky susediace s vybratými (označenými) prvkami (vrátane) budú preskúmané a zoskupené do plošnej entity na základe **uhla segregácie**.

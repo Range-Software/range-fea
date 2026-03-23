@@ -2,23 +2,23 @@
     "main": "tutorial_index.md",
     "chapters": [
         {
-            "title": "1. Draw cube",
+            "title": "1. Kresliť kocku",
             "file":  "tutorial_Draw_cube.md"
         },
         {
-            "title": "2. Transform geometry",
+            "title": "2. Transformovať geometriu",
             "file":  "tutorial_Transform_geometry.md"
         },
         {
-            "title": "3. Stress and deformation analysis",
+            "title": "3. Analýza napätia a deformácie",
             "file":  "tutorial_Stress_and_deformation_analysis.md"
         },
         {
-            "title": "4. Contaminant dispersion in fluids",
+            "title": "4. Rozptyl kontaminantu v tekutinách",
             "file":  "tutorial_Contaminant_dispersion_in_fluids.md"
         },
         {
-            "title": "5. Multiphysics",
+            "title": "5. Multifyzika",
             "file":  "tutorial_Multiphysics.md"
         }
     ]

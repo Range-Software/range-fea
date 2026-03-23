@@ -1,8 +1,8 @@
-# Create ISO
+# Vytvoriť ISO
 
-**ISO entity** is a form of an interpolated entity similar to **Cut**. **ISO entity** is a 'layer surface' based on a scalar value or magnitude of a vector.
+**ISO entita** je forma interpolovanej entity podobná **Rezu**. **ISO entita** je „vrstvová plocha" na základe skalárnej hodnoty alebo veľkosti vektora.
 
 
-**ISO entity** can be created on any volume or surface entity from any result variable which is applicable on nodes. **Result variables** which are by default applicable on elements such as **Von Mises Stress** must be converted to node variables first.
+**ISO entitu** možno vytvoriť na akejkoľvek objemovej alebo plošnej entite z akejkoľvek výsledkovej premennej aplikovateľnej na uzly. **Výsledkové premenné**, ktoré sú štandardne aplikovateľné na prvky, ako napríklad **Von Misesovo napätie**, musia byť najprv prevedené na uzlové premenné.
 
-![ISO Surface](image-iso_surface.png)
+![ISO plocha](image-iso_surface.png)

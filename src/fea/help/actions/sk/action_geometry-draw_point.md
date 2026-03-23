@@ -1,7 +1,6 @@
-# Draw point
+# Kresliť bod
 
-Draw a **point** object.
+Nakreslí objekt **bod**.
 
 
-**Point** object is a point entity with one point element that consist of one node.
-
+Objekt **bod** je bodová entita s jedným bodovým prvkom pozostávajúcim z jedného uzla.

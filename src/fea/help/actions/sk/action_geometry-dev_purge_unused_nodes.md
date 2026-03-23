@@ -1,1 +1,1 @@
-# Purge unused nodes
+# Odstrániť nepoužívané uzly

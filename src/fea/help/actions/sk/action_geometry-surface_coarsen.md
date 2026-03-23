@@ -1,4 +1,3 @@
-# Coarsen surface
+# Zhrubiť plochu
 
-This action will try to simplify the surface mesh by merging co-planar surface elements.
-
+Táto akcia sa pokúsi zjednodušiť povrchovú sieť zlúčením koplanárnych povrchových prvkov.

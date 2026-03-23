@@ -1,4 +1,3 @@
-# Actions
+# Akcie
 
-Help on each menu action describing expected input conditions and results.
-
+Nápoveda ku každej akcii menu opisujúca očakávané vstupné podmienky a výsledky.

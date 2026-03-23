@@ -1,4 +1,3 @@
-# Help
+# Nápoveda
 
-Launch this help.
-
+Spustí túto nápovedu.

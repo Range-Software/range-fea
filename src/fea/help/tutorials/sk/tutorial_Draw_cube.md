@@ -1,39 +1,39 @@
-# Draw cube
+# Kresliť kocku
 
-This tutorial will show how to draw/generate a simple geometry such as cube.
+Tento tutoriál ukáže, ako nakresliť/vygenerovať jednoduchú geometriu, napríklad kocku.
 
-## 1. Create a new model
+## 1. Vytvoriť nový model
 
-**Menu:** _File -> New Model_
+**Menu:** _Súbor -> Nový model_
 
-![New model](image-New_model.png)
+![Nový model](image-New_model.png)
 
-By clicking **Ok** a new empty model named **Cube** will be created. Since it is newly created model has no problem assigned a **Problem task flow** dialog will pop-up.
+Kliknutím na **Ok** sa vytvorí nový prázdny model s názvom **Kocka**. Keďže ide o novo vytvorený model bez priradeného problému, zobrazí sa dialóg **Postup riešenia problému**.
 
-### 1.1 Assign problem type
+### 1.1 Priradiť typ problému
 
-![Problem task flow](image-Problem_task_flow.png)
+![Postup riešenia problému](image-Problem_task_flow.png)
 
-To assign a problem type click on **Add problem type** button and in **Problem type selector** dialog select **Heat transfer**.
+Ak chcete priradiť typ problému, kliknite na tlačidlo **Pridať typ problému** a v dialógu **Výber typu problému** vyberte **Prestup tepla**.
 
-![Problem type selector](image-Problem_type_selector.png)
+![Výber typu problému](image-Problem_type_selector.png)
 
-Click **Ok** button to close **Problem type selector** dialog to and again **Ok** button to close **Problem task flow** dialog.
+Kliknite na tlačidlo **Ok** na zatvorenie dialógu **Výber typu problému** a opäť na **Ok** na zatvorenie dialógu **Postup riešenia problému**.
 
-## 2. Draw a cube
+## 2. Nakresliť kocku
 
-**Menu:** _Geometry -> Draw -> Draw hexahedron_
+**Menu:** _Geometria -> Kresliť -> Kresliť hexaeder_
 
-Once menu item is activated a **Draw objects** control will be shown on the right side of the main window where user can change object position, size and axial divisions.
+Po aktivácii položky menu sa na pravej strane hlavného okna zobrazí ovládací prvok **Kresliť objekty**, v ktorom môže používateľ zmeniť polohu, veľkosť a osové delenie objektu.
 
-![Draw hexahedron](image-Draw_hexahedron.png)
+![Kresliť hexaeder](image-Draw_hexahedron.png)
 
-Displayed object changes at the same time as values are being changed in the **Draw objects** control. By clicking on the **Ok** button object will be added to the current model.</b>
+Zobrazený objekt sa mení súčasne so zmenami hodnôt v ovládacom prvku **Kresliť objekty**. Kliknutím na tlačidlo **Ok** sa objekt pridá do aktuálneho modelu.
 
-## Save model
+## Uložiť model
 
-To save model just execute following action.
+Na uloženie modelu vykonajte nasledujúcu akciu.
 
-**Menu:** _File -> Save Model_
+**Menu:** _Súbor -> Uložiť model_
 
-If model has not been saved before, program will show **Save model** dialog offering a filename and path were to store. Click **Save** to accept.
+Ak model ešte nebol uložený, program zobrazí dialóg **Uložiť model** s ponukou názvu súboru a cesty na uloženie. Kliknite na **Uložiť** na potvrdenie.

@@ -1,2 +1,2 @@
-# Open Session
-Open previously saved **Session**.
+# Otvoriť reláciu
+Otvorí predtým uloženú **Reláciu**.

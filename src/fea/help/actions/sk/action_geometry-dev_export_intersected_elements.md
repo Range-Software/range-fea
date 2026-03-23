@@ -1,4 +1,3 @@
-# Export intersected elements
+# Exportovať pretínajúce sa prvky
 
-Result of this action is new model containing only intersected elements from selected model.
-
+Výsledkom tejto akcie je nový model obsahujúci iba pretínajúce sa prvky z vybraného modelu.

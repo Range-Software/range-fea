@@ -1,3 +1,3 @@
-# Remove selected entities
+# Odstrániť vybraté entity
 
-Remove selected entities. Together with entities also included elements and nodes that are not shared by other entities will be removed as well.
+Odstráni vybraté entity. Spolu s entitami budú odstránené aj zahrnuté prvky a uzly, ktoré nie sú zdieľané inými entitami.

@@ -1,4 +1,3 @@
-# Problem
+# Problém
 
-**Problem** is a general term for one or more physical phenomena applied on a geometry and is defined by **Problem type**, **Problem specific setup**, **Boundary conditions**, **Initial conditions**, **Environment conditions** and **Material settings**.
-
+**Problém** je všeobecný termín pre jeden alebo viac fyzikálnych javov aplikovaných na geometriu a je definovaný **Typom problému**, **Špecifickým nastavením problému**, **Okrajovými podmienkami**, **Počiatočnými podmienkami**, **Podmienkami prostredia** a **Nastaveniami materiálu**.

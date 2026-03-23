@@ -1,108 +1,107 @@
-# Contaminant dispersion in fluids
+# Rozptyl kontaminantu v tekutinách
 
-This tutorial will demonstrate how to setup advanced multi physics simulation including non-linear iterative problem such as **CFD (Computational Fluid Dynamics)**.
+Tento tutoriál demonštruje, ako nastaviť pokročilú multifyzikálnu simuláciu vrátane nelineárneho iteratívneho problému, ako je **CFD (výpočtová dynamika tekutín)**.
 
-To solve **contaminant dispersion in fluid** following problem types need to be configured:
+Na vyriešenie **rozptylu kontaminantu v tekutine** je potrebné nakonfigurovať nasledujúce typy problémov:
 
-1. **Contaminant dispersion** - Calculate distribution of contaminant in the flow field.
-2. **Inconpressible viscous flow** - Stead-state and transient flow of newtonian fluids.
+1. **Rozptyl kontaminantu** – Výpočet rozloženia kontaminantu v prúdovom poli.
+2. **Nestlačiteľné viskózne prúdenie** – Ustálené a prechodové prúdenie newtonských tekutín.
 
-Since **CFD** is a nonlinear problem it requires iterative solution. This problem will be solved in two steps:
+Keďže **CFD** je nelineárny problém, vyžaduje iteratívne riešenie. Tento problém bude vyriešený v dvoch krokoch:
 
-1. **Steady-state** - First it is necessary to get "initial" flow field and pressure distribution.
-2. **Transient** - In second step a **time marching** will be used to get transient solution.
+1. **Ustálený stav** – Najprv je potrebné získať „počiatočné" prúdové pole a rozloženie tlaku.
+2. **Prechodový stav** – V druhom kroku sa použije **časové krokovanie** na získanie prechodového riešenia.
 
-## 1. Load model
+## 1. Načítať model
 
-Load model **Channel.tmsh**.
+Načítajte model **Channel.tmsh**.
 
-## 2. Problem task flow (Step 1)
+## 2. Postup riešenia problému (krok 1)
 
-First a converged initial flow is needed. For this reason steady-state solution of the incompressible viscous flow is needed. In **Problem task flow** dialog select appropriate problem type and set **# of iterations:** to **2000**. To do so double click on the initial value.
+Najprv je potrebné konvergované počiatočné prúdenie. Z tohto dôvodu je potrebné ustálené riešenie nestlačiteľného viskózneho prúdenia. V dialógu **Postup riešenia problému** vyberte príslušný typ problému a nastavte **Počet iterácií:** na **2000**. Na to dvakrát kliknite na počiatočnú hodnotu.
 
-![CFD - Problem task flow steady](image-CFD-Problem_task_flow_steady.png)
+![CFD – Postup riešenia problému – ustálený stav](image-CFD-Problem_task_flow_steady.png)
 
-## 3. Generate 3D mesh
+## 3. Vygenerovať 3D sieť
 
-To solve this problem volume mesh must be generated.
+Na vyriešenie tohto problému musí byť vygenerovaná objemová sieť.
 
-**Menu:** _Geometry -> Volume -> Generate tetrahedral mesh_
+**Menu:** _Geometria -> Objem -> Generovať tetraedrálnu sieť_
 
-## 4. Assign material
+## 4. Priradiť materiál
 
-Assign **Water** to all model entities.
+Priraďte **Vodu** všetkým entitám modelu.
 
-## 5. Boundary conditions
+## 5. Okrajové podmienky
 
-Assign following boundary conditions to **surface** entities as described below.
+Priraďte nasledujúce okrajové podmienky k **plošným** entitám podľa nasledujúceho opisu.
 
-1. **Walls**
-    - _Wall_
+1. **Steny**
+    - _Stena_
         - N/A
-2. **Inflow**
-    - _Volumetric flow rate (inflow)_
-        - Volumetric flow rate = 50 `[m^3/sN/A]`
-3. **Outflow**
-    - _Pressure (implicit)_
-        - Pressure = 0 `[Pa]`
+2. **Prítok**
+    - _Objemový prietok (prítok)_
+        - Objemový prietok = 50 `[m^3/sN/A]`
+3. **Odtok**
+    - _Tlak (implicitný)_
+        - Tlak = 0 `[Pa]`
 
-## 6. Solve problem
+## 6. Vyriešiť problém
 
-Do the same as in the previous tutorials.
+Postupujte rovnako ako v predchádzajúcich tutoriáloch.
 
-It will take some time until solver computes all iterations and find converged solution. Solver convergence can be checked using following action:
+Riešič bude chvíľu počítať všetky iterácie, kým nenájde konvergované riešenie. Konvergenciu riešiča možno skontrolovať pomocou nasledujúcej akcie:
 
-**Menu:** _Report -> Solver convergence_
+**Menu:** _Správa -> Konvergencia riešiča_
 
-## 7. Problem task flow (Step 2)
+## 7. Postup riešenia problému (krok 2)
 
-Once the solver converges **transient** problem including **Contaminant dispersion** can be configured.
+Po konvergencii riešiča možno nakonfigurovať **prechodový** problém vrátane **Rozptylu kontaminantu**.
 
-Since **Inconpressible viscous flow** is nonlinear problem it will always need some nonlinear iterations to be specified to find converged solution for each time-step. **Task flow** should look-like as shown on the screenshot below.
+Keďže **Nestlačiteľné viskózne prúdenie** je nelineárny problém, vždy bude potrebovať určitý počet nelineárnych iterácií na nájdenie konvergovaného riešenia pre každý časový krok. **Postup riešenia** by mal vyzerať tak, ako je zobrazené na nasledujúcej snímke obrazovky.
 
-![CFD - Problem task flow](image-CFD-Problem_task_flow.png)
+![CFD – Postup riešenia problému](image-CFD-Problem_task_flow.png)
 
-## 8. Time solver setup
+## 8. Nastavenie časového riešiča
 
-Click on **Problem setup** tab. Enable **Time-solver** and specify values as shown on the screenshot below.
+Kliknite na záložku **Nastavenie problému**. Povoľte **Časový riešič** a zadajte hodnoty podľa nasledujúcej snímky obrazovky.
 
-![CFD - Problem time solver](image-CFD-Problem_time_solver.png)
+![CFD – Časový riešič problému](image-CFD-Problem_time_solver.png)
 
-## 9. Boundary conditions
+## 9. Okrajové podmienky
 
-Apply **Particle concentration** boundary condition to **Inflow** model entity.
+Aplikujte okrajovú podmienku **Koncentrácia častíc** na entitu modelu **Prítok**.
 
-![CFD - Boundary conditions](image-CFD-Boundary_conditions.png)
+![CFD – Okrajové podmienky](image-CFD-Boundary_conditions.png)
 
-Do not specify value but click on **Edit time dependent values** button, to specify time-triggered (time-profile) boundary condition.
+Nezadávajte hodnotu, ale kliknite na tlačidlo **Upraviť časovo závislé hodnoty** na zadanie časovo spustenej (časový profil) okrajovej podmienky.
 
-In the **Component editor** dialog time depended values can be specify. Values are always valid **from** specified time.
+V dialógu **Editor komponentov** možno zadávať časovo závislé hodnoty. Hodnoty sú vždy platné **od** zadaného času.
 
-![CFD - Particle concentration condition](image-CFD-Particle_concentration_condition.png)
+![CFD – Podmienka koncentrácie častíc](image-CFD-Particle_concentration_condition.png)
 
-## 10. Solve problem (restart)
+## 10. Vyriešiť problém (reštart)
 
-Once the problem is fully configured restart the solver. This is done just like when starting a solver but **Restart solver / continue** check-box must be selected. This will make the solver to use already computed results as a starting point and continue in time-marching simulation.
+Po úplnej konfigurácii problému reštartujte riešič. Postup je rovnaký ako pri spustení riešiča, ale musí byť vybraté políčko **Reštartovať riešič / pokračovať**. Tým riešič použije už vypočítané výsledky ako východiskový bod a bude pokračovať v simulácii s časovým krokovaním.
 
-![CFD - Solver restart](image-CFD-Solver_restart.png)
+![CFD – Reštart riešiča](image-CFD-Solver_restart.png)
 
-## 11. Model records (results in time)
+## 11. Záznamy modelu (výsledky v čase)
 
-As the solver keeps finding solutions for each time-step, model records are being written. Each record contains solution for given time-step. List of these records can be seen in **Model records** tree. By double-clicking on the record results for given time-step will be loaded.
+Keď riešič nachádza riešenia pre každý časový krok, zapisujú sa záznamy modelu. Každý záznam obsahuje riešenie pre daný časový krok. Zoznam týchto záznamov je zobrazený v strome **Záznamy modelu**. Dvojitým kliknutím na záznam sa načítajú výsledky pre daný časový krok.
 
-## 12. Record video
+## 12. Nahrať video
 
-To record a video from computed results go to **Model records** tree and click on the **Record** button (Red point at the bottom).
+Na nahranie videa z vypočítaných výsledkov prejdite do stromu **Záznamy modelu** a kliknite na tlačidlo **Nahrať** (červená bodka v dolnej časti).
 
-![CFD - Model records](image-CFD-Model_records.png)
+![CFD – Záznamy modelu](image-CFD-Model_records.png)
 
-After clicking on **Record** button **Video settings** dialog will appear. Click **Ok** to start video recording process.
+Po kliknutí na tlačidlo **Nahrať** sa zobrazí dialóg **Nastavenia videa**. Kliknite na **Ok** na spustenie procesu nahrávania videa.
 
-![CFD - Video settings](image-CFD-Video_settings.png)
+![CFD – Nastavenia videa](image-CFD-Video_settings.png)
 
-To create a video can take some time since video frames are created from screenshots of **3D model area** and for each model record must be loaded.
+Vytvorenie videa môže chvíľu trvať, pretože snímky videa sa vytvárajú zo snímok obrazovky **oblasti 3D modelu** a pre každý záznam modelu musí byť načítaný.
 
-All produced screenshots and video itself can be found in **Documents** tree. To view the video double-click on its name **Channel.avi**.
+Všetky vytvorené snímky obrazovky aj samotné video možno nájsť v strome **Dokumenty**. Na prehranie videa naň dvojito kliknite na jeho názov **Channel.avi**.
 
-![CFD - Documents](image-CFD-Documents.png)
-
+![CFD – Dokumenty](image-CFD-Documents.png)

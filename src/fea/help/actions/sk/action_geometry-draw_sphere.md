@@ -1,7 +1,6 @@
-# Draw sphere
+# Kresliť sféru
 
-Draw a **sphere** object.
+Nakreslí objekt **sféra**.
 
 
-**Sphere** object is a surface entity made of **triangle** elements.
-
+Objekt **sféra** je plošná entita zložená z **trojuholníkových** prvkov.

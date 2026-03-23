@@ -1,6 +1,6 @@
-# Solver
+# Riešič
 
-**Solver** is a tool that process **Problem** settings and compute **Results** on given **Model**.
+**Riešič** je nástroj, ktorý spracuje nastavenia **Problému** a vypočíta **Výsledky** na zadanom **Modeli**.
 
 
-Based on **Model** size, **Problem type**, convergence settings and transient setup, time to solve the **Problem** may vary from seconds up to hours and longer.
+V závislosti od veľkosti **Modelu**, **Typu problému**, nastavení konvergencie a prechodového nastavenia sa čas potrebný na vyriešenie **Problému** môže pohybovať od sekúnd až po hodiny a dlhšie.

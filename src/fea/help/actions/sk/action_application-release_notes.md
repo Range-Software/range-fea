@@ -1,4 +1,3 @@
-# Release notes
+# Poznámky k vydaniu
 
-Display release notes for current version of the software.
-
+Zobrazí poznámky k vydaniu aktuálnej verzie softvéru.

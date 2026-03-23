@@ -1,7 +1,6 @@
-# Environment condition
+# Podmienka prostredia
 
-**Environment condition** is a condition which can be specified at any model entity such as Point, Line, Surface or Volume. **Environment condition** specifies **problem** specific values for given environment (e.g., **Environment temperature** or **Gravitational force**.
+**Podmienka prostredia** je podmienka, ktorú možno zadať pre akúkoľvek entitu modelu, ako je Bod, Čiara, Plocha alebo Objem. **Podmienka prostredia** špecifikuje hodnoty špecifické pre daný **problém** a prostredie (napr. **Teplota prostredia** alebo **Gravitačná sila**).
 
 
-If no **Initial condition** for given model entity is specified then **environment condition** is used.
-
+Ak pre danú entitu modelu nie je zadaná žiadna **Počiatočná podmienka**, použije sa **podmienka prostredia**.

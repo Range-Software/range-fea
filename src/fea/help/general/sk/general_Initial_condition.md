@@ -1,5 +1,5 @@
-# Initial condition
+# Počiatočná podmienka
 
-**Initial condition** is a condition specified at the boundary, where boundary can be any model entity (Point, Line, Surface, Volume) and can be seen as a starting point for the solver. For **Steady-state problems**, well chosen **Initial condition** improve solver convergence.
+**Počiatočná podmienka** je podmienka zadaná na hranici, pričom hranicou môže byť akákoľvek entita modelu (Bod, Čiara, Plocha, Objem), a možno ju vnímať ako východiskový bod pre riešič. Pri **Úlohách ustáleného stavu** dobre zvolená **Počiatočná podmienka** zlepšuje konvergenciu riešiča.
 
-Initial conditions are **Problem** specific where each **Problem type** defines its own set of **initial conditions**.
+Počiatočné podmienky sú **špecifické pre problém**, pričom každý **Typ problému** definuje vlastnú sadu **počiatočných podmienok**.

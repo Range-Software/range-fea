@@ -1,4 +1,3 @@
-# License
+# Licencia
 
-Display Range-Software license.
-
+Zobrazí licenciu Range-Software.

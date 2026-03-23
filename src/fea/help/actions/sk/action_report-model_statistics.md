@@ -1,4 +1,3 @@
-# Model statistics
+# Štatistiky modelu
 
-Show model's geometry statistics.
-
+Zobrazí geometrické štatistiky modelu.

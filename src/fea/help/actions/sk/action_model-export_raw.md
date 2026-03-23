@@ -1,36 +1,36 @@
-# Export RAW model
+# Exportovať RAW model
 
-Export selected model to **RAW** type file.
-
-
-Each line in **RAW** file contains coordinates of all nodes of exactly one element (simplex). Empty lines and comments that begin with **#** are accepted.
+Exportuje vybraný model do súboru typu **RAW**.
 
 
-Following simplexes are accepted:
+Každý riadok v súbore **RAW** obsahuje súradnice všetkých uzlov práve jedného prvku (simplexu). Prázdne riadky a komentáre začínajúce znakom **#** sú akceptované.
 
 
-**Point:**
+Akceptované sú nasledujúce simplexy:
+
+
+**Bod:**
 ```x1 y1 z1```
 
 
-**Segment:**
+**Úsečka:**
 ```x1 y1 z1 x2 y2 z2```
 
 
-**Triangle:**
+**Trojuholník:**
 ```x1 y1 z1 x2 y2 z2 x3 y3 z3```
 
 
-**Quadrilateral:**
+**Štvoruholník:**
 ```x1 y1 z1 x2 y2 z2 x3 y3 z3 x4 y4 z4```
 
-## Example
-Following example represents cube made of four quadrilaterals with point in each corner.
+## Príklad
+Nasledujúci príklad predstavuje kocku zloženú zo štyroch štvoruholníkov s bodom v každom rohu.
 
 ```# --------------------------------------------------
 # X1  Y2  Z1   X2  Y2  Z2   X3  Y3  Z3   X4  Y4  Z4
 # --------------------------------------------------
-# Points
+# Body
   0.0 0.0 0.0
   1.0 0.0 0.0
   0.0 1.0 0.0
@@ -39,11 +39,10 @@ Following example represents cube made of four quadrilaterals with point in each
   1.0 0.0 1.0
   0.0 1.0 1.0
   1.0 1.0 1.0
-# Quadrilaterals
-  0.0 0.0 0.0  0.0 1.0 0.0  1.0 1.0 0.0  1.0 0.0 0.0  # Bottom side
-  0.0 0.0 1.0  1.0 0.0 1.0  1.0 1.0 1.0  0.0 1.0 1.0  # Top side
-  0.0 0.0 0.0  1.0 0.0 0.0  1.0 0.0 1.0  0.0 0.0 1.0  # Front side
-  0.0 1.0 0.0  0.0 1.0 1.0  1.0 1.0 1.0  1.0 1.0 0.0  # Back side
-  0.0 0.0 0.0  0.0 0.0 1.0  0.0 1.0 1.0  0.0 1.0 0.0  # Left side
-  1.0 0.0 0.0  1.0 1.0 0.0  1.0 1.0 1.0  1.0 0.0 1.0  # Right side```
-
+# Štvoruholníky
+  0.0 0.0 0.0  0.0 1.0 0.0  1.0 1.0 0.0  1.0 0.0 0.0  # Spodná strana
+  0.0 0.0 1.0  1.0 0.0 1.0  1.0 1.0 1.0  0.0 1.0 1.0  # Horná strana
+  0.0 0.0 0.0  1.0 0.0 0.0  1.0 0.0 1.0  0.0 0.0 1.0  # Predná strana
+  0.0 1.0 0.0  0.0 1.0 1.0  1.0 1.0 1.0  1.0 1.0 0.0  # Zadná strana
+  0.0 0.0 0.0  0.0 0.0 1.0  0.0 1.0 1.0  0.0 1.0 0.0  # Ľavá strana
+  1.0 0.0 0.0  1.0 1.0 0.0  1.0 1.0 1.0  1.0 0.0 1.0  # Pravá strana```

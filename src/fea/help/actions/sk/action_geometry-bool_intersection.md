@@ -1,4 +1,3 @@
-# Intersection
+# Prienik
 
-Intersection is a boolean operation between multiple intersected surfaces where only elements that are enclosed within all surfaces are kept.
-
+Prienik je booleovská operácia medzi viacerými pretínajúcimi sa plochami, kde sa zachovajú iba prvky uzavreté vo všetkých plochách.

@@ -1,4 +1,3 @@
-# Remove node and close hole
+# Odstrániť uzol a zatvoriť otvor
 
-Remove selected (picked) node and close hole with new elements if possible.
-
+Odstráni vybraný (označený) uzol a ak je to možné, uzavrie otvor novými prvkami.

@@ -1,61 +1,61 @@
-# Generate tetrahedral mesh
+# Generovať tetraedrálnu sieť
 
-Generate volume (tetrahedral) mesh.
-
-
-**Volume mesh** is required for most **problem types**.
+Generuje objemovú (tetraedrálnu) sieť.
 
 
-3D mesh generator can generate mesh only if:
-1. Model contains enclosed (watertight) surface.
-2. Surface elements do not intersect each other.
+**Objemová sieť** je potrebná pre väčšinu **typov problémov**.
 
 
-To generate multiple volume meshes to represent composite material model a separation surface must be included.
+Generátor 3D siete môže generovať sieť iba ak:
+1. Model obsahuje uzavretú (nepriepustnú) plochu.
+2. Povrchové prvky sa navzájom nepretínajú.
 
 
-In some cases there might be a need for overriding default settings and specify TetGen parameters directly.
+Na generovanie viacerých objemových sietí reprezentujúcich model s kompozitným materiálom musí byť zahrnutá oddeľovacia plocha.
 
-## GUI
 
-![Generate mesh dialog](image-Generate_mesh_dialog.png)
+V niektorých prípadoch môže byť potrebné prepísať predvolené nastavenia a zadať parametre TetGenu priamo.
 
-- **Check surface integrity** - useful when generating a 3D mesh from surface model. It can detect surface mesh errors and potential problems.
-- **Reconstruct mesh (reuse current nodes)** - keep current nodes and only add new ones if needed.
-- **Keep computed results** - all computed results will be mapped/interpolated to new nodes and elements.
-- **Quality mesh** - generate 3D mesh to conform with quality criteria.
-    - **Maximum element volume** - maximum volume of each generated element. No element should have higher volume then specified.
-    - **Generate mesh size function** - should be used to refine mesh in places where differences in results are found.
-- **TetGen parameters** - parameters passed to TetGen mesh generator.
+## Rozhranie
 
-Following picture shows difference on mesh resolution when adaptive meshing is used.
+![Dialóg generovania siete](image-Generate_mesh_dialog.png)
 
-![Adaptive mesh example](image-Adaptive_mesh-example.png)
+- **Skontrolovať integritu plochy** – užitočné pri generovaní 3D siete z povrchového modelu. Dokáže detekovať chyby povrchovej siete a potenciálne problémy.
+- **Rekonštruovať sieť (zachovať aktuálne uzly)** – zachová aktuálne uzly a pridá nové iba v prípade potreby.
+- **Zachovať vypočítané výsledky** – všetky vypočítané výsledky budú namapované/interpolované na nové uzly a prvky.
+- **Kvalitná sieť** – generuje 3D sieť podľa kritérií kvality.
+    - **Maximálny objem prvku** – maximálny objem každého vygenerovaného prvku. Žiadny prvok by nemal mať väčší objem, ako je zadaný.
+    - **Generovať funkciu veľkosti siete** – malo by sa použiť na zjemnenie siete na miestach, kde sú zistené rozdiely vo výsledkoch.
+- **Parametre TetGenu** – parametre odovzdávané generátoru siete TetGen.
 
-## Parameters syntax
+Nasledujúci obrázok zobrazuje rozdiel v rozlíšení siete pri použití adaptívneho sieťovania.
+
+![Príklad adaptívnej siete](image-Adaptive_mesh-example.png)
+
+## Syntax parametrov
 
 `pYrq_Aa_miO_S_T_XMwcdzfenvgkJBNEFICQVh`
 
 
-Underscores indicate that numbers may optionally follow certain switches. Do not leave any space between a switch and its numeric parameter.
+Podčiarkovníky naznačujú, že po určitých prepínačoch môžu voliteľne nasledovať čísla. Nenechávajte žiadnu medzeru medzi prepínačom a jeho číselným parametrom.
 
 
-An overview of all command line switches and a short description follow.
+Prehľad všetkých prepínačov príkazového riadka s krátkym popisom:
 
-- **p** - Tetrahedralizes a piecewise linear complex (PLC).
-- **r** - Reconstructs a previously generated mesh.
-- **q** - Refines mesh (to improve mesh quality).
-- **R** - Mesh coarsening (to reduce the mesh elements).
-- **a** - Applies a maximum tetrahedron volume constraint.
-- **O** - Specifies the level of mesh optimization.
-- **S** - Specifies maximum number of added points.
-- **T** - Sets a tolerance for coplanar test (default 10−8).
-- **X** - Suppresses use of exact arithmetic.
-- **M** - No merge of coplanar facets or very close vertices.
-- **w** - Generates weighted Delaunay (regular) triangulation.
-- **c** - Retains the convex hull of the PLC.
-- **d** - Detects self-intersections of facets of the PLC.
-- **n** - Outputs tetrahedra neighbors.
-- **C** - Checks the consistency of the final mesh.
-- **Q** - Quiet: No terminal output except errors.
-- **V** - Verbose: Detailed information, more terminal output.
+- **p** – Tetrahedrizuje po častiach lineárny komplex (PLC).
+- **r** – Rekonštruuje predtým vygenerovanú sieť.
+- **q** – Zjemní sieť (na zlepšenie kvality siete).
+- **R** – Zhrubenie siete (na zníženie počtu prvkov siete).
+- **a** – Aplikuje obmedzenie maximálneho objemu tetraedra.
+- **O** – Určuje úroveň optimalizácie siete.
+- **S** – Určuje maximálny počet pridaných bodov.
+- **T** – Nastavuje toleranciu pre test koplanarity (predvolene 10−8).
+- **X** – Potláča použitie presnej aritmetiky.
+- **M** – Žiadne zlúčenie koplanárnych stien ani veľmi blízkych vrcholov.
+- **w** – Generuje váženú Delaunayovu (pravidelnú) trianguláciu.
+- **c** – Zachová konvexný obal PLC.
+- **d** – Detekuje vlastné priesečníky stien PLC.
+- **n** – Vypisuje susedov tetraedrov.
+- **C** – Kontroluje konzistentnosť výslednej siete.
+- **Q** – Tichý režim: Žiadny výstup do terminálu okrem chýb.
+- **V** – Podrobný režim: Detailné informácie, viac výstupu do terminálu.

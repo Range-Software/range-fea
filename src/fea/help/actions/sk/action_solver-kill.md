@@ -1,7 +1,6 @@
-# Kill solver
+# Ukončiť riešič
 
-Immediately stop running solver.
+Okamžite zastaví bežiaci riešič.
 
 
-Warning: Can result in corrupted data if solver was writing to disk while being killed.
-
+Varovanie: Môže viesť k poškodeniu dát, ak riešič práve zapisoval na disk počas ukončenia.

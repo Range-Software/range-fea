@@ -1,8 +1,8 @@
-# Create element
+# Vytvoriť prvok
 
-Create an element from selected (picked) nodes.
+Vytvorí prvok z vybraných (označených) uzlov.
 
-- 1 node `->` Point element
-- 2 nodes `->` Line (segment) element
-- 3 nodes `->` Triangle element
-- 4 nodes `->` Quadrilateral or Tetrahedral element (program will ask)
+- 1 uzol `->` Bodový prvok
+- 2 uzly `->` Čiarový (úsečkový) prvok
+- 3 uzly `->` Trojuholníkový prvok
+- 4 uzly `->` Štvoruholníkový alebo Tetraedrálny prvok (program sa opýta)

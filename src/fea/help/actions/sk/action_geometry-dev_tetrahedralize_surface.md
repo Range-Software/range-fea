@@ -1,1 +1,1 @@
-# Tetrahedralize surface
+# Tetraedralizovať plochu

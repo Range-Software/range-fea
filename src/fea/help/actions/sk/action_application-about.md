@@ -1,4 +1,3 @@
-# About
+# O programe
 
-Display basic information about the program.
-
+Zobrazí základné informácie o programe.

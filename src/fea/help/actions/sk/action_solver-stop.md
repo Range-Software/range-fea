@@ -1,4 +1,3 @@
-# Stop solver
+# Zastaviť riešič
 
-Signal solver to gracefully stop.
-
+Signalizuje riešiču, aby sa korektne zastavil.

@@ -1,7 +1,6 @@
-# Draw ellipse
+# Kresliť elipsu
 
-Draw a **ellipse** object.
+Nakreslí objekt **elipsa**.
 
 
-**Ellipse** object is a surface entity defined by N triangle (simplex) elements, where N equals to number of angular divisions.
-
+Objekt **elipsa** je plošná entita definovaná N trojuholníkovými (simplexovými) prvkami, kde N sa rovná počtu uhlových delení.
