@@ -1,16 +1,16 @@
 # Contaminant dispersion in fluids
 
-This tutorial will demonstrate how to setup advanced multi physics simulation including non-linear iterative problem such as **CFD (Computational Fluid Dynamics)**.
+This tutorial will demonstrate how to set up an advanced multi-physics simulation including a non-linear iterative problem such as **CFD (Computational Fluid Dynamics)**.
 
-To solve **contaminant dispersion in fluid** following problem types need to be configured:
+To solve **contaminant dispersion in fluid**, the following problem types need to be configured:
 
 1. **Contaminant dispersion** - Calculate distribution of contaminant in the flow field.
-2. **Inconpressible viscous flow** - Stead-state and transient flow of newtonian fluids.
+2. **Incompressible viscous flow** - Steady-state and transient flow of Newtonian fluids.
 
 Since **CFD** is a nonlinear problem it requires iterative solution. This problem will be solved in two steps:
 
-1. **Steady-state** - First it is necessary to get "initial" flow field and pressure distribution.
-2. **Transient** - In second step a **time marching** will be used to get transient solution.
+1. **Steady-state** - First it is necessary to get an "initial" flow field and pressure distribution.
+2. **Transient** - In the second step, **time marching** will be used to get a transient solution.
 
 ## 1. Load model
 
@@ -24,7 +24,7 @@ First a converged initial flow is needed. For this reason steady-state solution 
 
 ## 3. Generate 3D mesh
 
-To solve this problem volume mesh must be generated.
+To solve this problem, a volume mesh must be generated.
 
 **Menu:** _Geometry -> Volume -> Generate tetrahedral mesh_
 
@@ -50,15 +50,15 @@ Assign following boundary conditions to **surface** entities as described below.
 
 Do the same as in the previous tutorials.
 
-It will take some time until solver computes all iterations and find converged solution. Solver convergence can be checked using following action:
+It will take some time until the solver computes all iterations and finds a converged solution. Solver convergence can be checked using the following action:
 
 **Menu:** _Report -> Solver convergence_
 
 ## 7. Problem task flow (Step 2)
 
-Once the solver converges **transient** problem including **Contaminant dispersion** can be configured.
+Once the solver converges, a **transient** problem including **Contaminant dispersion** can be configured.
 
-Since **Inconpressible viscous flow** is nonlinear problem it will always need some nonlinear iterations to be specified to find converged solution for each time-step. **Task flow** should look-like as shown on the screenshot below.
+Since **Incompressible viscous flow** is a nonlinear problem, it will always need some nonlinear iterations to be specified to find a converged solution for each time-step. **Task flow** should look like as shown in the screenshot below.
 
 ![CFD - Problem task flow](image-CFD-Problem_task_flow.png)
 
@@ -76,19 +76,19 @@ Apply **Particle concentration** boundary condition to **Inflow** model entity.
 
 Do not specify value but click on **Edit time dependent values** button, to specify time-triggered (time-profile) boundary condition.
 
-In the **Component editor** dialog time depended values can be specify. Values are always valid **from** specified time.
+In the **Component editor** dialog, time-dependent values can be specified. Values are always valid **from** the specified time.
 
 ![CFD - Particle concentration condition](image-CFD-Particle_concentration_condition.png)
 
 ## 10. Solve problem (restart)
 
-Once the problem is fully configured restart the solver. This is done just like when starting a solver but **Restart solver / continue** check-box must be selected. This will make the solver to use already computed results as a starting point and continue in time-marching simulation.
+Once the problem is fully configured, restart the solver. This is done just like when starting a solver, but the **Restart solver / continue** check-box must be selected. This will cause the solver to use already computed results as a starting point and continue in the time-marching simulation.
 
 ![CFD - Solver restart](image-CFD-Solver_restart.png)
 
 ## 11. Model records (results in time)
 
-As the solver keeps finding solutions for each time-step, model records are being written. Each record contains solution for given time-step. List of these records can be seen in **Model records** tree. By double-clicking on the record results for given time-step will be loaded.
+As the solver keeps finding solutions for each time-step, model records are being written. Each record contains a solution for a given time-step. A list of these records can be seen in the **Model records** tree. By double-clicking on a record, results for the given time-step will be loaded.
 
 ## 12. Record video
 
@@ -100,7 +100,7 @@ After clicking on **Record** button **Video settings** dialog will appear. Click
 
 ![CFD - Video settings](image-CFD-Video_settings.png)
 
-To create a video can take some time since video frames are created from screenshots of **3D model area** and for each model record must be loaded.
+Creating a video can take some time since video frames are created from screenshots of the **3D model area** and each model record must be loaded.
 
 All produced screenshots and video itself can be found in **Documents** tree. To view the video double-click on its name **Channel.avi**.
 

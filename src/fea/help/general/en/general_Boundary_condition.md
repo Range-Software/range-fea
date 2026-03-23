@@ -9,5 +9,5 @@ Boundary conditions are:
 - **Implicit** - Implies a solution at the boundary (e.g., **Heat flux** for **Heat transfer**).
 
 
-If problem is **transient** (time-dependent) then time dependent values can be assigned to boundary condition.
+If problem is **transient** (time-dependent) then time dependent values can be assigned to a boundary condition.
 

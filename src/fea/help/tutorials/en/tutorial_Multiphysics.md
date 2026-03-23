@@ -1,8 +1,8 @@
 # Multi physics
 
-In this tutorial solving multiple problems on one geometric model. For this purpose **Beam model** will be used through which a passing electric current will generate heat and deform a model.
+This tutorial demonstrates solving multiple problems on one geometric model. For this purpose the **Beam model** will be used, through which a passing electric current will generate heat and deform the model.
 
-Such engineering problem will require to setup three problem types:
+Such an engineering problem will require setting up three problem types:
 
 1. **Electrostatics** - Calculate electric current and produced heat.
 2. **Heat transfer** - Calculate temperature distribution.
@@ -22,7 +22,7 @@ In **Problem type selector** select all three problem types and click **Ok**.
 
 ![Problem type selector - Multi](image-Problem_type_selector-Multi.png)
 
-Your **Problem task flow** now should look like as on the following picture. If order is not the same or there are more entries, **Up**, **Down** and **Remove** buttons can be used to modify the flow.
+Your **Problem task flow** should now look like the following picture. If the order is not the same or there are more entries, the **Up**, **Down**, and **Remove** buttons can be used to modify the flow.
 
 ![Problem task flow - Multi](image-Problem_task_flow-Multi.png)
 
@@ -32,7 +32,7 @@ Do the same as in the previous **Stress and deformation analysis** tutorial.
 
 ## 4. Assign boundary conditions
 
-Because there are multiple problem types selected multiple boundary conditions can be assigned to each entity. Assign boundary conditions to **surface** entities as described below.
+Because there are multiple problem types selected, multiple boundary conditions can be assigned to each entity. Assign boundary conditions to **surface** entities as described below.
 
 1. **Surface**
     - _Simple convection_
@@ -76,7 +76,7 @@ Do the same as in the previous **Stress and deformation analysis** tutorial.
 **Menu:** _Geometry -> Vector field -> Create vector field_
 
 
-Select **volume** model entity and **Electric field** as shown on the picture below.
+Select the **volume** model entity and **Electric field** as shown in the picture below.
 
 
 ![Create vector field](image-Create_vector_field.png)

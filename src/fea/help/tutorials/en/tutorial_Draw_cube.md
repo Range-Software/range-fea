@@ -8,7 +8,7 @@ This tutorial will show how to draw/generate a simple geometry such as cube.
 
 ![New model](image-New_model.png)
 
-By clicking **Ok** a new empty model named **Cube** will be created. Since it is newly created model has no problem assigned a **Problem task flow** dialog will pop-up.
+By clicking **Ok**, a new empty model named **Cube** will be created. Since the newly created model has no problem assigned, a **Problem task flow** dialog will pop up.
 
 ### 1.1 Assign problem type
 
@@ -18,13 +18,13 @@ To assign a problem type click on **Add problem type** button and in **Problem t
 
 ![Problem type selector](image-Problem_type_selector.png)
 
-Click **Ok** button to close **Problem type selector** dialog to and again **Ok** button to close **Problem task flow** dialog.
+Click the **Ok** button to close the **Problem type selector** dialog and then again the **Ok** button to close the **Problem task flow** dialog.
 
 ## 2. Draw a cube
 
 **Menu:** _Geometry -> Draw -> Draw hexahedron_
 
-Once menu item is activated a **Draw objects** control will be shown on the right side of the main window where user can change object position, size and axial divisions.
+Once the menu item is activated, a **Draw objects** control will be shown on the right side of the main window where the user can change object position, size, and axial divisions.
 
 ![Draw hexahedron](image-Draw_hexahedron.png)
 
@@ -36,4 +36,4 @@ To save model just execute following action.
 
 **Menu:** _File -> Save Model_
 
-If model has not been saved before, program will show **Save model** dialog offering a filename and path were to store. Click **Save** to accept.
+If the model has not been saved before, the program will show a **Save model** dialog offering a filename and path where to store it. Click **Save** to accept.

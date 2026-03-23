@@ -1,9 +1,9 @@
 # Model
 
-**Model** is a virtual geometric representation of three dimensional object. Model consist of geometric **Entities**.
+**Model** is a virtual geometric representation of a three dimensional object. Model consists of geometric **Entities**.
 
 
-**Entity** is a collection of elements (geometric simplexes) of similar type and are divided into these types:
+**Entity** is a collection of elements (geometric simplexes) of similar type and is divided into these types:
 
 - **Point** - collection of 0D elements (node).
 - **Line** - collection of 1D elements (segment).
@@ -16,5 +16,5 @@ Regardless of whether elements are 0D, 1D, 2D or 3D they all are represented in 
 Each **entity** except **Volume** can have **geometric** properties assigned to complete 3D representation. These are:
 
 - **Point** - volume in cubic meters.
-- **Line** - cross-sectional area in meters square.
+- **Line** - cross-sectional area in square meters.
 - **Surface** - thickness in meters.

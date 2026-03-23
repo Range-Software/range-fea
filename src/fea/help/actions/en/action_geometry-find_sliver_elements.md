@@ -2,7 +2,7 @@
 
 Detect sliver elements.
 
-Element is declared sliver by its longest to shortest edge ratio.
+An element is declared a sliver by its longest to shortest edge ratio.
 
 ```
   |\

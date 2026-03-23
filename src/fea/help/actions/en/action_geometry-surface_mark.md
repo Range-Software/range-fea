@@ -6,8 +6,8 @@ Boundary, initial and environment conditions can be applied only on entities (Po
 
 ## Auto-mark all entities
 
-All surface elements will be inspected and grouped to surface entities based on **segregation angle**.
+All surface elements will be inspected and grouped into surface entities based on **segregation angle**.
 
 ## Mark only selected and related elements
 
-All surface elements neighboring with selected (picked) elements (including) will be inspected and grouped to surface entity based on **segregation angle**.
+All surface elements neighboring the selected (picked) elements (inclusive) will be inspected and grouped into a surface entity based on **segregation angle**.
