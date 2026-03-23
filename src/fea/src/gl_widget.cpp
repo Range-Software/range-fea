@@ -78,7 +78,7 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       clippingPlaneEnabled(false),
       clippingPlaneDistance(0.5),
       showRotationSphere(false),
-      useGlCullFace(true),
+      twoSidedFace(false),
       lightsNeedUpdate(true),
       cachedNLights(0),
       currentGLColor(Qt::white)
@@ -2100,19 +2100,18 @@ void GLWidget::setUseGLVoidModelList(bool useGlVoidModelList)
     R_LOG_TRACE_OUT;
 }
 
-bool GLWidget::getUseGlCullFace() const
+bool GLWidget::getTwoSidedFace() const
 {
     R_LOG_TRACE;
-    return this->useGlCullFace;
+    return this->twoSidedFace;
 }
 
-void GLWidget::setUseGlCullFace(bool useGlCullFace)
+void GLWidget::setTwoSidedFace(bool twoSidedFace)
 {
     R_LOG_TRACE_IN;
-    bool isDifferent = this->useGlCullFace != useGlCullFace;
-    this->useGlCullFace = useGlCullFace;
-    if (isDifferent)
+    if (this->twoSidedFace != twoSidedFace)
     {
+        this->twoSidedFace = twoSidedFace;
         Application::instance()->getSession()->setModelChanged(this->modelID);
     }
     R_LOG_TRACE_OUT;

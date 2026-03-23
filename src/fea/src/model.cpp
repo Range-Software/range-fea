@@ -2014,7 +2014,7 @@ void Model::glDraw(GLWidget *glWidget) const
                 glElementGroup.setParentModel(this);
                 glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
                 glElementGroup.setUseGlList(true);
-                glElementGroup.setUseGlCullFace(glWidget->getUseGlCullFace());
+                glElementGroup.setTwoSidedFace(glWidget->getTwoSidedFace());
                 glElementGroup.paint();
             }
 

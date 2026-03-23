@@ -106,8 +106,8 @@ class GLWidget : public QOpenGLWidget
         double clippingPlaneDistance;
         //! Show rotation sphere.
         bool showRotationSphere;
-        //! Use GL_CULL_FACE
-        bool useGlCullFace;
+        //! Use two sided face
+        bool twoSidedFace;
         //! Model draw time in milliseconds;
         qint64 modelDrawTime;
         //! Flag indicating lights need to be updated.
@@ -161,11 +161,11 @@ class GLWidget : public QOpenGLWidget
         //! Set whether to use void GL model list.
         void setUseGLVoidModelList(bool useGlVoidModelList);
 
-        //! Return whether to use GL_CULL_FACE.
-        bool getUseGlCullFace() const;
+        //! Return whether to paint two sided face.
+        bool getTwoSidedFace() const;
 
-        //! Set whether to use GL_CULL_FACE.
-        void setUseGlCullFace(bool useGlCullFace);
+        //! Set whether to paint two sided face.
+        void setTwoSidedFace(bool twoSidedFace);
 
         //! Take screenshot.
         void takeScreenShot(const QString &fileName);

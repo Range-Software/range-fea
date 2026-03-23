@@ -1851,62 +1851,62 @@
 <context>
     <name>GLActionEvent</name>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="135"/>
+        <location filename="../src/gl_acion_event.cpp" line="136"/>
         <source>Left mouse button</source>
         <translation>Ľavé tlačítko myši</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="139"/>
+        <location filename="../src/gl_acion_event.cpp" line="140"/>
         <source>Middle mouse button</source>
         <translation>Stredné tlačítko myši</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="143"/>
+        <location filename="../src/gl_acion_event.cpp" line="144"/>
         <source>Right mouse button</source>
         <translation>Pravé tlačítko myši</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="147"/>
+        <location filename="../src/gl_acion_event.cpp" line="148"/>
         <source>Mouse scroll</source>
         <translation>Rolovanie myšou</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="173"/>
+        <location filename="../src/gl_acion_event.cpp" line="174"/>
         <source>Translate</source>
         <translation>Presunúť</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="175"/>
+        <location filename="../src/gl_acion_event.cpp" line="176"/>
         <source>Translate in Z direction</source>
         <translation>Presunúť v smere Z</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="177"/>
+        <location filename="../src/gl_acion_event.cpp" line="178"/>
         <source>Rotate</source>
         <translation>Otočiť</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="179"/>
+        <location filename="../src/gl_acion_event.cpp" line="180"/>
         <source>Zoom</source>
         <translation>Priblíženie</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="181"/>
+        <location filename="../src/gl_acion_event.cpp" line="182"/>
         <source>Pick element</source>
         <translation>Vyznačiť prvok</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="183"/>
+        <location filename="../src/gl_acion_event.cpp" line="184"/>
         <source>Pick node</source>
         <translation>Vyznačiť uzol</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="185"/>
+        <location filename="../src/gl_acion_event.cpp" line="186"/>
         <source>Pick hole element</source>
         <translation>Vyznačiť prvok z diery</translation>
     </message>
     <message>
-        <location filename="../src/gl_acion_event.cpp" line="187"/>
+        <location filename="../src/gl_acion_event.cpp" line="188"/>
         <source>Clear pick information</source>
         <translation>Zrušiť vyznačenia</translation>
     </message>
@@ -1987,72 +1987,72 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="419"/>
+        <location filename="../src/gl_widget.cpp" line="566"/>
         <source>Stream line</source>
         <translation>Prúdnica</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="434"/>
+        <location filename="../src/gl_widget.cpp" line="581"/>
         <source>Scale</source>
         <translation>Mierka</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="449"/>
+        <location filename="../src/gl_widget.cpp" line="596"/>
         <source>Rotation</source>
         <translation>Rotácia</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="617"/>
+        <location filename="../src/gl_widget.cpp" line="766"/>
         <source>Units</source>
         <translation>Jednotky</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="634"/>
+        <location filename="../src/gl_widget.cpp" line="783"/>
         <source>Time-step</source>
         <translation>Časový krok</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="635"/>
+        <location filename="../src/gl_widget.cpp" line="784"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="641"/>
+        <location filename="../src/gl_widget.cpp" line="790"/>
         <source>Mode</source>
         <translation>Mód</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="642"/>
+        <location filename="../src/gl_widget.cpp" line="791"/>
         <source>Freq.</source>
         <translation>Frekv.</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="646"/>
+        <location filename="../src/gl_widget.cpp" line="795"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="724"/>
+        <location filename="../src/gl_widget.cpp" line="880"/>
         <source>Hole edge</source>
         <translation>Hrana diery</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="807"/>
+        <location filename="../src/gl_widget.cpp" line="963"/>
         <source>Action</source>
         <translation>Akcia</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="810"/>
+        <location filename="../src/gl_widget.cpp" line="966"/>
         <source>Zoom</source>
         <translation>Priblíženie</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="811"/>
+        <location filename="../src/gl_widget.cpp" line="967"/>
         <source>Model draw time</source>
         <translation>Doba vykreslenia modelu</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1989"/>
+        <location filename="../src/gl_widget.cpp" line="2152"/>
         <source>Save screenshot as</source>
         <translation>Uložiť snímok obrazovky ako</translation>
     </message>
@@ -3471,12 +3471,6 @@
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
-    <message>
-        <location filename="../src/new_model_dialog.cpp" line="65"/>
-        <location filename="../src/new_model_dialog.cpp" line="70"/>
-        <source>New model</source>
-        <translation>Nový model</translation>
-    </message>
 </context>
 <context>
     <name>PickDetailsTree</name>
@@ -3888,12 +3882,6 @@
         <location filename="../src/rename_model_dialog.cpp" line="38"/>
         <source>Ok</source>
         <translation>Ok</translation>
-    </message>
-    <message>
-        <location filename="../src/rename_model_dialog.cpp" line="60"/>
-        <location filename="../src/rename_model_dialog.cpp" line="65"/>
-        <source>New model</source>
-        <translation>Nový model</translation>
     </message>
 </context>
 <context>
@@ -4367,8 +4355,15 @@
     </message>
     <message>
         <location filename="../src/sub_window.cpp" line="85"/>
-        <source>Back side color</source>
-        <translation>Farba zadnej strany</translation>
+        <source>Same face color</source>
+        <translation>Rovnaká farba strán</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="86"/>
+        <source>When checked, both sides of surface elements share the same color.
+When unchecked, the back side is shown in a different color.</source>
+        <translation>Ak je zaškrtnuté, obe strany plošných prvkov majú rovnakú farbu.
+Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
 </context>
 <context>

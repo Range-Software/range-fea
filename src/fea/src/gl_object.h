@@ -29,7 +29,7 @@ class GLObject
         //! Use OpenGL list.
         bool useGlList;
         //! Use GL_CULL_FACE.
-        bool useGlCullFace;
+        bool twoSidedFace;
 
     private:
 
@@ -68,11 +68,8 @@ class GLObject
         //! Set whether to use OpenGL list.
         void setUseGlList(bool useGlList);
 
-        //! Return information on whether to use OpenGL cull face.
-        bool getUseGlCullFace() const;
-
-        //! Set whether to use OpenGL cull face.
-        void setUseGlCullFace(bool useGlCullFace);
+        //! Set whether to paint two sided face.
+        void setTwoSidedFace(bool twoSidedFace);
 
         //! Paint object.
         void paint(PaintActionMask paintActionMask = Initialize | Draw | Finalize);

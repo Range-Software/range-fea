@@ -17,7 +17,7 @@ struct GLElementPrecomputedData
     std::vector<bool> edgeNodes;       //!< per-node edge flags (tetrahedra only)
     QColor color;
     int drawMask;
-    bool useGlCullFace;
+    bool twoSidedFace;
     double pointVolume;
     double lineCrossArea;
     double surfaceThickness;
@@ -26,7 +26,7 @@ struct GLElementPrecomputedData
         : valid(false)
         , type(R_ELEMENT_POINT)
         , drawMask(0)
-        , useGlCullFace(false)
+        , twoSidedFace(false)
         , pointVolume(0.0)
         , lineCrossArea(0.0)
         , surfaceThickness(0.0)

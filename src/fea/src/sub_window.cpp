@@ -82,10 +82,12 @@ void SubWindow::createSubWindow()
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->toolBar->addWidget(spacer);
 
-    QCheckBox *backSideColorCheck = new QCheckBox(tr("Back side color"));
-    this->toolBar->addWidget(backSideColorCheck);
+    QCheckBox *twoSidedFaceCheck = new QCheckBox(tr("Same face color"));
+    twoSidedFaceCheck->setToolTip(tr("When checked, both sides of surface elements share the same color.\nWhen unchecked, the back side is shown in a different color."));
+    twoSidedFaceCheck->setCheckState(this->glWidget->getTwoSidedFace() ? Qt::Checked : Qt::Unchecked);
+    this->toolBar->addWidget(twoSidedFaceCheck);
 
-    QObject::connect(backSideColorCheck,&QCheckBox::checkStateChanged,this,&SubWindow::onBackSideColorChanged);
+    QObject::connect(twoSidedFaceCheck,&QCheckBox::checkStateChanged,this,&SubWindow::onTwoSideFaceChanged);
 
     ClippingPlaneWidget *clippingPlaneWidget = new ClippingPlaneWidget;
     this->toolBar->addWidget(clippingPlaneWidget);
@@ -214,10 +216,10 @@ void SubWindow::onShowErrorsToggled(bool checked)
     R_LOG_TRACE_OUT;
 }
 
-void SubWindow::onBackSideColorChanged(Qt::CheckState state)
+void SubWindow::onTwoSideFaceChanged(Qt::CheckState state)
 {
     R_LOG_TRACE_IN;
-    this->glWidget->setUseGlCullFace(state == Qt::Unchecked);
+    this->glWidget->setTwoSidedFace(state == Qt::Checked);
     R_LOG_TRACE_OUT;
 }
 

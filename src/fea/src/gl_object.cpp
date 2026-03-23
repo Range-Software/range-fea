@@ -7,7 +7,7 @@ GLObject::GLObject(GLWidget *glWidget) :
     glWidget(glWidget),
     applyEnvSettings(true),
     useGlList(true),
-    useGlCullFace(true)
+    twoSidedFace(false)
 {
     this->_init();
 }
@@ -35,7 +35,7 @@ void GLObject::_init(const GLObject *pGlObject)
         this->glWidget = pGlObject->getGLWidget();
         this->applyEnvSettings = pGlObject->applyEnvSettings;
         this->useGlList = pGlObject->useGlList;
-        this->useGlCullFace = pGlObject->useGlCullFace;
+        this->twoSidedFace = pGlObject->twoSidedFace;
     }
 }
 
@@ -69,14 +69,9 @@ void GLObject::setUseGlList(bool useGlList)
     this->useGlList = useGlList;
 }
 
-bool GLObject::getUseGlCullFace() const
+void GLObject::setTwoSidedFace(bool twoSidedFace)
 {
-    return this->useGlCullFace;
-}
-
-void GLObject::setUseGlCullFace(bool useGlCullFace)
-{
-    this->useGlCullFace = useGlCullFace;
+    this->twoSidedFace = twoSidedFace;
 }
 
 void GLObject::paint(PaintActionMask paintActionMask)
