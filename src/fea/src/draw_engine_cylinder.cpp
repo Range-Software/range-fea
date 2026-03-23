@@ -38,7 +38,7 @@ DrawEngineCylinder::DrawEngineCylinder(QObject *parent) :
                                                  0.0,
                                                  360.0));
     this->inputParameters.append(DrawEngineInput(uint(20),
-                                                 tr("Anglular divisions"),
+                                                 tr("Angular divisions"),
                                                  tr("Number of angular divisions."),
                                                  "#",
                                                  uint(3)));

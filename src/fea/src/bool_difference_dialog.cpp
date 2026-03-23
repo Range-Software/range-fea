@@ -23,7 +23,7 @@ BoolDifferenceDialog::BoolDifferenceDialog(uint modelID, const QList<SessionEnti
     mainLayout->setSizeConstraint(QBoxLayout::SetFixedSize);
     this->setLayout(mainLayout);
 
-    QLabel *label = new QLabel(tr("Select entity which will be substracted."));
+    QLabel *label = new QLabel(tr("Select entity which will be subtracted."));
     mainLayout->addWidget(label);
 
     this->listWidget = new QListWidget;
@@ -61,7 +61,7 @@ BoolDifferenceDialog::BoolDifferenceDialog(uint modelID, const QList<SessionEnti
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);

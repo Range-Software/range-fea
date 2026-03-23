@@ -12,7 +12,7 @@
     <message>
         <location filename="../src/action.cpp" line="355"/>
         <location filename="../src/action.cpp" line="438"/>
-        <source>Are you sure you want to close current session?</source>
+        <source>Are you sure you want to close the current session?</source>
         <translation>Naozaj zatvorit aktuálnu reláciu?</translation>
     </message>
     <message>
@@ -46,8 +46,8 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="585"/>
-        <source>Export model to STL (ascii) file</source>
-        <translation>Exportovať model do STL (ascii) súboru</translation>
+        <source>Export model to STL (ASCII) file</source>
+        <translation>Exportovať model do STL (ASCII) súboru</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="606"/>
@@ -312,7 +312,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="231"/>
-        <source>Close Session</source>
+        <source>Close session</source>
         <translation>Zatvoriť reláciu</translation>
     </message>
     <message>
@@ -347,8 +347,8 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="238"/>
-        <source>Export STL model (ascii)</source>
-        <translation>Exportovať MSH model (ascii)</translation>
+        <source>Export STL model (ASCII)</source>
+        <translation>Exportovať STL model (ASCII)</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="239"/>
@@ -677,8 +677,8 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="313"/>
-        <source>Check for update</source>
-        <translation>Overiť aktualizáciu</translation>
+        <source>Check for updates</source>
+        <translation>Overiť aktualizácie</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="318"/>
@@ -736,8 +736,8 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="1956"/>
-        <source>Are you sure you want to reset all problem setup including boundary, initial and environment conditions?</source>
-        <translation>Naozaj vymazať všetky nastavenia problému ktoré zahŕňajú okrajové, počiatočné aj podmienky prostredia?</translation>
+        <source>Are you sure you want to reset the problem setup for model '%1'?</source>
+        <translation>Naozaj chcete resetovať nastavenia problému pre model '%1'?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="1967"/>
@@ -931,7 +931,7 @@
     </message>
     <message>
         <location filename="../src/bool_difference_dialog.cpp" line="26"/>
-        <source>Select entity which will be substracted.</source>
+        <source>Select entity which will be subtracted.</source>
         <translation>Vyberte celok ktorý bude odobraný.</translation>
     </message>
     <message>
@@ -941,8 +941,8 @@
     </message>
     <message>
         <location filename="../src/bool_difference_dialog.cpp" line="64"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -964,8 +964,8 @@
     </message>
     <message>
         <location filename="../src/bool_intersection_dialog.cpp" line="34"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -987,8 +987,8 @@
     </message>
     <message>
         <location filename="../src/bool_union_dialog.cpp" line="34"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1010,8 +1010,8 @@
     </message>
     <message>
         <location filename="../src/break_intersected_elements_dialog.cpp" line="39"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1084,8 +1084,8 @@
     </message>
     <message>
         <location filename="../src/coarsen_surface_dialog.cpp" line="59"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1102,8 +1102,8 @@
     </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="40"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1141,7 +1141,7 @@
     </message>
     <message>
         <location filename="../src/convergence_graph_widget.cpp" line="55"/>
-        <source>Are you sure you want to clear convergence log?</source>
+        <source>Are you sure you want to clear the convergence log?</source>
         <translation>Naozaj vyčistiť konvergenčný log?</translation>
     </message>
 </context>
@@ -1179,8 +1179,8 @@
     </message>
     <message>
         <location filename="../src/cut_dialog.cpp" line="117"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/cut_dialog.cpp" line="132"/>
@@ -1197,8 +1197,8 @@
     </message>
     <message>
         <location filename="../src/direction_widget.cpp" line="61"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1274,7 +1274,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_circle.cpp" line="30"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation>Uhlové delenie</translation>
     </message>
     <message>
@@ -1348,7 +1348,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_cylinder.cpp" line="41"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation>Uhlové delenie</translation>
     </message>
     <message>
@@ -1426,7 +1426,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_ellipse.cpp" line="35"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation>Uhlové delenie</translation>
     </message>
     <message>
@@ -1745,8 +1745,8 @@
     </message>
     <message>
         <location filename="../src/draw_input_widget.cpp" line="103"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/draw_input_widget.cpp" line="111"/>
@@ -1783,8 +1783,8 @@
     </message>
     <message>
         <location filename="../src/drop_results_dialog.cpp" line="63"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/drop_results_dialog.cpp" line="87"/>
@@ -1816,8 +1816,8 @@
     </message>
     <message>
         <location filename="../src/find_sliver_elements_dialog.cpp" line="44"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1844,8 +1844,8 @@
     </message>
     <message>
         <location filename="../src/fix_sliver_elements_dialog.cpp" line="42"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -1930,8 +1930,8 @@
     </message>
     <message>
         <location filename="../src/gl_display_properties_dialog.cpp" line="52"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/gl_display_properties_dialog.cpp" line="85"/>
@@ -2188,8 +2188,8 @@
     </message>
     <message>
         <location filename="../src/geometry_transform_widget.cpp" line="101"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2270,8 +2270,8 @@
     </message>
     <message>
         <location filename="../src/iso_dialog.cpp" line="213"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2311,8 +2311,8 @@
     </message>
     <message>
         <location filename="../src/local_direction_widget.cpp" line="34"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2547,8 +2547,8 @@
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="74"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="185"/>
@@ -2603,8 +2603,8 @@
     </message>
     <message>
         <location filename="../src/material_property_add_dialog.cpp" line="42"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2621,8 +2621,8 @@
     </message>
     <message>
         <location filename="../src/material_property_edit_dialog.cpp" line="39"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2709,8 +2709,8 @@
     </message>
     <message>
         <location filename="../src/matrix_solver_config_dialog.cpp" line="80"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2752,8 +2752,8 @@
     </message>
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="98"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2780,8 +2780,8 @@
     </message>
     <message>
         <location filename="../src/merge_near_nodes_dialog.cpp" line="41"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2796,7 +2796,7 @@
     <name>MeshGeneratorDialog</name>
     <message>
         <location filename="../src/mesh_generator_dialog.cpp" line="21"/>
-        <source>Genenerate 3D mesh</source>
+        <source>Generate 3D mesh</source>
         <translation>Vygenerovať 3D sieť</translation>
     </message>
     <message>
@@ -2856,8 +2856,8 @@
     </message>
     <message>
         <location filename="../src/mesh_generator_dialog.cpp" line="121"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -2917,7 +2917,7 @@
     </message>
     <message>
         <location filename="../src/modal_setup_widget.cpp" line="73"/>
-        <source>Value at which it solver will assume that solution has converged.</source>
+        <source>Value at which the solver will assume that solution has converged.</source>
         <translation>Hodnota pri dosiahnutí ktorej riešič bude považovať riešenie za dostatočne presné.</translation>
     </message>
 </context>
@@ -3401,8 +3401,8 @@
     </message>
     <message>
         <location filename="../src/monitoring_points_dialog.cpp" line="54"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/monitoring_points_dialog.cpp" line="72"/>
@@ -3430,8 +3430,8 @@
     </message>
     <message>
         <location filename="../src/move_node_dialog.cpp" line="53"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3468,8 +3468,8 @@
     </message>
     <message>
         <location filename="../src/new_model_dialog.cpp" line="41"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3533,8 +3533,8 @@
     </message>
     <message>
         <location filename="../src/point_inside_surface_dialog.cpp" line="35"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3551,8 +3551,8 @@
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="42"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="54"/>
@@ -3569,8 +3569,8 @@
     </message>
     <message>
         <location filename="../src/problem_selector_dialog.cpp" line="36"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3595,8 +3595,8 @@
     </message>
     <message>
         <location filename="../src/problem_task_dialog.cpp" line="38"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3759,7 +3759,7 @@
     </message>
     <message>
         <location filename="../src/radiation_setup_widget.cpp" line="232"/>
-        <source>This operation can take long time.</source>
+        <source>This operation can take a long time.</source>
         <translation>Táto operácia môže trvať dlhší čas.</translation>
     </message>
     <message>
@@ -3774,7 +3774,7 @@
     </message>
     <message>
         <location filename="../src/radiation_setup_widget.cpp" line="257"/>
-        <source>It will also delete all view-factor matrix file.</source>
+        <source>It will also delete the view-factor matrix file.</source>
         <translation>Zároveň aj bude zmazaný súbor view-factor matice.</translation>
     </message>
 </context>
@@ -3842,8 +3842,8 @@
     </message>
     <message>
         <location filename="../src/remove_entity_dialog.cpp" line="148"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3880,8 +3880,8 @@
     </message>
     <message>
         <location filename="../src/rename_model_dialog.cpp" line="38"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -3960,8 +3960,8 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="112"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4235,8 +4235,8 @@
     </message>
     <message>
         <location filename="../src/scalar_field_dialog.cpp" line="204"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4286,8 +4286,8 @@
     </message>
     <message>
         <location filename="../src/solver_start_dialog.cpp" line="117"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4327,8 +4327,8 @@
     </message>
     <message>
         <location filename="../src/stream_line_dialog.cpp" line="145"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4375,8 +4375,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/text_edit_widget.cpp" line="32"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4507,8 +4507,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="153"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4573,8 +4573,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/vector_field_dialog.cpp" line="211"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4611,8 +4611,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/video_settings_dialog.cpp" line="73"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 </TS>

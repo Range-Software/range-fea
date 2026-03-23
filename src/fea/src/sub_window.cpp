@@ -72,7 +72,7 @@ void SubWindow::createSubWindow()
     this->toolBar->addSeparator();
 
     QAction *actionScreenshot = new QAction(this);
-    actionScreenshot->setText("Take screen shot.");
+    actionScreenshot->setText("Take screenshot.");
     actionScreenshot->setShortcut(QString("Ctrl+P"));
     actionScreenshot->setIcon(QIcon(":/icons/file/pixmaps/range-screenshot.svg"));
     this->toolBar->addAction(actionScreenshot);

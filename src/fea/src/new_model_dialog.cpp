@@ -38,7 +38,7 @@ NewModelDialog::NewModelDialog(QWidget *parent) :
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     okButton->setEnabled(!this->editName->text().isEmpty());
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 

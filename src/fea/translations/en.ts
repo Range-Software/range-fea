@@ -12,7 +12,7 @@
     <message>
         <location filename="../src/action.cpp" line="355"/>
         <location filename="../src/action.cpp" line="438"/>
-        <source>Are you sure you want to close current session?</source>
+        <source>Are you sure you want to close the current session?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -46,7 +46,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="585"/>
-        <source>Export model to STL (ascii) file</source>
+        <source>Export model to STL (ASCII) file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -312,7 +312,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="231"/>
-        <source>Close Session</source>
+        <source>Close session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -347,7 +347,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="238"/>
-        <source>Export STL model (ascii)</source>
+        <source>Export STL model (ASCII)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -677,7 +677,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="313"/>
-        <source>Check for update</source>
+        <source>Check for updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -736,7 +736,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="1956"/>
-        <source>Are you sure you want to reset all problem setup including boundary, initial and environment conditions?</source>
+        <source>Are you sure you want to reset the problem setup for model '%1'?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -931,7 +931,7 @@
     </message>
     <message>
         <location filename="../src/bool_difference_dialog.cpp" line="26"/>
-        <source>Select entity which will be substracted.</source>
+        <source>Select entity which will be subtracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -941,7 +941,7 @@
     </message>
     <message>
         <location filename="../src/bool_difference_dialog.cpp" line="64"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -964,7 +964,7 @@
     </message>
     <message>
         <location filename="../src/bool_intersection_dialog.cpp" line="34"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -987,7 +987,7 @@
     </message>
     <message>
         <location filename="../src/bool_union_dialog.cpp" line="34"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1010,7 +1010,7 @@
     </message>
     <message>
         <location filename="../src/break_intersected_elements_dialog.cpp" line="39"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1084,7 +1084,7 @@
     </message>
     <message>
         <location filename="../src/coarsen_surface_dialog.cpp" line="59"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1102,7 +1102,7 @@
     </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="40"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1141,7 +1141,7 @@
     </message>
     <message>
         <location filename="../src/convergence_graph_widget.cpp" line="55"/>
-        <source>Are you sure you want to clear convergence log?</source>
+        <source>Are you sure you want to clear the convergence log?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1179,7 +1179,7 @@
     </message>
     <message>
         <location filename="../src/cut_dialog.cpp" line="117"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1197,7 +1197,7 @@
     </message>
     <message>
         <location filename="../src/direction_widget.cpp" line="61"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1274,7 +1274,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_circle.cpp" line="30"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1348,7 +1348,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_cylinder.cpp" line="41"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1426,7 +1426,7 @@
     </message>
     <message>
         <location filename="../src/draw_engine_ellipse.cpp" line="35"/>
-        <source>Anglular divisions</source>
+        <source>Angular divisions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1745,7 +1745,7 @@
     </message>
     <message>
         <location filename="../src/draw_input_widget.cpp" line="103"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1783,7 +1783,7 @@
     </message>
     <message>
         <location filename="../src/drop_results_dialog.cpp" line="63"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1816,7 +1816,7 @@
     </message>
     <message>
         <location filename="../src/find_sliver_elements_dialog.cpp" line="44"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1844,7 +1844,7 @@
     </message>
     <message>
         <location filename="../src/fix_sliver_elements_dialog.cpp" line="42"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1930,7 +1930,7 @@
     </message>
     <message>
         <location filename="../src/gl_display_properties_dialog.cpp" line="52"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2188,7 +2188,7 @@
     </message>
     <message>
         <location filename="../src/geometry_transform_widget.cpp" line="101"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2270,7 +2270,7 @@
     </message>
     <message>
         <location filename="../src/iso_dialog.cpp" line="213"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2311,7 +2311,7 @@
     </message>
     <message>
         <location filename="../src/local_direction_widget.cpp" line="34"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2547,7 +2547,7 @@
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="74"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2603,7 +2603,7 @@
     </message>
     <message>
         <location filename="../src/material_property_add_dialog.cpp" line="42"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2621,7 +2621,7 @@
     </message>
     <message>
         <location filename="../src/material_property_edit_dialog.cpp" line="39"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2709,7 +2709,7 @@
     </message>
     <message>
         <location filename="../src/matrix_solver_config_dialog.cpp" line="80"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2752,7 +2752,7 @@
     </message>
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="98"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2780,7 +2780,7 @@
     </message>
     <message>
         <location filename="../src/merge_near_nodes_dialog.cpp" line="41"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2796,7 +2796,7 @@
     <name>MeshGeneratorDialog</name>
     <message>
         <location filename="../src/mesh_generator_dialog.cpp" line="21"/>
-        <source>Genenerate 3D mesh</source>
+        <source>Generate 3D mesh</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2856,7 +2856,7 @@
     </message>
     <message>
         <location filename="../src/mesh_generator_dialog.cpp" line="121"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2917,7 +2917,7 @@
     </message>
     <message>
         <location filename="../src/modal_setup_widget.cpp" line="73"/>
-        <source>Value at which it solver will assume that solution has converged.</source>
+        <source>Value at which the solver will assume that solution has converged.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3401,7 +3401,7 @@
     </message>
     <message>
         <location filename="../src/monitoring_points_dialog.cpp" line="54"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3430,7 +3430,7 @@
     </message>
     <message>
         <location filename="../src/move_node_dialog.cpp" line="53"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3468,7 +3468,7 @@
     </message>
     <message>
         <location filename="../src/new_model_dialog.cpp" line="41"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3533,7 +3533,7 @@
     </message>
     <message>
         <location filename="../src/point_inside_surface_dialog.cpp" line="35"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3551,7 +3551,7 @@
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="42"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3569,7 +3569,7 @@
     </message>
     <message>
         <location filename="../src/problem_selector_dialog.cpp" line="36"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3595,7 +3595,7 @@
     </message>
     <message>
         <location filename="../src/problem_task_dialog.cpp" line="38"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3759,7 +3759,7 @@
     </message>
     <message>
         <location filename="../src/radiation_setup_widget.cpp" line="232"/>
-        <source>This operation can take long time.</source>
+        <source>This operation can take a long time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3774,7 +3774,7 @@
     </message>
     <message>
         <location filename="../src/radiation_setup_widget.cpp" line="257"/>
-        <source>It will also delete all view-factor matrix file.</source>
+        <source>It will also delete the view-factor matrix file.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3842,7 +3842,7 @@
     </message>
     <message>
         <location filename="../src/remove_entity_dialog.cpp" line="148"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3880,7 +3880,7 @@
     </message>
     <message>
         <location filename="../src/rename_model_dialog.cpp" line="38"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3960,7 +3960,7 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="112"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4235,7 +4235,7 @@
     </message>
     <message>
         <location filename="../src/scalar_field_dialog.cpp" line="204"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4286,7 +4286,7 @@
     </message>
     <message>
         <location filename="../src/solver_start_dialog.cpp" line="117"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4327,7 +4327,7 @@
     </message>
     <message>
         <location filename="../src/stream_line_dialog.cpp" line="145"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4374,7 +4374,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/text_edit_widget.cpp" line="32"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4506,7 +4506,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="153"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4572,7 +4572,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/vector_field_dialog.cpp" line="211"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4610,7 +4610,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/video_settings_dialog.cpp" line="73"/>
-        <source>Ok</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

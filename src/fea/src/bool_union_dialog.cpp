@@ -31,7 +31,7 @@ BoolUnionDialog::BoolUnionDialog(uint modelID, const QList<SessionEntityID> &ent
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);

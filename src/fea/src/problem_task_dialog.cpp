@@ -35,7 +35,7 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     this->cancelButton->setDisabled(rModel.getProblemTaskTree().getProblemTypeMask() == R_PROBLEM_NONE);
     buttonBox->addButton(this->cancelButton,QDialogButtonBox::RejectRole);
 
-    this->okButton = new QPushButton(okIcon, tr("Ok"));
+    this->okButton = new QPushButton(okIcon, tr("OK"));
     this->okButton->setDisabled(true);
     buttonBox->addButton(this->okButton,QDialogButtonBox::AcceptRole);
 

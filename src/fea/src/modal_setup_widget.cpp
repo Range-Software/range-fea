@@ -70,7 +70,7 @@ ModalSetupWidget::ModalSetupWidget(const RModalSetup &modalSetup, QWidget *paren
 
     ValueLineEdit *lineConvergenceValue = new ValueLineEdit(1.0e-99,1.0e99);
     lineConvergenceValue->setValue(this->modalSetup.getConvergenceValue());
-    lineConvergenceValue->setToolTip(tr("Value at which it solver will assume that solution has converged."));
+    lineConvergenceValue->setToolTip(tr("Value at which the solver will assume that solution has converged."));
     groupLayout->addWidget(lineConvergenceValue,groupLayoutRow++,1);
 
     QObject::connect(lineConvergenceValue,&ValueLineEdit::valueChanged,this,&ModalSetupWidget::onConvergenceValueChanged);

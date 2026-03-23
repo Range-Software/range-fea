@@ -208,7 +208,7 @@ void VectorFieldDialog::createDialog()
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    this->okButton = new QPushButton(okIcon, tr("Ok"));
+    this->okButton = new QPushButton(okIcon, tr("OK"));
     this->okButton->setEnabled(this->variableTree->selectedItems().size() && this->modelTree->selectedItems().size());
     buttonBox->addButton(this->okButton,QDialogButtonBox::AcceptRole);
 
