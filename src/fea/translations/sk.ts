@@ -4,6 +4,7 @@
 <context>
     <name>Action</name>
     <message>
+        <location filename="../src/action.cpp" line="231"/>
         <location filename="../src/action.cpp" line="354"/>
         <location filename="../src/action.cpp" line="437"/>
         <source>Close session</source>
@@ -309,11 +310,6 @@
         <location filename="../src/action.cpp" line="230"/>
         <source>Save current session under different filename.</source>
         <translation>Uložiť sučasnú reláciu pod iným názvom súboru.</translation>
-    </message>
-    <message>
-        <location filename="../src/action.cpp" line="231"/>
-        <source>Close session</source>
-        <translation>Zatvoriť reláciu</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="231"/>
@@ -735,11 +731,6 @@
         <translation>Vymazať nastavenie problému</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1956"/>
-        <source>Are you sure you want to reset the problem setup for model '%1'?</source>
-        <translation>Naozaj chcete resetovať nastavenia problému pre model '%1'?</translation>
-    </message>
-    <message>
         <location filename="../src/action.cpp" line="1967"/>
         <source>Problem reset</source>
         <translation>Reset problému</translation>
@@ -777,6 +768,11 @@
         <location filename="../src/action.cpp" line="1093"/>
         <source>is not closed.</source>
         <translation>nie je uzavretý.</translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="1956"/>
+        <source>Are you sure you want to reset the problem setup including boundary, initial and environment conditions?</source>
+        <translation>Naozaj chcete obnoviť nastavenie úlohy vrátane okrajových, počiatočných a environmentálnych podmienok?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="2027"/>
@@ -1010,8 +1006,8 @@
     </message>
     <message>
         <location filename="../src/break_intersected_elements_dialog.cpp" line="39"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -1102,8 +1098,8 @@
     </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="40"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -1197,8 +1193,8 @@
     </message>
     <message>
         <location filename="../src/direction_widget.cpp" line="61"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -2188,8 +2184,8 @@
     </message>
     <message>
         <location filename="../src/geometry_transform_widget.cpp" line="101"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -2311,8 +2307,8 @@
     </message>
     <message>
         <location filename="../src/local_direction_widget.cpp" line="34"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -2366,7 +2362,7 @@
     <message>
         <location filename="../src/main_window.cpp" line="116"/>
         <source>Environment conditions</source>
-        <translation>Podmienky prostredia</translation>
+        <translation>Environmentálne podmienky</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="119"/>
@@ -2547,8 +2543,8 @@
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="74"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="185"/>
@@ -2752,8 +2748,8 @@
     </message>
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="98"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -2780,8 +2776,8 @@
     </message>
     <message>
         <location filename="../src/merge_near_nodes_dialog.cpp" line="41"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -3533,8 +3529,8 @@
     </message>
     <message>
         <location filename="../src/point_inside_surface_dialog.cpp" line="35"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -3551,8 +3547,8 @@
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="42"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="54"/>
@@ -3842,8 +3838,8 @@
     </message>
     <message>
         <location filename="../src/remove_entity_dialog.cpp" line="148"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -3930,6 +3926,11 @@
         <translation></translation>
     </message>
     <message>
+        <location filename="../src/report_dialog.cpp" line="112"/>
+        <source>Ok</source>
+        <translation>Ok</translation>
+    </message>
+    <message>
         <location filename="../src/report_dialog.cpp" line="54"/>
         <location filename="../src/report_dialog.cpp" line="69"/>
         <location filename="../src/report_dialog.cpp" line="84"/>
@@ -3957,11 +3958,6 @@
         <location filename="../src/report_dialog.cpp" line="109"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
-    </message>
-    <message>
-        <location filename="../src/report_dialog.cpp" line="112"/>
-        <source>OK</source>
-        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -4024,7 +4020,7 @@
     <message>
         <location filename="../src/report_generator.cpp" line="236"/>
         <source>Environment conditions</source>
-        <translation>Podmienky prostredia</translation>
+        <translation>Environmentálne podmienky</translation>
     </message>
     <message>
         <location filename="../src/report_generator.cpp" line="286"/>
@@ -4375,8 +4371,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/text_edit_widget.cpp" line="32"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -4507,8 +4503,8 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="153"/>
-        <source>OK</source>
-        <translation>OK</translation>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>

@@ -4,6 +4,7 @@
 <context>
     <name>Action</name>
     <message>
+        <location filename="../src/action.cpp" line="231"/>
         <location filename="../src/action.cpp" line="354"/>
         <location filename="../src/action.cpp" line="437"/>
         <source>Close session</source>
@@ -308,11 +309,6 @@
     <message>
         <location filename="../src/action.cpp" line="230"/>
         <source>Save current session under different filename.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/action.cpp" line="231"/>
-        <source>Close session</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -735,11 +731,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1956"/>
-        <source>Are you sure you want to reset the problem setup for model '%1'?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/action.cpp" line="1967"/>
         <source>Problem reset</source>
         <translation type="unfinished"></translation>
@@ -776,6 +767,11 @@
         <location filename="../src/action.cpp" line="1046"/>
         <location filename="../src/action.cpp" line="1093"/>
         <source>is not closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="1956"/>
+        <source>Are you sure you want to reset the problem setup including boundary, initial and environment conditions?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1010,7 +1006,7 @@
     </message>
     <message>
         <location filename="../src/break_intersected_elements_dialog.cpp" line="39"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1102,7 +1098,7 @@
     </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="40"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1197,7 +1193,7 @@
     </message>
     <message>
         <location filename="../src/direction_widget.cpp" line="61"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2188,7 +2184,7 @@
     </message>
     <message>
         <location filename="../src/geometry_transform_widget.cpp" line="101"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2311,7 +2307,7 @@
     </message>
     <message>
         <location filename="../src/local_direction_widget.cpp" line="34"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2547,7 +2543,7 @@
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="74"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2752,7 +2748,7 @@
     </message>
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="98"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2780,7 +2776,7 @@
     </message>
     <message>
         <location filename="../src/merge_near_nodes_dialog.cpp" line="41"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3533,7 +3529,7 @@
     </message>
     <message>
         <location filename="../src/point_inside_surface_dialog.cpp" line="35"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3551,7 +3547,7 @@
     </message>
     <message>
         <location filename="../src/position_widget.cpp" line="42"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3842,7 +3838,7 @@
     </message>
     <message>
         <location filename="../src/remove_entity_dialog.cpp" line="148"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3930,6 +3926,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/report_dialog.cpp" line="112"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/report_dialog.cpp" line="54"/>
         <location filename="../src/report_dialog.cpp" line="69"/>
         <location filename="../src/report_dialog.cpp" line="84"/>
@@ -3956,11 +3957,6 @@
     <message>
         <location filename="../src/report_dialog.cpp" line="109"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/report_dialog.cpp" line="112"/>
-        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4374,7 +4370,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/text_edit_widget.cpp" line="32"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4506,7 +4502,7 @@ When unchecked, the back side is shown in a different color.</source>
     </message>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="153"/>
-        <source>OK</source>
+        <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
