@@ -911,6 +911,14 @@
     </message>
 </context>
 <context>
+    <name>BCManagerTree</name>
+    <message>
+        <location filename="../src/bc_manager_tree.cpp" line="24"/>
+        <source>Name</source>
+        <translation>Názov</translation>
+    </message>
+</context>
+<context>
     <name>BCTree</name>
     <message>
         <location filename="../src/bc_tree.cpp" line="30"/>
@@ -1171,6 +1179,11 @@
 </context>
 <context>
     <name>ConvergenceGraphWidget</name>
+    <message>
+        <location filename="../src/convergence_graph_widget.cpp" line="19"/>
+        <source>Source</source>
+        <translation>Zdroj</translation>
+    </message>
     <message>
         <location filename="../src/convergence_graph_widget.cpp" line="38"/>
         <source>Clear</source>
@@ -1829,9 +1842,18 @@
         <translation>OK</translation>
     </message>
     <message>
+        <location filename="../src/drop_results_dialog.cpp" line="16"/>
         <location filename="../src/drop_results_dialog.cpp" line="87"/>
         <source>Drop results</source>
         <translation>Zahodiť výsledky</translation>
+    </message>
+</context>
+<context>
+    <name>ECManagerTree</name>
+    <message>
+        <location filename="../src/ec_manager_tree.cpp" line="24"/>
+        <source>Name</source>
+        <translation>Názov</translation>
     </message>
 </context>
 <context>
@@ -2097,6 +2119,26 @@
         <translation>Ustálený stav</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="852"/>
+        <source>Number of sliver elements</source>
+        <translation>Počet štíhlych prvkov</translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="856"/>
+        <source>Number of intersected elements</source>
+        <translation>Počet pretínajúcich sa prvkov</translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="860"/>
+        <source>Number of hole elements</source>
+        <translation>Počet hraničných prvkov otvorov</translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="866"/>
+        <source>Picked entities</source>
+        <translation>Označené celky</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="880"/>
         <source>Hole edge</source>
         <translation>Hrana diery</translation>
@@ -2115,6 +2157,11 @@
         <location filename="../src/gl_widget.cpp" line="967"/>
         <source>Model draw time</source>
         <translation>Doba vykreslenia modelu</translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="2135"/>
+        <source>Image files</source>
+        <translation>Obrázkové súbory</translation>
     </message>
     <message>
         <location filename="../src/gl_widget.cpp" line="2152"/>
@@ -2302,6 +2349,14 @@
     </message>
 </context>
 <context>
+    <name>ICManagerTree</name>
+    <message>
+        <location filename="../src/ic_manager_tree.cpp" line="25"/>
+        <source>Name</source>
+        <translation>Názov</translation>
+    </message>
+</context>
+<context>
     <name>ICTree</name>
     <message>
         <location filename="../src/ic_tree.cpp" line="27"/>
@@ -2345,6 +2400,16 @@
         <location filename="../src/iso_dialog.cpp" line="107"/>
         <source>Modify ISO entity</source>
         <translation>Upraviť ISO celok</translation>
+    </message>
+    <message>
+        <location filename="../src/iso_dialog.cpp" line="149"/>
+        <source>Variables</source>
+        <translation>Premenné</translation>
+    </message>
+    <message>
+        <location filename="../src/iso_dialog.cpp" line="150"/>
+        <source>type</source>
+        <translation>typ</translation>
     </message>
     <message>
         <location filename="../src/iso_dialog.cpp" line="200"/>
@@ -2657,6 +2722,16 @@
 <context>
     <name>MaterialManagerTree</name>
     <message>
+        <location filename="../src/material_manager_tree.cpp" line="36"/>
+        <source>Name</source>
+        <translation>Názov</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="37"/>
+        <source>File</source>
+        <translation>Súbor</translation>
+    </message>
+    <message>
         <location filename="../src/material_manager_tree.cpp" line="46"/>
         <source>New</source>
         <translation>Nový</translation>
@@ -2690,6 +2765,11 @@
 <context>
     <name>MaterialPropertyAddDialog</name>
     <message>
+        <location filename="../src/material_property_add_dialog.cpp" line="12"/>
+        <source>Material property editor</source>
+        <translation>Editor vlastností materiálu</translation>
+    </message>
+    <message>
         <location filename="../src/material_property_add_dialog.cpp" line="21"/>
         <source>Select one or more material properties from the list below.</source>
         <translation>Vybrať jeden, alebo viac materiiálových vlastností zo zoznamu nižšie.</translation>
@@ -2707,6 +2787,11 @@
 </context>
 <context>
     <name>MaterialPropertyEditDialog</name>
+    <message>
+        <location filename="../src/material_property_edit_dialog.cpp" line="13"/>
+        <source>Material property editor</source>
+        <translation>Editor vlastností materiálu</translation>
+    </message>
     <message>
         <location filename="../src/material_property_edit_dialog.cpp" line="28"/>
         <source>Number of values</source>
@@ -3259,22 +3344,37 @@
 <context>
     <name>ModelEntityGeometricPropertiesTree</name>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="91"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="28"/>
+        <source>Geometric properties</source>
+        <translation>Geometrické vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation>Hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation>Jednotky</translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="90"/>
         <source>Point volume</source>
         <translation>Objem bodu</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="100"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="99"/>
         <source>Line cross area</source>
         <translation>Plocha prierezu čiary</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="109"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="108"/>
         <source>Surface thickness</source>
         <translation>Hrúbka povrchu</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="151"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="150"/>
         <source>Change geometric properties</source>
         <translation>Zmeniť geometrické vlastnosti</translation>
     </message>
@@ -3666,6 +3766,16 @@
 <context>
     <name>ProblemSelectorDialog</name>
     <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="14"/>
+        <source>Problem type selector</source>
+        <translation>Výber typu úlohy</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="22"/>
+        <source>Select problem types</source>
+        <translation>Vyber typy úloh</translation>
+    </message>
+    <message>
         <location filename="../src/problem_selector_dialog.cpp" line="33"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
@@ -3679,6 +3789,16 @@
 <context>
     <name>ProblemSelectorTree</name>
     <message>
+        <location filename="../src/problem_selector_tree.cpp" line="22"/>
+        <source>Name</source>
+        <translation>Názov</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_tree.cpp" line="23"/>
+        <source>Description</source>
+        <translation>Popis</translation>
+    </message>
+    <message>
         <location filename="../src/problem_selector_tree.cpp" line="125"/>
         <source>Incompatible problems selected</source>
         <translation>Vybrané problémy sú nekompatibilné</translation>
@@ -3686,6 +3806,11 @@
 </context>
 <context>
     <name>ProblemTaskDialog</name>
+    <message>
+        <location filename="../src/problem_task_dialog.cpp" line="15"/>
+        <source>Problem task flow</source>
+        <translation>Poradie úloh problému</translation>
+    </message>
     <message>
         <location filename="../src/problem_task_dialog.cpp" line="25"/>
         <source>Problem task flow for model</source>
@@ -4352,6 +4477,16 @@
         <translation>Upraviť skalárové pole</translation>
     </message>
     <message>
+        <location filename="../src/scalar_field_dialog.cpp" line="153"/>
+        <source>Variables</source>
+        <translation>Premenné</translation>
+    </message>
+    <message>
+        <location filename="../src/scalar_field_dialog.cpp" line="154"/>
+        <source>type</source>
+        <translation>typ</translation>
+    </message>
+    <message>
         <location filename="../src/scalar_field_dialog.cpp" line="196"/>
         <source>Point size in pixels</source>
         <translation>Veľkosť bodu v pixeloch</translation>
@@ -4382,6 +4517,11 @@
 </context>
 <context>
     <name>SolverStartDialog</name>
+    <message>
+        <location filename="../src/solver_start_dialog.cpp" line="31"/>
+        <source>Start solver</source>
+        <translation>Spustiť riešič</translation>
+    </message>
     <message>
         <location filename="../src/solver_start_dialog.cpp" line="40"/>
         <source>Start solver for model</source>
@@ -4461,6 +4601,11 @@
 </context>
 <context>
     <name>SubWindow</name>
+    <message>
+        <location filename="../src/sub_window.cpp" line="39"/>
+        <source>Sub window toolbar</source>
+        <translation>Panel nástrojov podradeného okna</translation>
+    </message>
     <message>
         <location filename="../src/sub_window.cpp" line="45"/>
         <source>Reset to original view.</source>

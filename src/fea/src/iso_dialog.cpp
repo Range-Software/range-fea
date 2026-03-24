@@ -146,8 +146,8 @@ void IsoDialog::createDialog()
     this->variableTree->setColumnCount(IsoDialog::NColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(IsoDialog::Name,QString("Variables"));
-    headerItem->setText(IsoDialog::Type,QString("type"));
+    headerItem->setText(IsoDialog::Name,tr("Variables"));
+    headerItem->setText(IsoDialog::Type,tr("type"));
     this->variableTree->setHeaderItem(headerItem);
     this->variableTree->setColumnHidden(IsoDialog::Type,true);
 

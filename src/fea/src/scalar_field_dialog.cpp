@@ -150,8 +150,8 @@ void ScalarFieldDialog::createDialog()
     this->variableTree->setColumnCount(ScalarFieldDialog::NColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(ScalarFieldDialog::Name,QString("Variables"));
-    headerItem->setText(ScalarFieldDialog::Type,QString("type"));
+    headerItem->setText(ScalarFieldDialog::Name,tr("Variables"));
+    headerItem->setText(ScalarFieldDialog::Type,tr("type"));
     this->variableTree->setHeaderItem(headerItem);
     this->variableTree->setColumnHidden(ScalarFieldDialog::Type,true);
 

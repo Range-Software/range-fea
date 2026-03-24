@@ -1,6 +1,5 @@
 #include "application.h"
 #include "model_entity_geometric_properties_tree.h"
-#include "value_line_edit.h"
 
 typedef enum _GeometricPropertyType
 {
@@ -26,9 +25,9 @@ ModelEntityGeometricPropertiesTree::ModelEntityGeometricPropertiesTree(QWidget *
     this->setSelectionMode(QAbstractItemView::NoSelection);
     this->setRootIsDecorated(false);
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(GP_TREE_COLUMN_NAME,QString("Geometric properties"));
-    headerItem->setText(GP_TREE_COLUMN_VALUE,QString("Value"));
-    headerItem->setText(GP_TREE_COLUMN_UNITS,QString("Units"));
+    headerItem->setText(GP_TREE_COLUMN_NAME,tr("Geometric properties"));
+    headerItem->setText(GP_TREE_COLUMN_VALUE,tr("Value"));
+    headerItem->setText(GP_TREE_COLUMN_UNITS,tr("Units"));
     headerItem->setFirstColumnSpanned(true);
     this->setHeaderItem(headerItem);
 

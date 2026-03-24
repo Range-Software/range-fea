@@ -12,7 +12,7 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
 {
     Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
 
-    this->setWindowTitle(QString("Problem task flow"));
+    this->setWindowTitle(tr("Problem task flow"));
     this->resize(600,300);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");

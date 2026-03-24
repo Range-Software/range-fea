@@ -911,6 +911,14 @@
     </message>
 </context>
 <context>
+    <name>BCManagerTree</name>
+    <message>
+        <location filename="../src/bc_manager_tree.cpp" line="24"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BCTree</name>
     <message>
         <location filename="../src/bc_tree.cpp" line="30"/>
@@ -1171,6 +1179,11 @@
 </context>
 <context>
     <name>ConvergenceGraphWidget</name>
+    <message>
+        <location filename="../src/convergence_graph_widget.cpp" line="19"/>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/convergence_graph_widget.cpp" line="38"/>
         <source>Clear</source>
@@ -1829,8 +1842,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/drop_results_dialog.cpp" line="16"/>
         <location filename="../src/drop_results_dialog.cpp" line="87"/>
         <source>Drop results</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ECManagerTree</name>
+    <message>
+        <location filename="../src/ec_manager_tree.cpp" line="24"/>
+        <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2097,6 +2119,26 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="852"/>
+        <source>Number of sliver elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="856"/>
+        <source>Number of intersected elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="860"/>
+        <source>Number of hole elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="866"/>
+        <source>Picked entities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="880"/>
         <source>Hole edge</source>
         <translation type="unfinished"></translation>
@@ -2114,6 +2156,11 @@
     <message>
         <location filename="../src/gl_widget.cpp" line="967"/>
         <source>Model draw time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gl_widget.cpp" line="2135"/>
+        <source>Image files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2302,6 +2349,14 @@
     </message>
 </context>
 <context>
+    <name>ICManagerTree</name>
+    <message>
+        <location filename="../src/ic_manager_tree.cpp" line="25"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ICTree</name>
     <message>
         <location filename="../src/ic_tree.cpp" line="27"/>
@@ -2344,6 +2399,16 @@
     <message>
         <location filename="../src/iso_dialog.cpp" line="107"/>
         <source>Modify ISO entity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/iso_dialog.cpp" line="149"/>
+        <source>Variables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/iso_dialog.cpp" line="150"/>
+        <source>type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2657,6 +2722,16 @@
 <context>
     <name>MaterialManagerTree</name>
     <message>
+        <location filename="../src/material_manager_tree.cpp" line="36"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="37"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/material_manager_tree.cpp" line="46"/>
         <source>New</source>
         <translation type="unfinished"></translation>
@@ -2690,6 +2765,11 @@
 <context>
     <name>MaterialPropertyAddDialog</name>
     <message>
+        <location filename="../src/material_property_add_dialog.cpp" line="12"/>
+        <source>Material property editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/material_property_add_dialog.cpp" line="21"/>
         <source>Select one or more material properties from the list below.</source>
         <translation type="unfinished"></translation>
@@ -2707,6 +2787,11 @@
 </context>
 <context>
     <name>MaterialPropertyEditDialog</name>
+    <message>
+        <location filename="../src/material_property_edit_dialog.cpp" line="13"/>
+        <source>Material property editor</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/material_property_edit_dialog.cpp" line="28"/>
         <source>Number of values</source>
@@ -3259,22 +3344,37 @@
 <context>
     <name>ModelEntityGeometricPropertiesTree</name>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="91"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="28"/>
+        <source>Geometric properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="90"/>
         <source>Point volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="100"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="99"/>
         <source>Line cross area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="109"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="108"/>
         <source>Surface thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="151"/>
+        <location filename="../src/model_entity_geometric_properties_tree.cpp" line="150"/>
         <source>Change geometric properties</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3666,6 +3766,16 @@
 <context>
     <name>ProblemSelectorDialog</name>
     <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="14"/>
+        <source>Problem type selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="22"/>
+        <source>Select problem types</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/problem_selector_dialog.cpp" line="33"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
@@ -3679,6 +3789,16 @@
 <context>
     <name>ProblemSelectorTree</name>
     <message>
+        <location filename="../src/problem_selector_tree.cpp" line="22"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_tree.cpp" line="23"/>
+        <source>Description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/problem_selector_tree.cpp" line="125"/>
         <source>Incompatible problems selected</source>
         <translation type="unfinished"></translation>
@@ -3686,6 +3806,11 @@
 </context>
 <context>
     <name>ProblemTaskDialog</name>
+    <message>
+        <location filename="../src/problem_task_dialog.cpp" line="15"/>
+        <source>Problem task flow</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/problem_task_dialog.cpp" line="25"/>
         <source>Problem task flow for model</source>
@@ -4352,6 +4477,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/scalar_field_dialog.cpp" line="153"/>
+        <source>Variables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/scalar_field_dialog.cpp" line="154"/>
+        <source>type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/scalar_field_dialog.cpp" line="196"/>
         <source>Point size in pixels</source>
         <translation type="unfinished"></translation>
@@ -4382,6 +4517,11 @@
 </context>
 <context>
     <name>SolverStartDialog</name>
+    <message>
+        <location filename="../src/solver_start_dialog.cpp" line="31"/>
+        <source>Start solver</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/solver_start_dialog.cpp" line="40"/>
         <source>Start solver for model</source>
@@ -4461,6 +4601,11 @@
 </context>
 <context>
     <name>SubWindow</name>
+    <message>
+        <location filename="../src/sub_window.cpp" line="39"/>
+        <source>Sub window toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/sub_window.cpp" line="45"/>
         <source>Reset to original view.</source>

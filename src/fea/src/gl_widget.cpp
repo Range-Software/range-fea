@@ -849,21 +849,21 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
 
     if (rModel.getNSlivers() > 0)
     {
-        messages.push_back(QString("W: Number of sliver elements: ") + QLocale().toString(rModel.getNSlivers()));
+        messages.push_back("W: " + tr("Number of sliver elements") +": " + QLocale().toString(rModel.getNSlivers()));
     }
     if (rModel.getNIntersected() > 0)
     {
-        messages.push_back(QString("E: Number of intersected elements: ") + QLocale().toString(rModel.getNIntersected()));
+        messages.push_back("E: " + tr("Number of intersected elements") +": " + QLocale().toString(rModel.getNIntersected()));
     }
     if (rModel.getNHoleElements() > 0)
     {
-        messages.push_back(QString("E: Number of hole elements: ") + QLocale().toString(rModel.getNHoleElements()));
+        messages.push_back("E: " + tr("Number of hole elements") +": " + QLocale().toString(rModel.getNHoleElements()));
     }
 
     const PickList &rPickList = Application::instance()->getSession()->getPickList();
     if (!rPickList.isEmpty())
     {
-        messages.append("Picked entities:");
+        messages.append(tr("Picked entities") + ":");
 
         const Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
         QVector<PickItem> pickItems = rPickList.getItems(this->modelID);
@@ -2132,7 +2132,7 @@ void GLWidget::takeScreenShot(const QString &fileName)
 
         if (supportedFormats.size() > 0)
         {
-            filter = QString("Image files (");
+            filter = tr("Image files") + QString(" (");
 
             for (int i=0;i<supportedFormats.size();i++)
             {

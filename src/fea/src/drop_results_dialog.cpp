@@ -13,7 +13,7 @@ static bool deleteResults = false;
 DropResultsDialog::DropResultsDialog(QWidget *parent) :
     QDialog(parent)
 {
-    this->setWindowTitle(QString("Drop results"));
+    this->setWindowTitle(tr("Drop results"));
     this->resize(600,300);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");

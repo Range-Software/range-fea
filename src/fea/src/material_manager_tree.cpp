@@ -33,8 +33,8 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     this->treeWidget->setColumnCount(ColumnType::NunberOfColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(ColumnName,QString("Name"));
-    headerItem->setText(ColumnFile,QString("File"));
+    headerItem->setText(ColumnName,tr("Name"));
+    headerItem->setText(ColumnFile,tr("File"));
     this->treeWidget->setHeaderItem(headerItem);
     this->treeWidget->setRootIsDecorated(false);
     this->treeWidget->resizeColumnToContents(ColumnName);

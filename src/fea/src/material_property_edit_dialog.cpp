@@ -10,7 +10,7 @@ MaterialPropertyEditDialog::MaterialPropertyEditDialog(RMaterialProperty &proper
     QDialog(parent),
     pProperty(&property)
 {
-    this->setWindowTitle(QString("Material property editor"));
+    this->setWindowTitle(tr("Material property editor"));
     this->resize(400,500);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");

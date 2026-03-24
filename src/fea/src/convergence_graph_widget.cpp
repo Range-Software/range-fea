@@ -16,7 +16,7 @@ ConvergenceGraphWidget::ConvergenceGraphWidget(const QString &convergenceFileNam
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);
 
-    QLabel *label = new QLabel("Source: <i>" + convergenceFileName + "</i>");
+    QLabel *label = new QLabel(tr("Source") + ": <i>" + convergenceFileName + "</i>");
     mainLayout->addWidget(label);
 
     this->dataColumnCombo = new QComboBox;
