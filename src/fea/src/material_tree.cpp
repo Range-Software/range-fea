@@ -77,7 +77,7 @@ void MaterialTree::populate()
         QTreeWidgetItem *child = new QTreeWidgetItem(item);
         child->setFirstColumnSpanned(true);
         child->setData(ColumnType::ColumnPropertyType,Qt::DisplayRole,QVariant(this->material.get(i).getType()));
-        PushButton *buttonValues = new PushButton(int(this->material.get(i).getType()),QString("Edit temperature dependent values"));
+        PushButton *buttonValues = new PushButton(int(this->material.get(i).getType()),tr("Edit temperature dependent values"));
         this->treeWidget->setItemWidget(child,ColumnType::ColumnName,buttonValues);
 
         QObject::connect(lineEdit,&MaterialPropertyLineEdit::valueChanged,this,&MaterialTree::onValueChanged);

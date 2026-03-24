@@ -11,7 +11,7 @@ ComponentEditDialog::ComponentEditDialog(RConditionComponent &component, QWidget
     QDialog(parent),
     pComponent(&component)
 {
-    this->setWindowTitle(QString("Component editor"));
+    this->setWindowTitle(tr("Component editor"));
     this->resize(400,500);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");

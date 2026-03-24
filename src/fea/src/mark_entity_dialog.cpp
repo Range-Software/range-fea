@@ -27,7 +27,7 @@ MarkEntityDialog::MarkEntityDialog(REntityGroupType entityType, QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);
 
-    this->autoMarkRadio = new QRadioButton("Auto-mark all entities");
+    this->autoMarkRadio = new QRadioButton(tr("Auto-mark all entities"));
     mainLayout->addWidget(this->autoMarkRadio);
 
     QVector<QString> keyMouseCombinations = GLActionEvent::findKeyMouseCombinations(GLActionEvent::PickElement);
@@ -43,7 +43,7 @@ MarkEntityDialog::MarkEntityDialog(REntityGroupType entityType, QWidget *parent)
         isFirst = true;
     }
     markPickMessage += " " + tr("to pick element") + ".";
-    this->pickedMarkRadio = new QRadioButton("Mark only selected and related elements");
+    this->pickedMarkRadio = new QRadioButton(tr("Mark only selected and related elements"));
     this->pickedMarkRadio->setToolTip(markPickMessage);
     mainLayout->addWidget(this->pickedMarkRadio);
 

@@ -9,7 +9,7 @@ ColorComboBox::ColorComboBox(QWidget *parent) :
     QComboBox (parent),
     whFactor(3)
 {
-    this->addItem("Custom Color..");
+    this->addItem(tr("Custom color ..."));
     QList<Qt::GlobalColor> colorList = Color::getGlobalColors();
     for (int i=0;i<colorList.size();i++)
     {

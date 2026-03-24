@@ -61,7 +61,7 @@ ProblemTaskTree::ProblemTaskTree(const RProblemTaskItem &rTaskTree, QWidget *par
 
     QObject::connect(this->unindentButton,&QPushButton::clicked,this,&ProblemTaskTree::onUnindentButtonClicked);
 
-    this->deleteButton = new QPushButton("Remove");
+    this->deleteButton = new QPushButton(tr("Remove"));
     this->deleteButton->setDisabled(true);
     buttonsLayout->addWidget(this->deleteButton);
 
@@ -99,7 +99,7 @@ void ProblemTaskTree::addTaskItemToWidget(QTreeWidgetItem *parent, const RProble
 
     if (taskItem.getProblemType() == R_PROBLEM_NONE)
     {
-        item->setText(ProblemTaskTree::C_NAME,"# of iterations:");
+        item->setText(ProblemTaskTree::C_NAME,tr("# of iterations") + ":");
         item->setText(ProblemTaskTree::C_VALUE,QLocale().toString(taskItem.getNIterations()));
 
         for (uint i=0;i<taskItem.getNChildren();i++)

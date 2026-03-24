@@ -249,7 +249,7 @@ void ResultsVariableTree::populate()
     // APPLY AS
 
     item = new QTreeWidgetItem(this);
-    QGroupBox *applyAsGroupBox= new QGroupBox("Apply as ...");
+    QGroupBox *applyAsGroupBox= new QGroupBox(tr("Apply as ..."));
     QGridLayout *applyAsLayout = new QGridLayout;
 
     uint crow = 0;
@@ -277,10 +277,10 @@ void ResultsVariableTree::populate()
     this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,applyAsGroupBox);
 
     // -----------------------------------------------------------------
-    // DISPLAY RANGE
+    // Value range & color scale
 
     item = new QTreeWidgetItem(this);
-    QGroupBox *rangeGroupBox= new QGroupBox("Display range");
+    QGroupBox *rangeGroupBox= new QGroupBox(tr("Value range & color scale"));
     QGridLayout *rangeLayout = new QGridLayout;
 
     crow = 0;
@@ -334,7 +334,7 @@ void ResultsVariableTree::populate()
 
     // Display Value range.
 
-    QCheckBox *displayRangeCheckBox = new QCheckBox("Display value range");
+    QCheckBox *displayRangeCheckBox = new QCheckBox(tr("Display value range"));
     displayRangeCheckBox->setCheckState(displayRangeState);
     rangeLayout->addWidget(displayRangeCheckBox,crow,0,1,2);
 

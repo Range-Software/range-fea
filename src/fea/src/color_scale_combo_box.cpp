@@ -5,7 +5,7 @@ ColorScaleComboBox::ColorScaleComboBox(QWidget *parent) :
     QComboBox(parent),
     whFactor(10)
 {
-    this->addItem("None");
+    this->addItem(tr("None"));
 
     static QRegularExpression re("[-.]");
 

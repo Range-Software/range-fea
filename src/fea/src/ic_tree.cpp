@@ -2,11 +2,9 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include "component_edit_dialog.h"
 #include "application.h"
 #include "ic_tree.h"
 #include "variable_value_edit.h"
-#include "push_button.h"
 
 typedef enum _ICTreeColumn
 {
@@ -26,10 +24,10 @@ ICTree::ICTree(QWidget *parent) :
     this->setColumnCount(IC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(IC_TREE_PROPERTY_TYPE,QString("Property type"));
-    headerItem->setText(IC_TREE_PROPERTY_NAME,QString("Property name"));
-    headerItem->setText(IC_TREE_PROPERTY_VALUE,QString("Value"));
-    headerItem->setText(IC_TREE_PROPERTY_UNITS,QString("Units"));
+    headerItem->setText(IC_TREE_PROPERTY_TYPE,tr("Property type"));
+    headerItem->setText(IC_TREE_PROPERTY_NAME,tr("Property name"));
+    headerItem->setText(IC_TREE_PROPERTY_VALUE,tr("Value"));
+    headerItem->setText(IC_TREE_PROPERTY_UNITS,tr("Units"));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(IC_TREE_PROPERTY_TYPE,true);

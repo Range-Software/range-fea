@@ -27,10 +27,10 @@ BCTree::BCTree(QWidget *parent) :
     this->setColumnCount(BC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(BC_TREE_PROPERTY_TYPE,QString("Property type"));
-    headerItem->setText(BC_TREE_PROPERTY_NAME,QString("Property name"));
-    headerItem->setText(BC_TREE_PROPERTY_VALUE,QString("Value"));
-    headerItem->setText(BC_TREE_PROPERTY_UNITS,QString("Units"));
+    headerItem->setText(BC_TREE_PROPERTY_TYPE,tr("Property type"));
+    headerItem->setText(BC_TREE_PROPERTY_NAME,tr("Property name"));
+    headerItem->setText(BC_TREE_PROPERTY_VALUE,tr("Value"));
+    headerItem->setText(BC_TREE_PROPERTY_UNITS,tr("Units"));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(BC_TREE_PROPERTY_TYPE,true);
@@ -60,7 +60,7 @@ void BCTree::populate()
 
         QTreeWidgetItem *child = new QTreeWidgetItem(item);
         child->setFirstColumnSpanned(true);
-        PushButton *buttonValues = new PushButton(uint(component.getType()),QString("Edit time dependent values"));
+        PushButton *buttonValues = new PushButton(uint(component.getType()),tr("Edit time dependent values"));
         this->setItemWidget(child,BC_TREE_PROPERTY_NAME,buttonValues);
 
         QObject::connect(lineEdit,&VariableValueEdit::valueChanged,this,&BCTree::onBcValueChanged);

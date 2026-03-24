@@ -913,6 +913,31 @@
 <context>
     <name>BCTree</name>
     <message>
+        <location filename="../src/bc_tree.cpp" line="30"/>
+        <source>Property type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="31"/>
+        <source>Property name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="32"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="33"/>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="63"/>
+        <source>Edit time dependent values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/bc_tree.cpp" line="77"/>
         <source>Local direction</source>
         <translation type="unfinished"></translation>
@@ -1085,7 +1110,28 @@
     </message>
 </context>
 <context>
+    <name>ColorComboBox</name>
+    <message>
+        <location filename="../src/color_combo_box.cpp" line="12"/>
+        <source>Custom color ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ColorScaleComboBox</name>
+    <message>
+        <location filename="../src/color_scale_combo_box.cpp" line="8"/>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ComponentEditDialog</name>
+    <message>
+        <location filename="../src/component_edit_dialog.cpp" line="14"/>
+        <source>Component editor</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="29"/>
         <source>Number of values</source>
@@ -1789,6 +1835,29 @@
     </message>
 </context>
 <context>
+    <name>ECTree</name>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="27"/>
+        <source>Property type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="28"/>
+        <source>Property name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FindSliverElementsDialog</name>
     <message>
         <location filename="../src/find_sliver_elements_dialog.cpp" line="20"/>
@@ -2233,6 +2302,29 @@
     </message>
 </context>
 <context>
+    <name>ICTree</name>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="27"/>
+        <source>Property type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="28"/>
+        <source>Property name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>IsoDialog</name>
     <message>
         <location filename="../src/iso_dialog.cpp" line="32"/>
@@ -2508,6 +2600,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/mark_entity_dialog.cpp" line="30"/>
+        <source>Auto-mark all entities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mark_entity_dialog.cpp" line="34"/>
         <location filename="../src/mark_entity_dialog.cpp" line="172"/>
         <source>To mark elements at least one element must be picked.</source>
@@ -2529,6 +2626,11 @@
         <location filename="../src/mark_entity_dialog.cpp" line="45"/>
         <location filename="../src/mark_entity_dialog.cpp" line="183"/>
         <source>to pick element</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mark_entity_dialog.cpp" line="46"/>
+        <source>Mark only selected and related elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2661,6 +2763,11 @@
     <message>
         <location filename="../src/material_tree.cpp" line="45"/>
         <source>Remove selected material property</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/material_tree.cpp" line="80"/>
+        <source>Edit temperature dependent values</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3608,8 +3715,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/problem_task_tree.cpp" line="64"/>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/problem_task_tree.cpp" line="70"/>
         <source>Add problem type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/problem_task_tree.cpp" line="102"/>
+        <source># of iterations</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4137,6 +4254,16 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/results_variable_tree.cpp" line="252"/>
+        <source>Apply as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="283"/>
+        <source>Value range &amp; color scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/results_variable_tree.cpp" line="289"/>
         <source>Maximum</source>
         <translation type="unfinished"></translation>
@@ -4159,6 +4286,11 @@
     <message>
         <location filename="../src/results_variable_tree.cpp" line="323"/>
         <source>Color scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="337"/>
+        <source>Display value range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4350,6 +4482,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/sub_window.cpp" line="75"/>
+        <source>Screenshot.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/sub_window.cpp" line="85"/>
         <source>Same face color</source>
         <translation type="unfinished"></translation>
@@ -4358,6 +4495,11 @@
         <location filename="../src/sub_window.cpp" line="86"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="96"/>
+        <source>Display preferences.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4538,6 +4680,11 @@ When unchecked, the back side is shown in a different color.</source>
         <source>Open data file</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/value_table.cpp" line="313"/>
+        <source>Table values</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>VectorFieldDialog</name>
@@ -4559,6 +4706,21 @@ When unchecked, the back side is shown in a different color.</source>
     <message>
         <location filename="../src/vector_field_dialog.cpp" line="115"/>
         <source>Modify vector field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="159"/>
+        <source>Variables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="160"/>
+        <source>type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="201"/>
+        <source>3D vector field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

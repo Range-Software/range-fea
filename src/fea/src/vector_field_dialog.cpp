@@ -156,8 +156,8 @@ void VectorFieldDialog::createDialog()
     this->variableTree->setColumnCount(VectorFieldDialog::NColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(VectorFieldDialog::Name,QString("Variables"));
-    headerItem->setText(VectorFieldDialog::Type,QString("type"));
+    headerItem->setText(VectorFieldDialog::Name,tr("Variables"));
+    headerItem->setText(VectorFieldDialog::Type,tr("type"));
     this->variableTree->setHeaderItem(headerItem);
     this->variableTree->setColumnHidden(VectorFieldDialog::Type,true);
 
@@ -198,7 +198,7 @@ void VectorFieldDialog::createDialog()
     {
         type3DCheckState = (nType3D == nVariables) ? Qt::Checked : Qt::PartiallyChecked;
     }
-    this->type3DCheckbox = new QCheckBox("3D vector field");
+    this->type3DCheckbox = new QCheckBox(tr("3D vector field"));
     this->type3DCheckbox->setCheckState(type3DCheckState);
     mainLayout->addWidget(this->type3DCheckbox);
 

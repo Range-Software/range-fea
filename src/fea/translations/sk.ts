@@ -913,6 +913,31 @@
 <context>
     <name>BCTree</name>
     <message>
+        <location filename="../src/bc_tree.cpp" line="30"/>
+        <source>Property type</source>
+        <translation>Typ vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="31"/>
+        <source>Property name</source>
+        <translation>Názov vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="32"/>
+        <source>Value</source>
+        <translation>Hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="33"/>
+        <source>Units</source>
+        <translation>Jednotky</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="63"/>
+        <source>Edit time dependent values</source>
+        <translation>Upraviť časovo závislé hodnoty</translation>
+    </message>
+    <message>
         <location filename="../src/bc_tree.cpp" line="77"/>
         <source>Local direction</source>
         <translation>Lokálny smer</translation>
@@ -1085,7 +1110,28 @@
     </message>
 </context>
 <context>
+    <name>ColorComboBox</name>
+    <message>
+        <location filename="../src/color_combo_box.cpp" line="12"/>
+        <source>Custom color ...</source>
+        <translation>Vlastná farba ...</translation>
+    </message>
+</context>
+<context>
+    <name>ColorScaleComboBox</name>
+    <message>
+        <location filename="../src/color_scale_combo_box.cpp" line="8"/>
+        <source>None</source>
+        <translation>Žiadne</translation>
+    </message>
+</context>
+<context>
     <name>ComponentEditDialog</name>
+    <message>
+        <location filename="../src/component_edit_dialog.cpp" line="14"/>
+        <source>Component editor</source>
+        <translation>Editor zložiek</translation>
+    </message>
     <message>
         <location filename="../src/component_edit_dialog.cpp" line="29"/>
         <source>Number of values</source>
@@ -1789,6 +1835,29 @@
     </message>
 </context>
 <context>
+    <name>ECTree</name>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="27"/>
+        <source>Property type</source>
+        <translation>Typ vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="28"/>
+        <source>Property name</source>
+        <translation>Názov vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation>Hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/ec_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation>Jednotky</translation>
+    </message>
+</context>
+<context>
     <name>FindSliverElementsDialog</name>
     <message>
         <location filename="../src/find_sliver_elements_dialog.cpp" line="20"/>
@@ -2233,6 +2302,29 @@
     </message>
 </context>
 <context>
+    <name>ICTree</name>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="27"/>
+        <source>Property type</source>
+        <translation>Typ vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="28"/>
+        <source>Property name</source>
+        <translation>Názov vlastnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="29"/>
+        <source>Value</source>
+        <translation>Hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/ic_tree.cpp" line="30"/>
+        <source>Units</source>
+        <translation>Jednotky</translation>
+    </message>
+</context>
+<context>
     <name>IsoDialog</name>
     <message>
         <location filename="../src/iso_dialog.cpp" line="32"/>
@@ -2508,6 +2600,11 @@
         <translation>Označiť celok</translation>
     </message>
     <message>
+        <location filename="../src/mark_entity_dialog.cpp" line="30"/>
+        <source>Auto-mark all entities</source>
+        <translation>Automaticky sznačiť všetky celky</translation>
+    </message>
+    <message>
         <location filename="../src/mark_entity_dialog.cpp" line="34"/>
         <location filename="../src/mark_entity_dialog.cpp" line="172"/>
         <source>To mark elements at least one element must be picked.</source>
@@ -2530,6 +2627,11 @@
         <location filename="../src/mark_entity_dialog.cpp" line="183"/>
         <source>to pick element</source>
         <translation>k vyznačeniu prvku</translation>
+    </message>
+    <message>
+        <location filename="../src/mark_entity_dialog.cpp" line="46"/>
+        <source>Mark only selected and related elements</source>
+        <translation>Označiť iba vybrané a súvisiace prvky</translation>
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="66"/>
@@ -2662,6 +2764,11 @@
         <location filename="../src/material_tree.cpp" line="45"/>
         <source>Remove selected material property</source>
         <translation>Odstrániť materiálovú vlastnosť</translation>
+    </message>
+    <message>
+        <location filename="../src/material_tree.cpp" line="80"/>
+        <source>Edit temperature dependent values</source>
+        <translation>Epraviť teplotne závislé hodnoty</translation>
     </message>
 </context>
 <context>
@@ -3608,9 +3715,19 @@
         <translation>Dole</translation>
     </message>
     <message>
+        <location filename="../src/problem_task_tree.cpp" line="64"/>
+        <source>Remove</source>
+        <translation>Odstrániť</translation>
+    </message>
+    <message>
         <location filename="../src/problem_task_tree.cpp" line="70"/>
         <source>Add problem type</source>
         <translation>Pridať typ problému</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_task_tree.cpp" line="102"/>
+        <source># of iterations</source>
+        <translation>počet iterácií</translation>
     </message>
 </context>
 <context>
@@ -4137,6 +4254,16 @@
         <translation>Upraviujú sa hodnoty pre viacero modelov</translation>
     </message>
     <message>
+        <location filename="../src/results_variable_tree.cpp" line="252"/>
+        <source>Apply as ...</source>
+        <translation>Použiť ako ...</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="283"/>
+        <source>Value range &amp; color scale</source>
+        <translation>Rozsah hodnôt a farebná škála</translation>
+    </message>
+    <message>
         <location filename="../src/results_variable_tree.cpp" line="289"/>
         <source>Maximum</source>
         <translation>Maximum</translation>
@@ -4160,6 +4287,11 @@
         <location filename="../src/results_variable_tree.cpp" line="323"/>
         <source>Color scale</source>
         <translation>Farebná škála</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="337"/>
+        <source>Display value range</source>
+        <translation>Zobraziť rozsah hodnôt</translation>
     </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="354"/>
@@ -4350,6 +4482,11 @@
         <translation>Obnoviť na rovinu Z.</translation>
     </message>
     <message>
+        <location filename="../src/sub_window.cpp" line="75"/>
+        <source>Screenshot.</source>
+        <translation>Snímka obrazovky</translation>
+    </message>
+    <message>
         <location filename="../src/sub_window.cpp" line="85"/>
         <source>Same face color</source>
         <translation>Rovnaká farba strán</translation>
@@ -4360,6 +4497,11 @@
 When unchecked, the back side is shown in a different color.</source>
         <translation>Ak je zaškrtnuté, obe strany plošných prvkov majú rovnakú farbu.
 Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="96"/>
+        <source>Display preferences.</source>
+        <translation>Nastavenie zobrazenia</translation>
     </message>
 </context>
 <context>
@@ -4539,6 +4681,11 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
         <source>Open data file</source>
         <translation>Otvoriť dátový súbor</translation>
     </message>
+    <message>
+        <location filename="../src/value_table.cpp" line="313"/>
+        <source>Table values</source>
+        <translation>Tabo%lka hodnôt</translation>
+    </message>
 </context>
 <context>
     <name>VectorFieldDialog</name>
@@ -4561,6 +4708,21 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
         <location filename="../src/vector_field_dialog.cpp" line="115"/>
         <source>Modify vector field</source>
         <translation>Upraviť vektorové pole</translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="159"/>
+        <source>Variables</source>
+        <translation>Premenné</translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="160"/>
+        <source>type</source>
+        <translation>typ</translation>
+    </message>
+    <message>
+        <location filename="../src/vector_field_dialog.cpp" line="201"/>
+        <source>3D vector field</source>
+        <translation>3D vektorové pole</translation>
     </message>
     <message>
         <location filename="../src/vector_field_dialog.cpp" line="208"/>

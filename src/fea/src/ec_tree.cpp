@@ -24,10 +24,10 @@ ECTree::ECTree(QWidget *parent) :
     this->setColumnCount(EC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(EC_TREE_PROPERTY_TYPE,QString("Property type"));
-    headerItem->setText(EC_TREE_PROPERTY_NAME,QString("Property name"));
-    headerItem->setText(EC_TREE_PROPERTY_VALUE,QString("Value"));
-    headerItem->setText(EC_TREE_PROPERTY_UNITS,QString("Units"));
+    headerItem->setText(EC_TREE_PROPERTY_TYPE,tr("Property type"));
+    headerItem->setText(EC_TREE_PROPERTY_NAME,tr("Property name"));
+    headerItem->setText(EC_TREE_PROPERTY_VALUE,tr("Value"));
+    headerItem->setText(EC_TREE_PROPERTY_UNITS,tr("Units"));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(EC_TREE_PROPERTY_TYPE,true);

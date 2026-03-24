@@ -72,7 +72,7 @@ void SubWindow::createSubWindow()
     this->toolBar->addSeparator();
 
     QAction *actionScreenshot = new QAction(this);
-    actionScreenshot->setText("Take screenshot.");
+    actionScreenshot->setText(tr("Screenshot."));
     actionScreenshot->setShortcut(QString("Ctrl+P"));
     actionScreenshot->setIcon(QIcon(":/icons/file/pixmaps/range-screenshot.svg"));
     this->toolBar->addAction(actionScreenshot);
@@ -93,7 +93,7 @@ void SubWindow::createSubWindow()
     this->toolBar->addWidget(clippingPlaneWidget);
 
     QAction *actionPreferences = new QAction(this);
-    actionPreferences->setText("Display preferences.");
+    actionPreferences->setText(tr("Display preferences."));
     actionPreferences->setShortcut(QString("Ctrl+P"));
     actionPreferences->setIcon(QIcon(":/icons/application/pixmaps/range-display_preferences.svg"));
     this->toolBar->addAction(actionPreferences);
