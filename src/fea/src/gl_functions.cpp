@@ -1,12 +1,9 @@
+#include "gl_functions.h"
+#include "gl_vertex_buffer.h"
+
 #include <QString>
 
 #include <rbl_logger.h>
-
-#include <QOpenGLContext>
-#include <QOpenGLFunctions>
-
-#include "gl_functions.h"
-#include "gl_vertex_buffer.h"
 
 static bool insideBeginEnd = false;
 static GLVertexBuffer *currentVBO = nullptr;
@@ -85,10 +82,6 @@ void GLFunctions::begin(GLenum mode)
     {
         currentVBO->beginRecording(mode);
     }
-    else
-    {
-        glBegin(mode);
-    }
 }
 
 void GLFunctions::end()
@@ -96,10 +89,6 @@ void GLFunctions::end()
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->endRecording();
-    }
-    else
-    {
-        GL_SAFE_CALL(glEnd());
     }
     insideBeginEnd = false;
 }
@@ -109,15 +98,6 @@ void GLFunctions::normal3f(GLfloat x, GLfloat y, GLfloat z)
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->setNormal(x, y, z);
-    }
-    else
-    {
-        glNormal3f(x, y, z);
-        // Also feed aNormal (location 1) so immediate-mode draws work with the GLSL shader.
-        if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
-        {
-            ctx->functions()->glVertexAttrib3f(1, x, y, z);
-        }
     }
 }
 
@@ -132,10 +112,6 @@ void GLFunctions::vertex3f(GLfloat x, GLfloat y, GLfloat z)
     {
         currentVBO->addVertex(x, y, z);
     }
-    else
-    {
-        glVertex3f(x, y, z);
-    }
 }
 
 void GLFunctions::vertex3d(GLdouble x, GLdouble y, GLdouble z)
@@ -149,16 +125,6 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     {
         currentVBO->setColor(r, g, b, a);
     }
-    else
-    {
-        glColor4ub(r, g, b, a);
-        // Also feed aColor (location 2) so immediate-mode draws work with the GLSL shader.
-        if (QOpenGLContext *ctx = QOpenGLContext::currentContext())
-        {
-            ctx->functions()->glVertexAttrib4f(2,
-                r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
-        }
-    }
 }
 
 void GLFunctions::texCoord1f(GLfloat t)
@@ -166,10 +132,6 @@ void GLFunctions::texCoord1f(GLfloat t)
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->setTexCoord(t);
-    }
-    else
-    {
-        glTexCoord1f(t);
     }
 }
 
