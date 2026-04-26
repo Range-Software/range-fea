@@ -1,10 +1,39 @@
 #include <QMap>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QHeaderView>
 #include <QScrollBar>
 
 #include "model_records_tree.h"
 #include "application.h"
+
+namespace
+{
+
+const char *MarkedRecordIcon = ":/icons/media/pixmaps/range-play_play.svg";
+const int MarkedRecordColumnWidth = 48;
+
+void setMarkedRecordIcon(QTreeWidgetItem *item, int column, bool marked)
+{
+    item->setIcon(column,marked ? QIcon(MarkedRecordIcon) : QIcon());
+}
+
+void setMarkedRecord(QTreeWidgetItem *item, int column, bool marked, bool modelSelected)
+{
+    item->setData(column,Qt::UserRole,QVariant(marked));
+    // Only update the icon directly when the tree's signals are blocked (e.g. inside
+    // populate()).  When signals are live, the setData call above already triggers
+    // onItemChanged which sets the icon — calling setMarkedRecordIcon here as well
+    // would fire onItemChanged a second time via setIcon → itemChanged, causing a
+    // duplicate recordMarked emission and a second async load job that resets state.
+    QTreeWidget *tree = item->treeWidget();
+    if (!tree || tree->signalsBlocked())
+    {
+        setMarkedRecordIcon(item,column,marked && modelSelected);
+    }
+}
+
+}
 
 class ModelRecordsTreeRecordID
 {
@@ -17,19 +46,15 @@ class ModelRecordsTreeRecordID
         }
         bool operator < (const ModelRecordsTreeRecordID &rModelRecordsTreeRecordID) const
         {
-            if (this->modelID < rModelRecordsTreeRecordID.modelID)
+            if (this->modelID != rModelRecordsTreeRecordID.modelID)
             {
-                return true;
+                return this->modelID < rModelRecordsTreeRecordID.modelID;
             }
-            if (this->isRecord < rModelRecordsTreeRecordID.isRecord)
+            if (this->isRecord != rModelRecordsTreeRecordID.isRecord)
             {
-                return true;
+                return this->isRecord < rModelRecordsTreeRecordID.isRecord;
             }
-            if (this->recordNumber < rModelRecordsTreeRecordID.recordNumber)
-            {
-                return true;
-            }
-            return false;
+            return this->recordNumber < rModelRecordsTreeRecordID.recordNumber;
         }
 
     public:
@@ -46,16 +71,19 @@ ModelRecordsTree::ModelRecordsTree(QWidget *parent)
     this->setColumnCount(ModelRecordsTree::NColumns);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->setRootIsDecorated(false);
+    // this->setIndentation(0);
     this->setAutoScroll(false);
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
     headerItem->setText(ModelRecordsTree::RecordNumber,QString(tr("Record")));
     headerItem->setText(ModelRecordsTree::RecordFileName,QString(tr("File name")));
-    headerItem->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+    headerItem->setIcon(ModelRecordsTree::Marked,QIcon(MarkedRecordIcon));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(ModelRecordsTree::ModelID,true);
     this->setColumnHidden(ModelRecordsTree::IsRecord,true);
     this->setColumnHidden(ModelRecordsTree::PathFileName,true);
+    this->header()->setSectionResizeMode(ModelRecordsTree::Marked,QHeaderView::Fixed);
+    this->setColumnWidth(ModelRecordsTree::Marked,MarkedRecordColumnWidth);
 
     this->populate();
 
@@ -181,6 +209,29 @@ void ModelRecordsTree::populate()
         selectedIDs[recordID] = true;
     }
 
+    // Preserve the marked (triangle) state across the clear/rebuild cycle.
+    // The mark is set synchronously by onItemChanged when a record is activated,
+    // but the file load is async — populate() may be called before getCurrentTimeStep()
+    // is updated, causing the mark to land on the wrong record.  Using the pre-clear
+    // state as the source of truth avoids that race.  getCurrentTimeStep() is still
+    // used as a fallback for the initial population when nothing is yet marked.
+    QMap<ModelRecordsTreeRecordID,bool> markedIDs;
+    {
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
+            {
+                ModelRecordsTreeRecordID recordID((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt(),
+                                                  true,
+                                                  (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt());
+                markedIDs[recordID] = true;
+            }
+            ++it;
+        }
+    }
+
     uint nModels = Application::instance()->getSession()->getNModels();
 
     this->blockSignals(true);
@@ -220,25 +271,38 @@ void ModelRecordsTree::populate()
                 childItem->setData(ModelRecordsTree::RecordNumber,Qt::DisplayRole,QVariant(j+1));
                 childItem->setText(ModelRecordsTree::RecordFileName,elipsizeFileName);
                 childItem->setText(ModelRecordsTree::PathFileName,recordFiles[j]);
-                uint recordNumber = 0;
-                if (rModel.getTimeSolver().getEnabled())
+                bool isMarked = false;
+                if (!markedIDs.isEmpty())
                 {
-                    recordNumber = rModel.getTimeSolver().getCurrentTimeStep();
+                    // Prefer the pre-clear marked state to avoid the async-load race.
+                    isMarked = markedIDs.contains(ModelRecordsTreeRecordID(i,true,uint(j+1)));
                 }
                 else
                 {
-                    if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+                    // Nothing was marked yet (initial population): fall back to the
+                    // time solver's current step.
+                    uint recordNumber = 0;
+                    if (rModel.getTimeSolver().getEnabled())
                     {
-                        recordNumber = rModel.getProblemSetup().getModalSetup().getMode();
+                        recordNumber = rModel.getTimeSolver().getCurrentTimeStep() + 1;
                     }
+                    else
+                    {
+                        if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+                        {
+                            recordNumber = rModel.getProblemSetup().getModalSetup().getMode() + 1;
+                        }
+                    }
+                    isMarked = Application::instance()->getSession()->isModelSelected(i) && recordNumber == uint(j+1);
                 }
-                if (Application::instance()->getSession()->isModelSelected(i) && recordNumber == uint(j))
+                if (isMarked)
                 {
-                    childItem->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+                    setMarkedRecordIcon(childItem,ModelRecordsTree::Marked,Application::instance()->getSession()->isModelSelected(i));
                     childItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(true));
                 }
                 else
                 {
+                    setMarkedRecordIcon(childItem,ModelRecordsTree::Marked,false);
                     childItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(false));
                 }
 
@@ -253,7 +317,7 @@ void ModelRecordsTree::populate()
 
     this->resizeColumnToContents(ModelRecordsTree::RecordNumber);
     this->resizeColumnToContents(ModelRecordsTree::RecordFileName);
-    this->resizeColumnToContents(ModelRecordsTree::Marked);
+    this->setColumnWidth(ModelRecordsTree::Marked,MarkedRecordColumnWidth);
 
     vScrollBar->setValue(vScrollValue);
 
@@ -307,8 +371,8 @@ void ModelRecordsTree::markPrevious()
             {
                 if (prevItem)
                 {
-                    (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(false));
-                    prevItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(true));
+                    setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
+                    setMarkedRecord(prevItem,ModelRecordsTree::Marked,true,true);
                 }
                 break;
             }
@@ -340,10 +404,11 @@ void ModelRecordsTree::markNext()
         {
             if (markItem)
             {
-                if ((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+                if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                    (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
                 {
-                    prevItem->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
-                    (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+                    setMarkedRecord(prevItem,ModelRecordsTree::Marked,false,false);
+                    setMarkedRecord(*it,ModelRecordsTree::Marked,true,true);
                 }
                 break;
             }
@@ -375,7 +440,7 @@ void ModelRecordsTree::markFirst()
             if ((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID &&
                 (*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool())
             {
-                (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,isFirst);
+                setMarkedRecord(*it,ModelRecordsTree::Marked,isFirst,isFirst);
                 isFirst = false;
             }
             ++it;
@@ -408,7 +473,7 @@ void ModelRecordsTree::markLast()
 
         if (lastItem && !lastItem->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
         {
-            lastItem->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+            setMarkedRecord(lastItem,ModelRecordsTree::Marked,true,true);
 
             QTreeWidgetItemIterator it(this);
             while (*it)
@@ -418,7 +483,7 @@ void ModelRecordsTree::markLast()
                     itemID2++;
                     if (itemID1 != itemID2)
                     {
-                        (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
+                        setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
                     }
                 }
                 ++it;
@@ -454,11 +519,11 @@ void ModelRecordsTree::onModelSelectionChanged(uint modelID)
         {
             if (Application::instance()->getSession()->isModelSelected(modelID))
             {
-                (*it)->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+                setMarkedRecordIcon(*it,ModelRecordsTree::Marked,true);
             }
             else
             {
-                (*it)->setData(ModelRecordsTree::Marked,Qt::DecorationRole,QVariant());
+                setMarkedRecordIcon(*it,ModelRecordsTree::Marked,false);
             }
         }
         ++it;
@@ -487,14 +552,14 @@ void ModelRecordsTree::onItemChanged(QTreeWidgetItem *item, int column)
     if (item->data(ModelRecordsTree::Marked,Qt::UserRole).toBool() &&
         Application::instance()->getSession()->isModelSelected(item->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt()))
     {
-        item->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+        setMarkedRecordIcon(item,ModelRecordsTree::Marked,true);
         this->setCurrentItem(item);
         this->scrollToItem(item);
         recordMarkedIndicator = true;
     }
     else
     {
-        item->setData(ModelRecordsTree::Marked,Qt::DecorationRole,QVariant());
+        setMarkedRecordIcon(item,ModelRecordsTree::Marked,false);
     }
 
     this->blockSignals(false);
@@ -518,12 +583,15 @@ void ModelRecordsTree::onItemActivated(QTreeWidgetItem *item, int)
             (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool() &&
             (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
         {
-            (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
+            setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
         }
         ++it;
     }
     if (!item->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
     {
-        item->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+        setMarkedRecord(item,
+                        ModelRecordsTree::Marked,
+                        true,
+                        Application::instance()->getSession()->isModelSelected(modelID));
     }
 }

@@ -82,6 +82,10 @@ void GLFunctions::begin(GLenum mode)
     {
         currentVBO->beginRecording(mode);
     }
+    else
+    {
+        glBegin(mode);
+    }
 }
 
 void GLFunctions::end()
@@ -89,6 +93,10 @@ void GLFunctions::end()
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->endRecording();
+    }
+    else
+    {
+        glEnd();
     }
     insideBeginEnd = false;
 }
@@ -98,6 +106,10 @@ void GLFunctions::normal3f(GLfloat x, GLfloat y, GLfloat z)
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->setNormal(x, y, z);
+    }
+    else
+    {
+        glNormal3f(x, y, z);
     }
 }
 
@@ -112,6 +124,10 @@ void GLFunctions::vertex3f(GLfloat x, GLfloat y, GLfloat z)
     {
         currentVBO->addVertex(x, y, z);
     }
+    else
+    {
+        glVertex3f(x, y, z);
+    }
 }
 
 void GLFunctions::vertex3d(GLdouble x, GLdouble y, GLdouble z)
@@ -125,6 +141,10 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     {
         currentVBO->setColor(r, g, b, a);
     }
+    else
+    {
+        glColor4ub(r, g, b, a);
+    }
 }
 
 void GLFunctions::texCoord1f(GLfloat t)
@@ -132,6 +152,10 @@ void GLFunctions::texCoord1f(GLfloat t)
     if (vboRecordingMode && currentVBO)
     {
         currentVBO->setTexCoord(t);
+    }
+    else
+    {
+        glTexCoord1f(t);
     }
 }
 

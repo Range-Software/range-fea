@@ -179,7 +179,7 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().enableTexture1D();
     }
 
     if (volumeElement)
@@ -256,7 +256,7 @@ void GLSimplexSegment::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().disableTexture1D();
     }
 
     GLStateCache::instance().setLighting(lightingEnabled);
@@ -269,7 +269,7 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().enableTexture1D();
     }
 
     if (volumeElement)
@@ -346,7 +346,7 @@ void GLSimplexSegment::drawWired(const std::vector<RNode> &nodes1, const std::ve
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().disableTexture1D();
     }
 
     GLStateCache::instance().setLighting(lightingEnabled);

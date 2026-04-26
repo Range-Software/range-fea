@@ -88,7 +88,7 @@ void GLRotationSphere::draw()
         double y = r2 + this->position[1];
         double z = this->position[2];
 
-        GL_SAFE_CALL(glVertex3d(x,y,z));
+        GLFunctions::vertex3d(x,y,z);
     }
     GLFunctions::end();
 
@@ -103,7 +103,7 @@ void GLRotationSphere::draw()
         double y = this->position[1];
         double z = r2 + this->position[2];
 
-        GL_SAFE_CALL(glVertex3d(x,y,z));
+        GLFunctions::vertex3d(x,y,z);
     }
     GLFunctions::end();
 
@@ -118,20 +118,20 @@ void GLRotationSphere::draw()
         double y = r1 + this->position[1];
         double z = r2 + this->position[2];
 
-        GL_SAFE_CALL(glVertex3d(x,y,z));
+        GLFunctions::vertex3d(x,y,z);
     }
     GLFunctions::end();
 
     GLFunctions::begin(GL_LINES);
 
-    GL_SAFE_CALL(glVertex3d(-this->scale+this->position[0],this->position[1],this->position[2]));
-    GL_SAFE_CALL(glVertex3d( this->scale+this->position[0],this->position[1],this->position[2]));
+    GLFunctions::vertex3d(-this->scale+this->position[0],this->position[1],this->position[2]);
+    GLFunctions::vertex3d( this->scale+this->position[0],this->position[1],this->position[2]);
 
-    GL_SAFE_CALL(glVertex3d(this->position[0],-this->scale+this->position[1],this->position[2]));
-    GL_SAFE_CALL(glVertex3d(this->position[0], this->scale+this->position[1],this->position[2]));
+    GLFunctions::vertex3d(this->position[0],-this->scale+this->position[1],this->position[2]);
+    GLFunctions::vertex3d(this->position[0], this->scale+this->position[1],this->position[2]);
 
-    GL_SAFE_CALL(glVertex3d(this->position[0],this->position[1],-this->scale+this->position[2]));
-    GL_SAFE_CALL(glVertex3d(this->position[0],this->position[1], this->scale+this->position[2]));
+    GLFunctions::vertex3d(this->position[0],this->position[1],-this->scale+this->position[2]);
+    GLFunctions::vertex3d(this->position[0],this->position[1], this->scale+this->position[2]);
 
     GLFunctions::end();
 

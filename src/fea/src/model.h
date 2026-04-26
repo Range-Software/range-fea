@@ -2,6 +2,7 @@
 #define MODEL_H
 
 #include <QColor>
+#include <QHash>
 #include <QSet>
 #include <QStack>
 #include <QMutex>
@@ -52,6 +53,8 @@ class Model : public RModel
         QSet<uint> sliverElements;
         //! Set of intersected elements.
         QSet<uint> intersectedElements;
+        //! Bit mask of consolidation caches known to be current.
+        int validConsolidationCacheMask;
         //! Model filename.
         QString fileName;
         //! Mesh generator input object.
@@ -72,6 +75,9 @@ class Model : public RModel
 
         //! Internal initialization function.
         void _init(const Model *pModel = nullptr);
+
+        //! Mark consolidation caches as invalid.
+        void invalidateConsolidationCache(int cacheMask = Model::ConsolidateActionAll);
 
         //! Return const pointer to element group data.
         const REntityGroupData *getElementGroupData(REntityGroupType elementGroupType,
@@ -513,13 +519,13 @@ class Model : public RModel
 
         //! Split given nodes and return map of original nodes pointing to new nodes IDs.
         //! New nodes will be assigned to elements except those provided if applicable.
-        QMap<uint,uint> splitNodes(const QSet<uint> &nodeIDs, const QSet<uint> &elementIDs);
+        QHash<uint,uint> splitNodes(const QSet<uint> &nodeIDs, const QSet<uint> &elementIDs);
 
         //! Generate edge elements from given set of edge nodes.
         QList<RElement> generateEdgeElements(const QSet<uint> &edgeNodeIDs, const QSet<uint> &elementIDs) const;
 
         //! Create new elements between splitted nodes which formed edge elements.
-        void createSweepEdgeElements(const QList<RElement> &edgeElements, const QMap<uint,uint> &edgeNodeMap, bool useLastGroupID, bool selectNewEntities, bool showNewEntities);
+        void createSweepEdgeElements(const QList<RElement> &edgeElements, const QHash<uint,uint> &edgeNodeMap, bool useLastGroupID, bool selectNewEntities, bool showNewEntities);
 
         //! Find edge elements.
         QVector<RElement> findEdgeElements(double separationAngle) const;

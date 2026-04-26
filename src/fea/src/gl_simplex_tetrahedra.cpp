@@ -1,5 +1,6 @@
 #include "gl_functions.h"
 #include "gl_simplex_tetrahedra.h"
+#include "gl_state_cache.h"
 #include "gl_widget.h"
 
 void GLSimplexTetrahedra::_init(const GLSimplexTetrahedra *pGlTetrahedra)
@@ -117,7 +118,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
     }
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().enableTexture1D();
     }
 
     GLboolean cullState;
@@ -174,7 +175,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().disableTexture1D();
     }
 
     GL_SAFE_CALL(cullState ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
@@ -188,7 +189,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
     }
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().enableTexture1D();
     }
 
     GLFunctions::begin(GL_LINES);
@@ -244,7 +245,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().disableTexture1D();
     }
 }
 
