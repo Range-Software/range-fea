@@ -25,3 +25,4 @@
 [submodule "src/range-ai-lib"]
 	path = src/range-ai-lib
 	url = ../range-ai-lib
+	branch = main
