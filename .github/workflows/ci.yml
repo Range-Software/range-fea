@@ -79,11 +79,26 @@ jobs:
 
       - name: Install OpenSSL (Windows)
         if: startsWith(matrix.os, 'windows-')
-        run: |
-          choco install openssl.light -y --params "/InstallDir:C:\OpenSSL" || echo "OpenSSL may already be installed"
-          # Persist OPENSSL_ROOT for later CMake configure step
-          Write-Output "OPENSSL_ROOT=C:\OpenSSL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installDir = 'C:\OpenSSL'
+          $max = 3
+          for ($i = 1; $i -le $max; $i++) {
+            try {
+              choco install openssl.light -y --params "/InstallDir:$installDir"
+              break
+            } catch {
+              if ($i -eq $max) { throw }
+              Write-Host "OpenSSL install failed (attempt $i/$max). Retrying in 20s..."
+              Start-Sleep -Seconds 20
+            }
+          }
+          if (Test-Path "$installDir\bin\openssl.exe") {
+            "OPENSSL_ROOT=$installDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } else {
+            Write-Host "OpenSSL not found at $installDir; not setting OPENSSL_ROOT."
+          }
 
       # Qt
       - name: Install Qt 6.10.2 + QtIFW
