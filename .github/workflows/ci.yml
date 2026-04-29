@@ -54,6 +54,15 @@ jobs:
         if: startsWith(matrix.os, 'windows-')
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Disable PowerShell color output (Windows)
+        if: startsWith(matrix.os, 'windows-')
+        shell: pwsh
+        run: |
+          $profilePath = $PROFILE.CurrentUserAllHosts
+          $null = New-Item -ItemType File -Force -Path $profilePath
+          Add-Content $profilePath '$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText'
+          "TERM=dumb`nCLICOLOR=0`nNO_COLOR=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Ensure Ninja (Windows)
         if: startsWith(matrix.os, 'windows-')
         run: choco install ninja -y || echo "Ninja already present"
@@ -79,13 +88,8 @@ jobs:
 
       - name: Install OpenSSL (Windows)
         if: startsWith(matrix.os, 'windows-')
-        env:
-            TERM: dumb
-            CLICOLOR: 0
-            NO_COLOR: 1
         shell: pwsh
         run: |
-          $PSStyle.OutputRendering = 'PlainText'
           $ErrorActionPreference = 'Stop'
           $installDir = 'C:\OpenSSL'
           $max = 3
