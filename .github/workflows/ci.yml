@@ -79,8 +79,13 @@ jobs:
 
       - name: Install OpenSSL (Windows)
         if: startsWith(matrix.os, 'windows-')
+        env:
+            TERM: dumb
+            CLICOLOR: 0
+            NO_COLOR: 1
         shell: pwsh
         run: |
+          $PSStyle.OutputRendering = 'PlainText'
           $ErrorActionPreference = 'Stop'
           $installDir = 'C:\OpenSSL'
           $max = 3
