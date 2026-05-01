@@ -1,3 +1,6 @@
+#include <QOpenGLContext>
+#include <QOpenGLExtraFunctions>
+
 #include "gl_functions.h"
 #include "gl_vertex_buffer.h"
 
@@ -143,11 +146,10 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     }
     else
     {
-        // Fixed-function path (no shader, or shader uses built-in gl_Color).
         glColor4ub(r, g, b, a);
-        // Shader path: aColor is bound to generic attribute 2 (normalised UNSIGNED_BYTE).
-        // glColor4ub does not feed generic attributes, so set it explicitly.
-        glVertexAttrib4Nub(2, r, g, b, a);
+        // Generic attribute 2 (aColor) is not fed by glColor4ub, so set it explicitly
+        // so immediate-mode geometry drawn while a shader is active gets the right colour.
+        QOpenGLContext::currentContext()->functions()->glVertexAttrib4f(2, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
     }
 }
 
@@ -159,10 +161,9 @@ void GLFunctions::texCoord1f(GLfloat t)
     }
     else
     {
-        // Fixed-function path.
         glTexCoord1f(t);
-        // Shader path: aTexCoord is bound to generic attribute 3.
-        glVertexAttrib1f(3, t);
+        // Generic attribute 3 (aTexCoord) mirrors the above for the same reason.
+        QOpenGLContext::currentContext()->functions()->glVertexAttrib1f(3, t);
     }
 }
 
