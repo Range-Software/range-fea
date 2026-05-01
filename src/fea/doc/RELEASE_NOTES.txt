@@ -13,6 +13,10 @@ Version 1.2.1
   per thread
 - Optimized surface marking, edge detection, and sweep-node splitting by using
   direct membership scans, cached surface normals, and hash-based node maps
+- Vector field arrows are now drawn in two batched GL passes (one GL_LINES call
+  for all shafts, one GL_TRIANGLES call for all cone heads) instead of one
+  GLArrow::paint() call per arrow, eliminating per-arrow GL state queries and
+  redundant glBegin/glEnd pairs
 
 Bug fixes:
 
@@ -25,13 +29,12 @@ Bug fixes:
   lighting active while fixed-function overlays continue to render correctly
 - Record list marker icon remains visible and synchronized for large transient
   result sets, including records beyond 1000
-- Solver library bug fixes: getFluidTemp() returned surface temperature instead
-  of fluid temperature; laminar internal forced convection Nusselt number
-  formula was inverted; process-lifetime static variables in fluid solver
-  statistics and wave solver initial conditions caused incorrect results on
-  re-solve; radiative
-  heat assembly wrote RHS contributions to the wrong patch index and had a data
-  race under OpenMP; QL decomposition loop direction was reversed
+
+Library changes:
+
+  src/range-base-lib/RELEASE_NOTES.txt
+  src/range-model-lib/RELEASE_NOTES.txt
+  src/range-solver-lib/RELEASE_NOTES.txt
 
 --------------------------------------------------------------------------------
 Version 1.2.0

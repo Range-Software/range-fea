@@ -19,6 +19,7 @@ class GLVectorField : public GLObject, public RVectorField
         // Environment settings
         GLboolean lightingEnabled;
         GLboolean normalize;
+        GLboolean cullFaceEnabled;
         GLfloat lineWidth;
 
     private:
@@ -53,6 +54,9 @@ class GLVectorField : public GLObject, public RVectorField
 
         //! Draw scene.
         void draw();
+
+        //! Draw all arrows in a single batched recording pass.
+        void drawBatch(const std::vector<VectorFieldItem> &vectorField);
 
         //! Calculate the vector field.
         std::vector<VectorFieldItem> calculateField(const RVariable *pScalarVariable, const RVariable *pDisplacementVariable) const;

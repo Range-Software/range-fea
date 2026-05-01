@@ -1,10 +1,11 @@
 #include <omp.h>
 
 #include <rbl_r3vector.h>
+#include <rml_shape_generator.h>
+#include <rml_triangle.h>
 
 #include "gl_functions.h"
 #include "gl_vector_field.h"
-#include "gl_arrow.h"
 #include "gl_state_cache.h"
 #include "gl_texture.h"
 #include "application.h"
@@ -38,6 +39,7 @@ void GLVectorField::_init(const GLVectorField *pGlVectorField)
         this->entityID = pGlVectorField->entityID;
         this->lightingEnabled = pGlVectorField->lightingEnabled;
         this->normalize = pGlVectorField->normalize;
+        this->cullFaceEnabled = pGlVectorField->cullFaceEnabled;
         this->lineWidth = pGlVectorField->lineWidth;
     }
 }
@@ -79,12 +81,14 @@ void GLVectorField::initialize()
 
     this->lightingEnabled = GLStateCache::instance().getLighting();
     GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
+    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
     GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
 
     GL_SAFE_CALL(glLineWidth(1.0f));
     if (this->getData().getDrawArrowHeads())
     {
         GL_SAFE_CALL(glEnable(GL_NORMALIZE));
+        GL_SAFE_CALL(glDisable(GL_CULL_FACE));
     }
     else
     {
@@ -102,6 +106,7 @@ void GLVectorField::finalize()
 
     GLStateCache::instance().setLighting(this->lightingEnabled);
     GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
+    GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
     GL_SAFE_CALL(glLineWidth(this->lineWidth));
 }
 
@@ -140,27 +145,7 @@ void GLVectorField::draw()
 
         std::vector<VectorFieldItem> vectorField = this->calculateField(pScalarVariable,pDisplacementVariable);
 
-        for (uint i=0;i<vectorField.size();i++)
-        {
-            if (vectorField[i].validScaleValue)
-            {
-                GLStateCache::instance().enableTexture1D();
-                this->getGLWidget()->qglColor(QColor(255,255,255,255));
-                GLFunctions::texCoord1f(GLfloat(vectorField[i].scaleValue));
-            }
-            else
-            {
-                int r,g,b,a;
-                this->getData().getColor(r,g,b,a);
-                this->getGLWidget()->qglColor(QColor(r,g,b,a));
-            }
-            GLArrow arrow(this->glWidget,vectorField[i].v1,vectorField[i].v2,this->getData().getDrawArrowHeads(),this->getData().getDrawArrowFrom());
-            arrow.paint();
-            if (vectorField[i].validScaleValue)
-            {
-                GLStateCache::instance().disableTexture1D();
-            }
-        }
+        this->drawBatch(vectorField);
 
         pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
     }
@@ -171,6 +156,108 @@ void GLVectorField::draw()
     {
         texture.unload();
     }
+}
+
+void GLVectorField::drawBatch(const std::vector<VectorFieldItem> &vectorField)
+{
+    if (vectorField.empty())
+        return;
+
+    const bool showHead = this->getData().getDrawArrowHeads();
+    const bool drawFrom = this->getData().getDrawArrowFrom();
+    const double dirScalar = drawFrom ? 1.0 : -1.0;
+
+    int cr, cg, cb, ca;
+    this->getData().getColor(cr, cg, cb, ca);
+
+    bool anyTextured = false;
+    for (const VectorFieldItem &item : vectorField)
+    {
+        if (item.validScaleValue) { anyTextured = true; break; }
+    }
+
+    if (anyTextured)
+        GLStateCache::instance().enableTexture1D();
+
+    auto setAppearance = [&](const VectorFieldItem &item)
+    {
+        if (item.validScaleValue)
+        {
+            this->getGLWidget()->qglColor(QColor(255, 255, 255, 255));
+            GLFunctions::texCoord1f(GLfloat(item.scaleValue));
+        }
+        else
+        {
+            this->getGLWidget()->qglColor(QColor(cr, cg, cb, ca));
+            if (anyTextured)
+                GLFunctions::texCoord1f(-1.0f);
+        }
+    };
+
+    // Shaft lines — one GL_LINES batch, lighting off
+    {
+        GLboolean savedLighting = GLStateCache::instance().getLighting();
+        GLStateCache::instance().disableLighting();
+        GLFunctions::begin(GL_LINES);
+        for (const VectorFieldItem &item : vectorField)
+        {
+            setAppearance(item);
+            GLFunctions::vertex3d(item.v1[0], item.v1[1], item.v1[2]);
+            GLFunctions::vertex3d(item.v1[0] + item.v2[0] * dirScalar,
+                                  item.v1[1] + item.v2[1] * dirScalar,
+                                  item.v1[2] + item.v2[2] * dirScalar);
+        }
+        GLFunctions::end();
+        GLStateCache::instance().setLighting(savedLighting);
+    }
+
+    // Cone triangles — one GL_TRIANGLES batch, lighting on
+    if (showHead)
+    {
+        GLFunctions::begin(GL_TRIANGLES);
+        for (const VectorFieldItem &item : vectorField)
+        {
+            setAppearance(item);
+
+            RR3Vector arrowStart, arrowEnd;
+            if (drawFrom)
+            {
+                arrowStart = item.v1;
+                arrowEnd = RR3Vector(item.v1[0] + item.v2[0],
+                                     item.v1[1] + item.v2[1],
+                                     item.v1[2] + item.v2[2]);
+            }
+            else
+            {
+                arrowStart = RR3Vector(item.v1[0] - item.v2[0],
+                                       item.v1[1] - item.v2[1],
+                                       item.v1[2] - item.v2[2]);
+                arrowEnd = item.v1;
+            }
+
+            RModelRaw raw = RShapeGenerator::generateArrow(arrowStart, arrowEnd);
+            for (uint i = 0; i < raw.getNElements(); i++)
+            {
+                const RElement &rElement = raw.getElement(i);
+                if (RElementGroup::getGroupType(rElement.getType()) != R_ENTITY_GROUP_SURFACE)
+                    continue;
+                const RNode &n0 = raw.getNode(rElement.getNodeId(0));
+                const RNode &n1 = raw.getNode(rElement.getNodeId(1));
+                const RNode &n2 = raw.getNode(rElement.getNodeId(2));
+                RTriangle triangle(n0, n1, n2);
+                RR3Vector normal = triangle.getNormal();
+                GLFunctions::normal3d(-normal[0], -normal[1], -normal[2]);
+                // winding (0,2,1) matches original drawHead for CCW front-facing triangles
+                GLFunctions::vertex3d(n0.getX(), n0.getY(), n0.getZ());
+                GLFunctions::vertex3d(n2.getX(), n2.getY(), n2.getZ());
+                GLFunctions::vertex3d(n1.getX(), n1.getY(), n1.getZ());
+            }
+        }
+        GLFunctions::end();
+    }
+
+    if (anyTextured)
+        GLStateCache::instance().disableTexture1D();
 }
 
 std::vector<VectorFieldItem> GLVectorField::calculateField(const RVariable *pScalarVariable, const RVariable *pDisplacementVariable) const
