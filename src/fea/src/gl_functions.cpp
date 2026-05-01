@@ -143,7 +143,11 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     }
     else
     {
+        // Fixed-function path (no shader, or shader uses built-in gl_Color).
         glColor4ub(r, g, b, a);
+        // Shader path: aColor is bound to generic attribute 2 (normalised UNSIGNED_BYTE).
+        // glColor4ub does not feed generic attributes, so set it explicitly.
+        glVertexAttrib4Nub(2, r, g, b, a);
     }
 }
 
@@ -155,7 +159,10 @@ void GLFunctions::texCoord1f(GLfloat t)
     }
     else
     {
+        // Fixed-function path.
         glTexCoord1f(t);
+        // Shader path: aTexCoord is bound to generic attribute 3.
+        glVertexAttrib1f(3, t);
     }
 }
 

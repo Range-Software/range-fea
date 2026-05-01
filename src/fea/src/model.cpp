@@ -269,7 +269,7 @@ void Model::insertModel(const Model &model, bool mergeNearNodes, double toleranc
         for (uint j=0;j<this->elements[ne+i].size();j++)
         {
             uint srcNodeId = this->elements[ne+i].getNodeId(j);
-            if (int(srcNodeId) >= nodeBook.size())
+            if (size_t(srcNodeId) >= nodeBook.size())
             {
                 throw RError(RError::Type::Application,R_ERROR_REF,
                              "Element %u references invalid node %u in source model.",i,srcNodeId);
@@ -2628,40 +2628,47 @@ QMultiMap <RVariableType, PickValue> Model::getPickedResultsValues(const PickIte
                 const RInterpolatedElement *pIElement = this->getInterpolatedElement(rPickItem.getEntityID().getType(),
                                                                                      rPickItem.getEntityID().getEid(),
                                                                                      rPickItem.getElementPosition());
-                std::vector<RR3Vector> displacementValues;
-                if (pDisplacementVariable)
-                {
-                    pIElement->findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,displacementValues);
-                }
-                else
-                {
-                    displacementValues.resize(pIElement->size(),RR3Vector(0.0,0.0,0.0));
-                }
-                if (rVariable.getApplyType() == R_VARIABLE_APPLY_ELEMENT)
-                {
-                    positionVector.resize(1);
-                    positionVector[0] = RR3Vector(0.0,0.0,0.0);
-                    for (uint j=0;j<pIElement->size();j++)
-                    {
-                        positionVector[0][0] += pIElement->at(j).getX() + displacementValues[j][0];
-                        positionVector[0][1] += pIElement->at(j).getY() + displacementValues[j][1];
-                        positionVector[0][2] += pIElement->at(j).getZ() + displacementValues[j][2];
-                    }
-                    positionVector[0] *= 1.0 / double(pIElement->size());
-                }
-                else if (rVariable.getApplyType() == R_VARIABLE_APPLY_NODE)
-                {
-                    positionVector.resize(pIElement->size());
-                    for (uint j=0;j<pIElement->size();j++)
-                    {
-                        positionVector[j][0] = pIElement->at(j).getX() + displacementValues[j][0];
-                        positionVector[j][1] = pIElement->at(j).getY() + displacementValues[j][1];
-                        positionVector[j][2] = pIElement->at(j).getZ() + displacementValues[j][2];
-                    }
-                }
-                else
+                if (!pIElement)
                 {
                     positionVector.resize(resultsValuesVector.size());
+                }
+                else
+                {
+                    std::vector<RR3Vector> displacementValues;
+                    if (pDisplacementVariable)
+                    {
+                        pIElement->findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,displacementValues);
+                    }
+                    else
+                    {
+                        displacementValues.resize(pIElement->size(),RR3Vector(0.0,0.0,0.0));
+                    }
+                    if (rVariable.getApplyType() == R_VARIABLE_APPLY_ELEMENT)
+                    {
+                        positionVector.resize(1);
+                        positionVector[0] = RR3Vector(0.0,0.0,0.0);
+                        for (uint j=0;j<pIElement->size();j++)
+                        {
+                            positionVector[0][0] += pIElement->at(j).getX() + displacementValues[j][0];
+                            positionVector[0][1] += pIElement->at(j).getY() + displacementValues[j][1];
+                            positionVector[0][2] += pIElement->at(j).getZ() + displacementValues[j][2];
+                        }
+                        positionVector[0] *= 1.0 / double(pIElement->size());
+                    }
+                    else if (rVariable.getApplyType() == R_VARIABLE_APPLY_NODE)
+                    {
+                        positionVector.resize(pIElement->size());
+                        for (uint j=0;j<pIElement->size();j++)
+                        {
+                            positionVector[j][0] = pIElement->at(j).getX() + displacementValues[j][0];
+                            positionVector[j][1] = pIElement->at(j).getY() + displacementValues[j][1];
+                            positionVector[j][2] = pIElement->at(j).getZ() + displacementValues[j][2];
+                        }
+                    }
+                    else
+                    {
+                        positionVector.resize(resultsValuesVector.size());
+                    }
                 }
             }
             for (uint j=0;j<resultsValuesVector.size();j++)
@@ -2722,22 +2729,27 @@ QMultiMap <RVariableType, PickValue> Model::getPickedResultsValues(const PickIte
                 const RInterpolatedElement *pIElement = this->getInterpolatedElement(rPickItem.getEntityID().getType(),
                                                                                      rPickItem.getEntityID().getEid(),
                                                                                      rPickItem.getElementPosition());
-                position[0] = pIElement->at(rPickItem.getNodePosition()).getX() + displacement[0];
-                position[1] = pIElement->at(rPickItem.getNodePosition()).getY() + displacement[1];
-                position[2] = pIElement->at(rPickItem.getNodePosition()).getZ() + displacement[2];
+                if (pIElement)
+                {
+                    position[0] = pIElement->at(rPickItem.getNodePosition()).getX() + displacement[0];
+                    position[1] = pIElement->at(rPickItem.getNodePosition()).getY() + displacement[1];
+                    position[2] = pIElement->at(rPickItem.getNodePosition()).getZ() + displacement[2];
+                }
             }
             resultsValues.insert(rVariable.getType(),PickValue(position,resultsValuesVector));
         }
     }
 
-    R_LOG_TRACE_OUT;
-    return resultsValues;
+    R_LOG_TRACE_RETURN(resultsValues);
 }
 
 bool Model::nodeIsOnEdge(uint nodeID) const
 {
-    R_LOG_TRACE;
-    return (this->edgeNodes[int(nodeID)]);
+    if (nodeID >= this->edgeNodes.size())
+    {
+        return false;
+    }
+    return this->edgeNodes[int(nodeID)];
 }
 
 bool Model::elementIsOnEdge(uint elementID) const
@@ -2764,6 +2776,10 @@ bool Model::elementIsOnEdge(uint elementID) const
     unsigned nFoundEdgeNodes = 0;
     for (unsigned int i=0;i<element.size();i++)
     {
+        if (element.getNodeId(i) >= this->edgeNodes.size())
+        {
+            continue;
+        }
         if (this->edgeNodes[int(element.getNodeId(i))])
         {
             nFoundEdgeNodes++;
@@ -2778,6 +2794,7 @@ bool Model::elementIsOnEdge(uint elementID) const
 
 bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
 {
+    R_LOG_TRACE_IN;
     double minDistance = 0.0;
     bool found = false;
 
@@ -2943,11 +2960,12 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
             }
         }
     }
-    return found;
+    R_LOG_TRACE_RETURN(found);
 }
 
 bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
 {
+    R_LOG_TRACE_IN;
     double minDistance = 0.0;
     bool found = false;
 
@@ -3126,7 +3144,7 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
             }
         }
     }
-    return found;
+    R_LOG_TRACE_RETURN(found);
 }
 
 bool Model::findPickedHoleElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)

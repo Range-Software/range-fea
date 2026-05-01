@@ -278,10 +278,11 @@ void MainWindow::hideCustomDockWidget(const QString &name)
 void MainWindow::createMenus()
 {
     R_LOG_TRACE_IN;
-    QMenuBar *menubar = new QMenuBar(this);
-    this->setMenuBar(menubar);
+    QMenuBar *menuBar = new QMenuBar(this);
+    menuBar->setNativeMenuBar(true);
+    this->setMenuBar(menuBar);
 
-    QMenu *menuFile = new QMenu(menubar);
+    QMenu *menuFile = new QMenu(menuBar);
     menuFile->setTitle(tr("File"));
     QMenu *menuFileSession = new QMenu(menuFile);
     menuFileSession->setTitle(tr("Session"));
@@ -313,9 +314,9 @@ void MainWindow::createMenus()
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
-    menubar->addAction(menuFile->menuAction());
+    menuBar->addAction(menuFile->menuAction());
 
-    QMenu *menuGeometry = new QMenu(menubar);
+    QMenu *menuGeometry = new QMenu(menuBar);
     menuGeometry->setTitle(tr("Geometry"));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_UNDO));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REDO));
@@ -429,41 +430,41 @@ void MainWindow::createMenus()
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_TETRAHEDRALIZE_SURFACE));
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_CONSOLIDATE));
     menuGeometry->addAction(menuGeometryDevelopement->menuAction());
-    menubar->addAction(menuGeometry->menuAction());
+    menuBar->addAction(menuGeometry->menuAction());
 
-    QMenu *menuProblem = new QMenu(menubar);
+    QMenu *menuProblem = new QMenu(menuBar);
     menuProblem->setTitle(tr("Problem"));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_TASK_FLOW));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_SOLVER_SETUP));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_DEFINE_MONITORING_POINTS));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_RESET));
-    menubar->addAction(menuProblem->menuAction());
+    menuBar->addAction(menuProblem->menuAction());
 
-    QMenu *menuSolver = new QMenu(menubar);
+    QMenu *menuSolver = new QMenu(menuBar);
     menuSolver->setTitle(tr("Solution"));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_START));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_STOP));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_KILL));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
-    menubar->addAction(menuSolver->menuAction());
+    menuBar->addAction(menuSolver->menuAction());
 
-    QMenu *menuReport = new QMenu(menubar);
+    QMenu *menuReport = new QMenu(menuBar);
     menuReport->setTitle(tr("Report"));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_MODEL_STATISTICS));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_SOLVER_LOG));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_CONVERGENCE_GRAPH));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_MONITORING_POINT_GRAPH));
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_CREATE_REPORT));
-    menubar->addAction(menuReport->menuAction());
+    menuBar->addAction(menuReport->menuAction());
 
-    QMenu *menuCloud = new QMenu(menubar);
+    QMenu *menuCloud = new QMenu(menuBar);
     menuCloud->setTitle(tr("Cloud"));
     menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_SESSION_MANAGER));
     menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
-    menubar->addAction(menuCloud->menuAction());
+    menuBar->addAction(menuCloud->menuAction());
 
-    QMenu *menuHelp = new QMenu(menubar);
+    QMenu *menuHelp = new QMenu(menuBar);
     menuHelp->setTitle(tr("Help"));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_UPDATE));
@@ -471,7 +472,7 @@ void MainWindow::createMenus()
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT_QT));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_LICENSE));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RELEASE_NOTES));
-    menubar->addAction(menuHelp->menuAction());
+    menuBar->addAction(menuHelp->menuAction());
     R_LOG_TRACE_OUT;
 }
 
