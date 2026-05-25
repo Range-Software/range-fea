@@ -113,7 +113,39 @@ set(all_targets range-base-lib range-cloud-lib range-ai-lib range-gui-lib TetGen
 foreach(tgt IN LISTS all_targets)
     add_subdirectory(${tgt})
     set_debug_suffix_if_needed(${tgt})
+    if(EXISTS "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md")
+        add_custom_target(copy-release-notes-${tgt} ALL
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
+                    "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES.md"
+            DEPENDS ${tgt}
+            COMMENT "Copying RELEASE_NOTES.md for ${tgt}"
+            VERBATIM
+        )
+        if(NOT APPLE)
+            install(FILES "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES.md"
+                    DESTINATION doc
+                    RENAME "RELEASE_NOTES_${tgt}.md"
+                    COMPONENT Application)
+        endif()
+        list(APPEND _release_notes_targets ${tgt})
+    endif()
 endforeach()
+
+# Generate RELEASE_NOTES.json (all platforms)
+if(_release_notes_targets)
+    set(_rn_json_chapters "")
+    foreach(_rn_tgt IN LISTS _release_notes_targets)
+        if(_rn_json_chapters)
+            string(APPEND _rn_json_chapters ",\n")
+        endif()
+        string(APPEND _rn_json_chapters
+            "        {\n            \"title\": \"${_rn_tgt}\",\n            \"file\": \"RELEASE_NOTES_${_rn_tgt}.md\"\n        }")
+    endforeach()
+    set(_rn_json_path "${CMAKE_BINARY_DIR}/RELEASE_NOTES.json")
+    file(WRITE "${_rn_json_path}"
+        "{\n    \"chapters\": [\n${_rn_json_chapters}\n    ]\n}\n")
+endif()
 
 # Define OpenSSL ROOT directory -----------------------------------------------
 
@@ -197,9 +229,9 @@ elseif(APPLE)
     add_custom_target(deploy-data ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/help ${APP_DIR_NEW}/Contents/Resources/help
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/data ${APP_DIR_NEW}/Contents/Resources/data
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/doc ${APP_DIR_NEW}/Contents/Resources/doc
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/etc ${APP_DIR_NEW}/Contents/Resources/etc
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/materials ${APP_DIR_NEW}/Contents/Resources/materials
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_DIR_NEW}/Contents/Resources/doc
         COMMAND ${CMAKE_COMMAND} -E copy           ${CMAKE_BINARY_DIR}/LICENSE.txt ${APP_DIR_NEW}/Contents/Resources/doc/LICENSE.txt
         DEPENDS deploy-qt
         COMMENT "Deploying application data"
@@ -216,6 +248,30 @@ elseif(APPLE)
         COMMENT "Generating custom .DS_Store for Drag-and-Drop DMG"
         VERBATIM
     )
+
+    # Copy submodule release notes and RELEASE_NOTES.json into app bundle
+    if(_release_notes_targets)
+        set(_rn_cmds)
+        foreach(_rn_tgt IN LISTS _release_notes_targets)
+            list(APPEND _rn_cmds
+                COMMAND ${CMAKE_COMMAND} -E copy
+                        "${CMAKE_SOURCE_DIR}/${_rn_tgt}/doc/RELEASE_NOTES.md"
+                        "${APP_DIR_NEW}/Contents/Resources/doc/RELEASE_NOTES_${_rn_tgt}.md"
+            )
+        endforeach()
+        list(APPEND _rn_cmds
+            COMMAND ${CMAKE_COMMAND} -E copy
+                    "${_rn_json_path}"
+                    "${APP_DIR_NEW}/Contents/Resources/doc/RELEASE_NOTES.json"
+        )
+        add_custom_target(deploy-submodule-release-notes ALL
+            ${_rn_cmds}
+            DEPENDS deploy-data
+            COMMENT "Copying submodule release notes into bundle"
+            VERBATIM
+        )
+        add_dependencies(gen-dsstore deploy-submodule-release-notes)
+    endif()
 
     # Put openssl tool into Contents/MacOS on macOS ---------------------------
     if (OPENSSL_ROOT)
@@ -282,6 +338,9 @@ if(WIN32)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/materials/ DESTINATION materials COMPONENT Application)
     install(DIRECTORY ${_qt_deploy_dir}/ DESTINATION bin COMPONENT Application)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
+    if(_rn_json_path)
+        install(FILES ${_rn_json_path} DESTINATION doc COMPONENT Application)
+    endif()
     if(OPENSSL_ROOT)
         set(_openssl_exe "${OPENSSL_ROOT}/bin/openssl.exe")
         set(_openssl_crypto "${OPENSSL_ROOT}/bin/libcrypto-3-x64.dll")
@@ -311,11 +370,14 @@ else()
     install(DIRECTORY ${_qt_deploy_dir}/ DESTINATION . COMPONENT Application)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
     install(FILES ${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.svg DESTINATION pixmaps COMPONENT Application)
+    if(_rn_json_path)
+        install(FILES ${_rn_json_path} DESTINATION doc COMPONENT Application)
+    endif()
 
     # ---- DEB/RPM
     set(DESKTOP_ABS "${CMAKE_BINARY_DIR}/desktop/${PROJECT_PACKAGE_NAME}.desktop")
     set(EXEC_PATH "${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_TARGET_NAME}${DEBUG_EXT}")
- 
+
     configure_file(
         ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/app.desktop.in
         ${DESKTOP_ABS}
@@ -361,7 +423,7 @@ endif()
 set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/../README.md")
 
 if(WIN32)
-    set(CPACK_GENERATOR "IFW;ZIP")
+    set(CPACK_GENERATOR "ZIP")
 elseif(APPLE)
     set(CPACK_GENERATOR "DragNDrop")
 else()
@@ -440,30 +502,6 @@ if(APPLE)
     endif()
 endif()
 
-# IFW
-set(CPACK_IFW_PACKAGE_TITLE "${PROJECT_TITLE}")
-set(CPACK_IFW_PACKAGE_NAME "${PROJECT_PACKAGE_NAME}")
-set(CPACK_IFW_PACKAGE_VERSION "${PROJECT_VERSION}")
-set(CPACK_IFW_PACKAGE_DESCRIPTION "${PROJECT_DESCRIPTION}")
-#set(CPACK_IFW_PACKAGE_MAINTENANCE_TOOL_NAME "MaintenanceTool")
-set(CPACK_IFW_PACKAGE_PUBLISHER "${PROJECT_AUTHOR}")
-set(CPACK_IFW_PACKAGE_URL "${PROJECT_WWW}")
-set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "${PROJECT_FAMILY_NAME}/${PROJECT_SHORT_REL_NAME}")
-set(CPACK_IFW_PACKAGE_WINDOW_ICON "${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.png")
-set(CPACK_IFW_PACKAGE_ALLOW_NON_ASCII_CHARACTERS "ON")
-set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${PROJECT_FAMILY_NAME}/${PROJECT_SHORT_REL_NAME}")
-#set(CPACK_IFW_PACKAGE_ADMIN_TARGET_DIRECTORY "ON")
-set(CPACK_IFW_PACKAGE_CONTROL_SCRIPT "${CMAKE_BINARY_DIR}/controllerscript.qs")
-
-if(WIN32)
-    set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.ico")
-elseif(APPLE)
-    set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.icns")
-endif()
-
-set(IFW_QS_TARGET_FILE_BASE "${PROJECT_TARGET_NAME}${DEBUG_EXT}")
-set(IFW_QS_TARGET_NAME_BASE "${PROJECT_SHORT_REL_NAME}")
-
 # Convert files ---------------------------------------------------------------
 
 file(READ "${CMAKE_SOURCE_DIR}/../LICENSE" LICENSE_TEXT)
@@ -474,17 +512,16 @@ configure_file(
     @ONLY
 )
 
-configure_file(
-    ${CMAKE_SOURCE_DIR}/range-build-tools/installscript.qs.in
-    ${CMAKE_BINARY_DIR}/installscript.qs
-    @ONLY
-)
-
-configure_file(
-    ${CMAKE_SOURCE_DIR}/range-build-tools/controllerscript.qs.in
-    ${CMAKE_BINARY_DIR}/controllerscript.qs
-    @ONLY
-)
+if(WIN32)
+    file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/staging" ISS_STAGING_DIR)
+    file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}" ISS_OUTPUT_DIR)
+    file(TO_NATIVE_PATH "${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.ico" ISS_ICON_FILE)
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/packaging/windows/setup.iss.in
+        ${CMAKE_BINARY_DIR}/setup.iss
+        @ONLY
+    )
+endif()
 
 if(APPLE)
     execute_process(
@@ -495,17 +532,6 @@ if(APPLE)
         message(FATAL_ERROR "Failed to generate LICENSE.rtf")
     endif()
 endif()
-
-# -----------------------------------------------------------------------------
-
-include(CPackIFW)
-
-cpack_ifw_configure_component(Application
-    DISPLAY_NAME "${PROJECT_SHORT_REL_NAME}"
-    LICENSES "${PROJECT_FAMILY_NAME} ${PROJECT_SHORT_REL_NAME} License" "${CPACK_RESOURCE_FILE_LICENSE}"
-    SCRIPT "${CMAKE_BINARY_DIR}/installscript.qs"
-    DEFAULT "TRUE"
-)
 
 include(InstallRequiredSystemLibraries)
 include(CPack)

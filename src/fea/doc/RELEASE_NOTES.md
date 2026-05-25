@@ -1,5 +1,6 @@
---------------------------------------------------------------------------------
-Version 1.2.1
+# Release Notes
+
+## Version 1.2.1
 
 - Added range-ai-lib
 - Model consolidation cache: edge nodes, edge elements, surface and volume
@@ -18,7 +19,7 @@ Version 1.2.1
   GLArrow::paint() call per arrow, eliminating per-arrow GL state queries and
   redundant glBegin/glEnd pairs
 
-Bug fixes:
+### Bug fixes
 
 - Axis, grid, lines and element edges were not rendered (GL immediate-mode
   fallback missing from GLFunctions after the VBO pipeline migration)
@@ -30,22 +31,24 @@ Bug fixes:
 - Record list marker icon remains visible and synchronized for large transient
   result sets, including records beyond 1000
 
-Library changes:
+### Library changes
 
-  src/range-base-lib/RELEASE_NOTES.txt
-  src/range-model-lib/RELEASE_NOTES.txt
-  src/range-solver-lib/RELEASE_NOTES.txt
+- [src/range-base-lib/RELEASE_NOTES.txt](../../range-base-lib/RELEASE_NOTES.txt)
+- [src/range-model-lib/RELEASE_NOTES.txt](../../range-model-lib/RELEASE_NOTES.txt)
+- [src/range-solver-lib/RELEASE_NOTES.txt](../../range-solver-lib/RELEASE_NOTES.txt)
 
---------------------------------------------------------------------------------
-Version 1.2.0
+---
+
+## Version 1.2.0
 
 - Replace the legacy display-list / immediate-mode rendering pipeline with a
   fully VBO-based backend and GLSL 1.20 shaders
 - Enable transparent surfaces
 - Improved translations
 - Documentation and tutorials translated to Slovak language
+- Release notes displayed in a dedicated dialog with markdown rendering
 
-Bug fixes:
+### Bug fixes
 
 - Do not display empty "()" in model info box area when no model comment is set
 - Do not allow to accept empty model name when renaming a model or creating a
@@ -53,56 +56,62 @@ Bug fixes:
 - Cannot pick hole edges
 - Fix SSL error on macOS by seeding system CA certificates
 
---------------------------------------------------------------------------------
-Version 1.1.3
+---
+
+## Version 1.1.3
 
 - Performance improvements in OpenGL model drawing
 - Performance improvements in mesh repair functions
 
-Bug fixes:
+### Bug fixes
 
 - Element entities are not painted in 3D area
 - Bug in edge element detection
 
---------------------------------------------------------------------------------
-Version 1.1.2
+---
+
+## Version 1.1.2
 
 - Automatic client certificate renewal
 - Show warning when client certificate is about to expire
 
---------------------------------------------------------------------------------
-Version 1.1.1
+---
+
+## Version 1.1.1
 
 - Print time-stamps in output window
 - Log Qt debug messages
 
-Bug fixes:
+### Bug fixes
 
 - Automatic file synchronization with Range Cloud
 
---------------------------------------------------------------------------------
-Version 1.1.0
+---
+
+## Version 1.1.0
 
 - Support for Range Cloud
 - Solver optimizations
 
-Bug fixes:
+### Bug fixes
 
 - Fixed memory leak in draw object widget
 - Fixed incorrect deployment on MacOS
 
---------------------------------------------------------------------------------
-Version 1.0.1
+---
+
+## Version 1.0.1
 
 - Help and tutorials converted to markdown format
 - Default proxy type set to "System"
 
-Bug fixes:
+### Bug fixes
 
 - Fixed not working reset to default number and date formatting.
 
---------------------------------------------------------------------------------
-Version 1.0.0
+---
+
+## Version 1.0.0
 
 - User data directory structure moved into "{Path to user documents}/Range
   Software/Range" directory
