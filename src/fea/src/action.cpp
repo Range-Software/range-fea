@@ -13,6 +13,7 @@
 #include <rgl_cloud_session_dialog.h>
 #include <rgl_log_browser_dialog.h>
 #include <rgl_message_box.h>
+#include <rgl_release_notes_dialog.h>
 #include <rgl_software_manager_dialog.h>
 #include <rgl_text_browser_dialog.h>
 
@@ -2251,31 +2252,8 @@ void Action::onLicense()
 void Action::onReleaseNotes()
 {
     R_LOG_TRACE_IN;
-    QString releaseNotesFileName(Application::instance()->getApplicationSettings()->findReleaseNotesFileName());
-
-    try
-    {
-        QFile file(releaseNotesFileName);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            throw RError(RError::Type::OpenFile,R_ERROR_REF,"Failed to open the file \'%s\'.",releaseNotesFileName.toUtf8().constData());
-        }
-        QString releaseNotesText(file.readAll());
-        file.close();
-
-        RTextBrowserDialog textBrowserDialog(tr("Release notes"),
-                                            releaseNotesFileName,
-                                            releaseNotesText);
-        textBrowserDialog.exec();
-    }
-    catch (const RError &rError)
-    {
-        RLogger::error("Failed to display release notes from file \'%s\'. %s\n",releaseNotesFileName.toUtf8().constData(),rError.getMessage().toUtf8().constData());
-    }
-    catch (...)
-    {
-        RLogger::error("Failed to display release notes from file \'%s\'.\n",releaseNotesFileName.toUtf8().constData());
-    }
+    RReleaseNotesDialog releaseNotesDialog(Application::instance()->getMainWindow());
+    releaseNotesDialog.exec();
     R_LOG_TRACE_OUT;
 }
 

@@ -35,8 +35,10 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "@ISS_STAGING_DIR@\bin\*"; DestDir: "{app}\bin"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@ISS_STAGING_DIR@\help\*"; DestDir: "{app}\help"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "@ISS_STAGING_DIR@\data\*"; DestDir: "{app}\data"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@ISS_STAGING_DIR@\doc\*"; DestDir: "{app}\doc"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "@ISS_STAGING_DIR@\etc\*"; DestDir: "{app}\etc"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "@ISS_STAGING_DIR@\materials\*"; DestDir: "{app}\materials"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autoprograms}\@PROJECT_FAMILY_NAME@\@PROJECT_SHORT_NAME@\@PROJECT_SHORT_NAME@"; Filename: "{app}\bin\@PROJECT_TARGET_NAME@.exe"; WorkingDir: "{app}"

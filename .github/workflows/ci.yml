@@ -207,24 +207,8 @@ jobs:
         shell: pwsh
 
       # Build
-      - name: Build (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Build
         run: cmake --build build-Release --target package --parallel
-
-      - name: Build (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        run: cmake --build build-Release --parallel
-        shell: pwsh
-
-      - name: Stage install (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        run: cmake --install build-Release --prefix build-Release/staging
-        shell: pwsh
-
-      - name: Create Inno Setup installer (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        run: iscc build-Release/setup.iss
-        shell: pwsh
 
       # Notarize
       - name: Notarize DMG with notarytool (macOS)
