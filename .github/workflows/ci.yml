@@ -73,6 +73,7 @@ jobs:
 
       # Install OpenSSL on each platform so Qt/CMake can link against it
       #- name: Install OpenSSL (Linux)
+      #  # not needed
       #  if: startsWith(matrix.os, 'ubuntu-')
       #  run: |
       #    sudo apt-get update
