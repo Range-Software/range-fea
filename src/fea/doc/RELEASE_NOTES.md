@@ -14,10 +14,11 @@
   per thread
 - Optimized surface marking, edge detection, and sweep-node splitting by using
   direct membership scans, cached surface normals, and hash-based node maps
-- Vector field arrows are now drawn in two batched GL passes (one GL_LINES call
-  for all shafts, one GL_TRIANGLES call for all cone heads) instead of one
-  GLArrow::paint() call per arrow, eliminating per-arrow GL state queries and
-  redundant glBegin/glEnd pairs
+- Vector field arrows are now drawn in two batched GL passes (one `GL_LINES` call
+  for all shafts, one `GL_TRIANGLES` call for all cone heads) instead of one
+  `GLArrow::paint() `call per arrow, eliminating per-arrow GL state queries and
+  redundant `glBegin()`/`glEnd()` pairs
+- Auto-expands the model tree item when a new model is added
 
 ### Bug fixes
 
