@@ -1,6 +1,6 @@
-# Release Notes
-
 ## Version 1.2.1
+
+### Improvements
 
 - Added range-ai-lib
 - Model consolidation cache: edge nodes, edge elements, surface and volume
@@ -31,12 +31,6 @@
   lighting active while fixed-function overlays continue to render correctly
 - Record list marker icon remains visible and synchronized for large transient
   result sets, including records beyond 1000
-
-### Library changes
-
-- [src/range-base-lib/RELEASE_NOTES.txt](../../range-base-lib/RELEASE_NOTES.txt)
-- [src/range-model-lib/RELEASE_NOTES.txt](../../range-model-lib/RELEASE_NOTES.txt)
-- [src/range-solver-lib/RELEASE_NOTES.txt](../../range-solver-lib/RELEASE_NOTES.txt)
 
 ---
 
