@@ -14,7 +14,7 @@ The application is built on Qt6 and ships with a standalone CLI solver (`fea-sol
 ## Prepare build environment
 Initialize all submodules
 ```
-git submodule init && git submodule update --remote
+git submodule update --init --recursive
 ```
 The following command will attempt to download and install all required packages, therefore it must be executed under a privileged (root) user
 ```

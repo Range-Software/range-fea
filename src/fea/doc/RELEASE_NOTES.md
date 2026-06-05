@@ -51,6 +51,16 @@
 - Cannot pick hole edges
 - Fix SSL error on macOS by seeding system CA certificates
 
+### Submodules
+
+- range-ai-lib @ v1.0.0
+- range-base-lib @ v1.0.0
+- range-build-tools @ v1.0.0
+- range-cloud-lib @ v1.0.0
+- range-gui-lib @ v1.0.0
+- range-model-lib @ v1.0.0
+- range-solver-lib @ v1.0.0
+
 ---
 
 ## Version 1.1.3
