@@ -652,6 +652,18 @@ void MaterialManagerTree::onItemChanged(QTreeWidgetItem *item, int column)
 
     if (oldName != newName)
     {
+        material.setName(newName);
+        item->setData(ColumnType::ColumnName,Qt::UserRole,QVariant(newName));
+
+        try
+        {
+            MaterialManagerTree::write(filePath,material);
+        }
+        catch (const RError &error)
+        {
+            RLogger::error("Failed to write material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
+        }
+
         emit this->materialSelected(material);
     }
 

@@ -1,3 +1,12 @@
+## Version 1.2.2
+
+### Bug fixes
+
+- Renaming a material in the material manager is now persisted to its file
+  instead of being silently reverted (the typed name was never written back
+  into the material or saved to disk, so the file watcher would restore the
+  original name)
+
 ## Version 1.2.1
 
 ### Improvements
