@@ -326,7 +326,7 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
         bool fileInList = false;
         for (auto iter = fileInfoList.cbegin(); iter != fileInfoList.cend(); ++iter)
         {
-            if (fileName == iter->fileName())
+            if (fileName == iter->filePath())
             {
                 try
                 {
