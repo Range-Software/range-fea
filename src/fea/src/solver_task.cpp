@@ -154,9 +154,11 @@ int SolverTask::perform()
 void SolverTask::onProcessReadyReadStandardOutput()
 {
     emit this->readyReadStandardOutput(this->solverProcess->readAllStandardOutput());
+    // emit this->readyReadStandardOutput(QString::fromLocal8Bit(this->solverProcess->readAllStandardOutput()));
 }
 
 void SolverTask::onProcessReadyReadStandardError()
 {
     emit this->readyReadStandardError(this->solverProcess->readAllStandardError());
+    // emit this->readyReadStandardError(QString::fromLocal8Bit(this->solverProcess->readAllStandardError()));
 }
