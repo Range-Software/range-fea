@@ -3,6 +3,8 @@
 #include <QVBoxLayout>
 #include <QToolBar>
 #include <QCheckBox>
+#include <QLabel>
+#include <QSpinBox>
 
 #include <rbl_job_manager.h>
 #include <rbl_progress.h>
@@ -45,7 +47,8 @@ ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
     QObject::connect(actions.last(), &QAction::triggered, this->tree, &ModelRecordsTree::markPrevious);
 
     actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_play.svg"),"Play",this));
-    QObject::connect(actions.last(), &QAction::triggered, this, &ModelRecordsSelector::playToggle);
+    // Start playback at the selected "From" record (jumpToFirst = true); pausing ignores it.
+    QObject::connect(actions.last(), &QAction::triggered, this, [this](){ this->playToggle(true); });
     this->playAction = actions.last();
 
     actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_forward.svg"),"Forward",this));
@@ -68,19 +71,85 @@ ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
 
     toolBar->addActions(actions);
 
+    QToolBar *rangeToolBar = new QToolBar;
+    layout->addWidget(rangeToolBar);
+
+    this->startSpin = new QSpinBox;
+    this->startSpin->setMinimum(1);
+    this->startSpin->setMaximum(1);
+    this->startSpin->setPrefix(tr("From") + " ");
+    this->startSpin->setToolTip(tr("First record to play / record"));
+    rangeToolBar->addWidget(this->startSpin);
+
+    this->endSpin = new QSpinBox;
+    this->endSpin->setMinimum(1);
+    this->endSpin->setMaximum(1);
+    this->endSpin->setPrefix(tr("To") + " ");
+    this->endSpin->setToolTip(tr("Last record to play / record"));
+    rangeToolBar->addWidget(this->endSpin);
+
+    // Keep the end record at or after the start record.
+    QObject::connect(this->startSpin,
+                     QOverload<int>::of(&QSpinBox::valueChanged),
+                     this->endSpin,
+                     &QSpinBox::setMinimum);
+
+    // Highlight the records inside the from-to range as it changes.
+    auto highlightRange = [this](){
+        this->tree->setHighlightRange(uint(this->startSpin->value()),uint(this->endSpin->value()));
+    };
+    QObject::connect(this->startSpin,QOverload<int>::of(&QSpinBox::valueChanged),this,highlightRange);
+    QObject::connect(this->endSpin,QOverload<int>::of(&QSpinBox::valueChanged),this,highlightRange);
+
+    // Range set from the tree's context menu.
+    QObject::connect(this->tree,
+                     &ModelRecordsTree::setFromRequested,
+                     this,
+                     [this](uint recordNumber){ this->startSpin->setValue(int(recordNumber)); });
+    QObject::connect(this->tree,
+                     &ModelRecordsTree::setToRequested,
+                     this,
+                     [this](uint recordNumber){ this->endSpin->setValue(int(recordNumber)); });
+    QObject::connect(this->tree,
+                     &ModelRecordsTree::setRangeRequested,
+                     this,
+                     [this](uint first, uint last){
+                         this->startSpin->setValue(int(first));
+                         this->endSpin->setValue(int(last));
+                     });
+
+    QObject::connect(this->tree,
+                     &ModelRecordsTree::recordCountChanged,
+                     this,
+                     &ModelRecordsSelector::updateRecordRange);
+    this->updateRecordRange();
+    highlightRange();
+
     QObject::connect(this,&ModelRecordsSelector::recordFinished,this,&ModelRecordsSelector::onRecordFinished);
 }
 
-void ModelRecordsSelector::createAnimation(bool modelID)
+void ModelRecordsSelector::createAnimation(uint modelID)
 {
     Model &rModel = Application::instance()->getSession()->getModel(modelID);
     std::vector<double> &rTimes = rModel.getTimeSolver().getTimes();
     QList<QString> imageFileNames;
 
+    uint firstRecord = uint(this->startSpin->value());
+    uint lastRecord = uint(this->endSpin->value());
+
     for (uint j=0;j<rTimes.size();j++)
     {
-        QString recordFileName(RFileManager::getFileNameWithTimeStep(rModel.getFileName(),j+1));
-        QString imageFileName(RFileManager::getFileNameWithTimeStep(rModel.buildScreenShotFileName(),j+1));
+        uint recordNumber = j+1;
+        // Only encode the records that were just played/recorded, i.e. those
+        // inside the selected from-to range.  Screen-shots left over from earlier
+        // recordings also exist on disk and must be skipped.
+        if (recordNumber < firstRecord || recordNumber > lastRecord)
+        {
+            continue;
+        }
+
+        QString recordFileName(RFileManager::getFileNameWithTimeStep(rModel.getFileName(),recordNumber));
+        QString imageFileName(RFileManager::getFileNameWithTimeStep(rModel.buildScreenShotFileName(),recordNumber));
         if (RFileManager::fileExists(recordFileName) && RFileManager::fileExists(imageFileName))
         {
             imageFileNames.append(imageFileName);
@@ -161,6 +230,32 @@ void ModelRecordsSelector::onUpdateJobFinished()
     }
 }
 
+void ModelRecordsSelector::updateRecordRange()
+{
+    // Record numbers can be sparse (e.g. 2,10,...,102), so the spin boxes range
+    // over the actual first/last record numbers rather than a 1..N count.
+    uint first = this->tree->getFirstRecordNumber();
+    uint last = this->tree->getLastRecordNumber();
+    if (last < first || last < 1)
+    {
+        first = 1;
+        last = 1;
+    }
+
+    // Preserve a full-range end selection so the default keeps playing through
+    // to the last record as records are added.
+    bool endWasFull = (this->endSpin->value() >= this->endSpin->maximum());
+
+    this->startSpin->setRange(int(first),int(last));
+    this->endSpin->setMaximum(int(last));
+    this->endSpin->setMinimum(this->startSpin->value());
+
+    if (endWasFull)
+    {
+        this->endSpin->setValue(int(last));
+    }
+}
+
 void ModelRecordsSelector::playToggle(bool jumpToFirst)
 {
     this->markNextIndicator = !this->markNextIndicator;
@@ -184,7 +279,13 @@ void ModelRecordsSelector::playToggle(bool jumpToFirst)
 
 void ModelRecordsSelector::loadNextRecord(bool jumpToFirst)
 {
-    if (!jumpToFirst && (this->tree->isLast() || !this->markNextIndicator))
+    // Stop when there is no next record, or advancing would step past the "To"
+    // record.  Checking the next record (rather than the current one) avoids
+    // loading the record just beyond the end of the range.
+    uint nextRecordNumber = this->tree->getNextRecordNumber();
+    if (!jumpToFirst && (nextRecordNumber == 0 ||
+                         nextRecordNumber > uint(this->endSpin->value()) ||
+                         !this->markNextIndicator))
     {
         if (this->recordIndicator)
         {
@@ -207,14 +308,7 @@ void ModelRecordsSelector::loadNextRecord(bool jumpToFirst)
     {
         if (jumpToFirst)
         {
-            if (this->tree->isFirst())
-            {
-                this->tree->markCurrent();
-            }
-            else
-            {
-                this->tree->markFirst();
-            }
+            this->tree->markRecord(uint(this->startSpin->value()));
         }
         else
         {

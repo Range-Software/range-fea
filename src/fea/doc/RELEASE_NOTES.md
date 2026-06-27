@@ -1,7 +1,23 @@
 ## Version 1.2.2
 
+### Improvements
+
+- Model records playback/recording now honors a configurable record range:
+  "From"/"To" spin boxes (on a second toolbar row) let you pick the start and
+  end record instead of always running from the first to the last record
+- Records inside the selected From-To range are highlighted in the records tree
+  (slightly darker on light themes, slightly lighter on dark themes)
+- Added a context menu to the records tree: load record, remove record(s), and
+  set the selected record(s) as the range start, range end, or full range
+- Added Slovak translations for the new records UI
+
 ### Bug fixes
 
+- Video animation now encodes only the records within the selected range
+  instead of every screenshot present on disk
+- Playback/recording no longer overshoots the selected end record by one record
+- Fixed model id truncation in the animation export (passed as `bool` instead
+  of `uint`)
 - Renaming a material in the material manager is now persisted to its file
   instead of being silently reverted (the typed name was never written back
   into the material or saved to disk, so the file watcher would restore the

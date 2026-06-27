@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QAction>
+#include <QSpinBox>
 
 #include "model_records_tree.h"
 #include "video_settings.h"
@@ -26,6 +27,10 @@ class ModelRecordsSelector : public QWidget
         bool recordIndicator;
         //! Model records tree.
         ModelRecordsTree *tree;
+        //! Start record spin box.
+        QSpinBox *startSpin;
+        //! End record spin box.
+        QSpinBox *endSpin;
         //! Video settings.
         VideoSettings videoSettings;
 
@@ -37,7 +42,7 @@ class ModelRecordsSelector : public QWidget
     protected:
 
         //! Create animation from screenshots.
-        void createAnimation(bool modelID);
+        void createAnimation(uint modelID);
 
     protected slots:
 
@@ -49,6 +54,9 @@ class ModelRecordsSelector : public QWidget
 
         //! On update job has finished.
         void onUpdateJobFinished();
+
+        //! Update the start/end record range limits from the tree.
+        void updateRecordRange();
 
         //! Play/Pause.
         void playToggle(bool jumpToFirst = false);
