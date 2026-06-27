@@ -279,6 +279,36 @@ uint ModelRecordsTree::getMarkedRecordNumber()
     return recordNumber;
 }
 
+uint ModelRecordsTree::getRecordCountInRange(uint first, uint last)
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint maxCount = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+        uint count = 0;
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                uint rn = (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+                if (rn >= first && rn <= last)
+                {
+                    count++;
+                }
+            }
+            ++it;
+        }
+        maxCount = qMax(maxCount,count);
+    }
+    return maxCount;
+}
+
 uint ModelRecordsTree::getNextRecordNumber()
 {
     R_LOG_TRACE;

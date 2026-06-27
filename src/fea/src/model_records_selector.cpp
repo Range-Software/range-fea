@@ -319,7 +319,9 @@ void ModelRecordsSelector::loadNextRecord(bool jumpToFirst)
 
 void ModelRecordsSelector::onRecordVideo()
 {
-    VideoSettingsDialog videoSettingsDialog(this->videoSettings);
+    uint numberOfRecords = this->tree->getRecordCountInRange(uint(this->startSpin->value()),
+                                                             uint(this->endSpin->value()));
+    VideoSettingsDialog videoSettingsDialog(this->videoSettings,numberOfRecords);
     if (videoSettingsDialog.exec() == QDialog::Accepted)
     {
         this->videoSettings = videoSettingsDialog.getVideoSettings();

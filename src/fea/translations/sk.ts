@@ -4990,6 +4990,20 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
         <translation>Snímky za záznam</translation>
     </message>
     <message>
+        <location filename="../src/video_settings_dialog.cpp" line="69"/>
+        <source>Estimated video length</source>
+        <translation>Odhadovaná dĺžka videa</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/video_settings_dialog.cpp" line="106"/>
+        <source>%1 s (%n record(s))</source>
+        <translation>
+            <numerusform>%1 s (%n záznam)</numerusform>
+            <numerusform>%1 s (%n záznamy)</numerusform>
+            <numerusform>%1 s (%n záznamov)</numerusform>
+        </translation>
+    </message>
+    <message>
         <location filename="../src/video_settings_dialog.cpp" line="70"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>

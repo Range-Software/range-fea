@@ -50,6 +50,9 @@ class ModelRecordsTree : public QTreeWidget
         //! Return the next record number after the marked one (0 if marked is last).
         uint getNextRecordNumber();
 
+        //! Return the number of records within [first,last] (max across selected models).
+        uint getRecordCountInRange(uint first, uint last);
+
     private:
 
         //! Populate tree.

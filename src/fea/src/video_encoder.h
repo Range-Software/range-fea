@@ -24,6 +24,11 @@ class VideoEncoder : public QObject
         QMediaCaptureSession *session;
         QVideoFrameInput *frameInput;
 
+        //! Presentation time of the next frame, in microseconds.
+        qint64 nextFrameTimeUs;
+        //! Total number of frames sent to the encoder.
+        quint64 encodedFrameCount;
+
     public:
 
         //! Constructor.

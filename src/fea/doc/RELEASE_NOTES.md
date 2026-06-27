@@ -9,6 +9,9 @@
   (slightly darker on light themes, slightly lighter on dark themes)
 - Added a context menu to the records tree: load record, remove record(s), and
   set the selected record(s) as the range start, range end, or full range
+- The video settings dialog now shows the estimated video length, computed from
+  the number of records in the range and the frames-per-record / frames-per-second
+  settings, updating live as those values change
 - Added Slovak translations for the new records UI
 
 ### Bug fixes
@@ -18,6 +21,12 @@
 - Playback/recording no longer overshoots the selected end record by one record
 - Fixed model id truncation in the animation export (passed as `bool` instead
   of `uint`)
+- Encoded video length now matches the expected length: frames are given explicit
+  per-frame timestamps instead of relying on encoder/muxer defaults (which could
+  halve the duration), and the frame-rate hint is no longer skipped on the second
+  and subsequent recordings (a stale `static` counter)
+- Video frames are no longer dropped when the encoder input is momentarily not
+  ready; the frame is kept and retried instead
 - Renaming a material in the material manager is now persisted to its file
   instead of being silently reverted (the typed name was never written back
   into the material or saved to disk, so the file watcher would restore the
