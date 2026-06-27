@@ -32,6 +32,8 @@
   into the material or saved to disk, so the file watcher would restore the
   original name)
 
+---
+
 ## Version 1.2.1
 
 ### Improvements
