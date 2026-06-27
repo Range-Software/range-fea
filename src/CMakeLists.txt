@@ -117,7 +117,7 @@ foreach(tgt IN LISTS all_targets)
         add_custom_target(copy-release-notes-${tgt} ALL
             COMMAND ${CMAKE_COMMAND} -E copy
                     "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
-                    "$<TARGET_FILE_DIR:${tgt}>/doc/RELEASE_NOTES.md"
+                    "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES.md"
             DEPENDS ${tgt}
             COMMENT "Copying RELEASE_NOTES.md for ${tgt}"
             VERBATIM
