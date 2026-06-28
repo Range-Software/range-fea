@@ -31,6 +31,19 @@
   instead of being silently reverted (the typed name was never written back
   into the material or saved to disk, so the file watcher would restore the
   original name)
+- Material list in the material manager no longer rebuilds all of its items on
+  every data-directory change (the file-system watcher compared file base names
+  instead of full paths)
+
+### Submodules
+
+- range-ai-lib @ v1.0.0
+- range-base-lib @ v1.0.1
+- range-build-tools @ v1.0.0
+- range-cloud-lib @ v1.0.1
+- range-gui-lib @ v1.0.0
+- range-model-lib @ v1.0.1
+- range-solver-lib @ v1.0.1
 
 ---
 
