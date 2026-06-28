@@ -1,4 +1,3 @@
-# Export MSH model
+# Exportovať MSH model
 
-Export selected model to **MSH** type file.
-
+Exportuje vybraný model do súboru typu **MSH**.

@@ -1,4 +1,3 @@
-# Quit
+# Ukončiť
 
-Quit program.
-
+Ukončí program.

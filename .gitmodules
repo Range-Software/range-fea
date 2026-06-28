@@ -22,3 +22,7 @@
 	path = src/range-build-tools
 	url = ../range-build-tools
 	branch = main
+[submodule "src/range-ai-lib"]
+	path = src/range-ai-lib
+	url = ../range-ai-lib
+	branch = main

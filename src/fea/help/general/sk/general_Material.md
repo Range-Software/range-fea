@@ -1,3 +1,3 @@
-# Material
+# Materiál
 
-**Material** is a collection of material properties relevant for given **Problem type**. Values of each material property can be temperature dependent.
+**Materiál** je kolekcia vlastností materiálu relevantných pre daný **Typ problému**. Hodnoty každej vlastnosti materiálu môžu byť závislé od teploty.

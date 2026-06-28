@@ -1,7 +1,6 @@
-# Reload Results
+# Znova načítať výsledky
 
-Reload results from model file for selected model.
+Znova načíta výsledky zo súboru modelu pre vybraný model.
 
 
-This action is useful when waiting for a long running simulation such as CFD and visualization of temporary results is needed.
-
+Táto akcia je užitočná pri čakaní na dlhotrvajúcu simuláciu, napríklad CFD, keď je potrebná vizualizácia dočasných výsledkov.

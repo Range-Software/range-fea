@@ -1,4 +1,3 @@
-# Generate line(s) from surface edges
+# Generovať čiaru(y) z hrán plochy
 
-Generate line entities (elements) from surface edges.
-
+Generuje čiarové entity (prvky) z hrán plochy.

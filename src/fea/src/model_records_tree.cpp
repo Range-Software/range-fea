@@ -1,10 +1,45 @@
 #include <QMap>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QHeaderView>
 #include <QScrollBar>
+#include <QColor>
+#include <QBrush>
+#include <QMenu>
+#include <QAction>
+#include <QMessageBox>
+#include <QFile>
 
 #include "model_records_tree.h"
 #include "application.h"
+
+namespace
+{
+
+const char *MarkedRecordIcon = ":/icons/media/pixmaps/range-play_play.svg";
+const int MarkedRecordColumnWidth = 48;
+
+void setMarkedRecordIcon(QTreeWidgetItem *item, int column, bool marked)
+{
+    item->setIcon(column,marked ? QIcon(MarkedRecordIcon) : QIcon());
+}
+
+void setMarkedRecord(QTreeWidgetItem *item, int column, bool marked, bool modelSelected)
+{
+    item->setData(column,Qt::UserRole,QVariant(marked));
+    // Only update the icon directly when the tree's signals are blocked (e.g. inside
+    // populate()).  When signals are live, the setData call above already triggers
+    // onItemChanged which sets the icon — calling setMarkedRecordIcon here as well
+    // would fire onItemChanged a second time via setIcon → itemChanged, causing a
+    // duplicate recordMarked emission and a second async load job that resets state.
+    QTreeWidget *tree = item->treeWidget();
+    if (!tree || tree->signalsBlocked())
+    {
+        setMarkedRecordIcon(item,column,marked && modelSelected);
+    }
+}
+
+}
 
 class ModelRecordsTreeRecordID
 {
@@ -17,19 +52,15 @@ class ModelRecordsTreeRecordID
         }
         bool operator < (const ModelRecordsTreeRecordID &rModelRecordsTreeRecordID) const
         {
-            if (this->modelID < rModelRecordsTreeRecordID.modelID)
+            if (this->modelID != rModelRecordsTreeRecordID.modelID)
             {
-                return true;
+                return this->modelID < rModelRecordsTreeRecordID.modelID;
             }
-            if (this->isRecord < rModelRecordsTreeRecordID.isRecord)
+            if (this->isRecord != rModelRecordsTreeRecordID.isRecord)
             {
-                return true;
+                return this->isRecord < rModelRecordsTreeRecordID.isRecord;
             }
-            if (this->recordNumber < rModelRecordsTreeRecordID.recordNumber)
-            {
-                return true;
-            }
-            return false;
+            return this->recordNumber < rModelRecordsTreeRecordID.recordNumber;
         }
 
     public:
@@ -41,21 +72,27 @@ class ModelRecordsTreeRecordID
 ModelRecordsTree::ModelRecordsTree(QWidget *parent)
     : QTreeWidget(parent)
     , directoryChanged(false)
+    , highlightFirst(0)
+    , highlightLast(0)
 {
     R_LOG_TRACE;
     this->setColumnCount(ModelRecordsTree::NColumns);
-    this->setSelectionMode(QAbstractItemView::SingleSelection);
+    this->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setRootIsDecorated(false);
+    // this->setIndentation(0);
     this->setAutoScroll(false);
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
     headerItem->setText(ModelRecordsTree::RecordNumber,QString(tr("Record")));
     headerItem->setText(ModelRecordsTree::RecordFileName,QString(tr("File name")));
-    headerItem->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+    headerItem->setIcon(ModelRecordsTree::Marked,QIcon(MarkedRecordIcon));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(ModelRecordsTree::ModelID,true);
     this->setColumnHidden(ModelRecordsTree::IsRecord,true);
     this->setColumnHidden(ModelRecordsTree::PathFileName,true);
+    this->header()->setSectionResizeMode(ModelRecordsTree::Marked,QHeaderView::Fixed);
+    this->setColumnWidth(ModelRecordsTree::Marked,MarkedRecordColumnWidth);
 
     this->populate();
 
@@ -83,6 +120,10 @@ ModelRecordsTree::ModelRecordsTree(QWidget *parent)
                      &ModelRecordsTree::itemActivated,
                      this,
                      &ModelRecordsTree::onItemActivated);
+    QObject::connect(this,
+                     &ModelRecordsTree::customContextMenuRequested,
+                     this,
+                     &ModelRecordsTree::onContextMenu);
 
     QTimer *timer = new QTimer(this);
     QObject::connect(timer,
@@ -161,6 +202,183 @@ bool ModelRecordsTree::isLast()
     return true;
 }
 
+uint ModelRecordsTree::getFirstRecordNumber()
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint firstNumber = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                uint rn = (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+                if (firstNumber == 0 || rn < firstNumber)
+                {
+                    firstNumber = rn;
+                }
+            }
+            ++it;
+        }
+    }
+    return firstNumber;
+}
+
+uint ModelRecordsTree::getLastRecordNumber()
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint lastNumber = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                lastNumber = qMax(lastNumber,(*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt());
+            }
+            ++it;
+        }
+    }
+    return lastNumber;
+}
+
+uint ModelRecordsTree::getMarkedRecordNumber()
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint recordNumber = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                recordNumber = qMax(recordNumber,(*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt());
+            }
+            ++it;
+        }
+    }
+    return recordNumber;
+}
+
+uint ModelRecordsTree::getRecordCountInRange(uint first, uint last)
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint maxCount = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+        uint count = 0;
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                uint rn = (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+                if (rn >= first && rn <= last)
+                {
+                    count++;
+                }
+            }
+            ++it;
+        }
+        maxCount = qMax(maxCount,count);
+    }
+    return maxCount;
+}
+
+uint ModelRecordsTree::getNextRecordNumber()
+{
+    R_LOG_TRACE;
+    uint marked = this->getMarkedRecordNumber();
+
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    uint nextNumber = 0;
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                uint rn = (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+                if (rn > marked && (nextNumber == 0 || rn < nextNumber))
+                {
+                    nextNumber = rn;
+                }
+            }
+            ++it;
+        }
+    }
+    return nextNumber;
+}
+
+void ModelRecordsTree::setHighlightRange(uint first, uint last)
+{
+    R_LOG_TRACE;
+    this->highlightFirst = first;
+    this->highlightLast = last;
+    this->applyHighlightRange();
+}
+
+void ModelRecordsTree::applyHighlightRange()
+{
+    R_LOG_TRACE;
+    // Tint records inside the range: slightly darker for light colour schemes,
+    // slightly lighter for dark ones, derived from the widget's base colour.
+    QColor base = this->palette().color(QPalette::Base);
+    QColor highlightColor = base.lightness() < 128 ? base.lighter(140) : base.darker(112);
+
+    this->blockSignals(true);
+
+    QTreeWidgetItemIterator it(this);
+    while (*it)
+    {
+        if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool())
+        {
+            uint rn = (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+            bool inRange = this->highlightFirst > 0 &&
+                           this->highlightLast >= this->highlightFirst &&
+                           rn >= this->highlightFirst &&
+                           rn <= this->highlightLast;
+            QBrush brush = inRange ? QBrush(highlightColor) : QBrush();
+            for (int c=0;c<ModelRecordsTree::NColumns;c++)
+            {
+                (*it)->setBackground(c,brush);
+            }
+        }
+        ++it;
+    }
+
+    this->blockSignals(false);
+}
+
 void ModelRecordsTree::populate()
 {
     R_LOG_TRACE;
@@ -179,6 +397,29 @@ void ModelRecordsTree::populate()
                                           selectedItemList.at(i)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool(),
                                           selectedItemList.at(i)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt());
         selectedIDs[recordID] = true;
+    }
+
+    // Preserve the marked (triangle) state across the clear/rebuild cycle.
+    // The mark is set synchronously by onItemChanged when a record is activated,
+    // but the file load is async — populate() may be called before getCurrentTimeStep()
+    // is updated, causing the mark to land on the wrong record.  Using the pre-clear
+    // state as the source of truth avoids that race.  getCurrentTimeStep() is still
+    // used as a fallback for the initial population when nothing is yet marked.
+    QMap<ModelRecordsTreeRecordID,bool> markedIDs;
+    {
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
+            {
+                ModelRecordsTreeRecordID recordID((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt(),
+                                                  true,
+                                                  (*it)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt());
+                markedIDs[recordID] = true;
+            }
+            ++it;
+        }
     }
 
     uint nModels = Application::instance()->getSession()->getNModels();
@@ -220,25 +461,38 @@ void ModelRecordsTree::populate()
                 childItem->setData(ModelRecordsTree::RecordNumber,Qt::DisplayRole,QVariant(j+1));
                 childItem->setText(ModelRecordsTree::RecordFileName,elipsizeFileName);
                 childItem->setText(ModelRecordsTree::PathFileName,recordFiles[j]);
-                uint recordNumber = 0;
-                if (rModel.getTimeSolver().getEnabled())
+                bool isMarked = false;
+                if (!markedIDs.isEmpty())
                 {
-                    recordNumber = rModel.getTimeSolver().getCurrentTimeStep();
+                    // Prefer the pre-clear marked state to avoid the async-load race.
+                    isMarked = markedIDs.contains(ModelRecordsTreeRecordID(i,true,uint(j+1)));
                 }
                 else
                 {
-                    if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+                    // Nothing was marked yet (initial population): fall back to the
+                    // time solver's current step.
+                    uint recordNumber = 0;
+                    if (rModel.getTimeSolver().getEnabled())
                     {
-                        recordNumber = rModel.getProblemSetup().getModalSetup().getMode();
+                        recordNumber = rModel.getTimeSolver().getCurrentTimeStep() + 1;
                     }
+                    else
+                    {
+                        if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+                        {
+                            recordNumber = rModel.getProblemSetup().getModalSetup().getMode() + 1;
+                        }
+                    }
+                    isMarked = Application::instance()->getSession()->isModelSelected(i) && recordNumber == uint(j+1);
                 }
-                if (Application::instance()->getSession()->isModelSelected(i) && recordNumber == uint(j))
+                if (isMarked)
                 {
-                    childItem->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+                    setMarkedRecordIcon(childItem,ModelRecordsTree::Marked,Application::instance()->getSession()->isModelSelected(i));
                     childItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(true));
                 }
                 else
                 {
+                    setMarkedRecordIcon(childItem,ModelRecordsTree::Marked,false);
                     childItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(false));
                 }
 
@@ -253,13 +507,17 @@ void ModelRecordsTree::populate()
 
     this->resizeColumnToContents(ModelRecordsTree::RecordNumber);
     this->resizeColumnToContents(ModelRecordsTree::RecordFileName);
-    this->resizeColumnToContents(ModelRecordsTree::Marked);
+    this->setColumnWidth(ModelRecordsTree::Marked,MarkedRecordColumnWidth);
 
     vScrollBar->setValue(vScrollValue);
 
     this->blockSignals(false);
 
     Application::instance()->getSession()->unlock();
+
+    this->applyHighlightRange();
+
+    emit this->recordCountChanged();
 }
 
 void ModelRecordsTree::markCurrent()
@@ -288,6 +546,69 @@ void ModelRecordsTree::markCurrent()
     }
 }
 
+void ModelRecordsTree::markRecord(uint recordNumber)
+{
+    R_LOG_TRACE;
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        uint modelID = modelIDs[i];
+
+        // Record numbers can be sparse (e.g. 2,10,20,...), so snap to the first
+        // existing record whose number is >= the requested one.
+        QTreeWidgetItem *targetItem = nullptr;
+        uint targetNumber = 0;
+
+        QTreeWidgetItemIterator itFind(this);
+        while (*itFind)
+        {
+            if ((*itFind)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*itFind)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+            {
+                uint rn = (*itFind)->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+                if (rn >= recordNumber && (!targetItem || rn < targetNumber))
+                {
+                    targetItem = (*itFind);
+                    targetNumber = rn;
+                }
+            }
+            ++itFind;
+        }
+
+        if (!targetItem)
+        {
+            continue;
+        }
+
+        bool alreadyMarked = targetItem->data(ModelRecordsTree::Marked,Qt::UserRole).toBool();
+
+        QTreeWidgetItemIterator it(this);
+        while (*it)
+        {
+            if ((*it) != targetItem &&
+                (*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID &&
+                (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
+            {
+                setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
+            }
+            ++it;
+        }
+
+        if (alreadyMarked)
+        {
+            // Already marked — re-emit so the record reloads (mirrors markCurrent()).
+            emit this->recordMarked(targetItem->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt(),
+                                    targetItem->text(ModelRecordsTree::PathFileName));
+        }
+        else
+        {
+            setMarkedRecord(targetItem,ModelRecordsTree::Marked,true,true);
+        }
+    }
+}
+
 void ModelRecordsTree::markPrevious()
 {
     R_LOG_TRACE;
@@ -307,8 +628,8 @@ void ModelRecordsTree::markPrevious()
             {
                 if (prevItem)
                 {
-                    (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(false));
-                    prevItem->setData(ModelRecordsTree::Marked,Qt::UserRole,QVariant(true));
+                    setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
+                    setMarkedRecord(prevItem,ModelRecordsTree::Marked,true,true);
                 }
                 break;
             }
@@ -340,10 +661,11 @@ void ModelRecordsTree::markNext()
         {
             if (markItem)
             {
-                if ((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
+                if ((*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool() &&
+                    (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
                 {
-                    prevItem->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
-                    (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+                    setMarkedRecord(prevItem,ModelRecordsTree::Marked,false,false);
+                    setMarkedRecord(*it,ModelRecordsTree::Marked,true,true);
                 }
                 break;
             }
@@ -375,7 +697,7 @@ void ModelRecordsTree::markFirst()
             if ((*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID &&
                 (*it)->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool())
             {
-                (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,isFirst);
+                setMarkedRecord(*it,ModelRecordsTree::Marked,isFirst,isFirst);
                 isFirst = false;
             }
             ++it;
@@ -408,7 +730,7 @@ void ModelRecordsTree::markLast()
 
         if (lastItem && !lastItem->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
         {
-            lastItem->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+            setMarkedRecord(lastItem,ModelRecordsTree::Marked,true,true);
 
             QTreeWidgetItemIterator it(this);
             while (*it)
@@ -418,7 +740,7 @@ void ModelRecordsTree::markLast()
                     itemID2++;
                     if (itemID1 != itemID2)
                     {
-                        (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
+                        setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
                     }
                 }
                 ++it;
@@ -454,16 +776,18 @@ void ModelRecordsTree::onModelSelectionChanged(uint modelID)
         {
             if (Application::instance()->getSession()->isModelSelected(modelID))
             {
-                (*it)->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+                setMarkedRecordIcon(*it,ModelRecordsTree::Marked,true);
             }
             else
             {
-                (*it)->setData(ModelRecordsTree::Marked,Qt::DecorationRole,QVariant());
+                setMarkedRecordIcon(*it,ModelRecordsTree::Marked,false);
             }
         }
         ++it;
     }
     this->blockSignals(false);
+
+    emit this->recordCountChanged();
 }
 
 void ModelRecordsTree::onModelChanged(uint)
@@ -487,14 +811,14 @@ void ModelRecordsTree::onItemChanged(QTreeWidgetItem *item, int column)
     if (item->data(ModelRecordsTree::Marked,Qt::UserRole).toBool() &&
         Application::instance()->getSession()->isModelSelected(item->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt()))
     {
-        item->setIcon(ModelRecordsTree::Marked,QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+        setMarkedRecordIcon(item,ModelRecordsTree::Marked,true);
         this->setCurrentItem(item);
         this->scrollToItem(item);
         recordMarkedIndicator = true;
     }
     else
     {
-        item->setData(ModelRecordsTree::Marked,Qt::DecorationRole,QVariant());
+        setMarkedRecordIcon(item,ModelRecordsTree::Marked,false);
     }
 
     this->blockSignals(false);
@@ -509,6 +833,17 @@ void ModelRecordsTree::onItemChanged(QTreeWidgetItem *item, int column)
 void ModelRecordsTree::onItemActivated(QTreeWidgetItem *item, int)
 {
     R_LOG_TRACE;
+    this->loadRecordItem(item);
+}
+
+void ModelRecordsTree::loadRecordItem(QTreeWidgetItem *item)
+{
+    R_LOG_TRACE;
+    if (!item || !item->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool())
+    {
+        return;
+    }
+
     uint modelID = item->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt();
 
     QTreeWidgetItemIterator it(this);
@@ -518,12 +853,138 @@ void ModelRecordsTree::onItemActivated(QTreeWidgetItem *item, int)
             (*it)->data(ModelRecordsTree::Marked,Qt::UserRole).toBool() &&
             (*it)->data(ModelRecordsTree::ModelID,Qt::UserRole).toUInt() == modelID)
         {
-            (*it)->setData(ModelRecordsTree::Marked,Qt::UserRole,false);
+            setMarkedRecord(*it,ModelRecordsTree::Marked,false,false);
         }
         ++it;
     }
     if (!item->data(ModelRecordsTree::Marked,Qt::UserRole).toBool())
     {
-        item->setData(ModelRecordsTree::Marked,Qt::UserRole,true);
+        setMarkedRecord(item,
+                        ModelRecordsTree::Marked,
+                        true,
+                        Application::instance()->getSession()->isModelSelected(modelID));
     }
+}
+
+QList<QTreeWidgetItem*> ModelRecordsTree::selectedRecordItems() const
+{
+    R_LOG_TRACE;
+    QList<QTreeWidgetItem*> records;
+    const QList<QTreeWidgetItem*> items = this->selectedItems();
+    for (QTreeWidgetItem *item : items)
+    {
+        if (item->data(ModelRecordsTree::IsRecord,Qt::UserRole).toBool())
+        {
+            records.append(item);
+        }
+    }
+    return records;
+}
+
+void ModelRecordsTree::onContextMenu(const QPoint &position)
+{
+    R_LOG_TRACE;
+    QList<QTreeWidgetItem*> records = this->selectedRecordItems();
+
+    // Lowest and highest record number among the selected records.
+    uint firstNumber = 0;
+    uint lastNumber = 0;
+    for (QTreeWidgetItem *item : records)
+    {
+        uint rn = item->data(ModelRecordsTree::RecordNumber,Qt::DisplayRole).toUInt();
+        if (firstNumber == 0 || rn < firstNumber)
+        {
+            firstNumber = rn;
+        }
+        lastNumber = qMax(lastNumber,rn);
+    }
+
+    QMenu menu(this);
+
+    QAction *loadAction = menu.addAction(tr("Load record"));
+    loadAction->setToolTip(tr("Load the selected record into the model view"));
+    loadAction->setEnabled(records.size() == 1);
+
+    QAction *removeAction = menu.addAction(tr("Remove records"));
+    removeAction->setToolTip(tr("Delete the selected record file(s) from disk"));
+    removeAction->setEnabled(records.size() >= 1);
+
+    menu.addSeparator();
+
+    QAction *setFromAction = menu.addAction(tr("Set as first"));
+    setFromAction->setToolTip(tr("Use the selected record as the first one to play / record"));
+    setFromAction->setEnabled(records.size() == 1);
+
+    QAction *setToAction = menu.addAction(tr("Set as last"));
+    setToAction->setToolTip(tr("Use the selected record as the last one to play / record"));
+    setToAction->setEnabled(records.size() == 1);
+
+    QAction *setRangeAction = menu.addAction(tr("Set as range"));
+    setRangeAction->setToolTip(tr("Set the play / record range to span the selected records"));
+    setRangeAction->setEnabled(records.size() >= 2);
+
+    menu.setToolTipsVisible(true);
+
+    QAction *selectedAction = menu.exec(this->viewport()->mapToGlobal(position));
+
+    if (selectedAction == nullptr)
+    {
+        return;
+    }
+
+    if (selectedAction == loadAction)
+    {
+        this->loadRecordItem(records.first());
+    }
+    else if (selectedAction == removeAction)
+    {
+        this->removeSelectedRecords();
+    }
+    else if (selectedAction == setFromAction)
+    {
+        emit this->setFromRequested(firstNumber);
+    }
+    else if (selectedAction == setToAction)
+    {
+        emit this->setToRequested(firstNumber);
+    }
+    else if (selectedAction == setRangeAction)
+    {
+        emit this->setRangeRequested(firstNumber,lastNumber);
+    }
+}
+
+void ModelRecordsTree::removeSelectedRecords()
+{
+    R_LOG_TRACE;
+    QList<QTreeWidgetItem*> records = this->selectedRecordItems();
+    if (records.isEmpty())
+    {
+        return;
+    }
+
+    QMessageBox::StandardButton answer =
+        QMessageBox::question(this,
+                              tr("Remove records"),
+                              tr("Are you sure you want to permanently delete %n selected record file(s)?","",records.size()),
+                              QMessageBox::Yes | QMessageBox::No,
+                              QMessageBox::No);
+    if (answer != QMessageBox::Yes)
+    {
+        return;
+    }
+
+    for (QTreeWidgetItem *item : records)
+    {
+        QString fileName = item->text(ModelRecordsTree::PathFileName);
+        RLogger::info("Removing record file \'%s\'\n",fileName.toUtf8().constData());
+
+        QFile file(fileName);
+        if (!file.remove())
+        {
+            RLogger::warning("Failed to remove record file \'%s\'\n",fileName.toUtf8().constData());
+        }
+    }
+
+    this->populate();
 }

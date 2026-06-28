@@ -1,4 +1,3 @@
-# Swap element normal
+# Vymeniť normálu prvku
 
-Swap normals of all selected (picked) elements.
-
+Vymení normály všetkých vybratých (označených) prvkov.

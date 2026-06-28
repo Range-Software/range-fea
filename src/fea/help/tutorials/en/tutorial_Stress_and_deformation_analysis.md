@@ -1,14 +1,14 @@
 # Stress and deformation analysis
 
-This tutorial will demonstrate how to setup and solve **Stress analysis** problem. For that reason a simple beam will be supported on both ends with load in the middle.
+This tutorial will demonstrate how to set up and solve a **Stress analysis** problem. For that reason a simple beam will be supported on both ends with a load in the middle.
 
 ## 1. Load model
 
 **Menu:** _File -> Open Model_
 
-This will show and **Open model** dialog. Select file **Beam.tmsh** and click **Open** to load model.
+This will show an **Open model** dialog. Select file **Beam.tmsh** and click **Open** to load the model.
 
-Since there is no physical problem assigned to this model a **Problem task flow** dialog window will appear soon after loading of the model is complete.
+Since there is no physical problem assigned to this model, a **Problem task flow** dialog window will appear soon after loading of the model is complete.
 
 ![Problem task flow - empty](image-Problem_task_flow-empty.png)
 
@@ -22,19 +22,19 @@ Click **Add problem type** button and **Problem type selector** dialog window wi
 
 ## 2. Generate 3D mesh
 
-To solve this problem volume mesh must be generated.
+To solve this problem, a volume mesh must be generated.
 
 **Menu:** _Geometry -> Volume -> Generate tetrahedral mesh_
 
 ![Generate mesh dialog](image-Generate_mesh_dialog.png)
 
-For now prefilled values are sufficient. Click **Ok** button to accept.
+For now, the prefilled values are sufficient. Click **Ok** button to accept.
 
 ![Volume mesh](image-Volume_mesh.png)
 
 ## 3. Assign material
 
-Material can be assigned only to selected model entity. Entities can be selected in the **Model tree**. To select multiple entities hold-down the _Ctrl_ while selecting entities. Once all entities are selected then material can be assigned.
+Material can be assigned only to a selected model entity. Entities can be selected in the **Model tree**. To select multiple entities, hold down the _Ctrl_ key while selecting entities. Once all entities are selected, the material can be assigned.
 
 **Model tree** and **material list** can be seen on screenshot below.
 
@@ -104,7 +104,7 @@ After the solver process is successfully completed computed results should be lo
 
 ### 7.1. Displacement
 
-From drop-down menu select **Displacement** (if not already selected). **Displacement** is a vector variable it can be applied as a **Scalar** (entity will be colored by its magnitude) and/or as a **Displacement** (entity will bend). This time select **Displacement** check-box. And set **Scale** to **500** to see the deformation.
+From drop-down menu select **Displacement** (if not already selected). **Displacement** is a vector variable; it can be applied as a **Scalar** (entity will be colored by its magnitude) and/or as a **Displacement** (entity will bend). This time select the **Displacement** check-box and set **Scale** to **500** to see the deformation.
 
 ![Applied displacement](image-Applied_displacement.png)
 
@@ -116,7 +116,7 @@ Similarly as **Displacement** apply **Von Mises Stress** on selected **Volume** 
 
 ## 8. Produce report
 
-Sometimes it is needed to produce a report to publish computed results.
+Sometimes it is necessary to produce a report to publish computed results.
 
 **Menu:** _Report -> Create report_
 

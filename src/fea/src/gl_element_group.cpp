@@ -5,6 +5,7 @@
 #include "gl_element_group.h"
 #include "gl_element.h"
 #include "gl_state_cache.h"
+#include "gl_widget.h"
 #include "model.h"
 #include "application.h"
 
@@ -300,7 +301,7 @@ void GLElementGroup::draw()
             glElement.setPointVolume(this->pointVolume);
             glElement.setLineCrossArea(this->lineCrossArea);
             glElement.setSurfaceThickness(this->surfaceThickness);
-            glElement.setUseGlCullFace(this->getUseGlCullFace());
+            glElement.setTwoSidedFace(this->twoSidedFace);
             precomputed[uint(i)] = glElement.precompute();
         }
 
@@ -364,7 +365,7 @@ void GLElementGroup::draw()
             glElement.setPointVolume(this->pointVolume);
             glElement.setLineCrossArea(this->lineCrossArea);
             glElement.setSurfaceThickness(this->surfaceThickness);
-            glElement.setUseGlCullFace(this->getUseGlCullFace());
+            glElement.setTwoSidedFace(this->twoSidedFace);
             glElement.setPrecomputedData(&precomputed[uint(i)]);
             glElement.paint(paintAction);
         }
@@ -377,9 +378,20 @@ void GLElementGroup::draw()
     }
 
     // Render cached geometry — route through callList() so uUseTexture is set correctly.
+    // Also set uTwoSided: when useGlCullFace is false both polygon faces should use the
+    // element colour; when true the shader colours back faces silver (different colour).
     if (this->getUseGlList())
     {
+        GLShaderProgram &shader = this->getGLWidget()->getMainShaderProgram();
+        if (this->twoSidedFace)
+        {
+            shader.setUniformBool("uTwoSided", true);
+        }
         pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
+        if (this->twoSidedFace)
+        {
+            shader.setUniformBool("uTwoSided", false);
+        }
     }
 
     if (this->getData().getDrawElementNumbers() || this->getData().getDrawNodeNumbers())

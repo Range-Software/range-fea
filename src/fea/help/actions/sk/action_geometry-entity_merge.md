@@ -1,7 +1,6 @@
-# Merge selected entities
+# Zlúčiť vybraté entity
 
-Merge two selected entities of same type into one entity.
+Zlúči dve vybraté entity rovnakého typu do jednej entity.
 
 
-This action is opposite of **Marking** action.
-
+Táto akcia je opakom akcie **Označiť**.

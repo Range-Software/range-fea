@@ -1,2 +1,2 @@
-# Save Model As
-Save selected model under different filename.
+# Uložiť model ako
+Uloží vybraný model pod iným názvom súboru.

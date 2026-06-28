@@ -1,2 +1,2 @@
-# Close Session
-Close current **Session**.
+# Zatvoriť reláciu
+Zatvorí aktuálnu **Reláciu**.

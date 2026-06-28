@@ -21,7 +21,7 @@ BCManagerTree::BCManagerTree(QWidget *parent) :
     this->setColumnCount(BC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(BC_TREE_COLUMN_NAME,QString("Name"));
+    headerItem->setText(BC_TREE_COLUMN_NAME,tr("Name"));
     this->setHeaderItem(headerItem);
     this->setHeaderHidden(true);
     this->setRootIsDecorated(false);

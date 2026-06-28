@@ -1,4 +1,3 @@
-# Find intersected elements
+# Nájsť pretínajúce sa prvky
 
-Detect intersected surface elements. Intersected surface elements will be highlighted.
-
+Detekuje pretínajúce sa povrchové prvky. Pretínajúce sa povrchové prvky budú zvýraznené.

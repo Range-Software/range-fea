@@ -229,7 +229,7 @@ void RadiationSetupWidget::recalculateViewFactors()
 {
     if (RMessageBox::question(Application::instance()->getMainWindow(),
                               tr("Calculate view-factors"),
-                              tr("Are you sure you want to calculate view-factors?") + "<br/>" + tr("This operation can take long time.")) != RMessageBox::Yes)
+                              tr("Are you sure you want to calculate view-factors?") + "<br/>" + tr("This operation can take a long time.")) != RMessageBox::Yes)
     {
         return;
     }
@@ -254,7 +254,7 @@ void RadiationSetupWidget::clearViewFactorMatrix()
                               tr("Clear view-factor matrix"),
                               tr("Are you sure you want to clear view-factor matrix?") + "<br/>"
                             + tr("This operation will clear all generated patches and calculated view-factors.") + " "
-                            + tr("It will also delete all view-factor matrix file.")) != RMessageBox::Yes)
+                            + tr("It will also delete the view-factor matrix file.")) != RMessageBox::Yes)
     {
         return;
     }

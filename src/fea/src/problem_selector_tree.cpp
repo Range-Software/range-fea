@@ -19,8 +19,8 @@ ProblemSelectorTree::ProblemSelectorTree(QWidget *parent)
     this->setColumnCount(PROBLEM_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(PROBLEM_TREE_COLUMN_NAME,QString("Name"));
-    headerItem->setText(PROBLEM_TREE_COLUMN_DESC,QString("Description"));
+    headerItem->setText(PROBLEM_TREE_COLUMN_NAME,tr("Name"));
+    headerItem->setText(PROBLEM_TREE_COLUMN_DESC,tr("Description"));
     this->setHeaderItem(headerItem);
 
     this->resizeColumnToContents(PROBLEM_TREE_COLUMN_NAME);

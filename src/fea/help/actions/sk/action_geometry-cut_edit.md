@@ -1,3 +1,3 @@
-# Edit cut
+# Upraviť rez
 
-Change foundation parameters of selected **Cut entity**.
+Zmení základné parametre vybranej **Entity rezu**.

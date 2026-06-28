@@ -1,1 +1,1 @@
-# Remove duplicate nodes
+# Odstrániť duplicitné uzly

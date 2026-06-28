@@ -1,4 +1,5 @@
 #include <QString>
+#include <cmath>
 #include <limits>
 
 #include <rbl_progress.h>
@@ -32,6 +33,37 @@ const int Model::ConsolidateActionAll = Model::ConsolidateSurfaceNeighbors |
 
 const double Model::SliverElementEdgeRatio = 30.0;
 
+namespace
+{
+
+struct NodeGridKey
+{
+    qint64 x;
+    qint64 y;
+    qint64 z;
+
+    bool operator==(const NodeGridKey &other) const
+    {
+        return this->x == other.x && this->y == other.y && this->z == other.z;
+    }
+};
+
+uint qHash(const NodeGridKey &key, uint seed = 0)
+{
+    seed = ::qHash(key.x,seed);
+    seed = ::qHash(key.y,seed);
+    return ::qHash(key.z,seed);
+}
+
+NodeGridKey findNodeGridKey(const RNode &node, double cellSize)
+{
+    return NodeGridKey{qint64(std::floor(node.getX()/cellSize)),
+                       qint64(std::floor(node.getY()/cellSize)),
+                       qint64(std::floor(node.getZ()/cellSize))};
+}
+
+}
+
 void Model::_init(const Model *pModel)
 {
     R_LOG_TRACE;
@@ -42,6 +74,7 @@ void Model::_init(const Model *pModel)
         this->holeElements = pModel->holeElements;
         this->sliverElements = pModel->sliverElements;
         this->intersectedElements = pModel->intersectedElements;
+        this->validConsolidationCacheMask = pModel->validConsolidationCacheMask;
         this->surfaceNeigs = pModel->surfaceNeigs;
         this->volumeNeigs = pModel->volumeNeigs;
         this->fileName = pModel->fileName;
@@ -50,6 +83,15 @@ void Model::_init(const Model *pModel)
         this->patchColors = pModel->patchColors;
         this->actionDescription = pModel->actionDescription;
     }
+    else
+    {
+        this->validConsolidationCacheMask = Model::ConsolidateNone;
+    }
+}
+
+void Model::invalidateConsolidationCache(int cacheMask)
+{
+    this->validConsolidationCacheMask &= ~cacheMask;
 }
 
 Model::Model()
@@ -105,6 +147,7 @@ Model & Model::operator = (const Model &model)
 void Model::insertModel(const Model &model, bool mergeNearNodes, double tolerance, bool findNearest)
 {
     R_LOG_TRACE_IN;
+    this->invalidateConsolidationCache();
     uint nn = this->getNNodes();
     uint ne = this->getNElements();
     uint neg = this->getNElementGroups();
@@ -112,12 +155,88 @@ void Model::insertModel(const Model &model, bool mergeNearNodes, double toleranc
     QVector<uint> nodeBook;
     nodeBook.resize(int(model.getNNodes()));
 
+    this->nodes.reserve(this->getNNodes() + model.getNNodes());
+    this->elements.reserve(this->getNElements() + model.getNElements());
+    this->points.reserve(this->getNPoints() + model.getNPoints());
+    this->lines.reserve(this->getNLines() + model.getNLines());
+    this->surfaces.reserve(this->getNSurfaces() + model.getNSurfaces());
+    this->volumes.reserve(this->getNVolumes() + model.getNVolumes());
+    this->vectorFields.reserve(this->getNVectorFields() + model.getNVectorFields());
+    this->scalarFields.reserve(this->getNScalarFields() + model.getNScalarFields());
+    this->streamLines.reserve(this->getNStreamLines() + model.getNStreamLines());
+    this->cuts.reserve(this->getNCuts() + model.getNCuts());
+    this->isos.reserve(this->getNIsos() + model.getNIsos());
+
+    const double nodeCellSize = (tolerance > 0.0) ? tolerance : RConstants::eps;
+    QHash<NodeGridKey,QVector<uint>> nodeGrid;
+    if (mergeNearNodes)
+    {
+        nodeGrid.reserve(int(this->getNNodes() + model.getNNodes()));
+        for (uint i=0;i<this->getNNodes();i++)
+        {
+            nodeGrid[findNodeGridKey(this->getNode(i),nodeCellSize)].push_back(i);
+        }
+    }
+
     for (uint i=0;i<model.getNNodes();i++)
     {
         bool appendNode = false;
         if (mergeNearNodes)
         {
-            uint nId = this->findNearNode(model.nodes[i],tolerance,findNearest);
+            const RNode &sourceNode = model.nodes[i];
+            const NodeGridKey key = findNodeGridKey(sourceNode,nodeCellSize);
+            uint nId = RConstants::eod;
+            double minDistance = std::numeric_limits<double>::max();
+            for (qint64 dx=-1;dx<=1;dx++)
+            {
+                for (qint64 dy=-1;dy<=1;dy++)
+                {
+                    for (qint64 dz=-1;dz<=1;dz++)
+                    {
+                        auto candidates = nodeGrid.constFind(NodeGridKey{key.x+dx,key.y+dy,key.z+dz});
+                        if (candidates == nodeGrid.constEnd())
+                        {
+                            continue;
+                        }
+                        for (uint candidateNodeID : candidates.value())
+                        {
+                            if (tolerance == 0.0)
+                            {
+                                if (this->getNode(candidateNodeID) == sourceNode)
+                                {
+                                    nId = candidateNodeID;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                double distance = this->getNode(candidateNodeID).getDistance(sourceNode);
+                                if (distance < tolerance && distance < minDistance)
+                                {
+                                    minDistance = distance;
+                                    nId = candidateNodeID;
+                                    if (!findNearest)
+                                    {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (nId != RConstants::eod && (tolerance == 0.0 || !findNearest))
+                        {
+                            break;
+                        }
+                    }
+                    if (nId != RConstants::eod && (tolerance == 0.0 || !findNearest))
+                    {
+                        break;
+                    }
+                }
+                if (nId != RConstants::eod && (tolerance == 0.0 || !findNearest))
+                {
+                    break;
+                }
+            }
             if (nId != RConstants::eod)
             {
                 nodeBook[int(i)]=nId;
@@ -136,6 +255,10 @@ void Model::insertModel(const Model &model, bool mergeNearNodes, double toleranc
         if (appendNode)
         {
             this->nodes.push_back(model.nodes[i]);
+            if (mergeNearNodes)
+            {
+                nodeGrid[findNodeGridKey(model.nodes[i],nodeCellSize)].push_back(nodeBook[int(i)]);
+            }
             this->RResults::addNode();
         }
     }
@@ -146,7 +269,7 @@ void Model::insertModel(const Model &model, bool mergeNearNodes, double toleranc
         for (uint j=0;j<this->elements[ne+i].size();j++)
         {
             uint srcNodeId = this->elements[ne+i].getNodeId(j);
-            if (int(srcNodeId) >= nodeBook.size())
+            if (size_t(srcNodeId) >= nodeBook.size())
             {
                 throw RError(RError::Type::Application,R_ERROR_REF,
                              "Element %u references invalid node %u in source model.",i,srcNodeId);
@@ -389,6 +512,7 @@ void Model::generateLineFromSurfaceEdges(double separationAngle)
         return;
     }
 
+    this->invalidateConsolidationCache();
     for (int i=0;i<segments.size();i++)
     {
         this->addElement(segments[i],true);
@@ -454,6 +578,7 @@ void Model::autoMarkSurfaces(double angle)
     RLogger::info("Auto-marking surface elements\n");
     RLogger::indent();
     RProgressInitialize("Auto-marking surface elements", true);
+    this->invalidateConsolidationCache();
 
     std::vector<uint> marks;
     marks.resize(this->surfaceNeigs.size(),0);
@@ -527,6 +652,7 @@ void Model::markSurface(double angle, QList<uint> elementIDs)
     RLogger::info("Marking surface elements\n");
     RLogger::indent();
     RProgressInitialize("Marking surface elements", true);
+    this->invalidateConsolidationCache();
 
     std::vector<uint> marks;
     marks.resize(this->surfaceNeigs.size(),0);
@@ -555,20 +681,25 @@ void Model::markSurface(double angle, QList<uint> elementIDs)
         this->markSurfaceNeighbors(elementIDs[i],angle,this->surfaceNeigs,marks);
     }
 
+    QVector<QVector<uint>> removePositions(int(this->getNSurfaces()));
     for (uint i=0;i<this->getNSurfaces();i++)
     {
-        for (uint j=0;j<marks.size();j++)
+        const RSurface &surface = this->getSurface(i);
+        for (uint j=0;j<surface.size();j++)
         {
-            if (marks[j] == 0)
+            uint elementID = surface.get(j);
+            if (elementID >= marks.size() || marks[elementID] == 0)
             {
                 continue;
             }
-            uint elementPosition;
-            if (!this->getSurface(i).findPosition(j,&elementPosition))
-            {
-                continue;
-            }
-            this->getSurface(i).remove(elementPosition);
+            removePositions[int(i)].append(j);
+        }
+    }
+    for (uint i=0;i<this->getNSurfaces();i++)
+    {
+        for (int j=removePositions[int(i)].size()-1;j>=0;j--)
+        {
+            this->getSurface(i).remove(removePositions[int(i)][j]);
         }
     }
 
@@ -616,6 +747,7 @@ void Model::closeSurfaceHole(QList<uint> edgeIDs)
 
     RLogger::info("Closing surface hole\n");
     RLogger::indent();
+    this->invalidateConsolidationCache();
 
     QList<uint> elementIDs = this->sortLineElements(this->holeElements.toList(),edgeIDs[0]);
 
@@ -742,7 +874,7 @@ void Model::transformGeometry(const GeometryTransformInput &geometryTransformInp
             {
                 if (input.getSplitSharedNodes())
                 {
-                    QMap<uint,uint> newEdgeNodeMap = this->splitNodes(edgeNodeIDs,elementIDs);
+                    QHash<uint,uint> newEdgeNodeMap = this->splitNodes(edgeNodeIDs,elementIDs);
                     if (input.getSweepSharedNodes())
                     {
                         QList<RElement> edgeElements = this->generateEdgeElements(edgeNodeIDs,elementIDs);
@@ -788,6 +920,7 @@ void Model::transformGeometry(const GeometryTransformInput &geometryTransformInp
         }
     }
 
+    this->invalidateConsolidationCache();
     this->mergeNearNodes();
     this->consolidate(Model::ConsolidateActionAll);
 }
@@ -796,6 +929,10 @@ uint Model::coarsenSurfaceElements(const std::vector<uint> surfaceIDs, double ed
 {
     uint nDeleted = this->RModel::coarsenSurfaceElements(surfaceIDs,edgeLength,elementArea);
 
+    if (nDeleted > 0)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return nDeleted;
@@ -805,6 +942,10 @@ uint Model::tetrahedralizeSurface(const std::vector<uint> surfaceIDs)
 {
     uint nGenerated = this->RModel::tetrahedralizeSurface(surfaceIDs);
 
+    if (nGenerated > 0)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return nGenerated;
@@ -814,6 +955,10 @@ uint Model::mergeNearNodes(double tolerance)
 {
     uint nMerged = this->RModel::mergeNearNodes(tolerance);
 
+    if (nMerged > 0)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return nMerged;
@@ -823,6 +968,15 @@ uint Model::purgeUnusedNodes()
 {
     uint nPurged = this->RModel::purgeUnusedNodes();
 
+    if (nPurged > 0)
+    {
+        this->invalidateConsolidationCache(Model::ConsolidateEdgeNodes |
+                                           Model::ConsolidateEdgeElements |
+                                           Model::ConsolidateHoleElements |
+                                           Model::ConsolidateSliverElements |
+                                           Model::ConsolidateIntersectedElements |
+                                           Model::ConsolidateMeshInput);
+    }
     this->consolidate(Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements);
 
     return nPurged;
@@ -832,6 +986,16 @@ uint Model::purgeUnusedElements()
 {
     uint nPurged = this->RModel::purgeUnusedElements();
 
+    if (nPurged > 0)
+    {
+        this->invalidateConsolidationCache(Model::ConsolidateSurfaceNeighbors |
+                                           Model::ConsolidateVolumeNeighbors |
+                                           Model::ConsolidateEdgeElements |
+                                           Model::ConsolidateHoleElements |
+                                           Model::ConsolidateSliverElements |
+                                           Model::ConsolidateIntersectedElements |
+                                           Model::ConsolidateMeshInput);
+    }
     this->consolidate(Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements | Model::ConsolidateSliverElements | Model::ConsolidateIntersectedElements);
 
     return nPurged;
@@ -841,6 +1005,16 @@ uint Model::removeDuplicateElements()
 {
     uint nMerged = this->RModel::removeDuplicateElements();
 
+    if (nMerged > 0)
+    {
+        this->invalidateConsolidationCache(Model::ConsolidateSurfaceNeighbors |
+                                           Model::ConsolidateVolumeNeighbors |
+                                           Model::ConsolidateEdgeElements |
+                                           Model::ConsolidateHoleElements |
+                                           Model::ConsolidateSliverElements |
+                                           Model::ConsolidateIntersectedElements |
+                                           Model::ConsolidateMeshInput);
+    }
     this->consolidate(Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements | Model::ConsolidateSliverElements | Model::ConsolidateIntersectedElements);
 
     return nMerged;
@@ -858,6 +1032,7 @@ uint Model::fixSliverElements(double edgeRatio)
         RLogger::info("Total number of sliver elements that were affected = %d.\n", nAffected);
 
         RMeshInput tmpInput = this->getMeshInput();
+        this->invalidateConsolidationCache();
         this->consolidate(Model::ConsolidateActionAll);
         this->setMeshInput(tmpInput);
     }
@@ -869,6 +1044,7 @@ void Model::updateSliverElements(double edgeRatio)
 {
     const QList<uint> sl = this->findSliverElements(edgeRatio);
     this->sliverElements = QSet<uint>(sl.begin(), sl.end());
+    this->validConsolidationCacheMask |= Model::ConsolidateSliverElements;
     int ni = this->sliverElements.size();
     if (ni == 0)
     {
@@ -884,6 +1060,7 @@ void Model::updateIntersectedElements()
 {
     const QList<uint> ie = this->findIntersectedElements();
     this->intersectedElements = QSet<uint>(ie.begin(), ie.end());
+    this->validConsolidationCacheMask |= Model::ConsolidateIntersectedElements;
     int ni = this->intersectedElements.size();
     if (ni == 0)
     {
@@ -907,6 +1084,7 @@ uint Model::breakIntersectedElements(uint nIterations)
         RLogger::info("Total number of elements that were intersected = %d.\n", ni);
 
         RMeshInput tmpInput = this->getMeshInput();
+        this->invalidateConsolidationCache();
         this->consolidate(Model::ConsolidateActionAll);
         this->setMeshInput(tmpInput);
     }
@@ -1023,6 +1201,10 @@ bool Model::boolDifference(uint nIterations, QList<uint> surfaceEntityIDs, uint 
 {
     bool success = this->RModel::boolDifference(nIterations,surfaceEntityIDs,cuttingSurfaceEntityId);
 
+    if (success)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return success;
@@ -1032,6 +1214,10 @@ bool Model::boolIntersection(uint nIterations, QList<uint> surfaceEntityIDs)
 {
     bool success = this->RModel::boolIntersection(nIterations,surfaceEntityIDs);
 
+    if (success)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return success;
@@ -1041,6 +1227,10 @@ bool Model::boolUnion(uint nIterations, QList<uint> surfaceEntityIDs)
 {
     bool success = this->RModel::boolUnion(nIterations,surfaceEntityIDs);
 
+    if (success)
+    {
+        this->invalidateConsolidationCache();
+    }
     this->consolidate(Model::ConsolidateActionAll);
 
     return success;
@@ -1476,35 +1666,13 @@ QSet<uint> Model::getNodeIDs(const QSet<uint> &elementIDs) const
 {
     QSet<uint> nodeIDs;
 
-    QVector<bool> nodeBook;
-    nodeBook.resize(int(this->getNNodes()));
-    nodeBook.fill(false);
-
+    nodeIDs.reserve(int(elementIDs.size()) * 4);
     foreach (uint elementID, elementIDs)
     {
         const RElement &rElement = this->getElement(elementID);
         for (uint i=0;i<rElement.size();i++)
         {
-            nodeBook[int(rElement.getNodeId(i))] = true;
-        }
-    }
-
-    uint nn = 0;
-    for (int i=0;i<nodeBook.size();i++)
-    {
-        if (nodeBook[i])
-        {
-            nn++;
-        }
-    }
-
-    nodeIDs.reserve(int(nn));
-
-    for (int i=0;i<nodeBook.size();i++)
-    {
-        if (nodeBook[i])
-        {
-            nodeIDs.insert(uint(i));
+            nodeIDs.insert(rElement.getNodeId(i));
         }
     }
 
@@ -2014,7 +2182,7 @@ void Model::glDraw(GLWidget *glWidget) const
                 glElementGroup.setParentModel(this);
                 glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
                 glElementGroup.setUseGlList(true);
-                glElementGroup.setUseGlCullFace(glWidget->getUseGlCullFace());
+                glElementGroup.setTwoSidedFace(glWidget->getTwoSidedFace());
                 glElementGroup.paint();
             }
 
@@ -2460,40 +2628,47 @@ QMultiMap <RVariableType, PickValue> Model::getPickedResultsValues(const PickIte
                 const RInterpolatedElement *pIElement = this->getInterpolatedElement(rPickItem.getEntityID().getType(),
                                                                                      rPickItem.getEntityID().getEid(),
                                                                                      rPickItem.getElementPosition());
-                std::vector<RR3Vector> displacementValues;
-                if (pDisplacementVariable)
-                {
-                    pIElement->findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,displacementValues);
-                }
-                else
-                {
-                    displacementValues.resize(pIElement->size(),RR3Vector(0.0,0.0,0.0));
-                }
-                if (rVariable.getApplyType() == R_VARIABLE_APPLY_ELEMENT)
-                {
-                    positionVector.resize(1);
-                    positionVector[0] = RR3Vector(0.0,0.0,0.0);
-                    for (uint j=0;j<pIElement->size();j++)
-                    {
-                        positionVector[0][0] += pIElement->at(j).getX() + displacementValues[j][0];
-                        positionVector[0][1] += pIElement->at(j).getY() + displacementValues[j][1];
-                        positionVector[0][2] += pIElement->at(j).getZ() + displacementValues[j][2];
-                    }
-                    positionVector[0] *= 1.0 / double(pIElement->size());
-                }
-                else if (rVariable.getApplyType() == R_VARIABLE_APPLY_NODE)
-                {
-                    positionVector.resize(pIElement->size());
-                    for (uint j=0;j<pIElement->size();j++)
-                    {
-                        positionVector[j][0] = pIElement->at(j).getX() + displacementValues[j][0];
-                        positionVector[j][1] = pIElement->at(j).getY() + displacementValues[j][1];
-                        positionVector[j][2] = pIElement->at(j).getZ() + displacementValues[j][2];
-                    }
-                }
-                else
+                if (!pIElement)
                 {
                     positionVector.resize(resultsValuesVector.size());
+                }
+                else
+                {
+                    std::vector<RR3Vector> displacementValues;
+                    if (pDisplacementVariable)
+                    {
+                        pIElement->findDisplacementNodeValues(this->getNodes(),this->getElements(),*pDisplacementVariable,displacementValues);
+                    }
+                    else
+                    {
+                        displacementValues.resize(pIElement->size(),RR3Vector(0.0,0.0,0.0));
+                    }
+                    if (rVariable.getApplyType() == R_VARIABLE_APPLY_ELEMENT)
+                    {
+                        positionVector.resize(1);
+                        positionVector[0] = RR3Vector(0.0,0.0,0.0);
+                        for (uint j=0;j<pIElement->size();j++)
+                        {
+                            positionVector[0][0] += pIElement->at(j).getX() + displacementValues[j][0];
+                            positionVector[0][1] += pIElement->at(j).getY() + displacementValues[j][1];
+                            positionVector[0][2] += pIElement->at(j).getZ() + displacementValues[j][2];
+                        }
+                        positionVector[0] *= 1.0 / double(pIElement->size());
+                    }
+                    else if (rVariable.getApplyType() == R_VARIABLE_APPLY_NODE)
+                    {
+                        positionVector.resize(pIElement->size());
+                        for (uint j=0;j<pIElement->size();j++)
+                        {
+                            positionVector[j][0] = pIElement->at(j).getX() + displacementValues[j][0];
+                            positionVector[j][1] = pIElement->at(j).getY() + displacementValues[j][1];
+                            positionVector[j][2] = pIElement->at(j).getZ() + displacementValues[j][2];
+                        }
+                    }
+                    else
+                    {
+                        positionVector.resize(resultsValuesVector.size());
+                    }
                 }
             }
             for (uint j=0;j<resultsValuesVector.size();j++)
@@ -2554,22 +2729,27 @@ QMultiMap <RVariableType, PickValue> Model::getPickedResultsValues(const PickIte
                 const RInterpolatedElement *pIElement = this->getInterpolatedElement(rPickItem.getEntityID().getType(),
                                                                                      rPickItem.getEntityID().getEid(),
                                                                                      rPickItem.getElementPosition());
-                position[0] = pIElement->at(rPickItem.getNodePosition()).getX() + displacement[0];
-                position[1] = pIElement->at(rPickItem.getNodePosition()).getY() + displacement[1];
-                position[2] = pIElement->at(rPickItem.getNodePosition()).getZ() + displacement[2];
+                if (pIElement)
+                {
+                    position[0] = pIElement->at(rPickItem.getNodePosition()).getX() + displacement[0];
+                    position[1] = pIElement->at(rPickItem.getNodePosition()).getY() + displacement[1];
+                    position[2] = pIElement->at(rPickItem.getNodePosition()).getZ() + displacement[2];
+                }
             }
             resultsValues.insert(rVariable.getType(),PickValue(position,resultsValuesVector));
         }
     }
 
-    R_LOG_TRACE_OUT;
-    return resultsValues;
+    R_LOG_TRACE_RETURN(resultsValues);
 }
 
 bool Model::nodeIsOnEdge(uint nodeID) const
 {
-    R_LOG_TRACE;
-    return (this->edgeNodes[int(nodeID)]);
+    if (nodeID >= this->edgeNodes.size())
+    {
+        return false;
+    }
+    return this->edgeNodes[int(nodeID)];
 }
 
 bool Model::elementIsOnEdge(uint elementID) const
@@ -2596,6 +2776,10 @@ bool Model::elementIsOnEdge(uint elementID) const
     unsigned nFoundEdgeNodes = 0;
     for (unsigned int i=0;i<element.size();i++)
     {
+        if (element.getNodeId(i) >= this->edgeNodes.size())
+        {
+            continue;
+        }
         if (this->edgeNodes[int(element.getNodeId(i))])
         {
             nFoundEdgeNodes++;
@@ -2610,12 +2794,11 @@ bool Model::elementIsOnEdge(uint elementID) const
 
 bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
 {
+    R_LOG_TRACE_IN;
     double minDistance = 0.0;
     bool found = false;
 
-    std::vector<RNode> dispNodes(this->getNodes());
-
-    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    bool hasDisplacement = false;
     for (uint i=0;i<this->getNEntityGroups();i++)
     {
         REntityGroupType entityType = this->getEntityGroupType(i);
@@ -2628,31 +2811,63 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
         {
             continue;
         }
-        uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
-        if (displacementVarPosition == RConstants::eod)
+        if (this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT)) != RConstants::eod)
         {
-            continue;
+            hasDisplacement = true;
+            break;
         }
-        const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
-        const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
-        for (uint j=0;j<pElementGroup->size();j++)
+    }
+
+    std::vector<RNode> dispNodes;
+    const std::vector<RNode> *pPickNodes = &this->getNodes();
+
+    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    if (hasDisplacement)
+    {
+        dispNodes = this->getNodes();
+        pPickNodes = &dispNodes;
+        for (uint i=0;i<this->getNEntityGroups();i++)
         {
-            uint elementID = pElementGroup->get(j);
-            const RElement &rElement = this->getElement(elementID);
-            std::vector<RR3Vector> displacementValues;
-            rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
-            for (uint k=0;k<rElement.size();k++)
+            REntityGroupType entityType = this->getEntityGroupType(i);
+            if (!REntityGroup::typeIsElementGroup(entityType))
             {
-                uint nodeID = rElement.getNodeId(k);
-                dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
-                dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
-                dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+                continue;
+            }
+            const REntityGroup *pEntity = this->getEntityGroupPtr(i);
+            if (!pEntity || !pEntity->getData().getVisible())
+            {
+                continue;
+            }
+            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+            if (displacementVarPosition == RConstants::eod)
+            {
+                continue;
+            }
+            const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
+            const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
+            for (uint j=0;j<pElementGroup->size();j++)
+            {
+                uint elementID = pElementGroup->get(j);
+                const RElement &rElement = this->getElement(elementID);
+                std::vector<RR3Vector> displacementValues;
+                rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
+                for (uint k=0;k<rElement.size();k++)
+                {
+                    uint nodeID = rElement.getNodeId(k);
+                    dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
+                    dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
+                    dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+                }
             }
         }
     }
 
 #pragma omp parallel default(shared)
     {
+        double localMinDistance = 0.0;
+        bool localFound = false;
+        PickItem localPickItem;
+
         for (uint i=0;i<this->getNEntityGroups();i++)
         {
             REntityGroupType entityType = this->getEntityGroupType(i);
@@ -2680,16 +2895,13 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
                     const RElement &rElement = this->getElement(elementID);
 
                     double distance;
-                    if (rElement.findPickDistance(dispNodes,position,direction,tolerance,distance))
+                    if (rElement.findPickDistance(*pPickNodes,position,direction,tolerance,distance))
                     {
-                        if (!found || minDistance > distance)
+                        if (!localFound || localMinDistance > distance)
                         {
-#pragma omp critical
-                            {
-                                minDistance = distance;
-                                pickItem = PickItem(SessionEntityID(0,entityType,entityID),elementID,uint(j));
-                                found = true;
-                            }
+                            localMinDistance = distance;
+                            localPickItem = PickItem(SessionEntityID(0,entityType,entityID),elementID,uint(j));
+                            localFound = true;
                         }
                     }
                 }
@@ -2724,33 +2936,42 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
                     double distance;
                     if (iElement.findPickDistance(position,direction,tolerance,distance))
                     {
-                        if (!found || minDistance > distance)
+                        if (!localFound || localMinDistance > distance)
                         {
-#pragma omp critical
-                            {
-                                minDistance = distance;
-                                pickItem = PickItem(SessionEntityID(0,entityType,entityID),uint(j),uint(j));
-                                found = true;
-                            }
+                            localMinDistance = distance;
+                            localPickItem = PickItem(SessionEntityID(0,entityType,entityID),uint(j),uint(j));
+                            localFound = true;
                         }
                     }
                 }
             }
         }
+
+        if (localFound)
+        {
+#pragma omp critical
+            {
+                if (!found || minDistance > localMinDistance)
+                {
+                    minDistance = localMinDistance;
+                    pickItem = localPickItem;
+                    found = true;
+                }
+            }
+        }
     }
-    return found;
+    R_LOG_TRACE_RETURN(found);
 }
 
 bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
 {
+    R_LOG_TRACE_IN;
     double minDistance = 0.0;
     bool found = false;
 
-    std::vector<RNode> dispNodes(this->getNodes());
-
     RSegment ray(RNode(position),RNode(position[0]+direction[0],position[1]+direction[1],position[2]+direction[2]));
 
-    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    bool hasDisplacement = false;
     for (uint i=0;i<this->getNEntityGroups();i++)
     {
         REntityGroupType entityType = this->getEntityGroupType(i);
@@ -2763,31 +2984,63 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
         {
             continue;
         }
-        uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
-        if (displacementVarPosition == RConstants::eod)
+        if (this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT)) != RConstants::eod)
         {
-            continue;
+            hasDisplacement = true;
+            break;
         }
-        const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
-        const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
-        for (uint j=0;j<pElementGroup->size();j++)
+    }
+
+    std::vector<RNode> dispNodes;
+    const std::vector<RNode> *pPickNodes = &this->getNodes();
+
+    // Pre-compute displaced node positions outside the parallel region to avoid data races.
+    if (hasDisplacement)
+    {
+        dispNodes = this->getNodes();
+        pPickNodes = &dispNodes;
+        for (uint i=0;i<this->getNEntityGroups();i++)
         {
-            uint elementID = pElementGroup->get(j);
-            const RElement &rElement = this->getElement(elementID);
-            std::vector<RR3Vector> displacementValues;
-            rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
-            for (uint k=0;k<rElement.size();k++)
+            REntityGroupType entityType = this->getEntityGroupType(i);
+            if (!REntityGroup::typeIsElementGroup(entityType))
             {
-                uint nodeID = rElement.getNodeId(k);
-                dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
-                dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
-                dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+                continue;
+            }
+            const REntityGroup *pEntity = this->getEntityGroupPtr(i);
+            if (!pEntity || !pEntity->getData().getVisible())
+            {
+                continue;
+            }
+            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+            if (displacementVarPosition == RConstants::eod)
+            {
+                continue;
+            }
+            const RVariable *pDisplacementVariable = &this->getVariable(displacementVarPosition);
+            const RElementGroup *pElementGroup = static_cast<const RElementGroup*>(pEntity);
+            for (uint j=0;j<pElementGroup->size();j++)
+            {
+                uint elementID = pElementGroup->get(j);
+                const RElement &rElement = this->getElement(elementID);
+                std::vector<RR3Vector> displacementValues;
+                rElement.findDisplacementNodeValues(elementID,*pDisplacementVariable,displacementValues);
+                for (uint k=0;k<rElement.size();k++)
+                {
+                    uint nodeID = rElement.getNodeId(k);
+                    dispNodes[nodeID].setX(this->getNode(nodeID).getX() + displacementValues[k][0]);
+                    dispNodes[nodeID].setY(this->getNode(nodeID).getY() + displacementValues[k][1]);
+                    dispNodes[nodeID].setZ(this->getNode(nodeID).getZ() + displacementValues[k][2]);
+                }
             }
         }
     }
 
 #pragma omp parallel default(shared)
     {
+        double localMinDistance = 0.0;
+        bool localFound = false;
+        PickItem localPickItem;
+
         for (uint i=0;i<this->getNEntityGroups();i++)
         {
             REntityGroupType entityType = this->getEntityGroupType(i);
@@ -2817,20 +3070,17 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
                     for (uint k=0;k<rElement.size();k++)
                     {
                         uint nodeID = rElement.getNodeId(k);
-                        const RNode &node = dispNodes[nodeID];
+                        const RNode &node = (*pPickNodes)[nodeID];
 
                         double u = ray.findPointDistance(node.toVector());
                         if (u <= tolerance)
                         {
                             double distance = node.getDistance(RNode(position));
-                            if (!found || minDistance > distance)
+                            if (!localFound || localMinDistance > distance)
                             {
-#pragma omp critical
-                                {
-                                    minDistance = distance;
-                                    pickItem = PickItem(SessionEntityID(0,entityType,entityID),elementID,uint(j),nodeID,k);
-                                    found = true;
-                                }
+                                localMinDistance = distance;
+                                localPickItem = PickItem(SessionEntityID(0,entityType,entityID),elementID,uint(j),nodeID,k);
+                                localFound = true;
                             }
                         }
                     }
@@ -2869,22 +3119,32 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
                         if (u <= tolerance)
                         {
                             double distance = iElement[k].getDistance(RNode(position));
-                            if (!found || minDistance > distance)
+                            if (!localFound || localMinDistance > distance)
                             {
-#pragma omp critical
-                                {
-                                    minDistance = distance;
-                                    pickItem = PickItem(SessionEntityID(0,entityType,entityID),uint(j),uint(j),k,k);
-                                    found = true;
-                                }
+                                localMinDistance = distance;
+                                localPickItem = PickItem(SessionEntityID(0,entityType,entityID),uint(j),uint(j),k,k);
+                                localFound = true;
                             }
                         }
                     }
                 }
             }
         }
+
+        if (localFound)
+        {
+#pragma omp critical
+            {
+                if (!found || minDistance > localMinDistance)
+                {
+                    minDistance = localMinDistance;
+                    pickItem = localPickItem;
+                    found = true;
+                }
+            }
+        }
     }
-    return found;
+    R_LOG_TRACE_RETURN(found);
 }
 
 bool Model::findPickedHoleElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
@@ -2911,6 +3171,7 @@ bool Model::findPickedHoleElement(const RR3Vector &position, const RR3Vector &di
 void Model::update(const RModel &rModel)
 {
     RModel::update(rModel);
+    this->invalidateConsolidationCache();
 
     int consolidateActionMask = Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements;
     if (this->getNVolumes() == 0)
@@ -2931,6 +3192,7 @@ void Model::update(const RModel &rModel)
 void Model::read(const QString &fileName)
 {
     RModel::read(fileName);
+    this->invalidateConsolidationCache();
     this->setFileName(fileName);
     if (this->getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_RADIATIVE_HEAT)
     {
@@ -3021,44 +3283,106 @@ void Model::consolidate(int consolidateActionMask)
     RLogger::indent();
     try
     {
-        if (consolidateActionMask & Model::ConsolidateSurfaceNeighbors || this->getNElements() != this->surfaceNeigs.size())
+        bool didWork = false;
+        auto cacheIsValid = [this](int cacheMask) -> bool
+        {
+            return (this->validConsolidationCacheMask & cacheMask) == cacheMask;
+        };
+
+        if (this->getNElements() != this->surfaceNeigs.size())
+        {
+            this->invalidateConsolidationCache(Model::ConsolidateSurfaceNeighbors |
+                                               Model::ConsolidateEdgeElements |
+                                               Model::ConsolidateHoleElements |
+                                               Model::ConsolidateSliverElements |
+                                               Model::ConsolidateMeshInput);
+            consolidateActionMask |= Model::ConsolidateSurfaceNeighbors;
+        }
+        if (this->getNElements() != this->volumeNeigs.size())
+        {
+            this->invalidateConsolidationCache(Model::ConsolidateVolumeNeighbors |
+                                               Model::ConsolidateMeshInput);
+            consolidateActionMask |= Model::ConsolidateVolumeNeighbors;
+        }
+        if (this->getNNodes() != uint(this->edgeNodes.size()))
+        {
+            this->invalidateConsolidationCache(Model::ConsolidateEdgeNodes |
+                                               Model::ConsolidateMeshInput);
+            consolidateActionMask |= Model::ConsolidateEdgeNodes;
+        }
+
+        if ((consolidateActionMask & Model::ConsolidateSurfaceNeighbors) &&
+            !cacheIsValid(Model::ConsolidateSurfaceNeighbors))
         {
             this->setSurfaceNeighbors(this->findSurfaceNeighbors());
             this->syncSurfaceNormals();
+            this->validConsolidationCacheMask |= Model::ConsolidateSurfaceNeighbors;
+            this->invalidateConsolidationCache(Model::ConsolidateEdgeElements |
+                                               Model::ConsolidateHoleElements |
+                                               Model::ConsolidateSliverElements |
+                                               Model::ConsolidateMeshInput);
             consolidateActionMask |= Model::ConsolidateMeshInput;
             consolidateActionMask |= Model::ConsolidateEdgeElements;
             consolidateActionMask |= Model::ConsolidateHoleElements;
             consolidateActionMask |= Model::ConsolidateSliverElements;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateVolumeNeighbors || this->getNElements() != this->volumeNeigs.size())
+        if ((consolidateActionMask & Model::ConsolidateVolumeNeighbors) &&
+            !cacheIsValid(Model::ConsolidateVolumeNeighbors))
         {
             this->setVolumeNeighbors(this->findVolumeNeighbors());
+            this->validConsolidationCacheMask |= Model::ConsolidateVolumeNeighbors;
+            this->invalidateConsolidationCache(Model::ConsolidateMeshInput);
             consolidateActionMask |= Model::ConsolidateMeshInput;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateEdgeNodes || this->getNNodes() != uint(this->edgeNodes.size()))
+        if ((consolidateActionMask & Model::ConsolidateEdgeNodes) &&
+            !cacheIsValid(Model::ConsolidateEdgeNodes))
         {
             this->edgeNodes = this->findEdgeNodes();
+            this->validConsolidationCacheMask |= Model::ConsolidateEdgeNodes;
+            this->invalidateConsolidationCache(Model::ConsolidateMeshInput);
             consolidateActionMask |= Model::ConsolidateMeshInput;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateEdgeElements)
+        if ((consolidateActionMask & Model::ConsolidateEdgeElements) &&
+            !cacheIsValid(Model::ConsolidateEdgeElements))
         {
             this->edgeElements = this->findEdgeElements(30.0);
+            this->validConsolidationCacheMask |= Model::ConsolidateEdgeElements;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateHoleElements)
+        if ((consolidateActionMask & Model::ConsolidateHoleElements) &&
+            !cacheIsValid(Model::ConsolidateHoleElements))
         {
             this->holeElements = this->findHoleElements();
+            this->validConsolidationCacheMask |= Model::ConsolidateHoleElements;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateSliverElements)
+        if ((consolidateActionMask & Model::ConsolidateSliverElements) &&
+            !cacheIsValid(Model::ConsolidateSliverElements))
         {
             this->updateSliverElements(Model::SliverElementEdgeRatio);
+            this->validConsolidationCacheMask |= Model::ConsolidateSliverElements;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateIntersectedElements)
+        if ((consolidateActionMask & Model::ConsolidateIntersectedElements) &&
+            !cacheIsValid(Model::ConsolidateIntersectedElements))
         {
             this->updateIntersectedElements();
+            this->validConsolidationCacheMask |= Model::ConsolidateIntersectedElements;
+            didWork = true;
         }
-        if (consolidateActionMask & Model::ConsolidateMeshInput)
+        if ((consolidateActionMask & Model::ConsolidateMeshInput) &&
+            !cacheIsValid(Model::ConsolidateMeshInput))
         {
             this->initializeMeshInput();
+            this->validConsolidationCacheMask |= Model::ConsolidateMeshInput;
+            didWork = true;
+        }
+        if (!didWork)
+        {
+            RLogger::info("Consolidation cache is up to date.\n");
         }
     }
     catch (const RError &rError)
@@ -3313,6 +3637,7 @@ void Model::updateHistoryStackSize(uint maxDepth)
 void Model::clearEdgeNodes()
 {
     this->edgeNodes.clear();
+    this->invalidateConsolidationCache(Model::ConsolidateEdgeNodes | Model::ConsolidateMeshInput);
 }
 
 QSet<uint> Model::findEdgeNodeIDs(const QList<SessionEntityID> &entityIDs) const
@@ -3407,9 +3732,11 @@ QSet<uint> Model::findEdgeNodeIDs(const QList<SessionEntityID> &entityIDs) const
     return nodeIDs;
 } /* Model::findEdgeNodeIDs */
 
-QMap<uint, uint> Model::splitNodes(const QSet<uint> &nodeIDs, const QSet<uint> &elementIDs)
+QHash<uint, uint> Model::splitNodes(const QSet<uint> &nodeIDs, const QSet<uint> &elementIDs)
 {
-    QMap<uint,uint> newNodeMap;
+    QHash<uint,uint> newNodeMap;
+    newNodeMap.reserve(nodeIDs.size());
+    this->invalidateConsolidationCache();
 
     foreach (uint nodeID, nodeIDs)
     {
@@ -3428,9 +3755,10 @@ QMap<uint, uint> Model::splitNodes(const QSet<uint> &nodeIDs, const QSet<uint> &
         for (uint j=0;j<rElement.size();j++)
         {
             uint nodeID = rElement.getNodeId(j);
-            if (newNodeMap.contains(nodeID))
+            auto iter = newNodeMap.constFind(nodeID);
+            if (iter != newNodeMap.constEnd())
             {
-                rElement.setNodeId(j,newNodeMap[nodeID]);
+                rElement.setNodeId(j,iter.value());
             }
         }
     }
@@ -3503,10 +3831,11 @@ QList<RElement> Model::generateEdgeElements(const QSet<uint> &edgeNodeIDs, const
     return edgeElements;
 } /* Model::generateEdgeElements */
 
-void Model::createSweepEdgeElements(const QList<RElement> &edgeElements, const QMap<uint, uint> &edgeNodeMap, bool useLastGroupID, bool selectNewEntities, bool showNewEntities)
+void Model::createSweepEdgeElements(const QList<RElement> &edgeElements, const QHash<uint, uint> &edgeNodeMap, bool useLastGroupID, bool selectNewEntities, bool showNewEntities)
 {
     QList<RElement> lineElements;
     QList<RElement> surfaceElements;
+    this->invalidateConsolidationCache();
 
     for (int i=0;i<edgeElements.size();i++)
     {
@@ -3514,27 +3843,29 @@ void Model::createSweepEdgeElements(const QList<RElement> &edgeElements, const Q
         {
             case R_ELEMENT_POINT:
             {
-                if (edgeNodeMap.contains(edgeElements[i].getNodeId(0)))
+                auto iter0 = edgeNodeMap.constFind(edgeElements[i].getNodeId(0));
+                if (iter0 != edgeNodeMap.constEnd())
                 {
                     RElement e;
                     e.setType(R_ELEMENT_TRUSS1);
                     e.setNodeId(0,edgeElements[i].getNodeId(0));
-                    e.setNodeId(1,edgeNodeMap[edgeElements[i].getNodeId(0)]);
+                    e.setNodeId(1,iter0.value());
                     lineElements.push_back(e);
                 }
                 break;
             }
             case R_ELEMENT_TRUSS1:
             {
-                if (edgeNodeMap.contains(edgeElements[i].getNodeId(0)) &&
-                    edgeNodeMap.contains(edgeElements[i].getNodeId(1)))
+                auto iter0 = edgeNodeMap.constFind(edgeElements[i].getNodeId(0));
+                auto iter1 = edgeNodeMap.constFind(edgeElements[i].getNodeId(1));
+                if (iter0 != edgeNodeMap.constEnd() && iter1 != edgeNodeMap.constEnd())
                 {
                     RElement e;
                     e.setType(R_ELEMENT_QUAD1);
                     e.setNodeId(0,edgeElements[i].getNodeId(1));
                     e.setNodeId(1,edgeElements[i].getNodeId(0));
-                    e.setNodeId(2,edgeNodeMap[edgeElements[i].getNodeId(0)]);
-                    e.setNodeId(3,edgeNodeMap[edgeElements[i].getNodeId(1)]);
+                    e.setNodeId(2,iter0.value());
+                    e.setNodeId(3,iter1.value());
                     surfaceElements.push_back(e);
                 }
                 break;
@@ -3582,6 +3913,21 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
     double radAngle = R_DEG_TO_RAD(separationAngle);
 
     QVector<RElement> segments;
+    std::vector<RR3Vector> surfaceNormals(this->surfaceNeigs.size());
+    std::vector<bool> surfaceNormalSet(this->surfaceNeigs.size(),false);
+
+    auto findSurfaceNormal = [this,&surfaceNormals,&surfaceNormalSet](uint elementID) -> const RR3Vector &
+    {
+        if (!surfaceNormalSet[elementID])
+        {
+            this->getElement(elementID).findNormal(this->getNodes(),
+                                                   surfaceNormals[elementID][0],
+                                                   surfaceNormals[elementID][1],
+                                                   surfaceNormals[elementID][2]);
+            surfaceNormalSet[elementID] = true;
+        }
+        return surfaceNormals[elementID];
+    };
 
     for (uint i=0;i<this->surfaceNeigs.size();i++)
     {
@@ -3592,10 +3938,8 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
             continue;
         }
 
-        RR3Vector cn;
-
         const RElement &cElement = this->getElement(ceID);
-        cElement.findNormal(this->getNodes(),cn[0],cn[1],cn[2]);
+        const RR3Vector &cn = findSurfaceNormal(ceID);
 
         // Inspect neighboring elements.
         // Only process pairs where neID > i to avoid emitting each shared feature
@@ -3614,10 +3958,8 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
                 continue;
             }
 
-            RR3Vector nn;
-
             const RElement &nElement = this->getElement(neID);
-            nElement.findNormal(this->getNodes(),nn[0],nn[1],nn[2]);
+            const RR3Vector &nn = findSurfaceNormal(neID);
 
             if (RR3Vector::angle(cn,nn) >= radAngle)
             {

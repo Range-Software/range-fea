@@ -1,1 +1,1 @@
-# Check if point is inside surface
+# Skontrolovať, či je bod vo vnútri plochy

@@ -21,7 +21,7 @@ ECManagerTree::ECManagerTree(QObject *parent) :
     this->setColumnCount(EC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(EC_TREE_COLUMN_NAME,QString("Name"));
+    headerItem->setText(EC_TREE_COLUMN_NAME,tr("Name"));
     this->setHeaderItem(headerItem);
     this->setHeaderHidden(true);
     this->setRootIsDecorated(false);

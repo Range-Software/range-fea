@@ -16,7 +16,7 @@ ConvergenceGraphWidget::ConvergenceGraphWidget(const QString &convergenceFileNam
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);
 
-    QLabel *label = new QLabel("Source: <i>" + convergenceFileName + "</i>");
+    QLabel *label = new QLabel(tr("Source") + ": <i>" + convergenceFileName + "</i>");
     mainLayout->addWidget(label);
 
     this->dataColumnCombo = new QComboBox;
@@ -52,7 +52,7 @@ void ConvergenceGraphWidget::onClearButtonClicked()
     {
         int response = QMessageBox::question(this,
                                           tr("Clear convergence log"),
-                                          tr("Are you sure you want to clear convergence log?"),
+                                          tr("Are you sure you want to clear the convergence log?"),
                                           QMessageBox::Yes | QMessageBox::No,
                                           QMessageBox::No);
         if (response == QMessageBox::Yes)

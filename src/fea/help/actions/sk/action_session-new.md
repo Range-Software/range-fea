@@ -1,7 +1,6 @@
-# New Session
+# Nová relácia
 
-Create a new **Session**.
+Vytvorí novú **Reláciu**.
 
 
-**Session** serves as a 'container' for multiple models. These models are not directly linked so no data can be exchanged nor shared between them. The purpose of the session is to give the possibility to work on multiple models simultaneously.
-
+**Relácia** slúži ako „kontajner" pre viacero modelov. Tieto modely nie sú priamo prepojené, takže medzi nimi nemožno vymieňať ani zdieľať žiadne dáta. Účelom relácie je poskytnúť možnosť pracovať na viacerých modeloch súčasne.

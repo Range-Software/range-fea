@@ -1,7 +1,6 @@
-# Draw line
+# Kresliť čiaru
 
-Draw a **line** object.
+Nakreslí objekt **čiara**.
 
 
-**Line** object is a line entity with one segment element that consist of two nodes.
-
+Objekt **čiara** je čiarová entita s jedným úsečkovým prvkom pozostávajúcim z dvoch uzlov.

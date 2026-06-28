@@ -12,7 +12,9 @@ varying float vTexCoord;
 
 void main()
 {
-    gl_Position = uProjection * uModelView * vec4(aPosition, 1.0);
+    vec4 eyePos = uModelView * vec4(aPosition, 1.0);
+    gl_Position = uProjection * eyePos;
+    gl_ClipVertex = eyePos;
     vColor      = aColor;
     vTexCoord   = aTexCoord;
 }

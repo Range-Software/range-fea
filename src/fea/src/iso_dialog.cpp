@@ -146,8 +146,8 @@ void IsoDialog::createDialog()
     this->variableTree->setColumnCount(IsoDialog::NColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(IsoDialog::Name,QString("Variables"));
-    headerItem->setText(IsoDialog::Type,QString("type"));
+    headerItem->setText(IsoDialog::Name,tr("Variables"));
+    headerItem->setText(IsoDialog::Type,tr("type"));
     this->variableTree->setHeaderItem(headerItem);
     this->variableTree->setColumnHidden(IsoDialog::Type,true);
 
@@ -210,7 +210,7 @@ void IsoDialog::createDialog()
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    this->okButton = new QPushButton(okIcon, tr("Ok"));
+    this->okButton = new QPushButton(okIcon, tr("OK"));
     this->okButton->setEnabled(this->variableTree->selectedItems().size() && this->modelTree->selectedItems().size());
     buttonBox->addButton(this->okButton,QDialogButtonBox::AcceptRole);
 

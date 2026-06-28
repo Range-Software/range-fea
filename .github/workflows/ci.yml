@@ -20,14 +20,17 @@ jobs:
             arch: x86_64
             qt_host: linux
             qt_arch: linux_gcc_64
+            qt_version: '6.11.1'
           - os: macos-latest
             arch: arm64
             qt_host: mac
             qt_arch: clang_64
+            qt_version: '6.11.1'
           - os: windows-latest
             arch: x64
             qt_host: windows
             qt_arch: win64_msvc2022_64
+            qt_version: '6.10.3'
 
     runs-on: ${{ matrix.os }}
 
@@ -54,6 +57,15 @@ jobs:
         if: startsWith(matrix.os, 'windows-')
         uses: ilammy/msvc-dev-cmd@v1
 
+      #- name: Disable PowerShell color output (Windows)
+      #  if: startsWith(matrix.os, 'windows-')
+      #  shell: pwsh
+      #  run: |
+      #    $profilePath = $PROFILE.CurrentUserAllHosts
+      #    $null = New-Item -ItemType File -Force -Path $profilePath
+      #    Add-Content $profilePath '$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText'
+      #    "TERM=dumb`nCLICOLOR=0`nNO_COLOR=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Ensure Ninja (Windows)
         if: startsWith(matrix.os, 'windows-')
         run: choco install ninja -y || echo "Ninja already present"
@@ -72,31 +84,49 @@ jobs:
       - name: Install OpenSSL (macOS)
         if: startsWith(matrix.os, 'macos-')
         run: |
-          brew update
-          brew install openssl@3 || true
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl@3 || true
           # Export prefix for use by later steps
           echo "OPENSSL_ROOT=$(brew --prefix openssl@3)" >> $GITHUB_ENV
 
       - name: Install OpenSSL (Windows)
         if: startsWith(matrix.os, 'windows-')
-        run: |
-          choco install openssl.light -y --params "/InstallDir:C:\OpenSSL" || echo "OpenSSL may already be installed"
-          # Persist OPENSSL_ROOT for later CMake configure step
-          Write-Output "OPENSSL_ROOT=C:\OpenSSL" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
         shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installDir = 'C:\OpenSSL'
+          $max = 3
+          for ($i = 1; $i -le $max; $i++) {
+            try {
+              choco install openssl.light -y --params "/InstallDir:$installDir"
+              break
+            } catch {
+              if ($i -eq $max) { throw }
+              Write-Host "OpenSSL install failed (attempt $i/$max). Retrying in 20s..."
+              Start-Sleep -Seconds 20
+            }
+          }
+          if (Test-Path "$installDir\bin\openssl.exe") {
+            "OPENSSL_ROOT=$installDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          } else {
+            Write-Host "OpenSSL not found at $installDir; not setting OPENSSL_ROOT."
+          }
 
       # Qt
-      - name: Install Qt 6.10.1 + QtIFW
+      - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.10.1'
+          version: ${{ matrix.qt_version }}
           host: ${{ matrix.qt_host }}
           target: desktop
           arch: ${{ matrix.qt_arch }}
           cache: true
           aqtversion: '==3.3.*'
           modules: 'qthttpserver qtwebsockets qtimageformats qtmultimedia'
-          tools: 'tools_ifw'
+
+      - name: Add Inno Setup to PATH (Windows)
+        if: startsWith(matrix.os, 'windows-')
+        run: echo "C:\Program Files (x86)\Inno Setup 6" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: pwsh
 
       - name: Show versions (Unix)
         if: matrix.os != 'windows-latest'
@@ -177,21 +207,15 @@ jobs:
         shell: pwsh
 
       # Build
-      - name: Build (Unix)
-        if: matrix.os != 'windows-latest'
+      - name: Build
         run: cmake --build build-Release --target package --parallel
-
-      - name: Build (Windows)
-        if: startsWith(matrix.os, 'windows-')
-        run: cmake --build build-Release --target package --parallel
-        shell: pwsh
 
       # Notarize
       - name: Notarize DMG with notarytool (macOS)
         if: startsWith(matrix.os, 'macos-')
         run: |
           set -euo pipefail
-          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          DMG="$(/usr/bin/find build-Release -maxdepth 1 -name '*.dmg' -print -quit)"
           echo "DMG: $DMG"
 
           JSON_OUT="$(mktemp)"
@@ -230,7 +254,7 @@ jobs:
         if: startsWith(matrix.os, 'macos-')
         run: |
           set -euo pipefail
-          DMG="$(/usr/bin/find build-Release -name '*.dmg' -print -quit)"
+          DMG="$(/usr/bin/find build-Release -maxdepth 1 -name '*.dmg' -print -quit)"
           xcrun stapler staple "$DMG"
           # Optional: also staple the app (useful if you ever upload the .app directly)
           APP_BUNDLE="$(/usr/bin/find build-Release -name '*.app' -maxdepth 2 -print -quit)"
@@ -244,10 +268,6 @@ jobs:
           path: |
             build-Release/${{ github.event.repository.name }}-*.deb
             build-Release/${{ github.event.repository.name }}-*.rpm
-            build-Release/${{ github.event.repository.name }}-*.sh
-            build-Release/${{ github.event.repository.name }}-*.run
-            build-Release/${{ github.event.repository.name }}-*.zip
-            build-Release/${{ github.event.repository.name }}-*.tar.gz
             build-Release/${{ github.event.repository.name }}-*.dmg
             build-Release/${{ github.event.repository.name }}-*.exe
           if-no-files-found: error
@@ -299,14 +319,14 @@ jobs:
             fileOs=$(echo $fileInfo | cut -d'-' -f3)
             fileArch=$(echo $fileInfo | cut -d'-' -f4 | cut -d'.' -f1)
             echo "Uploading: $fileName"
-            curl -X PUT --upload-file $f -o $HOME/response.json --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-replace/?resource-name=$fileName
+            curl -X PUT --upload-file $f -o $HOME/response.json --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass "$RANGE_CLOUD_KEY_PASSWORD" --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-replace/?resource-name=$fileName
             fileId=$(jq -r '.upload.id' $HOME/response.json)
             echo "Updating file access mode: $fileName : 644"
-            curl -X POST -d "{\"user\":6,\"group\":4,\"other\":4}" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-access-mode/?resource-id=$fileId
+            curl -X POST -d "{\"user\":6,\"group\":4,\"other\":4}" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass "$RANGE_CLOUD_KEY_PASSWORD" --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-access-mode/?resource-id=$fileId
             echo "Updating file version: $fileName : $fileVersion"
-            curl -X POST -d "$fileVersion" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-version/?resource-id=$fileId
+            curl -X POST -d "$fileVersion" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass "$RANGE_CLOUD_KEY_PASSWORD" --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-version/?resource-id=$fileId
             echo "Updating file tags: $fileName : $REPO_NAME,$fileOs,$fileArch"
-            curl -X POST -d "$REPO_NAME,$fileOs,$fileArch" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass 12345678 --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-tags/?resource-id=$fileId
+            curl -X POST -d "$REPO_NAME,$fileOs,$fileArch" --key $HOME/.private_keys/range_cloud_key.pem --key-type PEM --pass "$RANGE_CLOUD_KEY_PASSWORD" --cert $HOME/.private_keys/range_cloud_cert.pem  https://range-software.com:4012/file-update-tags/?resource-id=$fileId
           done
         env:
           RANGE_CLOUD_KEY_PASSWORD: ${{ secrets.RANGE_CLOUD_KEY_PASSWORD }}

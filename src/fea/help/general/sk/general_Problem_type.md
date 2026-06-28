@@ -1,17 +1,17 @@
-# Problem type
+# Typ problému
 
-**Problem type** is a unique identifier of the physical phenomena to be solved.
+**Typ problému** je jedinečný identifikátor fyzikálneho javu, ktorý sa má riešiť.
 
-It is possible to combine multiple different **problem types** (e.g., **Heat transfer** and **Stress analysis** or **In-compressible viscous flow** and **Contaminant dispersion**).
+Je možné kombinovať viacero rôznych **typov problémov** (napr. **Prestup tepla** a **Analýza napätia** alebo **Nestlačiteľné viskózne prúdenie** a **Rozptyl kontaminantu**).
 
-List of supported problem types:
+Zoznam podporovaných typov problémov:
 
-- Contaminant dispersion
-- Electro-statics
-- Magneto-statics
-- In-compressible viscous flow
-- Heat transfer in fluids
-- Heat transfer
-- Radiative heat transfer
-- Stress analysis
-- Modal analysis
+- Rozptyl kontaminantu
+- Elektrostatika
+- Magnetostatika
+- Nestlačiteľné viskózne prúdenie
+- Prestup tepla v tekutinách
+- Prestup tepla
+- Sálanie tepla
+- Analýza napätia
+- Modálna analýza

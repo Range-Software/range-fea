@@ -1,8 +1,8 @@
-# Fix sliver elements
+# Opraviť deformované prvky
 
-Detect and automatically fix sliver elements.
+Detekuje a automaticky opraví deformované prvky.
 
-Element is declared sliver by its longest to shortest edge ratio.
+Prvok je označený za deformovaný na základe pomeru jeho najdlhšej ku najkratšej hrane.
 
 ```
   |\
@@ -12,5 +12,5 @@ a |   \
   |    \
   |_____\
      b
-  where: edge ratio = c / b
+  kde: pomer hrán = c / b
 ```

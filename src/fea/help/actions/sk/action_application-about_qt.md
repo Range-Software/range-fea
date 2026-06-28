@@ -1,4 +1,3 @@
-# About Qt
+# O Qt
 
-Display basic information about the Qt library.
-
+Zobrazí základné informácie o knižnici Qt.

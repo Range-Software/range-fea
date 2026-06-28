@@ -160,6 +160,7 @@ void DocumentTree::onModelAdded(uint modelID)
     {
         this->addDocument(item,modelID,documentFiles[i]);
     }
+    item->setExpanded(true);
     this->blockSignals(false);
 }
 

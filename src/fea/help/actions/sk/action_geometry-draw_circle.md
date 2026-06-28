@@ -1,7 +1,6 @@
-# Draw circle
+# Kresliť kruh
 
-Draw a **circle** object.
+Nakreslí objekt **kruh**.
 
 
-**Circle** object is a surface entity defined by N triangle (simplex) elements, where N equals to number of angular divisions.
-
+Objekt **kruh** je plošná entita definovaná N trojuholníkovými (simplexovými) prvkami, kde N sa rovná počtu uhlových delení.

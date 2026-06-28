@@ -12,7 +12,7 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
 {
     Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
 
-    this->setWindowTitle(QString("Problem task flow"));
+    this->setWindowTitle(tr("Problem task flow"));
     this->resize(600,300);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
@@ -35,7 +35,7 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     this->cancelButton->setDisabled(rModel.getProblemTaskTree().getProblemTypeMask() == R_PROBLEM_NONE);
     buttonBox->addButton(this->cancelButton,QDialogButtonBox::RejectRole);
 
-    this->okButton = new QPushButton(okIcon, tr("Ok"));
+    this->okButton = new QPushButton(okIcon, tr("OK"));
     this->okButton->setDisabled(true);
     buttonBox->addButton(this->okButton,QDialogButtonBox::AcceptRole);
 

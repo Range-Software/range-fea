@@ -1,9 +1,12 @@
-#include <QString>
-
-#include <rbl_logger.h>
+#include <QOpenGLContext>
+#include <QOpenGLExtraFunctions>
 
 #include "gl_functions.h"
 #include "gl_vertex_buffer.h"
+
+#include <QString>
+
+#include <rbl_logger.h>
 
 static bool insideBeginEnd = false;
 static GLVertexBuffer *currentVBO = nullptr;
@@ -96,7 +99,7 @@ void GLFunctions::end()
     }
     else
     {
-        GL_SAFE_CALL(glEnd());
+        glEnd();
     }
     insideBeginEnd = false;
 }
@@ -144,6 +147,9 @@ void GLFunctions::color4ub(GLubyte r, GLubyte g, GLubyte b, GLubyte a)
     else
     {
         glColor4ub(r, g, b, a);
+        // Generic attribute 2 (aColor) is not fed by glColor4ub, so set it explicitly
+        // so immediate-mode geometry drawn while a shader is active gets the right colour.
+        QOpenGLContext::currentContext()->functions()->glVertexAttrib4f(2, r/255.0f, g/255.0f, b/255.0f, a/255.0f);
     }
 }
 
@@ -156,6 +162,8 @@ void GLFunctions::texCoord1f(GLfloat t)
     else
     {
         glTexCoord1f(t);
+        // Generic attribute 3 (aTexCoord) mirrors the above for the same reason.
+        QOpenGLContext::currentContext()->functions()->glVertexAttrib1f(3, t);
     }
 }
 

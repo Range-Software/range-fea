@@ -1,4 +1,3 @@
-# Break intersected elements
+# Rozdeliť pretínajúce sa prvky
 
-Detect and break (repair) intersected surface elements.
-
+Detekuje a rozdelí (opraví) pretínajúce sa povrchové prvky.

@@ -126,7 +126,7 @@ bool PickList::registerItem(const PickItem &pickItem)
     {
         if ((*iter) == pickItem)
         {
-            this->items.erase(iter);
+            iter = this->items.erase(iter);
             itemErased = true;
         }
         else
@@ -208,7 +208,7 @@ void PickList::removeItem(const PickItem &pickItem)
     {
         if ((*iter) == pickItem)
         {
-            this->items.erase(iter);
+            iter = this->items.erase(iter);
         }
         else
         {
@@ -228,7 +228,7 @@ void PickList::removeItems(uint modelID)
     {
         if (iter->getEntityID().getMid() == modelID)
         {
-            this->items.erase(iter);
+            iter = this->items.erase(iter);
         }
         else
         {
@@ -250,6 +250,7 @@ bool PickList::hasItem(const PickItem &pickItem)
         {
             return true;
         }
+        ++iter;
     }
     return false;
 }

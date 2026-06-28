@@ -1,7 +1,6 @@
-# Draw quadrilateral
+# Kresliť štvoruholník
 
-Draw a **quadrilateral** object.
+Nakreslí objekt **štvoruholník**.
 
 
-**Quadrilateral** object is a surface entity with one quadrilateral element that consist of four nodes.
-
+Objekt **štvoruholník** je plošná entita s jedným štvoruholníkovým prvkom pozostávajúcim zo štyroch uzlov.

@@ -10,7 +10,7 @@ MaterialPropertyEditDialog::MaterialPropertyEditDialog(RMaterialProperty &proper
     QDialog(parent),
     pProperty(&property)
 {
-    this->setWindowTitle(QString("Material property editor"));
+    this->setWindowTitle(tr("Material property editor"));
     this->resize(400,500);
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
@@ -36,7 +36,7 @@ MaterialPropertyEditDialog::MaterialPropertyEditDialog(RMaterialProperty &proper
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);

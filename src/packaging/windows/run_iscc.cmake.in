@@ -1,0 +1,8 @@
+execute_process(
+    COMMAND "@CMAKE_COMMAND@" --install "@CMAKE_BINARY_DIR@" --prefix "@CMAKE_BINARY_DIR@/staging"
+    COMMAND_ERROR_IS_FATAL ANY
+)
+execute_process(
+    COMMAND "@ISCC_EXECUTABLE@" "@CMAKE_BINARY_DIR@/setup.iss"
+    COMMAND_ERROR_IS_FATAL ANY
+)

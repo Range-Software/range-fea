@@ -33,8 +33,8 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     this->treeWidget->setColumnCount(ColumnType::NunberOfColumns);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(ColumnName,QString("Name"));
-    headerItem->setText(ColumnFile,QString("File"));
+    headerItem->setText(ColumnName,tr("Name"));
+    headerItem->setText(ColumnFile,tr("File"));
     this->treeWidget->setHeaderItem(headerItem);
     this->treeWidget->setRootIsDecorated(false);
     this->treeWidget->resizeColumnToContents(ColumnName);
@@ -326,7 +326,7 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
         bool fileInList = false;
         for (auto iter = fileInfoList.cbegin(); iter != fileInfoList.cend(); ++iter)
         {
-            if (fileName == iter->fileName())
+            if (fileName == iter->filePath())
             {
                 try
                 {
@@ -652,6 +652,18 @@ void MaterialManagerTree::onItemChanged(QTreeWidgetItem *item, int column)
 
     if (oldName != newName)
     {
+        material.setName(newName);
+        item->setData(ColumnType::ColumnName,Qt::UserRole,QVariant(newName));
+
+        try
+        {
+            MaterialManagerTree::write(filePath,material);
+        }
+        catch (const RError &error)
+        {
+            RLogger::error("Failed to write material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
+        }
+
         emit this->materialSelected(material);
     }
 

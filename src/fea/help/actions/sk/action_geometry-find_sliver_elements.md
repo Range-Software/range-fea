@@ -1,8 +1,8 @@
-# Find sliver elements
+# Nájsť deformované prvky
 
-Detect sliver elements.
+Detekuje deformované prvky.
 
-Element is declared sliver by its longest to shortest edge ratio.
+Prvok je označený za deformovaný na základe pomeru jeho najdlhšej ku najkratšej hrane.
 
 ```
   |\
@@ -12,5 +12,5 @@ a |   \
   |    \
   |_____\
      b
-  where: edge ratio = c / b
+  kde: pomer hrán = c / b
 ```

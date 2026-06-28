@@ -1,4 +1,3 @@
-# Reset setup
+# Resetovať nastavenia
 
-Reset (drop) all **Problem type** settings.
-
+Resetuje (zahodí) všetky nastavenia **Typu problému**.

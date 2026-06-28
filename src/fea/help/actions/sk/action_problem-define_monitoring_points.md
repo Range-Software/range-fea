@@ -1,4 +1,3 @@
-# Define monitoring points
+# Definovať monitorovacie body
 
-**Monitoring points** are defined by X Y and Z coordinates and can be assigned any **Variable** for given **Problem type**. For example in **Transient heat-transfer** a variable **Temperature** can be assigned to **monitoring point** to see progress at given point in space.
-
+**Monitorovacie body** sú definované súradnicami X, Y a Z a možno im priradiť akúkoľvek **Premennú** pre daný **Typ problému**. Napríklad pri **Prechodovom prestupe tepla** možno premennej **Teplota** priradiť **monitorovací bod** na sledovanie priebehu v danom bode priestoru.

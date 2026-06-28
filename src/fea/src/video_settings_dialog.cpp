@@ -9,9 +9,10 @@
 
 #include "video_settings_dialog.h"
 
-VideoSettingsDialog::VideoSettingsDialog(const VideoSettings &videoSettings, QWidget *parent)
+VideoSettingsDialog::VideoSettingsDialog(const VideoSettings &videoSettings, uint numberOfRecords, QWidget *parent)
     : QDialog{parent}
     , videoSettings{videoSettings}
+    , numberOfRecords{numberOfRecords}
 {
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
     QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
@@ -64,13 +65,17 @@ VideoSettingsDialog::VideoSettingsDialog(const VideoSettings &videoSettings, QWi
     this->fprSpin->setRange(int(VideoSettings::minFpi),int(VideoSettings::maxFpp));
     formLayout->addRow(tr("Frames per record"),this->fprSpin);
 
+    this->durationLabel = new QLabel;
+    formLayout->addRow(tr("Estimated video length"),this->durationLabel);
+    this->updateDurationLabel();
+
     QDialogButtonBox *buttonBox = new QDialogButtonBox;
     mainLayout->addWidget(buttonBox);
 
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);
@@ -88,6 +93,18 @@ VideoSettingsDialog::VideoSettingsDialog(const VideoSettings &videoSettings, QWi
 const VideoSettings &VideoSettingsDialog::getVideoSettings() const
 {
     return this->videoSettings;
+}
+
+void VideoSettingsDialog::updateDurationLabel()
+{
+    uint fps = this->videoSettings.getFps();
+    double seconds = 0.0;
+    if (fps > 0)
+    {
+        seconds = double(this->numberOfRecords * this->videoSettings.getFpi()) / double(fps);
+    }
+    this->durationLabel->setText(tr("%1 s (%n record(s))","",int(this->numberOfRecords))
+                                 .arg(seconds,0,'f',2));
 }
 
 QList<QMediaFormat::VideoCodec> VideoSettingsDialog::findSupportedVideoCodecs()
@@ -135,9 +152,11 @@ void VideoSettingsDialog::onFileFormatIndexChanged(int index)
 void VideoSettingsDialog::onFpsValueChanged(int value)
 {
     this->videoSettings.setFps(value);
+    this->updateDurationLabel();
 }
 
 void VideoSettingsDialog::onFprValueChanged(int value)
 {
     this->videoSettings.setFpi(value);
+    this->updateDurationLabel();
 }

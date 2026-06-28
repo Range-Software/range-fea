@@ -1,4 +1,3 @@
-# Solver log file
+# Protokolový súbor riešiča
 
-View solver's last log file
-
+Zobrazí posledný protokolový súbor riešiča.

@@ -1,3 +1,3 @@
-# Edit iso
+# Upraviť ISO
 
-Change foundation parameters of selected **ISO entity**.
+Zmení základné parametre vybranej **ISO entity**.

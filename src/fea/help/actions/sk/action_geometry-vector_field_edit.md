@@ -1,3 +1,3 @@
-# Edit vector field
+# Upraviť vektorové pole
 
-Change foundation parameters of selected **Vector field**.
+Zmení základné parametre vybraného **Vektorového poľa**.

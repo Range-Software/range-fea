@@ -1,1 +1,1 @@
-# Purge unused elements
+# Odstrániť nepoužívané prvky

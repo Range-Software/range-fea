@@ -1,5 +1,5 @@
-# Draw RAW object
+# Kresliť RAW objekt
 
-Draw an object from instructions in form of **RAW model** file syntax.
+Nakreslí objekt podľa inštrukcií vo forme syntaxe súboru **RAW modelu**.
 
-For more information on file syntax refer to [Model >> Export RAW model](action_model-export_raw.md) help page.
+Viac informácií o syntaxi súboru nájdete na stránke nápovedy [Model >> Exportovať RAW model](action_model-export_raw.md).

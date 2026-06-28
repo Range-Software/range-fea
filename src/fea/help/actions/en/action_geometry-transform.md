@@ -3,5 +3,5 @@
 Apply geometric operations on selected model geometry.
 
 
-Sweep, extruded and rotational surfaces can be created if **Sweep nodes** is checked.
+Swept, extruded, and rotational surfaces can be created if **Sweep nodes** is checked.
 

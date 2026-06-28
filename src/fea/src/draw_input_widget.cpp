@@ -100,7 +100,7 @@ DrawInputWidget::DrawInputWidget(QWidget *parent) :
                      this,
                      &DrawInputWidget::onRemoveClicked);
 
-    this->okButton = new QPushButton(okIcon,tr("Ok"));
+    this->okButton = new QPushButton(okIcon,tr("OK"));
     layout->addWidget(this->okButton,2,1,1,1);
 
     QObject::connect(this->okButton,

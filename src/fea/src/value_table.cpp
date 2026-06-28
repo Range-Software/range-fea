@@ -310,7 +310,7 @@ void ValueTable::onViewGraph()
     GraphObject *graphObject = new GraphObject;
     GraphData &rGraphData = graphObject->getData();
 
-    rGraphData.setTitle("Table values");
+    rGraphData.setTitle(tr("Table values"));
     rGraphData.setXLabel(this->horizontalHeaderItem(ValueTableTreeTypes::COLUMN_KEY)->text());
     rGraphData.setYLabel(this->horizontalHeaderItem(ValueTableTreeTypes::COLUMN_VALUE)->text());
     rGraphData.setTypeMask(GRAPH_LINES);

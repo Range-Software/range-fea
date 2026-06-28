@@ -1,4 +1,3 @@
-# Remove node
+# Odstrániť uzol
 
-Remove selected (picked) node including elements that contain given node.
-
+Odstráni vybraný (označený) uzol vrátane prvkov obsahujúcich daný uzol.

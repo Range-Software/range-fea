@@ -22,7 +22,7 @@ ICManagerTree::ICManagerTree(QObject *parent) :
     this->setColumnCount(IC_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setText(IC_TREE_COLUMN_NAME,QString("Name"));
+    headerItem->setText(IC_TREE_COLUMN_NAME,tr("Name"));
     this->setHeaderItem(headerItem);
     this->setHeaderHidden(true);
     this->setRootIsDecorated(false);

@@ -1,10 +1,8 @@
 #include "gl_element.h"
-#include "gl_texture.h"
 #include "gl_simplex_point.h"
 #include "gl_simplex_segment.h"
 #include "gl_simplex_polygon.h"
 #include "gl_simplex_tetrahedra.h"
-#include "application.h"
 
 void GLElement::_init(const GLElement *pGlElement)
 {
@@ -75,7 +73,7 @@ GLElementPrecomputedData GLElement::precompute() const
     }
 
     data.type = this->getType();
-    data.useGlCullFace = this->getUseGlCullFace();
+    data.twoSidedFace = this->twoSidedFace;
     data.pointVolume = this->pointVolume;
     data.lineCrossArea = this->lineCrossArea;
     data.surfaceThickness = this->surfaceThickness;
@@ -175,7 +173,7 @@ void GLElement::drawFromPrecomputed(const GLElementPrecomputedData &data)
         case R_ELEMENT_QUAD1:
         {
             GLSimplexPolygon polygon(this->getGLWidget(), data.nodes, data.surfaceThickness);
-            polygon.setUseGlCullFace(data.useGlCullFace);
+            polygon.setTwoSidedFace(data.twoSidedFace);
             if (!data.textureCoords.empty())
             {
                 polygon.setNodeTextureCoordinates(data.textureCoords);
@@ -408,7 +406,7 @@ void GLElement::drawTriangle()
     nodes.push_back(node3.toVector());
 
     GLSimplexPolygon polygon(this->getGLWidget(),nodes,this->surfaceThickness);
-    polygon.setUseGlCullFace(this->getUseGlCullFace());
+    polygon.setTwoSidedFace(this->twoSidedFace);
 
     int drawMask = 0;
 
@@ -488,7 +486,7 @@ void GLElement::drawQuadrilateral()
     nodes.push_back(node4.toVector());
 
     GLSimplexPolygon polygon(this->getGLWidget(),nodes,this->surfaceThickness);
-    polygon.setUseGlCullFace(this->getUseGlCullFace());
+    polygon.setTwoSidedFace(this->twoSidedFace);
 
     int drawMask = 0;
 

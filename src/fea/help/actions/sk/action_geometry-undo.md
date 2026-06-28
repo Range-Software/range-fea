@@ -1,4 +1,3 @@
-# Undo
+# Späť
 
-Undo last model action.
-
+Vráti poslednú akciu s modelom.

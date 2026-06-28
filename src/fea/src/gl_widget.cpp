@@ -78,7 +78,7 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       clippingPlaneEnabled(false),
       clippingPlaneDistance(0.5),
       showRotationSphere(false),
-      useGlCullFace(true),
+      twoSidedFace(false),
       lightsNeedUpdate(true),
       cachedNLights(0),
       currentGLColor(Qt::white)
@@ -464,16 +464,24 @@ void GLWidget::drawModel()
         this->modelDrawTime = modelDrawStopWatch.getMiliSeconds();
     }
 
-    // Release shader — subsequent non-model drawing uses fixed-function pipeline.
+    if (this->clippingPlaneEnabled)
+    {
+        GL_SAFE_CALL(glDisable(GL_CLIP_PLANE0));
+    }
+
+    // Draw draw-engine objects (shader must still be bound for VBO normal/lighting to work)
+    RLogger::trace("Draw engine objects\n");
+    const DrawEngine *pDrawEngine = Application::instance()->getSession()->getDrawEngine();
+    for (uint i=0;i<pDrawEngine->getNObjects();i++)
+    {
+        pDrawEngine->getObject(i)->glDraw(this);
+    }
+
+    // Release shader — draw-engine objects above need it, everything below uses fixed-function.
     if (this->mainShaderProgram.isValid())
     {
         this->mainShaderProgram.release();
         GLStateCache::instance().setShaderProgram(nullptr);
-    }
-
-    if (this->clippingPlaneEnabled)
-    {
-        GL_SAFE_CALL(glDisable(GL_CLIP_PLANE0));
     }
 
     // Draw local directions
@@ -525,14 +533,6 @@ void GLWidget::drawModel()
 
         GLGrid gGrid(this,1.0/double(this->scale),modelLimitBox);
         gGrid.paint();
-    }
-
-    // Draw draw-engine objects
-    RLogger::trace("Draw engine objects\n");
-    const DrawEngine *pDrawEngine = Application::instance()->getSession()->getDrawEngine();
-    for (uint i=0;i<pDrawEngine->getNObjects();i++)
-    {
-        pDrawEngine->getObject(i)->glDraw(this);
     }
 
     // Draw nodes to move
@@ -849,21 +849,21 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
 
     if (rModel.getNSlivers() > 0)
     {
-        messages.push_back(QString("W: Number of sliver elements: ") + QLocale().toString(rModel.getNSlivers()));
+        messages.push_back("W: " + tr("Number of sliver elements") +": " + QLocale().toString(rModel.getNSlivers()));
     }
     if (rModel.getNIntersected() > 0)
     {
-        messages.push_back(QString("E: Number of intersected elements: ") + QLocale().toString(rModel.getNIntersected()));
+        messages.push_back("E: " + tr("Number of intersected elements") +": " + QLocale().toString(rModel.getNIntersected()));
     }
     if (rModel.getNHoleElements() > 0)
     {
-        messages.push_back(QString("E: Number of hole elements: ") + QLocale().toString(rModel.getNHoleElements()));
+        messages.push_back("E: " + tr("Number of hole elements") +": " + QLocale().toString(rModel.getNHoleElements()));
     }
 
     const PickList &rPickList = Application::instance()->getSession()->getPickList();
     if (!rPickList.isEmpty())
     {
-        messages.append("Picked entities:");
+        messages.append(tr("Picked entities") + ":");
 
         const Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
         QVector<PickItem> pickItems = rPickList.getItems(this->modelID);
@@ -2100,19 +2100,18 @@ void GLWidget::setUseGLVoidModelList(bool useGlVoidModelList)
     R_LOG_TRACE_OUT;
 }
 
-bool GLWidget::getUseGlCullFace() const
+bool GLWidget::getTwoSidedFace() const
 {
     R_LOG_TRACE;
-    return this->useGlCullFace;
+    return this->twoSidedFace;
 }
 
-void GLWidget::setUseGlCullFace(bool useGlCullFace)
+void GLWidget::setTwoSidedFace(bool twoSidedFace)
 {
     R_LOG_TRACE_IN;
-    bool isDifferent = this->useGlCullFace != useGlCullFace;
-    this->useGlCullFace = useGlCullFace;
-    if (isDifferent)
+    if (this->twoSidedFace != twoSidedFace)
     {
+        this->twoSidedFace = twoSidedFace;
         Application::instance()->getSession()->setModelChanged(this->modelID);
     }
     R_LOG_TRACE_OUT;
@@ -2133,7 +2132,7 @@ void GLWidget::takeScreenShot(const QString &fileName)
 
         if (supportedFormats.size() > 0)
         {
-            filter = QString("Image files (");
+            filter = tr("Image files") + QString(" (");
 
             for (int i=0;i<supportedFormats.size();i++)
             {

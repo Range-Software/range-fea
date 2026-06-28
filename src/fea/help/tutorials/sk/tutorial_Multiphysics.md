@@ -1,94 +1,93 @@
-# Multi physics
+# Multifyzika
 
-In this tutorial solving multiple problems on one geometric model. For this purpose **Beam model** will be used through which a passing electric current will generate heat and deform a model.
+Tento tutoriál sa zaoberá riešením viacerých problémov na jednom geometrickom modeli. Na tento účel bude použitý **model nosníka**, cez ktorý prechádzajúci elektrický prúd vygeneruje teplo a deformuje model.
 
-Such engineering problem will require to setup three problem types:
+Takýto inžiniersky problém si bude vyžadovať nastavenie troch typov problémov:
 
-1. **Electrostatics** - Calculate electric current and produced heat.
-2. **Heat transfer** - Calculate temperature distribution.
-3. **Stress analysis** - Calculate thermal expansion (displacements) and resulting stress.
+1. **Elektrostatika** – Výpočet elektrického prúdu a generovaného tepla.
+2. **Prestup tepla** – Výpočet rozloženia teploty.
+3. **Analýza napätia** – Výpočet tepelnej rozťažnosti (posunutí) a výsledného napätia.
 
-## 1. Load model
+## 1. Načítať model
 
-Do the same as in the previous **Stress and deformation analysis** tutorial.
+Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**.
 
-## 2. Problem task flow
+## 2. Postup riešenia problému
 
-The only difference to the process described in previous tutorial is to show how to create a **Problem task flow**. Everything else is done in the same way.
+Jediný rozdiel oproti procesu opísanému v predchádzajúcom tutoriáli spočíva v ukážke, ako vytvoriť **Postup riešenia problému**. Všetko ostatné sa vykonáva rovnakým spôsobom.
 
-**Menu:** _Problem -> Problem(s) task flow_
+**Menu:** _Problém -> Postup riešenia problémov_
 
-In **Problem type selector** select all three problem types and click **Ok**.
+Vo **Výbere typu problému** vyberte všetky tri typy problémov a kliknite na **Ok**.
 
-![Problem type selector - Multi](image-Problem_type_selector-Multi.png)
+![Výber typu problému – Multi](image-Problem_type_selector-Multi.png)
 
-Your **Problem task flow** now should look like as on the following picture. If order is not the same or there are more entries, **Up**, **Down** and **Remove** buttons can be used to modify the flow.
+Váš **Postup riešenia problému** by teraz mal vyzerať ako na nasledujúcom obrázku. Ak poradie nie je rovnaké alebo ak sú tam ďalšie záznamy, možno použiť tlačidlá **Hore**, **Dole** a **Odstrániť** na úpravu postupu.
 
-![Problem task flow - Multi](image-Problem_task_flow-Multi.png)
+![Postup riešenia problému – Multi](image-Problem_task_flow-Multi.png)
 
-## 3. Assign material
+## 3. Priradiť materiál
 
-Do the same as in the previous **Stress and deformation analysis** tutorial.
+Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**.
 
-## 4. Assign boundary conditions
+## 4. Priradiť okrajové podmienky
 
-Because there are multiple problem types selected multiple boundary conditions can be assigned to each entity. Assign boundary conditions to **surface** entities as described below.
+Keďže je vybratých viacero typov problémov, každej entite možno priradiť viacero okrajových podmienok. Priraďte okrajové podmienky k **plošným** entitám podľa nasledujúceho opisu.
 
-1. **Surface**
-    - _Simple convection_
-        - Convection coefficient = 100 `[W/(m^2*K)]`
-        - Temperature = 293.15 `[K]`
-2. **Load**
-    - _Electric potential_
-        - Electric potential = 110 `[V]`
-    - _Simple convection_
-        - Convection coefficient = 100 `[W/(m^2*K)]`
-        - Temperature = 293.15 `K`
-3. **Left** and **Right**
-    - _Displacement_
-        - Displacement in all directions = 0 `[m]`
-    - _Electric potential_
-        - Electric potential = -110 `[V]`
-    - _Simple convection_
-        - Convection coefficient = 100 `[W/(m^2*K)]`
-        - Temperature = 293.15 `K`
+1. **Plocha**
+    - _Jednoduchá konvekcia_
+        - Koeficient konvekcie = 100 `[W/(m^2*K)]`
+        - Teplota = 293,15 `[K]`
+2. **Zaťaženie**
+    - _Elektrický potenciál_
+        - Elektrický potenciál = 110 `[V]`
+    - _Jednoduchá konvekcia_
+        - Koeficient konvekcie = 100 `[W/(m^2*K)]`
+        - Teplota = 293,15 `K`
+3. **Ľavá** a **Pravá**
+    - _Posunutie_
+        - Posunutie vo všetkých smeroch = 0 `[m]`
+    - _Elektrický potenciál_
+        - Elektrický potenciál = -110 `[V]`
+    - _Jednoduchá konvekcia_
+        - Koeficient konvekcie = 100 `[W/(m^2*K)]`
+        - Teplota = 293,15 `K`
 
-## 5. Assign environment conditions
+## 5. Priradiť podmienky prostredia
 
-Assign following environment conditions to **all** model entities.
+Priraďte nasledujúce podmienky prostredia **všetkým** entitám modelu.
 
-- _Gravitational acceleration_
-    - Gravitational acceleration in X direction = 0 `[m/s^2]`
-    - Gravitational acceleration in Y direction = 0 `[m/s^2]`
-    - Gravitational acceleration in Z direction = -9.80665 `[m/s^2]`
-- _Temperature_
-    - Temperature = 293.15 `[K]`
+- _Gravitačné zrýchlenie_
+    - Gravitačné zrýchlenie v smere X = 0 `[m/s^2]`
+    - Gravitačné zrýchlenie v smere Y = 0 `[m/s^2]`
+    - Gravitačné zrýchlenie v smere Z = -9,80665 `[m/s^2]`
+- _Teplota_
+    - Teplota = 293,15 `[K]`
 
-## 6. Solve problem
+## 6. Vyriešiť problém
 
-Do the same as in the previous **Stress and deformation analysis** tutorial.
+Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**.
 
-## 7. Create a vector field
+## 7. Vytvoriť vektorové pole
 
-**Vector field** is an entity which will be used to visualize electric field.
-
-
-**Menu:** _Geometry -> Vector field -> Create vector field_
+**Vektorové pole** je entita, ktorá sa použije na vizualizáciu elektrického poľa.
 
 
-Select **volume** model entity and **Electric field** as shown on the picture below.
+**Menu:** _Geometria -> Vektorové pole -> Vytvoriť vektorové pole_
 
 
-![Create vector field](image-Create_vector_field.png)
+Vyberte entitu **objem** modelu a **Elektrické pole** podľa nasledujúceho obrázka.
 
 
-Click **Ok** button to create the **Vector field**. Once created it will be added to the **Model tree** and results variables can be applied to it as to any other model entity.
+![Vytvoriť vektorové pole](image-Create_vector_field.png)
 
-## 8. Apply results
 
-Do the same as in the previous **Stress and deformation analysis** tutorial. Additionally you can apply results to created **Vector field** entity.
+Kliknite na tlačidlo **Ok** na vytvorenie **Vektorového poľa**. Po vytvorení bude pridané do **Stromu modelu** a možno naň aplikovať výsledkové premenné rovnako ako na akúkoľvek inú entitu modelu.
 
-![Applied temperature on vector field](image-Applied_temperature_on_vector_field.png)
+## 8. Aplikovať výsledky
 
-![Applied temperature on volume](image-Applied_temperature_on_volume.png)
+Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**. Výsledky môžete navyše aplikovať aj na vytvorenú entitu **Vektorové pole**.
 
+![Aplikovaná teplota na vektorové pole](image-Applied_temperature_on_vector_field.png)
+
+![Aplikovaná teplota na objem](image-Applied_temperature_on_volume.png)

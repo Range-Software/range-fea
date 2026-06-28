@@ -1,4 +1,3 @@
-# Solver convergence
+# Konvergencia riešiča
 
-Display solver's convergence graphs.
-
+Zobrazí grafy konvergencie riešiča.

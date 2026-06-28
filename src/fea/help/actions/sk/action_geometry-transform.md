@@ -1,7 +1,6 @@
-# Scale, translate, rotate
+# Škálovanie, posun, rotácia
 
-Apply geometric operations on selected model geometry.
+Aplikuje geometrické operácie na vybranú geometriu modelu.
 
 
-Sweep, extruded and rotational surfaces can be created if **Sweep nodes** is checked.
-
+Rozmetané, vytiahnuté a rotačné plochy možno vytvoriť, ak je zaškrtnutá možnosť **Rozmetať uzly**.

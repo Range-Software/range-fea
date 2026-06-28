@@ -75,7 +75,7 @@ class ResultsVariableTree : public QTreeWidget
         //! Range max value has changed.
         void onRangeMaxValueChanged(double maxValue);
 
-        //! Display range toggle state has changed.
+        //! Value range & color scale toggle state has changed.
         void onRangeDisplayStateChanged(Qt::CheckState state);
 
         //! Range autofill default clicked.

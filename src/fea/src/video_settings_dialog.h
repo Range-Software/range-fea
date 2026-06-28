@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QComboBox>
 #include <QSpinBox>
+#include <QLabel>
 
 #include "video_settings.h"
 
@@ -15,18 +16,26 @@ class VideoSettingsDialog : public QDialog
     protected:
 
         VideoSettings videoSettings;
+        //! Number of records to be encoded (used to estimate the video length).
+        uint numberOfRecords;
 
         QComboBox *videoCodecCombo;
         QComboBox *fileFormatCombo;
         QSpinBox *fpsSpin;
         QSpinBox *fprSpin;
+        QLabel *durationLabel;
 
     public:
 
         //! Constructor.
-        explicit VideoSettingsDialog(const VideoSettings &videoSettings, QWidget *parent = nullptr);
+        explicit VideoSettingsDialog(const VideoSettings &videoSettings, uint numberOfRecords, QWidget *parent = nullptr);
 
         const VideoSettings &getVideoSettings() const;
+
+    protected:
+
+        //! Update the estimated video length label.
+        void updateDurationLabel();
 
     protected:
 

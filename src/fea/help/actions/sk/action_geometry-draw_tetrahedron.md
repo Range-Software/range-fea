@@ -1,7 +1,6 @@
-# Draw tetrahedron
+# Kresliť tetraeder
 
-Draw a **tetrahedron** object.
+Nakreslí objekt **tetraeder**.
 
 
-**Tetrahedron** object is a volume entity with one tetrahedron (simplex) element that consist of four nodes and has four triangular sides.
-
+Objekt **tetraeder** je objemová entita s jedným tetraedrálnym (simplexovým) prvkom pozostávajúcim zo štyroch uzlov a štyroch trojuholníkových strán.

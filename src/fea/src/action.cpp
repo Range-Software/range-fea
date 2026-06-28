@@ -13,6 +13,7 @@
 #include <rgl_cloud_session_dialog.h>
 #include <rgl_log_browser_dialog.h>
 #include <rgl_message_box.h>
+#include <rgl_release_notes_dialog.h>
 #include <rgl_software_manager_dialog.h>
 #include <rgl_text_browser_dialog.h>
 
@@ -229,7 +230,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_SESSION, ACTION_SESSION_OPEN, tr("Open session"), tr("Open previously saved session."), "Ctrl+Alt+O", ":/icons/file/pixmaps/range-session_open.svg",static_cast<PointerToMemberTrigger>(&Action::onSessionOpen));
     Action::regDef(actionDef, ACTION_GROUP_SESSION, ACTION_SESSION_SAVE, tr("Save session"), tr("Save current session."), "Ctrl+Alt+S", ":/icons/file/pixmaps/range-session_save.svg",static_cast<PointerToMemberTrigger>(&Action::onSessionSave));
     Action::regDef(actionDef, ACTION_GROUP_SESSION, ACTION_SESSION_SAVE_AS, tr("Save session as"), tr("Save current session under different filename."), "Ctrl+Alt+Shift+S", ":/icons/file/pixmaps/range-session_save_as.svg",static_cast<PointerToMemberTrigger>(&Action::onSessionSaveAs));
-    Action::regDef(actionDef, ACTION_GROUP_SESSION, ACTION_SESSION_CLOSE, tr("Close Session"), tr("Close current session."), "Ctrl+Alt+W", ":/icons/file/pixmaps/range-session_close.svg",static_cast<PointerToMemberTrigger>(&Action::onSessionClose));
+    Action::regDef(actionDef, ACTION_GROUP_SESSION, ACTION_SESSION_CLOSE, tr("Close session"), tr("Close current session."), "Ctrl+Alt+W", ":/icons/file/pixmaps/range-session_close.svg",static_cast<PointerToMemberTrigger>(&Action::onSessionClose));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_NEW, tr("New model"), tr("Create a new empty model."), "Ctrl+N", ":/icons/file/pixmaps/range-model_new.svg",static_cast<PointerToMemberTrigger>(&Action::onModelNew));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_OPEN, tr("Open model"), tr("Open previously saved model."), "Ctrl+O", ":/icons/file/pixmaps/range-model_open.svg",static_cast<PointerToMemberTrigger>(&Action::onModelOpen));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_SAVE, tr("Save model"), tr("Save selected model."), "Ctrl+S", ":/icons/file/pixmaps/range-model_save.svg",static_cast<PointerToMemberTrigger>(&Action::onModelSave));
@@ -237,7 +238,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STEP, tr("Export STEP model"), "", "", ":/icons/file/pixmaps/range-model_export_step.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStep));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_MSH, tr("Export MSH model"), "", "", ":/icons/file/pixmaps/range-model_export_msh.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportMsh));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_RAW, tr("Export RAW model"), "", "", ":/icons/file/pixmaps/range-model_export_raw.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportRaw));
-    Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STL_ASCII, tr("Export STL model (ascii)"), "", "", ":/icons/file/pixmaps/range-model_export_stl.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStlAscii));
+    Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STL_ASCII, tr("Export STL model (ASCII)"), "", "", ":/icons/file/pixmaps/range-model_export_stl.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStlAscii));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_EXPORT_STL_BINARY, tr("Export STL model (binary)"), "", "", ":/icons/file/pixmaps/range-model_export_stl.svg",static_cast<PointerToMemberTrigger>(&Action::onModelExportStlBinary));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_CLOSE, tr("Close model"), "", "Ctrl+W", ":/icons/file/pixmaps/range-model_close.svg",static_cast<PointerToMemberTrigger>(&Action::onModelClose));
     Action::regDef(actionDef, ACTION_GROUP_MODEL, ACTION_MODEL_RELOAD_RESULTS, tr("Reload results"), "", "", ":/icons/file/pixmaps/range-refresh.svg",static_cast<PointerToMemberTrigger>(&Action::onModelReloadResults));
@@ -312,7 +313,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_REPORT, ACTION_REPORT_MONITORING_POINT_GRAPH, tr("Monitoring points"), "", "", ":/icons/report/pixmaps/range-report_monitoring_point.svg",static_cast<PointerToMemberTrigger>(&Action::onReportMonitoringPointGraph));
     Action::regDef(actionDef, ACTION_GROUP_REPORT, ACTION_REPORT_CREATE_REPORT, tr("Create report"), "", "Ctrl+Shift+R", ":/icons/report/pixmaps/range-report.svg",static_cast<PointerToMemberTrigger>(&Action::onReportCreateReport));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_SETTINGS, tr("Application settings"), "", "Ctrl+A", ":/icons/application/pixmaps/range-application_settings.svg",static_cast<PointerToMemberTrigger>(&Action::onApplicationSettings), QAction::PreferencesRole);
-    Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_UPDATE, tr("Check for update"), "", "", ":/icons/file/pixmaps/range-download.svg",static_cast<PointerToMemberTrigger>(&Action::onUpdate));
+    Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_UPDATE, tr("Check for updates"), "", "", ":/icons/file/pixmaps/range-download.svg",static_cast<PointerToMemberTrigger>(&Action::onUpdate));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT, tr("About"), "", "F1", ":/icons/logos/pixmaps/range-fea.svg",static_cast<PointerToMemberTrigger>(&Action::onAbout), QAction::AboutRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT_QT, tr("About Qt"), "", "", ":/icons/file/pixmaps/range-qt.svg",static_cast<PointerToMemberTrigger>(&Action::onAboutQt), QAction::AboutQtRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_LICENSE, tr("License"), "", "", ":/icons/logos/pixmaps/range-fea.svg",static_cast<PointerToMemberTrigger>(&Action::onLicense));
@@ -354,7 +355,7 @@ void Action::onSessionNew()
     R_LOG_TRACE_IN;
     int response = QMessageBox::question(Application::instance()->getMainWindow(),
                                          tr("Close session"),
-                                         tr("Are you sure you want to close current session?"),
+                                         tr("Are you sure you want to close the current session?"),
                                          QMessageBox::Yes | QMessageBox::No,
                                          QMessageBox::No);
     if (response == QMessageBox::Yes)
@@ -437,7 +438,7 @@ void Action::onSessionClose()
     R_LOG_TRACE_IN;
     int response = QMessageBox::question(Application::instance()->getMainWindow(),
                                          tr("Close session"),
-                                         tr("Are you sure you want to close current session?"),
+                                         tr("Are you sure you want to close the current session?"),
                                          QMessageBox::Yes | QMessageBox::No,
                                          QMessageBox::No);
     if (response == QMessageBox::Yes)
@@ -610,7 +611,7 @@ void Action::onModelExportStlAscii()
         Model *pModel = Application::instance()->getSession()->getModelPtr(selectedModelIDs[i]);
         QString fileName = dataDir.filePath(pModel->getName() + ".stl");
         fileName = QFileDialog::getSaveFileName(Application::instance()->getMainWindow(),
-                                                tr("Export model to STL (ascii) file"),
+                                                tr("Export model to STL (ASCII) file"),
                                                 fileName,
                                                 "STL triangle files (*.stl);;Any files (*)");
         if (!fileName.isEmpty())
@@ -1981,7 +1982,7 @@ void Action::onProblemReset()
     R_LOG_TRACE_IN;
     if (QMessageBox::question(Application::instance()->getMainWindow(),
                                tr("Reset problem setup"),
-                               tr("Are you sure you want to reset all problem setup including boundary, initial and environment conditions?"),
+                               tr("Are you sure you want to reset the problem setup including boundary, initial and environment conditions?"),
                                QMessageBox::No,
                                QMessageBox::Yes) == QMessageBox::No)
     {
@@ -2279,31 +2280,8 @@ void Action::onLicense()
 void Action::onReleaseNotes()
 {
     R_LOG_TRACE_IN;
-    QString releaseNotesFileName(Application::instance()->getApplicationSettings()->findReleaseNotesFileName());
-
-    try
-    {
-        QFile file(releaseNotesFileName);
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            throw RError(RError::Type::OpenFile,R_ERROR_REF,"Failed to open the file \'%s\'.",releaseNotesFileName.toUtf8().constData());
-        }
-        QString releaseNotesText(file.readAll());
-        file.close();
-
-        RTextBrowserDialog textBrowserDialog(tr("Release notes"),
-                                            releaseNotesFileName,
-                                            releaseNotesText);
-        textBrowserDialog.exec();
-    }
-    catch (const RError &rError)
-    {
-        RLogger::error("Failed to display release notes from file \'%s\'. %s\n",releaseNotesFileName.toUtf8().constData(),rError.getMessage().toUtf8().constData());
-    }
-    catch (...)
-    {
-        RLogger::error("Failed to display release notes from file \'%s\'.\n",releaseNotesFileName.toUtf8().constData());
-    }
+    RReleaseNotesDialog releaseNotesDialog(Application::instance()->getMainWindow());
+    releaseNotesDialog.exec();
     R_LOG_TRACE_OUT;
 }
 

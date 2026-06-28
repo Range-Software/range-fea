@@ -1,4 +1,3 @@
-# Create cut
+# Vytvoriť rez
 
-**Cut** cut is a form of **interpolated** entity created as a result of intersection between a **cut plane** and a **volume** and/or a **surface** entities.
-
+**Rez** je forma **interpolovanej** entity vzniknutá ako výsledok prieniku **roviny rezu** s entitami **objemu** a/alebo **plochy**.

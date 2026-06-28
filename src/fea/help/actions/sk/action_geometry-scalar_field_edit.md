@@ -1,3 +1,3 @@
-# Edit scalar field
+# Upraviť skalárne pole
 
-Change foundation parameters of selected **Scalar field**.
+Zmení základné parametre vybraného **Skalárneho poľa**.

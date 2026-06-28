@@ -17,6 +17,7 @@ void main()
 {
     vec4 worldPos = uModelView * vec4(aPosition, 1.0);
     gl_Position   = uProjection * worldPos;
+    gl_ClipVertex = worldPos;
     vFragPos  = worldPos.xyz;
     vNormal   = mat3(uModelView) * aNormal;
     vColor    = aColor;

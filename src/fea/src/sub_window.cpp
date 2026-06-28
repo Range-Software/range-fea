@@ -36,7 +36,7 @@ void SubWindow::createSubWindow()
     gridLayoutSubwindow->addWidget(this->glWidget, 0, 0, 1, 1);
 
     int toolbarIconSize = Application::instance()->getApplicationSettings()->getToolbarIconSize();
-    this->toolBar = new QToolBar(QString("Sub window toolbar"));
+    this->toolBar = new QToolBar(tr("Sub window toolbar"));
     this->toolBar->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
 
     gridLayoutSubwindow->addWidget(toolBar, 1, 0, 1, 1);
@@ -72,7 +72,7 @@ void SubWindow::createSubWindow()
     this->toolBar->addSeparator();
 
     QAction *actionScreenshot = new QAction(this);
-    actionScreenshot->setText("Take screen shot.");
+    actionScreenshot->setText(tr("Screenshot."));
     actionScreenshot->setShortcut(QString("Ctrl+P"));
     actionScreenshot->setIcon(QIcon(":/icons/file/pixmaps/range-screenshot.svg"));
     this->toolBar->addAction(actionScreenshot);
@@ -82,16 +82,18 @@ void SubWindow::createSubWindow()
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->toolBar->addWidget(spacer);
 
-    QCheckBox *backSideColorCheck = new QCheckBox(tr("Back side color"));
-    this->toolBar->addWidget(backSideColorCheck);
+    QCheckBox *twoSidedFaceCheck = new QCheckBox(tr("Same face color"));
+    twoSidedFaceCheck->setToolTip(tr("When checked, both sides of surface elements share the same color.\nWhen unchecked, the back side is shown in a different color."));
+    twoSidedFaceCheck->setCheckState(this->glWidget->getTwoSidedFace() ? Qt::Checked : Qt::Unchecked);
+    this->toolBar->addWidget(twoSidedFaceCheck);
 
-    QObject::connect(backSideColorCheck,&QCheckBox::checkStateChanged,this,&SubWindow::onBackSideColorChanged);
+    QObject::connect(twoSidedFaceCheck,&QCheckBox::checkStateChanged,this,&SubWindow::onTwoSideFaceChanged);
 
     ClippingPlaneWidget *clippingPlaneWidget = new ClippingPlaneWidget;
     this->toolBar->addWidget(clippingPlaneWidget);
 
     QAction *actionPreferences = new QAction(this);
-    actionPreferences->setText("Display preferences.");
+    actionPreferences->setText(tr("Display preferences."));
     actionPreferences->setShortcut(QString("Ctrl+P"));
     actionPreferences->setIcon(QIcon(":/icons/application/pixmaps/range-display_preferences.svg"));
     this->toolBar->addAction(actionPreferences);
@@ -214,10 +216,10 @@ void SubWindow::onShowErrorsToggled(bool checked)
     R_LOG_TRACE_OUT;
 }
 
-void SubWindow::onBackSideColorChanged(Qt::CheckState state)
+void SubWindow::onTwoSideFaceChanged(Qt::CheckState state)
 {
     R_LOG_TRACE_IN;
-    this->glWidget->setUseGlCullFace(state == Qt::Unchecked);
+    this->glWidget->setTwoSidedFace(state == Qt::Checked);
     R_LOG_TRACE_OUT;
 }
 

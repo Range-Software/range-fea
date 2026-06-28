@@ -1,4 +1,3 @@
-# Update
+# Aktualizovať
 
-Update the software to latest version if available.
-
+Aktualizuje softvér na najnovšiu verziu, ak je dostupná.

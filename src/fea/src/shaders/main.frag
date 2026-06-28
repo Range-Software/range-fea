@@ -17,10 +17,11 @@ uniform Light uLights[8];
 
 void main()
 {
-    // Back faces: silver for solid surfaces; two-sided (cut planes, iso surfaces) use flipped normal.
-    if (!gl_FrontFacing && !uTwoSided) { gl_FragColor = vec4(0.75, 0.75, 0.75, vColor.a); return; }
+    // Back faces: silver for solid surfaces; two-sided (cut planes, iso surfaces) use element colour.
     // vTexCoord < 0 is a sentinel: use vertex colour (e.g. black edges over a textured face).
-    vec4 baseColor = (uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor;
+    vec4 baseColor = (!gl_FrontFacing && !uTwoSided)
+                     ? vec4(0.75, 0.75, 0.75, vColor.a)
+                     : ((uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor);
     if (!uUseLighting || uNumLights == 0) { gl_FragColor = baseColor; return; }
     // Flip normal for back faces so lighting looks correct from the viewer's side.
     vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);

@@ -85,6 +85,7 @@ void GLActionEvent::setMouseEvent(QMouseEvent *mouseEvent, bool release)
 {
     GLActionEvent::Type prevType = this->getType();
     this->buttons = release ? Qt::NoButton : mouseEvent->buttons();
+    this->keyModifiers = mouseEvent->modifiers();
     GLActionEvent::Type currType = this->getType();
     this->actionChanged = (prevType != currType);
     emit this->changed(currType);

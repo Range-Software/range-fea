@@ -24,7 +24,7 @@ In some cases there might be a need for overriding default settings and specify 
 - **Reconstruct mesh (reuse current nodes)** - keep current nodes and only add new ones if needed.
 - **Keep computed results** - all computed results will be mapped/interpolated to new nodes and elements.
 - **Quality mesh** - generate 3D mesh to conform with quality criteria.
-    - **Maximum element volume** - maximum volume of each generated element. No element should have higher volume then specified.
+    - **Maximum element volume** - maximum volume of each generated element. No element should have higher volume than specified.
     - **Generate mesh size function** - should be used to refine mesh in places where differences in results are found.
 - **TetGen parameters** - parameters passed to TetGen mesh generator.
 

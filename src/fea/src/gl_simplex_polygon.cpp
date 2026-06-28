@@ -163,18 +163,12 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         cache.enableTexture1D();
     }
 
-    // Save current cull state from cache (no GPU query)
-    GLboolean cullState = cache.getCullFace();
-    GLenum cullMode = cache.getCullFaceMode();
-
-    if (this->useGlCullFace)
+    // In immediate mode (not recording into a VBO) set uTwoSided so the shader
+    // colours back faces correctly.  During VBO recording the uniform cannot be
+    // changed per-element; GLElementGroup::paint() sets it at callList() time.
+    if (!GLFunctions::isRecordingVBO())
     {
-        cache.enableCullFace();
-        cache.setCullFaceMode(GL_BACK);
-    }
-    else
-    {
-        cache.disableCullFace();
+        this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", this->twoSidedFace);
     }
 
     GLFunctions::begin(GL_TRIANGLE_FAN);
@@ -219,38 +213,15 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         GLFunctions::end();
     }
 
-    if (this->useGlCullFace)
-    {
-        cache.setCullFaceMode(GL_FRONT);
-    }
-
     if (useTexture)
     {
         cache.disableTexture1D();
     }
 
-    // Draw back face (white) only for the legacy display-list / immediate path.
-    // During VBO recording every batch is rendered with the same cull mode at
-    // draw time, so a white batch with the same vertices as the front-face batch
-    // would overwrite the correct element colour on all front-facing polygons.
-    // The shader's gl_FrontFacing two-sided Phong already handles back faces.
-    if (this->useGlCullFace && !GLFunctions::isRecordingVBO())
+    if (!GLFunctions::isRecordingVBO())
     {
-        this->getGLWidget()->qglColor(Qt::white);
-
-        GLObject::glNormalVector(normal);
-
-        GLFunctions::begin(GL_TRIANGLE_FAN);
-        for (uint i=0;i<nn;i++)
-        {
-            GLObject::glVertexNode(nodes2[i]);
-        }
-        GLFunctions::end();
+        this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", false);
     }
-
-    // Restore cull state via cache (only makes GL calls if state changed)
-    cache.setCullFaceMode(cullMode);
-    cache.setCullFace(cullState);
 }
 
 void GLSimplexPolygon::drawWired(const std::vector<RNode> &nodes1, const std::vector<RNode> &nodes2, bool volumeElement, bool useTexture)

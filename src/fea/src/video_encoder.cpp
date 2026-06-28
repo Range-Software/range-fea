@@ -15,6 +15,8 @@ VideoEncoder::VideoEncoder(const QString &fileName, const QQueue<QImage> &imageS
     , imageQueue{imageStack}
     , session{nullptr}
     , frameInput{nullptr}
+    , nextFrameTimeUs{0}
+    , encodedFrameCount{0}
 {
     this->session = new QMediaCaptureSession(parent);
 
@@ -50,27 +52,43 @@ void VideoEncoder::onActualLocationChanged(const QUrl &location)
 
 void VideoEncoder::onReadyToSendVideoFrame()
 {
-    static uint encodedTotal=0;
     uint encoded=0;
 
-    bool encodeNextImage = true;
-    while (!this->imageQueue.isEmpty() && encodeNextImage)
+    // Microseconds each frame is shown for; explicit per-frame timestamps make the
+    // resulting video length deterministic (frameCount / fps) rather than depending
+    // on encoder/muxer defaults.
+    const qint64 frameDurationUs = (this->videoSettings.getFps() > 0)
+                                 ? qint64(1000000.0 / double(this->videoSettings.getFps()) + 0.5)
+                                 : 0;
+
+    while (!this->imageQueue.isEmpty())
     {
-        QVideoFrame videoFrame(this->imageQueue.dequeue());
+        QVideoFrame videoFrame(this->imageQueue.head());
         if (!videoFrame.isValid())
         {
+            this->imageQueue.dequeue();
             RLogger::warning("Invalid video frame\n");
             continue;
         }
-        if (encodedTotal == 0)
+        if (this->encodedFrameCount == 0)
         {
             videoFrame.setStreamFrameRate(qreal(this->videoSettings.getFps()));
         }
-        encodeNextImage = this->frameInput->sendVideoFrame(videoFrame);
+        videoFrame.setStartTime(this->nextFrameTimeUs);
+        videoFrame.setEndTime(this->nextFrameTimeUs + frameDurationUs);
+
+        if (!this->frameInput->sendVideoFrame(videoFrame))
+        {
+            // Input not ready: keep the frame queued and retry on the next signal.
+            break;
+        }
+
+        this->imageQueue.dequeue();
+        this->nextFrameTimeUs += frameDurationUs;
+        this->encodedFrameCount++;
         encoded++;
-        encodedTotal++;
     }
-    RLogger::info("%u (+%u) frames encoded\n",encodedTotal,encoded);
+    RLogger::info("%llu (+%u) frames encoded\n",this->encodedFrameCount,encoded);
 
     if (this->imageQueue.isEmpty())
     {

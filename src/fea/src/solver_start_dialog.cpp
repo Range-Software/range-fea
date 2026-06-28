@@ -28,7 +28,7 @@ SolverStartDialog::SolverStartDialog(uint modelID, QWidget *parent)
     this->pSolverTask = new SolverTask(Application::instance()->getApplicationSettings(),this->modelID);
     this->pSolverTask->setBlocking(false);
 
-    this->setWindowTitle(QString("Start solver"));
+    this->setWindowTitle(tr("Start solver"));
 
     QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
     QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
@@ -114,7 +114,7 @@ SolverStartDialog::SolverStartDialog(uint modelID, QWidget *parent)
     QPushButton *cancelButton = new QPushButton(cancelIcon, tr("Cancel"));
     buttonBox->addButton(cancelButton,QDialogButtonBox::RejectRole);
 
-    QPushButton *okButton = new QPushButton(okIcon, tr("Ok"));
+    QPushButton *okButton = new QPushButton(okIcon, tr("OK"));
     okButton->setDisabled(this->errors.size() > 0);
     buttonBox->addButton(okButton,QDialogButtonBox::AcceptRole);
 

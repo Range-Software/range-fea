@@ -1,14 +1,13 @@
-# Results
+# Výsledky
 
-**Results** are produced by the **Solver** and consist of **Result variables**.
+**Výsledky** sú produkované **Riešičom** a skladajú sa z **Výsledkových premenných**.
 
-## Results variable
+## Výsledková premenná
 
-**Results variable** is set of values computed by the **Solver**. **Results variable** is defined **type** (e.g., **Temperature** or **Displacement** and a vector of values. Based on **type** **Results variable** can contain vector of scalar values or vector values.
-
-
-For example, **Temperature** results variable will contain vector of temperatures for each node whereas **Displacement** will contain vector of displacement vectors for each node.
+**Výsledková premenná** je sada hodnôt vypočítaných **Riešičom**. **Výsledková premenná** je definovaná **typom** (napr. **Teplota** alebo **Posunutie**) a vektorom hodnôt. Na základe **typu** môže **Výsledková premenná** obsahovať vektor skalárnych hodnôt alebo vektor vektorových hodnôt.
 
 
-**Results variable** can be computed either on node or on element level. For example, **Displacement** is computed on node level, whereas **Stress** is computed on element level. Each element level variable once computed can be converted to node level. Converting element level variable to node level is one time operation and can not be reverted. To do so results have to be recalculated by the **Solver**.
+Napríklad výsledková premenná **Teplota** bude obsahovať vektor teplôt pre každý uzol, zatiaľ čo **Posunutie** bude obsahovať vektor vektorov posunutia pre každý uzol.
 
+
+**Výsledková premenná** môže byť vypočítaná buď na úrovni uzlov, alebo na úrovni prvkov. Napríklad **Posunutie** je vypočítané na úrovni uzlov, zatiaľ čo **Napätie** je vypočítané na úrovni prvkov. Každú premennú na úrovni prvkov možno po výpočte previesť na úroveň uzlov. Prevod premennej z úrovne prvkov na úroveň uzlov je jednorazová operácia a nie je možné ju vrátiť späť. Na opätovný výpočet je potrebné, aby výsledky prepočítal **Riešič**.

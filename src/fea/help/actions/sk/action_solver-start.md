@@ -1,7 +1,6 @@
-# Start solver
+# Spustiť riešič
 
-Start **solver task** in the background for selected model.
+Spustí **úlohu riešiča** na pozadí pre vybraný model.
 
 
-**Solver task** will execute all **Problem tasks** as defined in **Problem(s) task flow**.
-
+**Úloha riešiča** vykoná všetky **Úlohy problémov** definované v **Postupe riešenia problémov**.

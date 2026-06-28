@@ -1,4 +1,3 @@
-# Move node
+# Presunúť uzol
 
-Move selected (picked) node to specified position.
-
+Presunie vybraný (označený) uzol na zadanú pozíciu.

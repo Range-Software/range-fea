@@ -1,4 +1,3 @@
-# Export STL model (binary)
+# Exportovať STL model (binárny)
 
-Export selected model to **STL (binary)** type file.
-
+Exportuje vybraný model do súboru typu **STL (binárny)**.

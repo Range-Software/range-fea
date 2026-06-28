@@ -1,20 +1,20 @@
 # Model
 
-**Model** is a virtual geometric representation of three dimensional object. Model consist of geometric **Entities**.
+**Model** je virtuálna geometrická reprezentácia trojrozmerného objektu. Model sa skladá z geometrických **entít**.
 
 
-**Entity** is a collection of elements (geometric simplexes) of similar type and are divided into these types:
+**Entita** je kolekcia prvkov (geometrických simplexov) rovnakého typu a delí sa na tieto typy:
 
-- **Point** - collection of 0D elements (node).
-- **Line** - collection of 1D elements (segment).
-- **Surface** - collection of 2D elements (triangle, quadrilateral).
-- **Volume** - collection of 3D elements (tetrahedron, hexahedron).
+- **Bod** – kolekcia 0D prvkov (uzlov).
+- **Čiara** – kolekcia 1D prvkov (úsečiek).
+- **Plocha** – kolekcia 2D prvkov (trojuholník, štvoruholník).
+- **Objem** – kolekcia 3D prvkov (tetraeder, hexaeder).
 
-Regardless of whether elements are 0D, 1D, 2D or 3D they all are represented in 3D space. For example point (node) has no dimensions. It only has a position, whereas line has one dimension (length).
+Bez ohľadu na to, či sú prvky 0D, 1D, 2D alebo 3D, všetky sú reprezentované v 3D priestore. Napríklad bod (uzol) nemá žiadne rozmery – má iba polohu, zatiaľ čo čiara má jeden rozmer (dĺžku).
 
 
-Each **entity** except **Volume** can have **geometric** properties assigned to complete 3D representation. These are:
+Každej **entite** okrem **Objemu** možno priradiť **geometrické** vlastnosti na doplnenie 3D reprezentácie. Sú to:
 
-- **Point** - volume in cubic meters.
-- **Line** - cross-sectional area in meters square.
-- **Surface** - thickness in meters.
+- **Bod** – objem v kubických metroch.
+- **Čiara** – plocha prierezu v štvorcových metroch.
+- **Plocha** – hrúbka v metroch.
