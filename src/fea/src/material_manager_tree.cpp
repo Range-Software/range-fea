@@ -275,7 +275,7 @@ int MaterialManagerTree::compareModelMaterial(const RMaterial &material) const
 QString MaterialManagerTree::buildFilePath(const RMaterial &material)
 {
     QDir materialsDir(Application::instance()->getApplicationSettings()->getMaterialsDir());
-    return materialsDir.filePath(material.getID().toString(QUuid::WithoutBraces) + "." + RMaterial::getDefaultFileExtension(true));
+    return materialsDir.filePath(material.getID().toString(QUuid::WithoutBraces) + "." + RMaterial::getDefaultFileExtension());
 }
 
 RMaterial MaterialManagerTree::read(const QString &filePath)
