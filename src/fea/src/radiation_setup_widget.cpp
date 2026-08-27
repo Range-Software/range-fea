@@ -5,7 +5,7 @@
 #include <QPushButton>
 
 #include <rbl_job_manager.h>
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 #include <rgl_message_box.h>
 
 #include "application.h"
@@ -268,7 +268,7 @@ void RadiationSetupWidget::clearViewFactorMatrix()
         {
             const QString &fileName = Application::instance()->getSession()->getModel(modelIDs[i]).getProblemSetup().getRadiationSetup().getViewFactorMatrixFile();
             RLogger::info("Removing file \'%s\'\n",fileName.toUtf8().constData());
-            RFileManager::remove(fileName);
+            RFileUtils::remove(fileName);
         }
         catch (const RError &error)
         {

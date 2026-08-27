@@ -1,7 +1,7 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include "model_io.h"
 #include "application.h"
@@ -38,7 +38,7 @@ QString ModelIO::getModelSaveName(const ApplicationSettings *mainSettings, QWidg
     QString asciiExtension = RModel::getDefaultFileExtension(false);
     QString dialogDesc = "Range model files (*." + binaryExtension + " *." + asciiExtension + ");;Any files (*)";
 
-    QString fileName = RFileManager::getFileNameWithOutTimeStep(rModel.getFileName());
+    QString fileName = RFileUtils::getFileNameWithOutTimeStep(rModel.getFileName());
     if (saveAs)
     {
         fileName = QFileDialog::getSaveFileName(parent,

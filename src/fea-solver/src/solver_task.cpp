@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include <rsolver.h>
 
@@ -43,8 +43,8 @@ void SolverTask::run(void)
         return;
     }
 
-    model.getMatrixSolverConf(RMatrixSolverConf::CG).setOutputFileName(RFileManager::getFileNameWithSuffix(this->convergenceFileName,RMatrixSolverConf::getId(RMatrixSolverConf::CG)));
-    model.getMatrixSolverConf(RMatrixSolverConf::GMRES).setOutputFileName(RFileManager::getFileNameWithSuffix(this->convergenceFileName,RMatrixSolverConf::getId(RMatrixSolverConf::GMRES)));
+    model.getMatrixSolverConf(RMatrixSolverConf::CG).setOutputFileName(RFileUtils::getFileNameWithSuffix(this->convergenceFileName,RMatrixSolverConf::getId(RMatrixSolverConf::CG)));
+    model.getMatrixSolverConf(RMatrixSolverConf::GMRES).setOutputFileName(RFileUtils::getFileNameWithSuffix(this->convergenceFileName,RMatrixSolverConf::getId(RMatrixSolverConf::GMRES)));
     model.getMonitoringPointManager().setOutputFileName(this->monitoringFileName);
     if (this->restart)
     {

@@ -1,4 +1,4 @@
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include <rgl_message_box.h>
 
@@ -101,7 +101,7 @@ void Application::initialize()
     {
         // Load session
         QString sessionFileName = this->getApplicationSettings()->getSessionFileName();
-        if (!sessionFileName.isEmpty() && RFileManager::fileExists(sessionFileName))
+        if (!sessionFileName.isEmpty() && RFileUtils::fileExists(sessionFileName))
         {
             try
             {

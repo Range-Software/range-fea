@@ -1,3 +1,9 @@
+## Version 1.2.3
+
+### Improvements
+
+---
+
 ## Version 1.2.2
 
 ### Improvements

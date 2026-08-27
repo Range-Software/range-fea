@@ -1,6 +1,6 @@
 #include <QFileInfo>
 
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include "model_io.h"
 #include "solver_manager.h"
@@ -84,7 +84,7 @@ int SolverTask::perform()
         RLogger::indent();
 
         Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
-        QString modelFileName(RFileManager::getFileNameWithOutTimeStep(rModel.getFileName()));
+        QString modelFileName(RFileUtils::getFileNameWithOutTimeStep(rModel.getFileName()));
 
         // Save model first.
         try

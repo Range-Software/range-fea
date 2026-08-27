@@ -9,7 +9,7 @@
 #include <rbl_job_manager.h>
 #include <rbl_progress.h>
 
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include "model_records_selector.h"
 #include "model_io.h"
@@ -148,9 +148,9 @@ void ModelRecordsSelector::createAnimation(uint modelID)
             continue;
         }
 
-        QString recordFileName(RFileManager::getFileNameWithTimeStep(rModel.getFileName(),recordNumber));
-        QString imageFileName(RFileManager::getFileNameWithTimeStep(rModel.buildScreenShotFileName(),recordNumber));
-        if (RFileManager::fileExists(recordFileName) && RFileManager::fileExists(imageFileName))
+        QString recordFileName(RFileUtils::getFileNameWithTimeStep(rModel.getFileName(),recordNumber));
+        QString imageFileName(RFileUtils::getFileNameWithTimeStep(rModel.buildScreenShotFileName(),recordNumber));
+        if (RFileUtils::fileExists(recordFileName) && RFileUtils::fileExists(imageFileName))
         {
             imageFileNames.append(imageFileName);
         }

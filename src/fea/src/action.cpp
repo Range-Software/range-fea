@@ -6,7 +6,7 @@
 #include <rbl_logger.h>
 #include <rbl_utils.h>
 
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include <rgl_application_settings_dialog.h>
 #include <rgl_cloud_file_manager_dialog.h>
@@ -472,7 +472,7 @@ void Action::onModelOpen()
     {
         ModelIOType modelIOType;
 
-        QString extension = RFileManager::getExtension(fileName).toLower();
+        QString extension = RFileUtils::getExtension(fileName).toLower();
         if (extension == "tmsh" || extension == "bmsh")
         {
             modelIOType = MODEL_IO_MSH_IMPORT;
@@ -2064,7 +2064,7 @@ void Action::onReportSolverLog()
 
     for (int i=0;i<modelIDs.size();i++)
     {
-        QString fileName(RFileManager::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("log",QString("*"))));
+        QString fileName(RFileUtils::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("log",QString("*"))));
         if (fileName.isEmpty())
         {
             QMessageBox::information(Application::instance()->getMainWindow(),tr("No solver log file"),tr("There is no file containing solver log."));
@@ -2092,7 +2092,7 @@ void Action::onReportConvergenceGraph()
         std::vector<RProblemType> problemTypes = RProblem::getTypes(R_PROBLEM_ALL);
         for (uint i=0;i<problemTypes.size();i++)
         {
-            QString fileName(RFileManager::findLastFile(RFileManager::getFileNameWithSuffix(filePattern,RProblem::getId(problemTypes[i]))));
+            QString fileName(RFileUtils::findLastFile(RFileUtils::getFileNameWithSuffix(filePattern,RProblem::getId(problemTypes[i]))));
             if (!fileName.isEmpty())
             {
                 fileNames.append(fileName);
@@ -2101,7 +2101,7 @@ void Action::onReportConvergenceGraph()
 
         for (RMatrixSolverType type=RMatrixSolverConf::None;type<RMatrixSolverConf::NTypes;type++)
         {
-            QString fileName(RFileManager::findLastFile(RFileManager::getFileNameWithSuffix(filePattern,RMatrixSolverConf::getId(type))));
+            QString fileName(RFileUtils::findLastFile(RFileUtils::getFileNameWithSuffix(filePattern,RMatrixSolverConf::getId(type))));
             if (!fileName.isEmpty())
             {
                 fileNames.append(fileName);
@@ -2129,7 +2129,7 @@ void Action::onReportMonitoringPointGraph()
 
     for (int i=0;i<modelIDs.size();i++)
     {
-        QString fileName(RFileManager::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("mon",QString("*"))));
+        QString fileName(RFileUtils::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("mon",QString("*"))));
         if (fileName.isEmpty())
         {
             QMessageBox::information(Application::instance()->getMainWindow(),tr("No monitoring file"),tr("There is no file containing monitoring points."));

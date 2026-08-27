@@ -5,7 +5,7 @@
 #include <rbl_progress.h>
 
 #include <rml_polygon.h>
-#include <rml_file_manager.h>
+#include <rml_file_utils.h>
 
 #include "model.h"
 #include "color.h"
@@ -3240,7 +3240,7 @@ void Model::loadViewFactorMatrix()
         throw RError(RError::Type::InvalidFileName,R_ERROR_REF,"Missing view-factor matrix file name.");
     }
 
-    if (!RFileManager::fileExists(viewFactorMatrixFile))
+    if (!RFileUtils::fileExists(viewFactorMatrixFile))
     {
         throw RError(RError::Type::InvalidFileName,R_ERROR_REF,"View-factor matrix file \'%s\' does not exist.",viewFactorMatrixFile.toUtf8().constData());
     }
@@ -3398,11 +3398,11 @@ QString Model::buildDataFileName(const QString &format, bool withTimeStep) const
     QString fileName;
     if (withTimeStep)
     {
-        fileName = RFileManager::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
+        fileName = RFileUtils::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
     }
     else
     {
-        fileName = RFileManager::getFileNameWithOutTimeStep(this->getFileName());
+        fileName = RFileUtils::getFileNameWithOutTimeStep(this->getFileName());
     }
     QDir dataDir(Application::instance()->getApplicationSettings()->getDataDir());
 
@@ -3414,11 +3414,11 @@ QString Model::buildDocFileName(const QString &format, bool withTimeStep) const
     QString fileName;
     if (withTimeStep)
     {
-        fileName = RFileManager::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
+        fileName = RFileUtils::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
     }
     else
     {
-        fileName = RFileManager::getFileNameWithOutTimeStep(this->getFileName());
+        fileName = RFileUtils::getFileNameWithOutTimeStep(this->getFileName());
     }
     QDir docDir(Application::instance()->getApplicationSettings()->getDocDir());
 
@@ -3436,11 +3436,11 @@ QString Model::buildTmpFileName(const QString &format, bool withTimeStep) const
     QString fileName;
     if (withTimeStep)
     {
-        fileName = RFileManager::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
+        fileName = RFileUtils::getFileNameWithTimeStep(this->getFileName(),this->getTimeSolver().getCurrentTimeStep()+1);
     }
     else
     {
-        fileName = RFileManager::getFileNameWithOutTimeStep(this->getFileName());
+        fileName = RFileUtils::getFileNameWithOutTimeStep(this->getFileName());
     }
     QDir docDir(Application::instance()->getApplicationSettings()->getTmpDir());
 
@@ -3449,7 +3449,7 @@ QString Model::buildTmpFileName(const QString &format, bool withTimeStep) const
 
 QString Model::buildTmpFileName(const QString &format, const QString &idString) const
 {
-    QString fileName = RFileManager::getFileNameWithOutTimeStep(this->getFileName());
+    QString fileName = RFileUtils::getFileNameWithOutTimeStep(this->getFileName());
     QDir docDir(Application::instance()->getApplicationSettings()->getTmpDir());
 
     if (idString.isEmpty())
@@ -3497,8 +3497,8 @@ QList<QString> Model::getRecordFiles(bool onlyExistingFiles) const
 
     for (uint j=0;j<nRecords;j++)
     {
-        QString recordFileName(RFileManager::getFileNameWithTimeStep(this->getFileName(),j+1));
-        if (!onlyExistingFiles || RFileManager::fileExists(recordFileName))
+        QString recordFileName(RFileUtils::getFileNameWithTimeStep(this->getFileName(),j+1));
+        if (!onlyExistingFiles || RFileUtils::fileExists(recordFileName))
         {
             recordFiles.append(recordFileName);
         }
@@ -3515,7 +3515,7 @@ QList<QString> Model::getDocumentFiles() const
         return documentFiles;
     }
 
-    QFileInfo fi(RFileManager::getFileNameWithOutTimeStep(this->getFileName()));
+    QFileInfo fi(RFileUtils::getFileNameWithOutTimeStep(this->getFileName()));
     QDir docDir(Application::instance()->getApplicationSettings()->getDocDir());
 
     QList<QString> documentFormats = ApplicationSettings::getSupportedDocumentFormats();
