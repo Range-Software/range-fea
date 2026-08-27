@@ -30,7 +30,13 @@ jobs:
             arch: x64
             qt_host: windows
             qt_arch: win64_msvc2022_64
-            qt_version: '6.10.3'
+            qt_version: '6.11.1'
+            # Qt 6.11 split the Windows desktop repo into per-toolchain folders
+            # (qt6_6111/qt6_6111_msvc2022_64 instead of qt6_6111/qt6_6111).
+            # Released aqtinstall 3.3.0 still requests the old path and 404s.
+            # Fixed by aqtinstall PR #1000, unreleased as of 2026-07; drop this
+            # once a release after 3.3.0 ships. See miurahr/aqtinstall#1007.
+            aqt_source: 'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
 
     runs-on: ${{ matrix.os }}
 
@@ -56,15 +62,6 @@ jobs:
       - name: Set up MSVC (Windows)
         if: startsWith(matrix.os, 'windows-')
         uses: ilammy/msvc-dev-cmd@v1
-
-      #- name: Disable PowerShell color output (Windows)
-      #  if: startsWith(matrix.os, 'windows-')
-      #  shell: pwsh
-      #  run: |
-      #    $profilePath = $PROFILE.CurrentUserAllHosts
-      #    $null = New-Item -ItemType File -Force -Path $profilePath
-      #    Add-Content $profilePath '$PSStyle.OutputRendering = [System.Management.Automation.OutputRendering]::PlainText'
-      #    "TERM=dumb`nCLICOLOR=0`nNO_COLOR=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Ensure Ninja (Windows)
         if: startsWith(matrix.os, 'windows-')
@@ -121,6 +118,7 @@ jobs:
           arch: ${{ matrix.qt_arch }}
           cache: true
           aqtversion: '==3.3.*'
+          aqtsource: ${{ matrix.aqt_source }}
           modules: 'qthttpserver qtwebsockets qtimageformats qtmultimedia'
 
       - name: Add Inno Setup to PATH (Windows)
