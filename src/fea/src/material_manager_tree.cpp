@@ -156,6 +156,7 @@ void MaterialManagerTree::updateProblemTypeMask()
         try
         {
             material = MaterialManagerTree::read(filePath);
+            item->setText(ColumnType::ColumnFile,filePath);
         }
         catch (const RError &error)
         {
@@ -254,7 +255,7 @@ int MaterialManagerTree::compareModelMaterial(const RMaterial &material) const
     }
 
     bool matsDiffer = true;
-    for (const QString &filePath : std::as_const(fileNames))
+    for (QString filePath : std::as_const(fileNames))
     {
         try
         {
@@ -278,7 +279,7 @@ QString MaterialManagerTree::buildFilePath(const RMaterial &material)
     return materialsDir.filePath(material.getID().toString(QUuid::WithoutBraces) + "." + RMaterial::getDefaultFileExtension());
 }
 
-RMaterial MaterialManagerTree::read(const QString &filePath)
+RMaterial MaterialManagerTree::read(QString &filePath)
 {
     RMaterial material;
     material.read(filePath);
@@ -286,11 +287,26 @@ RMaterial MaterialManagerTree::read(const QString &filePath)
     QString suggestedFilePath = MaterialManagerTree::buildFilePath(material);
     if (filePath != suggestedFilePath)
     {
-        if (!QFile::remove(filePath))
-        {
-            RLogger::error("Failed to remove material file \"%s\".\n",filePath.toUtf8().constData());
-        }
+        RLogger::info("Converting material file \"%s\" to \"%s\".\n",
+                      filePath.toUtf8().constData(),
+                      suggestedFilePath.toUtf8().constData());
+
+        // Write the material in the default format first so that the material
+        // is never lost in case the conversion fails.
         MaterialManagerTree::write(suggestedFilePath,material);
+
+        // Remove the former file only if it is not the file which has just been
+        // written - the paths may differ while pointing to the same file on
+        // case insensitive file systems.
+        if (QFileInfo(filePath) != QFileInfo(suggestedFilePath))
+        {
+            if (!QFile::remove(filePath))
+            {
+                RLogger::error("Failed to remove material file \"%s\".\n",filePath.toUtf8().constData());
+            }
+        }
+
+        filePath = suggestedFilePath;
     }
 
     return material;
@@ -322,7 +338,7 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
 
     for (int i=this->treeWidget->topLevelItemCount()-1; i>=0; i--)
     {
-        const QString &fileName = this->treeWidget->topLevelItem(i)->text(ColumnType::ColumnFile);
+        QString fileName = this->treeWidget->topLevelItem(i)->text(ColumnType::ColumnFile);
         bool fileInList = false;
         for (auto iter = fileInfoList.cbegin(); iter != fileInfoList.cend(); ++iter)
         {
@@ -353,15 +369,16 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
 
     for (const QFileInfo &fileInfo : std::as_const(fileInfoList))
     {
+        QString filePath = fileInfo.filePath();
         try
         {
-            RMaterial material = MaterialManagerTree::read(fileInfo.filePath());
+            RMaterial material = MaterialManagerTree::read(filePath);
             QTreeWidgetItem *item = new QTreeWidgetItem(this->treeWidget);
-            this->updateItem(item, material, fileInfo.filePath(), false);
+            this->updateItem(item, material, filePath, false);
         }
         catch (const RError &error)
         {
-            RLogger::error("Failed to read material file \"%s\". %s\n", fileInfo.filePath().toUtf8().constData(), error.getMessage().toUtf8().constData());
+            RLogger::error("Failed to read material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
         }
     }
 
@@ -641,6 +658,7 @@ void MaterialManagerTree::onItemChanged(QTreeWidgetItem *item, int column)
     try
     {
         material = MaterialManagerTree::read(filePath);
+        item->setText(ColumnType::ColumnFile,filePath);
     }
     catch (const RError &error)
     {
@@ -743,6 +761,7 @@ void MaterialManagerTree::onItemSelectionChanged()
             try
             {
                 material = MaterialManagerTree::read(filePath);
+                item->setText(ColumnType::ColumnFile,filePath);
             }
             catch (const RError &error)
             {

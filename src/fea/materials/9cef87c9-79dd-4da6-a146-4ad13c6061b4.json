@@ -1,0 +1,303 @@
+{
+    "id": "9cef87c9-79dd-4da6-a146-4ad13c6061b4",
+    "name": "Water",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 999.8395
+                },
+                {
+                    "key": 277.15,
+                    "value": 999.972
+                },
+                {
+                    "key": 283.15,
+                    "value": 999.7026
+                },
+                {
+                    "key": 288.15,
+                    "value": 999.1026
+                },
+                {
+                    "key": 293.15,
+                    "value": 998.2071
+                },
+                {
+                    "key": 295.15,
+                    "value": 997.7735
+                },
+                {
+                    "key": 298.15,
+                    "value": 997.0479
+                },
+                {
+                    "key": 303.15,
+                    "value": 995.6502
+                },
+                {
+                    "key": 313.15,
+                    "value": 992.2
+                },
+                {
+                    "key": 333.15,
+                    "value": 983.2
+                },
+                {
+                    "key": 353.15,
+                    "value": 971.8
+                },
+                {
+                    "key": 373.15,
+                    "value": 958.4
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.001787
+                },
+                {
+                    "key": 283.15,
+                    "value": 0.001308
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.001003
+                },
+                {
+                    "key": 303.15,
+                    "value": 0.000798
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.000653
+                },
+                {
+                    "key": 323.15,
+                    "value": 0.000547
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.000467
+                },
+                {
+                    "key": 343.15,
+                    "value": 0.000404
+                },
+                {
+                    "key": 353.15,
+                    "value": 0.000355
+                },
+                {
+                    "key": 363.15,
+                    "value": 0.000315
+                },
+                {
+                    "key": 373.15,
+                    "value": 0.0002822
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.025
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 4217.6
+                },
+                {
+                    "key": 283.15,
+                    "value": 4192.1
+                },
+                {
+                    "key": 293.15,
+                    "value": 4181.8
+                },
+                {
+                    "key": 303.15,
+                    "value": 4178.4
+                },
+                {
+                    "key": 313.15,
+                    "value": 4178.5
+                },
+                {
+                    "key": 323.15,
+                    "value": 4180.6
+                },
+                {
+                    "key": 333.15,
+                    "value": 4184.3
+                },
+                {
+                    "key": 343.15,
+                    "value": 4189.5
+                },
+                {
+                    "key": 353.15,
+                    "value": 4196.3
+                },
+                {
+                    "key": 363.15,
+                    "value": 4205
+                },
+                {
+                    "key": 373.15,
+                    "value": 4215.9
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 88
+                },
+                {
+                    "key": 293.15,
+                    "value": 80.4
+                },
+                {
+                    "key": 299.8167,
+                    "value": 80
+                },
+                {
+                    "key": 373.15,
+                    "value": 55.3
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": -7e-05
+                },
+                {
+                    "key": 283.15,
+                    "value": 8.8e-05
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.000207
+                },
+                {
+                    "key": 303.15,
+                    "value": 0.000303
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.000385
+                },
+                {
+                    "key": 323.15,
+                    "value": 0.000457
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.000523
+                },
+                {
+                    "key": 343.15,
+                    "value": 0.000585
+                },
+                {
+                    "key": 353.15,
+                    "value": 0.000643
+                },
+                {
+                    "key": 363.15,
+                    "value": 0.000665
+                },
+                {
+                    "key": 373.15,
+                    "value": 0.000752
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 1483.359
+                },
+                {
+                    "key": 283.15,
+                    "value": 1483.46
+                },
+                {
+                    "key": 293.15,
+                    "value": 1484.571
+                },
+                {
+                    "key": 303.15,
+                    "value": 1486.476
+                },
+                {
+                    "key": 313.15,
+                    "value": 1489.058
+                },
+                {
+                    "key": 323.15,
+                    "value": 1492.447
+                },
+                {
+                    "key": 333.15,
+                    "value": 1495.858
+                },
+                {
+                    "key": 343.15,
+                    "value": 1500.213
+                },
+                {
+                    "key": 353.15,
+                    "value": 1504.606
+                },
+                {
+                    "key": 363.15,
+                    "value": 1509.82
+                },
+                {
+                    "key": 373.15,
+                    "value": 1515.088
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "0"
+}

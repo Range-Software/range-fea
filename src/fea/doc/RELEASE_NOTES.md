@@ -1,6 +1,27 @@
-## Version 1.2.3
+## Version 1.3.0
 
 ### Improvements
+
+- Materials are now stored in JSON. On each start every material of the material
+  database which is not stored in the default format is converted and the former
+  file is removed
+
+### Bug fixes
+
+- Converting a material file to the default format now writes the new file
+  before removing the former one, so the material is not lost when writing fails
+- Editing or renaming a material which has just been converted no longer writes
+  it back to the former file path, recreating a file in the former format
+
+### Submodules
+
+- range-ai-lib @ v1.0.0
+- range-base-lib @ v1.0.2
+- range-build-tools @ v1.0.0
+- range-cloud-lib @ v1.0.3
+- range-gui-lib @ v1.0.0
+- range-model-lib @ v1.2.0
+- range-solver-lib @ v1.0.1
 
 ---
 

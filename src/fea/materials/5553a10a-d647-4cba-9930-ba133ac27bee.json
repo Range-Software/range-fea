@@ -1,0 +1,81 @@
+{
+    "id": "5553a10a-d647-4cba-9930-ba133ac27bee",
+    "name": "Ethanol",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 806
+                },
+                {
+                    "key": 293.15,
+                    "value": 789
+                },
+                {
+                    "key": 313.15,
+                    "value": 772
+                },
+                {
+                    "key": 333.15,
+                    "value": 754
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.00177
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.0012
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.000834
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.000592
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 2440
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.15
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.00025
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "0"
+}

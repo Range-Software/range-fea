@@ -59,7 +59,10 @@ class MaterialManagerTree : public QWidget
         static QString buildFilePath(const RMaterial &material);
 
         //! Read material from file.
-        static RMaterial read(const QString &filePath);
+        //! If the file is not stored in the default format it is converted and
+        //! the former file is removed. In such case filePath is updated to
+        //! point to the converted file.
+        static RMaterial read(QString &filePath);
 
         //! Write material to file.
         static void write(const QString &fileName, const RMaterial &material);
