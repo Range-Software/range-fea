@@ -56,6 +56,10 @@ class BCTree : public QTreeWidget
         //! Direction changed.
         void onDirectionChanged(const RR3Vector &direction);
 
+        //! Component check state has changed - switches an optional component
+        //! of the boundary condition on or off.
+        void onItemChanged(QTreeWidgetItem *item, int column);
+
 };
 
 #endif /* BC_TREE_H */

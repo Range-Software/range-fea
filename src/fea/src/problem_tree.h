@@ -37,6 +37,9 @@ class ProblemTree : public QTreeWidget
         //! Modal setup has changed.
         void onModalSetupChanged(const RModalSetup &modalSetup);
 
+        //! Acoustic setup has changed.
+        void onAcousticSetupChanged(const RAcousticSetup &acousticSetup);
+
         //! Radiation setup has changed.
         void onRadiationSetupChanged(const RRadiationSetup &radiationSetup);
 

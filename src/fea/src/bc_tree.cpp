@@ -35,11 +35,16 @@ BCTree::BCTree(QWidget *parent) :
 
     this->setColumnHidden(BC_TREE_PROPERTY_TYPE,true);
 
+    QObject::connect(this,&QTreeWidget::itemChanged,this,&BCTree::onItemChanged);
+
     this->populate();
 }
 
 void BCTree::populate()
 {
+    // Check states are assigned below - do not take them for user edits.
+    bool signalsWereBlocked = this->blockSignals(true);
+
     this->clear();
 
     for (uint i=0;i<this->bc.size();i++)
@@ -50,10 +55,21 @@ void BCTree::populate()
         item->setData(BC_TREE_PROPERTY_TYPE,Qt::DisplayRole,QVariant(component.getType()));
         item->setText(BC_TREE_PROPERTY_NAME,component.getName());
         item->setText(BC_TREE_PROPERTY_UNITS,component.getUnits());
+        if (this->bc.getOptional())
+        {
+            // Components of an optional condition can be switched off one by
+            // one - a disabled component prescribes nothing.
+            item->setCheckState(BC_TREE_PROPERTY_NAME,component.getEnabled() ? Qt::Checked : Qt::Unchecked);
+            item->setToolTip(BC_TREE_PROPERTY_NAME,tr("Uncheck to leave this component unconstrained."));
+        }
         VariableValueEdit *lineEdit = new VariableValueEdit(component.getType());
         lineEdit->setValue(component.getValue(0));
         this->setItemWidget(item,BC_TREE_PROPERTY_VALUE,lineEdit);
         if (component.size() > 1)
+        {
+            lineEdit->setDisabled(true);
+        }
+        if (this->bc.getOptional() && !component.getEnabled())
         {
             lineEdit->setDisabled(true);
         }
@@ -69,7 +85,24 @@ void BCTree::populate()
 
     if (bc.getHasLocalDirection())
     {
-        if (Session::selectedModelsHasEntitySelected(R_ENTITY_GROUP_POINT))
+        // A point entity has no geometry to derive a direction from, so the
+        // entered one is always used. On a line or a surface the direction is
+        // derived from the element direction or the element normals unless the
+        // user asks for the entered one to be used instead.
+        bool pointSelected = Session::selectedModelsHasEntitySelected(R_ENTITY_GROUP_POINT);
+
+        if (!pointSelected)
+        {
+            QTreeWidgetItem *overrideItem = new QTreeWidgetItem(this);
+            overrideItem->setText(BC_TREE_PROPERTY_NAME,tr("Use entered local direction"));
+            overrideItem->setToolTip(BC_TREE_PROPERTY_NAME,
+                                     tr("Uncheck to derive the local direction from the geometry of the entity."));
+            overrideItem->setCheckState(BC_TREE_PROPERTY_NAME,
+                                        bc.getExplicitLocalDirection() ? Qt::Checked : Qt::Unchecked);
+            overrideItem->setData(BC_TREE_PROPERTY_TYPE,Qt::DisplayRole,QVariant(int(R_VARIABLE_NONE)));
+        }
+
+        if (pointSelected || bc.getExplicitLocalDirection())
         {
             QTreeWidgetItem *item = new QTreeWidgetItem(this);
             item->setFirstColumnSpanned(true);
@@ -90,6 +123,51 @@ void BCTree::populate()
     this->resizeColumnToContents(BC_TREE_PROPERTY_NAME);
     this->resizeColumnToContents(BC_TREE_PROPERTY_VALUE);
     this->resizeColumnToContents(BC_TREE_PROPERTY_UNITS);
+
+    this->blockSignals(signalsWereBlocked);
+}
+
+void BCTree::onItemChanged(QTreeWidgetItem *item, int column)
+{
+    if (!item || column != BC_TREE_PROPERTY_NAME)
+    {
+        return;
+    }
+
+    bool checked = (item->checkState(BC_TREE_PROPERTY_NAME) == Qt::Checked);
+    RVariableType variableType = RVariableType(item->data(BC_TREE_PROPERTY_TYPE,Qt::DisplayRole).toInt());
+
+    if (variableType == R_VARIABLE_NONE)
+    {
+        // The local direction override.
+        if (!this->bc.getHasLocalDirection() || this->bc.getExplicitLocalDirection() == checked)
+        {
+            return;
+        }
+        this->bc.setExplicitLocalDirection(checked);
+    }
+    else
+    {
+        // A component of an optional condition.
+        if (!this->bc.getOptional())
+        {
+            return;
+        }
+
+        uint componentPosition = this->bc.findComponentPosition(variableType);
+        if (componentPosition == RConstants::eod)
+        {
+            return;
+        }
+        if (this->bc.getComponent(componentPosition).getEnabled() == checked)
+        {
+            return;
+        }
+        this->bc.getComponent(componentPosition).setEnabled(checked);
+    }
+
+    this->updateSelectedEntities();
+    this->populate();
 }
 
 void BCTree::updateSelectedEntities() const
@@ -173,6 +251,13 @@ QList<RLocalDirection> BCTree::findSelectedEntityLocalDirections() const
                         RR3Vector d1, d2, d3;
 
                         rElement.findCenter(rModel.getNodes(),center[0],center[1],center[2]);
+
+                        if (this->bc.getExplicitLocalDirection())
+                        {
+                            localDirections.append(RLocalDirection(center,this->bc.getLocalDirection()));
+                            continue;
+                        }
+
                         RSegment(rModel.getNode(rElement.getNodeId(0)),rModel.getNode(rElement.getNodeId(1))).findPerpendicularVectors(d1,d2,d3);
 
                         localDirections.append(RLocalDirection(center,d2));
@@ -190,6 +275,13 @@ QList<RLocalDirection> BCTree::findSelectedEntityLocalDirections() const
                         RR3Vector center;
                         RR3Vector normal;
                         rElement.findCenter(rModel.getNodes(),center[0],center[1],center[2]);
+
+                        if (this->bc.getExplicitLocalDirection())
+                        {
+                            localDirections.append(RLocalDirection(center,this->bc.getLocalDirection()));
+                            continue;
+                        }
+
                         rElement.findNormal(rModel.getNodes(),normal[0],normal[1],normal[2]);
 
                         localDirections.append(RLocalDirection(center,normal));

@@ -5,13 +5,57 @@
 - Materials are now stored in JSON. On each start every material of the material
   database which is not stored in the default format is converted and the former
   file is removed
+- **Acoustics** is offered again in the problem selector. The acoustic solver was
+  previously marked as not working and was hidden from the application
+- The problem tree shows an **Acoustic analysis setup** group box for acoustic
+  problems, selecting between a transient and a harmonic analysis and holding
+  the frequency sweep (first frequency, frequency step, number of frequencies)
+  and the reference pressure used for the sound pressure level. The frequency
+  fields are disabled for a transient analysis, and a read-only label shows the
+  resulting frequency range
+- Acoustic boundary conditions, initial conditions, material properties and
+  result variables are offered by the respective trees. Notable additions are
+  the *Acoustic impedance* boundary condition, the absorption coefficient of the
+  *Absorbing boundary*, the *Velocity potential / s* initial condition, the
+  *Speed of sound* and *Acoustic damping factor* material properties, and the
+  sound pressure level, acoustic intensity and acoustic phase results
+- A harmonic acoustic analysis produces one model record per solved frequency,
+  so the records tree steps through the frequency sweep the same way it steps
+  through time steps
+- Added theory manuals under `help/theory/en` - `theory_acoustic.md` and
+  `theory_stress.md` - covering the formulation, the parts of the user interface
+  which belong to each problem type, and worked tutorials
+- Displacement constraints meeting at one node are now combined rather than
+  overwriting one another, so a face can be held in a global direction by
+  *Displacement* and rolled on a tilted plane by *Roller displacement* at the
+  same time. Two entities asking for different values in the same direction stop
+  the run with an error naming the node
 
 ### Bug fixes
 
+- Menus, tool bars and the model tree context menu show all of their separators.
+  They were all built from one shared separator action, which a widget can only
+  hold once, so every menu ended up with a single separator at its bottom.
+  Menus and tool bars now use `QMenu::addSeparator()` and
+  `QToolBar::addSeparator()`, and the model tree a separator of its own
 - Converting a material file to the default format now writes the new file
   before removing the former one, so the material is not lost when writing fails
 - Editing or renaming a material which has just been converted no longer writes
   it back to the former file path, recreating a file in the former format
+- The local direction of a *Normal displacement* or a *Roller displacement* can
+  now be entered for a surface or a line, not only for a point. The condition
+  tree shows a **Use entered local direction** check box; ticking it reveals the
+  direction editor and makes the solver take the local frame from the entered
+  direction instead of from the element normals or the element direction. The
+  direction arrows drawn in the 3D view follow whichever is in effect
+- Components of an optional boundary condition can be switched on and off. The
+  boundary condition tree shows a check box next to each component of the
+  *Displacement* condition, so a support can hold one global direction and leave
+  the others free. The value box of an unchecked component is greyed out
+- The solver setup checker no longer reports material properties as missing when
+  they are optional for the selected problem, or when they are one of several
+  accepted alternatives. An acoustic entity carrying a density and a speed of
+  sound is no longer flagged for missing a modulus of elasticity
 
 ### Submodules
 
@@ -21,7 +65,7 @@
 - range-cloud-lib @ v1.0.3
 - range-gui-lib @ v1.0.0
 - range-model-lib @ v1.2.0
-- range-solver-lib @ v1.0.1
+- range-solver-lib @ v1.2.0
 
 ---
 

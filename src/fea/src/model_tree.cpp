@@ -93,12 +93,12 @@ ModelTree::ModelTree(ActionList *actionList, QWidget *parent)
     this->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE));
     this->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE_AS));
     this->addAction(this->actionList->getAction(Action::ACTION_MODEL_CLOSE));
-    this->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    this->addAction(RAction::createSeparator(this));
     this->addAction(this->actionList->getAction(Action::ACTION_MODEL_RENAME));
-    this->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    this->addAction(RAction::createSeparator(this));
     this->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ENTITY_MERGE));
     this->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ENTITY_REMOVE));
-    this->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    this->addAction(RAction::createSeparator(this));
     this->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CUT_EDIT));
     this->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ISO_EDIT));
     this->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_STREAM_LINE_EDIT));

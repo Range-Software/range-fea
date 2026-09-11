@@ -58,7 +58,7 @@ void SolverSetupChecker::checkElements(QStringList &warnings, QStringList &error
 void SolverSetupChecker::checkMaterials(QStringList &warnings, QStringList &errors) const
 {
     RProblemTypeMask problemTypeMask = this->rModel.getProblemTaskTree().getProblemTypeMask();
-    QList<RMaterialProperty::Type> materialProperties = RMaterialProperty::getTypes(problemTypeMask);
+    QList<RMaterialProperty::Type> materialProperties = RMaterialProperty::getRequiredTypes(problemTypeMask);
 
     QStringList matErrors;
     // Check if entities have material group assigned.

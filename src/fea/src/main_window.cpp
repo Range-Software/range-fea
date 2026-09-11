@@ -307,12 +307,12 @@ void MainWindow::createMenus()
     menuFile->addAction(menuFileExport->menuAction());
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_RENAME));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_CLOSE));
-    menuFile->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_RELOAD_RESULTS));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_DROP_RESULTS));
-    menuFile->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
-    menuFile->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
     menuBar->addAction(menuFile->menuAction());
 
@@ -320,7 +320,7 @@ void MainWindow::createMenus()
     menuGeometry->setTitle(tr("Geometry"));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_UNDO));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REDO));
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     QMenu *menuGeometryDraw = new QMenu(menuGeometry);
     menuGeometryDraw->setTitle(tr("Draw"));
     menuGeometryDraw->setIcon(QIcon(":/icons/geometry/pixmaps/range-draw_geometry.svg"));
@@ -336,7 +336,7 @@ void MainWindow::createMenus()
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_SPHERE));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_RAW));
     menuGeometry->addAction(menuGeometryDraw->menuAction());
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
 //    QMenu *menuGeometryPoint = new QMenu(menuGeometry);
 //    menuGeometryPoint->setTitle(tr("Point"));
 //    menuGeometryPoint->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_point.svg"));
@@ -353,7 +353,7 @@ void MainWindow::createMenus()
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_NORMALS));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS));
-    menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometrySurface->addSeparator();
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_COARSEN));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS));
@@ -371,7 +371,7 @@ void MainWindow::createMenus()
     menuGeometryVolume->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_volume.svg"));
     menuGeometryVolume->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
     menuGeometry->addAction(menuGeometryVolume->menuAction());
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     QMenu *menuGeometryCut = new QMenu(menuGeometry);
     menuGeometryCut->setTitle(tr("Cut"));
     menuGeometryCut->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_cut.svg"));
@@ -402,22 +402,22 @@ void MainWindow::createMenus()
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE));
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT));
     menuGeometry->addAction(menuGeometryVectorField->menuAction());
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ENTITY_MERGE));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ENTITY_REMOVE));
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_MERGE_NEAR_NODES));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_MOVE_NODE));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE));
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CREATE_ELEMENT));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REMOVE_ELEMENT));
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_TRANSFORM));
-    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuGeometry->addSeparator();
     QMenu *menuGeometryDevelopement = new QMenu(menuGeometry);
     menuGeometryDevelopement->setTitle(tr("Special tools"));
     menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_SLIVER_ELEMENTS));
@@ -437,7 +437,7 @@ void MainWindow::createMenus()
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_TASK_FLOW));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_SOLVER_SETUP));
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_DEFINE_MONITORING_POINTS));
-    menuProblem->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuProblem->addSeparator();
     menuProblem->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_RESET));
     menuBar->addAction(menuProblem->menuAction());
 
@@ -446,7 +446,7 @@ void MainWindow::createMenus()
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_START));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_STOP));
     menuSolver->addAction(this->actionList->getAction(Action::ACTION_SOLVER_KILL));
-    menuSolver->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    menuSolver->addSeparator();
     menuBar->addAction(menuSolver->menuAction());
 
     QMenu *menuReport = new QMenu(menuBar);
@@ -490,21 +490,21 @@ void MainWindow::createToolBars()
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_CLOSE));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_UNDO));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REDO));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_TRANSFORM));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_TASK_FLOW));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_START));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_STOP));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_KILL));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_REPORT_CONVERGENCE_GRAPH));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_REPORT_CREATE_REPORT));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_RELOAD_RESULTS));
 
     QWidget* spacer = new QWidget();
@@ -512,9 +512,9 @@ void MainWindow::createToolBars()
     mainToolBar->addWidget(spacer);
 
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    mainToolBar->addSeparator();
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
     mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
 
@@ -552,7 +552,7 @@ void MainWindow::createToolBars()
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS));
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS));
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+    surfaceToolBar->addSeparator();
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE));
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_INTERSECTION));
     surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_UNION));
@@ -745,7 +745,7 @@ QMenu * MainWindow::createPopupMenu ()
     R_LOG_TRACE;
     QMenu *popupMenu = this->QMainWindow::createPopupMenu();
 //    Disabled untill toolbar modification is not implemented.
-//    popupMenu->addAction(this->actionList->getAction(Action::ACTION_SEPARATOR));
+//    popupMenu->addSeparator();
 //    popupMenu->addAction(this->actionList->getAction(Action::ACTION_SETTINGS_RESTORE));
     return popupMenu;
 }

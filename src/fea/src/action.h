@@ -44,6 +44,9 @@ class Action : public RAction
 
         enum Type
         {
+            //! Placeholder keeping the first position of the list. Do not hand it to
+            //! a menu, a tool bar or a widget - a separator has to be an action of its
+            //! own, see RAction::createSeparator().
             ACTION_SEPARATOR = 0,
             ACTION_SESSION_NEW,
             ACTION_SESSION_OPEN,

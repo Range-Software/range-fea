@@ -1,4 +1,5 @@
 qt_add_executable(fea
+    src/acoustic_setup_widget.cpp
     src/action.cpp
     src/action_list.cpp
     src/application.cpp
@@ -177,6 +178,7 @@ qt_add_executable(fea
     src/video_settings.cpp
     src/video_settings_dialog.cpp
 
+    src/acoustic_setup_widget.h
     src/action.h
     src/action_list.h
     src/application.h

@@ -1,0 +1,13 @@
+{
+    "main": "theory_index.md",
+    "chapters": [
+        {
+            "title": "Acoustics",
+            "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "Stress",
+            "file":  "theory_stress.md"
+        }
+    ]
+}

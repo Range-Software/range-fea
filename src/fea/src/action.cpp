@@ -2164,6 +2164,7 @@ void Action::onHelp()
 
     topics.insert("general",tr("General"));
     topics.insert("tutorials",tr("Tutorials"));
+    topics.insert("theory",tr("Theory"));
     // topics.insert("tips",tr("Tips"));
 
     HelpDialog *helpDialog = new HelpDialog(tr("Help"),topics,Application::instance()->getMainWindow());
