@@ -70,6 +70,9 @@ endif()
 # Open MP configuration - End  ------------------------------------------------
 
 find_package(OpenGL REQUIRED)
+if(MSVC)
+    set(OpenMP_RUNTIME_MSVC llvm)
+endif()
 find_package(OpenMP REQUIRED)
 find_package(Qt6 6.10 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
 qt_standard_project_setup()
