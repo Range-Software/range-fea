@@ -30,6 +30,10 @@
   *Displacement* and rolled on a tilted plane by *Roller displacement* at the
   same time. Two entities asking for different values in the same direction stop
   the run with an error naming the node
+- On macOS the **Appearance** tab of the application settings offers a *do not use
+  native menubar* option, which draws the menubar inside the main window instead of
+  the system menubar at the top of the screen. The option is taken into account on
+  the next application start
 
 ### Bug fixes
 

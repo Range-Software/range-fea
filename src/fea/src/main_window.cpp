@@ -279,7 +279,7 @@ void MainWindow::createMenus()
 {
     R_LOG_TRACE_IN;
     QMenuBar *menuBar = new QMenuBar(this);
-    menuBar->setNativeMenuBar(true);
+    menuBar->setNativeMenuBar(!this->applicationSettings->getDontUseNativeMenuBar());
     this->setMenuBar(menuBar);
 
     QMenu *menuFile = new QMenu(menuBar);
