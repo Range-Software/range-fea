@@ -16,6 +16,9 @@ class BCTree : public QTreeWidget
         //! Boundary condition.
         RBoundaryCondition bc;
 
+        //! Indicates that a delayed repopulation is already pending.
+        bool populatePending;
+
     public:
 
         //! Constructor.
@@ -25,6 +28,11 @@ class BCTree : public QTreeWidget
 
         //! Populate model.
         void populate();
+
+        //! Request a repopulation once the current event has been processed.
+        //! The tree must never be rebuilt directly from one of its own item
+        //! signals - Qt keeps using the emitting item after the slot returns.
+        void schedulePopulate();
 
         //! Update selected entities with internal boundary condition.
         void updateSelectedEntities() const;

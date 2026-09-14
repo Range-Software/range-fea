@@ -195,8 +195,8 @@ The second-order system is integrated with the **Newmark** scheme using
 beta_N = max( time-march approximation coefficient / 2 , 1/4 )
 ```
 
-The clamp guarantees `beta_N >= 1/4`, i.e. the unconditionally stable
-average-acceleration variant, and prevents a division by zero for the backward
+The clamp guarantees `beta_N >= 1/4`, i.e. at least the unconditionally stable
+average-acceleration variant, and prevents a division by zero for the forward
 approximation whose coefficient is `0`.
 
 Each step solves

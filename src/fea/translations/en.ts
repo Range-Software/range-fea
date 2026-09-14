@@ -2,6 +2,74 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>AcousticSetupWidget</name>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="15"/>
+        <source>Acoustic analysis setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="24"/>
+        <source>Analysis type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="33"/>
+        <source>Transient analysis marches the wave equation in time. Harmonic analysis solves the Helmholtz equation for each frequency of the sweep.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="40"/>
+        <source>First frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="45"/>
+        <source>First frequency of the harmonic sweep.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="51"/>
+        <source>Frequency step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="56"/>
+        <source>Frequency increment between two consecutive solves.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="62"/>
+        <source>Number of frequencies</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="69"/>
+        <source>Number of frequencies to solve. Each frequency produces its own result record.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="79"/>
+        <source>Reference pressure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="84"/>
+        <source>Reference pressure used to evaluate the sound pressure level. The threshold of hearing in air is 20 uPa.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="104"/>
+        <source>Sweep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="110"/>
+        <source>Frequencies apply to a harmonic analysis only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Action</name>
     <message>
         <location filename="../src/action.cpp" line="232"/>
@@ -678,7 +746,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="319"/>
-        <location filename="../src/action.cpp" line="2169"/>
+        <location filename="../src/action.cpp" line="2170"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
@@ -743,6 +811,11 @@
     <message>
         <location filename="../src/action.cpp" line="2166"/>
         <source>Tutorials</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="2167"/>
+        <source>Theory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -811,19 +884,19 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="315"/>
-        <location filename="../src/action.cpp" line="2202"/>
+        <location filename="../src/action.cpp" line="2203"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="316"/>
-        <location filename="../src/action.cpp" line="2217"/>
+        <location filename="../src/action.cpp" line="2218"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="317"/>
-        <location filename="../src/action.cpp" line="2236"/>
+        <location filename="../src/action.cpp" line="2237"/>
         <source>License</source>
         <translation type="unfinished"></translation>
     </message>
@@ -941,11 +1014,26 @@
     </message>
     <message>
         <location filename="../src/bc_tree.cpp" line="63"/>
+        <source>Uncheck to leave this component unconstrained.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="79"/>
         <source>Edit time dependent values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/bc_tree.cpp" line="77"/>
+        <location filename="../src/bc_tree.cpp" line="97"/>
+        <source>Use entered local direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="99"/>
+        <source>Uncheck to derive the local direction from the geometry of the entity.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="110"/>
         <source>Local direction</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2741,22 +2829,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="533"/>
+        <location filename="../src/material_manager_tree.cpp" line="550"/>
         <source>Imported</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="764"/>
+        <location filename="../src/material_manager_tree.cpp" line="783"/>
         <source>New material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="787"/>
+        <location filename="../src/material_manager_tree.cpp" line="806"/>
         <source>Are you sure you want to delete selected material?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="790"/>
+        <location filename="../src/material_manager_tree.cpp" line="809"/>
         <source>Remove material</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3412,14 +3500,73 @@
 <context>
     <name>ModelRecordsTree</name>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="77"/>
+        <location filename="../src/model_records_tree.cpp" line="86"/>
         <source>Record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="78"/>
+        <location filename="../src/model_records_tree.cpp" line="87"/>
         <source>File name</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="904"/>
+        <source>Load record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="905"/>
+        <source>Load the selected record into the model view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="908"/>
+        <location filename="../src/model_records_tree.cpp" line="968"/>
+        <source>Remove records</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="909"/>
+        <source>Delete the selected record file(s) from disk</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="914"/>
+        <source>Set as first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="915"/>
+        <source>Use the selected record as the first one to play / record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="918"/>
+        <source>Set as last</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="919"/>
+        <source>Use the selected record as the last one to play / record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="922"/>
+        <source>Set as range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_records_tree.cpp" line="923"/>
+        <source>Set the play / record range to span the selected records</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/model_records_tree.cpp" line="969"/>
+        <source>Are you sure you want to permanently delete %n selected record file(s)?</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -3880,17 +4027,17 @@
 <context>
     <name>ProblemTree</name>
     <message>
-        <location filename="../src/problem_tree.cpp" line="21"/>
+        <location filename="../src/problem_tree.cpp" line="22"/>
         <source>Problem setup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problem_tree.cpp" line="54"/>
+        <location filename="../src/problem_tree.cpp" line="55"/>
         <source>No model is selected!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/problem_tree.cpp" line="61"/>
+        <location filename="../src/problem_tree.cpp" line="62"/>
         <source>Multiple models are selected!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4904,39 +5051,52 @@ When unchecked, the back side is shown in a different color.</source>
 <context>
     <name>VideoSettingsDialog</name>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="19"/>
+        <location filename="../src/video_settings_dialog.cpp" line="20"/>
         <source>Video settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="40"/>
+        <location filename="../src/video_settings_dialog.cpp" line="41"/>
         <source>Video codec</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="55"/>
+        <location filename="../src/video_settings_dialog.cpp" line="56"/>
         <source>File format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="60"/>
+        <location filename="../src/video_settings_dialog.cpp" line="61"/>
         <source>Frames per second</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="65"/>
+        <location filename="../src/video_settings_dialog.cpp" line="66"/>
         <source>Frames per record</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="70"/>
+        <location filename="../src/video_settings_dialog.cpp" line="69"/>
+        <source>Estimated video length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/video_settings_dialog.cpp" line="75"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="73"/>
+        <location filename="../src/video_settings_dialog.cpp" line="78"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/video_settings_dialog.cpp" line="106"/>
+        <source>%1 s (%n record(s))</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 </TS>

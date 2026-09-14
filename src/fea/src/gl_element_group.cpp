@@ -82,8 +82,7 @@ void GLElementGroup::initialize()
 
     const Model *pModel = this->pParentModel ? this->pParentModel : &Application::instance()->getSession()->getModel(this->getEntityID().getMid());
 
-    RVariableType scalarVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
-    unsigned int scalarVarPos = pModel->findVariable(scalarVariableType);
+    uint scalarVarPos = pModel->findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
     if (scalarVarPos != RConstants::eod)
     {
         const RVariable &variable = pModel->getVariable(scalarVarPos);
@@ -138,16 +137,14 @@ void GLElementGroup::draw()
     {
         const Model *pModel = this->pParentModel ? this->pParentModel : &Application::instance()->getSession()->getModel(this->getEntityID().getMid());
 
-        RVariableType scalarVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
-        uint scalarVariablePosition = pModel->findVariable(scalarVariableType);
+        uint scalarVariablePosition = pModel->findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
         const RVariable *pScalarVariable = nullptr;
         if (scalarVariablePosition != RConstants::eod)
         {
             pScalarVariable = &pModel->getVariable(scalarVariablePosition);
         }
 
-        RVariableType displacementVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
-        uint displacementVarPosition = pModel->findVariable(displacementVariableType);
+        uint displacementVarPosition = pModel->findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
         const RVariable *pDisplacementVariable = nullptr;
         if (displacementVarPosition != RConstants::eod)
         {

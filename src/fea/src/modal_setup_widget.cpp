@@ -55,8 +55,8 @@ ModalSetupWidget::ModalSetupWidget(const RModalSetup &modalSetup, QWidget *paren
     groupLayout->addWidget(labelNModes,groupLayoutRow,0);
 
     this->spinNModesExtract = new QSpinBox;
-    this->spinNModesExtract->setMinimum(R_MODAL_ITERATIONS_MIN_NUMBER);
-    this->spinNModesExtract->setMaximum(spinNIterations->value());
+    this->spinNModesExtract->setMinimum(R_MODAL_MODES_MIN_NUMBER);
+    this->spinNModesExtract->setMaximum(R_MODAL_MODES_MAX_NUMBER);
     this->spinNModesExtract->setValue(this->modalSetup.getNModesToExtract());
     this->spinNModesExtract->setToolTip(tr("Number of modes to extract."));
     this->spinNModesExtract->setEnabled(this->modalSetup.getMethod() == R_MODAL_MULTIPLE_MODES);
@@ -87,14 +87,10 @@ void ModalSetupWidget::onModalMethodChanged(int index)
 
 void ModalSetupWidget::onNIterationsChanged(int nIterations)
 {
+    // The number of modes is independent of the number of iterations - the
+    // iterations refine the whole set of modes, they do not produce them one
+    // at a time.
     this->modalSetup.setNIterations(uint(nIterations));
-    this->spinNModesExtract->blockSignals(true);
-    this->spinNModesExtract->setMaximum(nIterations);
-    this->spinNModesExtract->blockSignals(false);
-    if (this->modalSetup.getNModesToExtract() > this->modalSetup.getNIterations())
-    {
-        this->modalSetup.setNModesToExtract(this->modalSetup.getNIterations());
-    }
     emit this->changed(this->modalSetup);
 }
 

@@ -2400,7 +2400,7 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
                 continue;
             }
 
-            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+            uint displacementVarPosition = this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
             const RVariable *pDisplacementVariable = nullptr;
             if (displacementVarPosition != RConstants::eod)
             {
@@ -2811,7 +2811,7 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
         {
             continue;
         }
-        if (this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT)) != RConstants::eod)
+        if (this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT) != RConstants::eod)
         {
             hasDisplacement = true;
             break;
@@ -2838,7 +2838,7 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
             {
                 continue;
             }
-            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+            uint displacementVarPosition = this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
             if (displacementVarPosition == RConstants::eod)
             {
                 continue;
@@ -2910,7 +2910,7 @@ bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direct
             {
                 const RInterpolatedEntity *pIEntity = static_cast<const RInterpolatedEntity*>(pEntity);
 
-                uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+                uint displacementVarPosition = this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
                 const RVariable *pDisplacementVariable = nullptr;
                 if (displacementVarPosition != RConstants::eod)
                 {
@@ -2984,7 +2984,7 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
         {
             continue;
         }
-        if (this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT)) != RConstants::eod)
+        if (this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT) != RConstants::eod)
         {
             hasDisplacement = true;
             break;
@@ -3011,7 +3011,7 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
             {
                 continue;
             }
-            uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+            uint displacementVarPosition = this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
             if (displacementVarPosition == RConstants::eod)
             {
                 continue;
@@ -3090,7 +3090,7 @@ bool Model::findPickedNode(const RR3Vector &position, const RR3Vector &direction
             {
                 const RInterpolatedEntity *pIEntity = static_cast<const RInterpolatedEntity*>(pEntity);
 
-                uint displacementVarPosition = this->findVariable(pEntity->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+                uint displacementVarPosition = this->findVariablePositionByDisplayType(pEntity->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
                 const RVariable *pDisplacementVariable = nullptr;
                 if (displacementVarPosition != RConstants::eod)
                 {

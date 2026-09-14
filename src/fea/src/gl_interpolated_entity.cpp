@@ -84,8 +84,7 @@ void GLInterpolatedEntity::draw()
 
     const Model &rModel = Application::instance()->getSession()->getModel(this->entityID.getMid());
 
-    RVariableType scalarVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
-    uint scalarVariablePosition = rModel.findVariable(scalarVariableType);
+    uint scalarVariablePosition = rModel.findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
     const RVariable *pScalarVariable = nullptr;
     if (scalarVariablePosition != RConstants::eod)
     {
@@ -93,8 +92,7 @@ void GLInterpolatedEntity::draw()
         this->texture.load(pScalarVariable->getVariableData().getValueRangeName());
     }
 
-    RVariableType displacementVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
-    uint displacementVarPosition = rModel.findVariable(displacementVariableType);
+    uint displacementVarPosition = rModel.findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
     const RVariable *pDisplacementVariable = nullptr;
     if (displacementVarPosition != RConstants::eod)
     {

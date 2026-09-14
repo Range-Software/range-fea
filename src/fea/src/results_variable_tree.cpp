@@ -429,16 +429,22 @@ void ResultsVariableTree::processApplyAsStates()
         {
             continue;
         }
-        std::map<RVariableType,REntityGroupVariableDisplayTypeMask> &egVarData = pEntityGroup->getData().getVariableData();
+        REntityGroupData &rEntityGroupData = pEntityGroup->getData();
+        std::map<RVariableType,REntityGroupVariableDisplayTypeMask> &egVarData = rEntityGroupData.getVariableData();
 
         egVarData.erase(this->variableType);
 
         if (this->applyAsScalarCheckBox->checkState() == Qt::Checked)
         {
+            // Only one variable at a time can be displayed as scalar - a left over
+            // entry, e.g. results of a previously solved problem type, would keep
+            // shadowing this one.
+            rEntityGroupData.clearVariableDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
             egVarData[this->variableType] |= R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR;
         }
         if (this->applyAsDisplacementCheckBox->checkState() == Qt::Checked)
         {
+            rEntityGroupData.clearVariableDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
             egVarData[this->variableType] |= R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT;
         }
 

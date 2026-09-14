@@ -6,6 +6,10 @@
             "file":  "theory_acoustic.md"
         },
         {
+            "title": "Heat transfer",
+            "file":  "theory_heat.md"
+        },
+        {
             "title": "Stress",
             "file":  "theory_stress.md"
         }

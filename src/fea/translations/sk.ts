@@ -2,6 +2,74 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="sk_SK">
 <context>
+    <name>AcousticSetupWidget</name>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="15"/>
+        <source>Acoustic analysis setup</source>
+        <translation>Nastavenia akustickej analýzy</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="24"/>
+        <source>Analysis type</source>
+        <translation>Typ analýzy</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="33"/>
+        <source>Transient analysis marches the wave equation in time. Harmonic analysis solves the Helmholtz equation for each frequency of the sweep.</source>
+        <translation>Prechodová analýza rieši vlnovú rovnicu v čase. Harmonická analýza rieši Helmholtzovu rovnicu pre každú frekvenciu rozmietania.</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="40"/>
+        <source>First frequency</source>
+        <translation>Prvá frekvencia</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="45"/>
+        <source>First frequency of the harmonic sweep.</source>
+        <translation>Prvá frekvencia harmonického rozmietania.</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="51"/>
+        <source>Frequency step</source>
+        <translation>Frekvenčný krok</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="56"/>
+        <source>Frequency increment between two consecutive solves.</source>
+        <translation>Prírastok frekvencie medzi dvoma po sebe nasledujúcimi výpočtami.</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="62"/>
+        <source>Number of frequencies</source>
+        <translation>Počet frekvencií</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="69"/>
+        <source>Number of frequencies to solve. Each frequency produces its own result record.</source>
+        <translation>Počet frekvencií, ktoré sa majú vyriešiť. Každá frekvencia vytvorí vlastný záznam výsledkov.</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="79"/>
+        <source>Reference pressure</source>
+        <translation>Referenčný tlak</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="84"/>
+        <source>Reference pressure used to evaluate the sound pressure level. The threshold of hearing in air is 20 uPa.</source>
+        <translation>Referenčný tlak použitý na vyhodnotenie hladiny akustického tlaku. Prah počutia vo vzduchu je 20 uPa.</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="104"/>
+        <source>Sweep</source>
+        <translation>Rozmietanie</translation>
+    </message>
+    <message>
+        <location filename="../src/acoustic_setup_widget.cpp" line="110"/>
+        <source>Frequencies apply to a harmonic analysis only.</source>
+        <translation>Frekvencie sa uplatňujú iba pri harmonickej analýze.</translation>
+    </message>
+</context>
+<context>
     <name>Action</name>
     <message>
         <location filename="../src/action.cpp" line="232"/>
@@ -678,7 +746,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="319"/>
-        <location filename="../src/action.cpp" line="2169"/>
+        <location filename="../src/action.cpp" line="2170"/>
         <source>Help</source>
         <translation>Pomocník</translation>
     </message>
@@ -746,6 +814,11 @@
         <translation>Návody</translation>
     </message>
     <message>
+        <location filename="../src/action.cpp" line="2167"/>
+        <source>Theory</source>
+        <translation>Teória</translation>
+    </message>
+    <message>
         <location filename="../src/action.cpp" line="306"/>
         <location filename="../src/action.cpp" line="2003"/>
         <source>Stop solver</source>
@@ -811,19 +884,19 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="315"/>
-        <location filename="../src/action.cpp" line="2202"/>
+        <location filename="../src/action.cpp" line="2203"/>
         <source>About</source>
         <translation>O aplikácii</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="316"/>
-        <location filename="../src/action.cpp" line="2217"/>
+        <location filename="../src/action.cpp" line="2218"/>
         <source>About Qt</source>
         <translation>O knižnici Qt</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="317"/>
-        <location filename="../src/action.cpp" line="2236"/>
+        <location filename="../src/action.cpp" line="2237"/>
         <source>License</source>
         <translation>Licencia</translation>
     </message>
@@ -941,11 +1014,26 @@
     </message>
     <message>
         <location filename="../src/bc_tree.cpp" line="63"/>
+        <source>Uncheck to leave this component unconstrained.</source>
+        <translation>Zrušte zaškrtnutie, ak má táto zložka zostať bez väzby.</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="79"/>
         <source>Edit time dependent values</source>
         <translation>Upraviť časovo závislé hodnoty</translation>
     </message>
     <message>
-        <location filename="../src/bc_tree.cpp" line="77"/>
+        <location filename="../src/bc_tree.cpp" line="97"/>
+        <source>Use entered local direction</source>
+        <translation>Použiť zadaný lokálny smer</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="99"/>
+        <source>Uncheck to derive the local direction from the geometry of the entity.</source>
+        <translation>Zrušte zaškrtnutie, ak sa má lokálny smer odvodiť z geometrie celku.</translation>
+    </message>
+    <message>
+        <location filename="../src/bc_tree.cpp" line="110"/>
         <source>Local direction</source>
         <translation>Lokálny smer</translation>
     </message>
@@ -2741,22 +2829,22 @@
         <translation>Zmazať</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="533"/>
+        <location filename="../src/material_manager_tree.cpp" line="550"/>
         <source>Imported</source>
         <translation>Importovaný</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="764"/>
+        <location filename="../src/material_manager_tree.cpp" line="783"/>
         <source>New material</source>
         <translation>Nový material</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="787"/>
+        <location filename="../src/material_manager_tree.cpp" line="806"/>
         <source>Are you sure you want to delete selected material?</source>
         <translation>Naozaj zmazať vybraný materiál?</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="790"/>
+        <location filename="../src/material_manager_tree.cpp" line="809"/>
         <source>Remove material</source>
         <translation>Odstrániť materiál</translation>
     </message>
@@ -3422,58 +3510,58 @@
         <translation>Názov súboru</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="874"/>
+        <location filename="../src/model_records_tree.cpp" line="904"/>
         <source>Load record</source>
         <translation>Načítať záznam</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="875"/>
+        <location filename="../src/model_records_tree.cpp" line="905"/>
         <source>Load the selected record into the model view</source>
         <translation>Načítať vybraný záznam do zobrazenia modelu</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="878"/>
-        <location filename="../src/model_records_tree.cpp" line="938"/>
+        <location filename="../src/model_records_tree.cpp" line="908"/>
+        <location filename="../src/model_records_tree.cpp" line="968"/>
         <source>Remove records</source>
         <translation>Odstrániť záznamy</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="879"/>
+        <location filename="../src/model_records_tree.cpp" line="909"/>
         <source>Delete the selected record file(s) from disk</source>
         <translation>Odstrániť vybrané súbory záznamov z disku</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="884"/>
+        <location filename="../src/model_records_tree.cpp" line="914"/>
         <source>Set as first</source>
         <translation>Nastaviť ako prvý</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="885"/>
+        <location filename="../src/model_records_tree.cpp" line="915"/>
         <source>Use the selected record as the first one to play / record</source>
         <translation>Použiť vybraný záznam ako prvý na prehrávanie / nahrávanie</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="888"/>
+        <location filename="../src/model_records_tree.cpp" line="918"/>
         <source>Set as last</source>
         <translation>Nastaviť ako posledný</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="889"/>
+        <location filename="../src/model_records_tree.cpp" line="919"/>
         <source>Use the selected record as the last one to play / record</source>
         <translation>Použiť vybraný záznam ako posledný na prehrávanie / nahrávanie</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="892"/>
+        <location filename="../src/model_records_tree.cpp" line="922"/>
         <source>Set as range</source>
         <translation>Nastaviť ako rozsah</translation>
     </message>
     <message>
-        <location filename="../src/model_records_tree.cpp" line="893"/>
+        <location filename="../src/model_records_tree.cpp" line="923"/>
         <source>Set the play / record range to span the selected records</source>
         <translation>Nastaviť rozsah prehrávania / nahrávania na vybrané záznamy</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/model_records_tree.cpp" line="939"/>
+        <location filename="../src/model_records_tree.cpp" line="969"/>
         <source>Are you sure you want to permanently delete %n selected record file(s)?</source>
         <translation>
             <numerusform>Naozaj chcete natrvalo odstrániť %n vybraný súbor záznamu?</numerusform>
@@ -3940,17 +4028,17 @@
 <context>
     <name>ProblemTree</name>
     <message>
-        <location filename="../src/problem_tree.cpp" line="21"/>
+        <location filename="../src/problem_tree.cpp" line="22"/>
         <source>Problem setup</source>
         <translation>Nastavenia problému</translation>
     </message>
     <message>
-        <location filename="../src/problem_tree.cpp" line="54"/>
+        <location filename="../src/problem_tree.cpp" line="55"/>
         <source>No model is selected!</source>
         <translation>Nebol vybraný žiaden model!</translation>
     </message>
     <message>
-        <location filename="../src/problem_tree.cpp" line="61"/>
+        <location filename="../src/problem_tree.cpp" line="62"/>
         <source>Multiple models are selected!</source>
         <translation>Je vybraných viacero modelov!</translation>
     </message>
@@ -4232,7 +4320,7 @@
         <location filename="../src/report_dialog.cpp" line="88"/>
         <location filename="../src/report_dialog.cpp" line="103"/>
         <source>files</source>
-        <translation>s=ubory</translation>
+        <translation>sÃºbory</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="61"/>
@@ -4965,27 +5053,27 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
 <context>
     <name>VideoSettingsDialog</name>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="19"/>
+        <location filename="../src/video_settings_dialog.cpp" line="20"/>
         <source>Video settings</source>
         <translation>Nastavenia videa</translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="40"/>
+        <location filename="../src/video_settings_dialog.cpp" line="41"/>
         <source>Video codec</source>
         <translation>Kodek videa</translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="55"/>
+        <location filename="../src/video_settings_dialog.cpp" line="56"/>
         <source>File format</source>
         <translation>Formát súboru</translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="60"/>
+        <location filename="../src/video_settings_dialog.cpp" line="61"/>
         <source>Frames per second</source>
         <translation>Snímky za sekundu</translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="65"/>
+        <location filename="../src/video_settings_dialog.cpp" line="66"/>
         <source>Frames per record</source>
         <translation>Snímky za záznam</translation>
     </message>
@@ -5004,12 +5092,12 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="70"/>
+        <location filename="../src/video_settings_dialog.cpp" line="75"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="../src/video_settings_dialog.cpp" line="73"/>
+        <location filename="../src/video_settings_dialog.cpp" line="78"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>

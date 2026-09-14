@@ -142,9 +142,13 @@ foreach(tgt IN LISTS all_targets)
 endforeach()
 
 # Generate RELEASE_NOTES.json (all platforms)
+# Chapters are listed in reverse all_targets order, so the top level
+# applications come first and the foundational libraries last.
 if(_release_notes_targets)
+    set(_rn_json_targets ${_release_notes_targets})
+    list(REVERSE _rn_json_targets)
     set(_rn_json_chapters "")
-    foreach(_rn_tgt IN LISTS _release_notes_targets)
+    foreach(_rn_tgt IN LISTS _rn_json_targets)
         if(_rn_json_chapters)
             string(APPEND _rn_json_chapters ",\n")
         endif()

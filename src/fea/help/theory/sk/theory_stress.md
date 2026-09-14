@@ -12,7 +12,7 @@ of the graphical user interface that drive it, and two worked tutorials.
 3. [Tutorial - static stress analysis](#3-tutorial---static-stress-analysis)
 4. [Tutorial - modal analysis](#4-tutorial---modal-analysis)
 5. [Checking a model](#5-checking-a-model)
-6. [Limitations and known defects](#6-limitations-and-known-defects)
+6. [Limitations](#6-limitations)
 
 ---
 
@@ -143,21 +143,47 @@ analysis or for a modal analysis.
 | Pressure | natural | surface | Pressure `[Pa]` |
 | Weight | natural | point, line, surface | Weight `[kg]` |
 
-**Displacement** fixes **all three** global components of every node of the
-entity, whatever values the three components are given. There is no way to
-constrain one global direction and leave the other two free with this condition:
-the three component values prescribe how far the node moves, not which degrees
-of freedom are constrained. Use *Roller displacement* when a support has to
-leave directions free.
+**Displacement** is an **optional**-component condition: each of its three
+components can be switched on or off individually. A component that is switched
+on constrains that global direction of every node of the entity to the given
+value; a component that is switched off leaves that direction completely free.
+Switching off *Displacement in Y* and *Displacement in Z* therefore builds a
+support that holds X and lets the node slide in the YZ plane.
+
+Use *Roller displacement* instead when the free directions are not the global
+ones but the tangent plane of a curved surface.
 
 **Normal displacement** and **Roller displacement** work in a **local frame**
-built for each constrained node:
+built for each constrained node. By default the frame follows the geometry:
 
 - on a **surface**, the local X axis is the averaged normal of the adjacent
   surface elements;
 - on a **line**, the local frame is built from the element direction;
-- on a **point**, the direction stored with the boundary condition is used
-  directly.
+- on a **point**, there is no geometry to follow, so the direction entered with
+  the boundary condition is always used.
+
+Ticking **Use entered local direction** overrides that for a surface or a line
+and takes the local X axis from the direction entered below it. Use it when the
+direction you want to restrain is not the one the mesh happens to give - a
+roller that should slide along a faceted surface along a global axis, for
+example.
+
+Constraints from different entities **combine** on a node they share. The
+solver collects every displacement constraint acting on a node, each of them a
+statement `d . u = v` about one direction, and reduces the collection to at most
+three mutually perpendicular held directions by Gram-Schmidt, carrying the
+prescribed values through the same operations. Those held directions become the
+leading axes of the node frame; whatever is left over completes the frame and
+stays free. A node may therefore be held in one direction by a global
+*Displacement*, in another by a *Roller displacement* on a tilted face, and stay
+free in the third - the two conditions do not overwrite one another and a
+globally phrased component is never silently re-read in somebody else's local
+frame.
+
+Two entities which prescribe **different values in the same direction** cannot
+both be satisfied. The solver detects that while orthogonalising and stops with
+an error naming the node, rather than resolving it in favour of whichever
+condition happened to be read last.
 
 The element matrices and load vectors of a constrained node are rotated into
 that frame, the constraint is applied, and the resulting displacement is rotated
@@ -172,9 +198,9 @@ back. In that frame:
   free to slide along the line.
 
 **Force** is a total force in newtons spread over the entity it is assigned to -
-it is divided by the entity length for a line and by the entity area for a
-surface, so refining the mesh does not change the total load. On a point it is
-applied directly to the node.
+it is divided by the entity length for a line, by the entity area for a surface
+and by the number of points of a point entity. Refining the mesh therefore does
+not change the total load.
 
 **Force (unit area)** is a traction in `N/m^2` applied in the given global
 direction, integrated over the element area.
@@ -263,7 +289,7 @@ M * du/dt + K * u = f
 ```
 
 with a theta scheme, where `alpha` is the time-march approximation coefficient
-(`0` backward, `0.5` central, `1` forward):
+(`1` backward, `0.5` central, `0` forward):
 
 ```
 ( M + alpha*dt*K ) * u_n+1 = dt*f + ( M - (1-alpha)*dt*K ) * u_n
@@ -293,18 +319,45 @@ omega = sqrt(lambda)      [rad/s]
 f     = sqrt(lambda) / (2*pi)      [Hz]
 ```
 
+The solver performs that conversion itself: the modal setup and the 3D view
+report the natural frequency in Hz, while the solver log prints the underlying
+eigenvalue alongside it. A mode that the eigenvalue iteration failed to resolve
+is reported as `0` Hz with a warning in the log.
+
 Two methods are available, selected by the modal method setting:
 
 | Modal method | Eigenvalue solver | Extracts |
 |---|---|---|
-| Multiple modes | Arnoldi iteration followed by a QR/Gram-Schmidt decomposition | the requested number of modes |
-| Only most dominant mode | Rayleigh quotient iteration | a single mode |
+| Multiple modes | subspace iteration with a Rayleigh-Ritz projection | the requested number of modes |
+| Only most dominant mode | inverse power iteration with a Rayleigh quotient | a single mode |
 
-The Arnoldi iteration works on `K^-1 * M`, so it converges towards the **lowest**
-frequencies - which are the ones that matter. Each Arnoldi step is itself a
-linear solve with `K`, using the conjugate gradient settings of the matrix
-solver setup. The resulting eigenvalues are inverted and sorted in ascending
-order, so **mode 0 is the fundamental mode**.
+Both methods iterate on `K^-1 * M`, so they converge towards the **lowest**
+frequencies - which are the ones that matter. Each step is a linear solve with
+`K`, using the conjugate gradient settings of the matrix solver setup, so the
+cost of a modal analysis is roughly the cost of a static solve multiplied by the
+number of subspace vectors and iterations.
+
+Subspace iteration carries a block of vectors, projects `K` and `M` onto the
+subspace they span and solves the resulting small dense eigenproblem exactly.
+A few extra vectors beyond the requested number of modes are carried along,
+because they make the wanted modes converge markedly faster. For `p` requested
+modes the block holds `min(2p, p+8)` vectors, which is the usual compromise
+between the speed of convergence and the cost of an iteration. The eigenvalues
+come out as `lambda` directly and are sorted ascending, so **mode 0 is the
+fundamental mode**.
+
+**This is where the run time goes.** One subspace iteration performs one full
+linear solve per vector of the block, so asking for 10 modes costs 18 solves per
+iteration and asking for 100 costs 108. The iteration stops early only when
+**every** requested eigenvalue has settled to within the convergence value, and
+the highest requested mode is always the last to settle - so a large mode count
+both makes each iteration expensive and makes the early stop unlikely. Ask for
+the modes you actually intend to look at.
+
+If the requested modes have not settled by the last iteration the solver says so
+in the log and reports the change it reached, rather than presenting the
+unconverged values without comment. The lowest modes of such a run are usually
+still sound; the highest are not.
 
 The mass matrix is always assembled for a modal analysis, so the density must be
 present on every entity that takes part.
@@ -332,46 +385,50 @@ as the average over the integration points of
 sigma = D * B * u  -  D * alpha * dT
 ```
 
-From the six components the solver forms two invariant-like measures and reports
-their sum as the von Mises stress:
+From the six components the solver forms two invariants and combines them in
+quadrature into the von Mises stress:
 
 ```
 normal part  QN = sqrt( sx^2 + sy^2 + sz^2 - (sx*sy + sy*sz + sz*sx) )
 shear part   QS = sqrt( 3 * (tyz^2 + txz^2 + txy^2) )
-von Mises    QVM = QN + QS
+von Mises    QVM = sqrt( QN^2 + QS^2 )
+```
+
+which is the classical definition
+
+```
+QVM = sqrt( sx^2 + sy^2 + sz^2 - (sx*sy + sy*sz + sz*sx) + 3*(tyz^2 + txz^2 + txy^2) )
 ```
 
 For surface elements the two-dimensional equivalents are used, `QN` from the two
-in-plane normal stresses and `QS = sqrt(3) * tau_xy`. For line elements only the
-axial value is reported and the shear part is zero.
+in-plane normal stresses and `QS = sqrt(3 * tau_xy^2)`. For line elements only
+the axial value is reported and the shear part is zero.
 
-Be aware that the textbook von Mises stress is `sqrt(QN^2 + QS^2)`, not
-`QN + QS`. The reported value is therefore an **upper bound**: it agrees with
-the classical definition whenever one of the two parts vanishes - pure tension,
-pure shear - and overestimates it by up to about 41 % when the two parts are
-equal. See section 6.
-
-**Nodal forces** are recovered element by element as
+**Nodal forces** are recovered element by element as the internal elastic force
 
 ```
-f = M * a + K * u
+f = K * u
 ```
 
 and accumulated at the nodes. At a constrained node this is the reaction force;
 at a free node it should come out near zero for a converged static solve, which
-makes the Force result a useful residual check. The `M * a` term is an inertia
-contribution that is inactive in practice, see section 6.
+makes the Force result a useful residual check.
 
 | Result | Apply to | Meaning |
 |---|---|---|
 | Displacement `[m]` | node | displacement vector, or the mode shape in a modal analysis |
-| Von Mises stress `[Pa]` | element | `QN + QS` as above |
+| Von Mises stress `[Pa]` | element | `sqrt(QN^2 + QS^2)` as above |
 | Normal stress `[Pa]` | element | `QN` |
 | Shear stress `[Pa]` | element | `QS` |
+| Normal stress in X, Y, Z `[Pa]` | element | `sigma_xx`, `sigma_yy`, `sigma_zz` |
+| Shear stress in YZ, XZ, XY `[Pa]` | element | `tau_yz`, `tau_xz`, `tau_xy` |
 | Force `[N]` | node | recovered nodal force, reaction at constrained nodes |
 
-The individual stress components `sigma_xx` ... `tau_xy` are computed internally
-but are not stored as results.
+The six stress components are reported in **global** coordinates for volume
+elements. Surface and line elements evaluate their stress in their own local
+element frame, so their components are reported in that frame: a surface fills
+the in-plane `sigma_xx`, `sigma_yy` and `tau_xy`, and a line fills the axial
+`sigma_xx` only.
 
 ### 1.10 Static, transient or modal?
 
@@ -440,11 +497,23 @@ problem type. Leave it disabled for a static analysis.
 |---|---|---|
 | Modal method | *Only most dominant mode* or *Multiple modes* | Multiple modes |
 | Iterations | iterations of the eigenvalue solver; disabled for the dominant-mode method | 100 |
-| Extract modes | how many modes to extract; capped by the iteration count and disabled for the dominant-mode method | 100 |
+| Extract modes | how many modes to extract; disabled for the dominant-mode method | 10 |
 | Convergence value | eigenvalue solver convergence threshold | 1.0e-9 |
 
-The default of 100 modes is generous. Extracting fewer modes is much faster, and
-the low modes are the ones that matter - start with 5 to 10.
+The two counts are independent: the iterations refine the whole set of modes
+together, they do not produce them one at a time.
+
+**Extract modes is the setting that decides how long the run takes.** Each mode
+adds a linear solve to every iteration, and the run can only stop early once all
+of the requested modes have settled, so the cost grows faster than the count.
+Ten is a sensible starting point and is the default; a hundred is a different
+order of calculation, and on a large mesh it can take hours. Raise it only when
+you know you need the higher modes.
+
+If a run does take longer than you expect, the solver log names the subspace
+vector it is working on, so the progress within an iteration is visible, and it
+prints the convergence rate reached after each iteration next to the value
+required.
 
 ### 2.3 Material tab
 
@@ -472,16 +541,23 @@ lower tree.
 
 The conditions of section 1.5 are offered. Notes on using them:
 
-- **Displacement** constrains all three components of a node at once. Its three
-  values say how far the node moves, not which directions are held. A support
-  that has to leave a direction free is built with *Roller displacement*, not by
-  editing the Displacement components.
-- **Normal displacement** and **Roller displacement** show a *Local direction*
-  editor in the condition tree. That entered direction is used only for **point**
-  entities. On a surface the local frame comes from the averaged element
-  normals, and on a line from the element direction, so the entered value is
-  ignored there. If a surface constraint behaves oddly, check that the surface
+- **Displacement** shows a check box next to each of its three components. Only
+  the checked components are constrained, so a face can be held in X and left
+  free in Y and Z. The value box of an unchecked component is greyed out.
+- **Normal displacement** and **Roller displacement** take their local frame
+  from the geometry by default - the averaged element normals of a surface, the
+  element direction of a line. On a **point** entity there is no geometry to
+  follow, so the *Local direction* editor is always shown and always used.
+- On a surface or a line the condition tree shows a **Use entered local
+  direction** check box. Tick it to reveal the *Local direction* editor and take
+  the frame from the direction you enter instead of from the mesh. The direction
+  arrows drawn in the 3D view follow whichever of the two is in effect. If a
+  surface constraint behaves oddly with the box unticked, check that the surface
   normals are consistent and synchronise them with the geometry tools.
+- Constraints from several entities meeting at one node are combined, so a face
+  may be held in a global direction by *Displacement* and rolled on a tilted
+  plane at the same time. If two of them ask for different values in the same
+  direction the run stops with an error naming the node.
 - **Pressure** and **Force (unit area)** apply to surfaces only.
 - Every component is a table against time, so a load can be given a time history
   for a transient run.
@@ -530,8 +606,8 @@ The `Records` tab of the `Model` dock lists the result records:
   fundamental. Stepping through the records steps through the modes, and
   animating them animates the mode shapes.
 
-For a modal record the 3D view labels the record with the eigenvalue of that
-mode. Read section 6 before interpreting that number as a frequency.
+For a modal record the 3D view labels the record with the mode number and the
+natural frequency of that mode in Hz.
 
 `Report` -> `Solver log file` shows the full solver output, including the
 eigenvalue printed for each extracted mode and the statistics of displacement,
@@ -575,7 +651,7 @@ box. The solver then assembles and solves `K*u = f` once.
 
 1. Select the surface entity at the fixed end.
 2. Open the `Boundary conditions` tab and tick **Displacement**.
-3. Leave all three components at `0`.
+3. Leave all three components checked and set to `0`.
 
 This fixes the face completely and removes all six rigid body modes. Check that
 nothing else is left floating - a disconnected part with no constraint makes the
@@ -685,12 +761,12 @@ Open the `Problem` tab and in *Modal analysis setup* set:
 | Extract modes | `6` |
 | Convergence value | `1.0e-9` |
 
-Six modes is a sensible starting point. Extracting the default 100 modes on a
-large mesh is slow, because every Arnoldi step is a full linear solve.
+Six modes is a sensible starting point, and fewer than the default ten. Every
+extra mode adds a linear solve to every iteration, so a large mode count on a
+large mesh is slow.
 
 Choose `Only most dominant mode` when a single mode is all that is needed; it
-uses Rayleigh quotient iteration and is much cheaper, but read the caveat in
-section 6 about the eigenvalue it reports.
+uses inverse power iteration on a single vector and is much cheaper.
 
 ### Step 5 - no loads are needed
 
@@ -701,8 +777,8 @@ assembly.
 
 ### Step 6 - solve
 
-`Solution` -> `Start solver` (`Ctrl+R`). The log reports the Arnoldi iterations,
-the QR decomposition and then one block per extracted mode:
+`Solution` -> `Start solver` (`Ctrl+R`). The log reports the subspace iterations
+and their convergence rate, and then one block per extracted mode:
 
 ```
 Extracting mode 6
@@ -726,17 +802,22 @@ the fundamental is the last one computed and is stored as record 1.
 - The eigenvalue of each mode is printed in the solver log and shown as the
   record label in the 3D view.
 
-### Step 8 - convert an eigenvalue to a frequency
+### Step 8 - read the natural frequencies
 
-The solver reports the eigenvalue `lambda = omega^2`. Convert it by hand:
+The 3D view labels each modal record with its mode number and its natural
+frequency in Hz. The solver log lists the same frequency for every extracted
+mode together with the underlying eigenvalue:
 
 ```
-f [Hz] = sqrt(lambda) / (2*pi)
+Eigen-value = 1e+06, frequency = 159.155 [Hz]
 ```
 
-For example, an eigenvalue of `1.0e6` corresponds to
-`sqrt(1.0e6) / 6.2832 = 159 Hz`. The value is labelled *Freq.* with units of Hz
-in the viewport but is not converted - see section 6.
+A mode the eigenvalue iteration could not resolve is reported as `0` Hz and
+carries a warning in the log.
+
+As with any result, it is worth checking the fundamental frequency against a
+hand calculation the first time a model is set up - section 5 gives the formula
+for a cantilever.
 
 ### Step 9 - optional, prestressed modes
 
@@ -754,8 +835,10 @@ static load changes the shape a structure vibrates in.
 | The first eigenvalues are near zero | the model is under-constrained, or a part is disconnected - a genuine mechanism |
 | The eigenvalue solver does not converge | too few iterations, or an ill-conditioned mass matrix because an entity has no density or no geometric measure |
 | Extracting modes is very slow | too many modes requested; each mode costs a full linear solve |
-| A frequency looks absurd | the reported number is the eigenvalue, not the frequency in Hz - convert it as in step 8 |
-| Mode shapes look identical | closely spaced modes of a symmetric structure, or too few Arnoldi iterations to separate them |
+| The run takes hours, or never seems to end | too many modes requested - each one costs a linear solve in every iteration, and the run cannot stop early until all of them have settled. Watch the subspace vector count in the log to see the progress within an iteration |
+| A frequency looks absurd | the subspace iteration has not converged - the log says so at the end of an unconverged run; extract fewer modes, raise the iteration count, or check the density and the constraints |
+| Mode shapes look identical | closely spaced modes of a symmetric structure, or too few subspace iterations to separate them |
+| Fewer records than the modes requested | the subspace lost independent directions; the log says how many modes were extracted and stores only those |
 
 ---
 
@@ -797,7 +880,7 @@ converging rather than drifting.
 
 ---
 
-## 6. Limitations and known defects
+## 6. Limitations
 
 ### Modelling limitations
 
@@ -822,52 +905,3 @@ converging rather than drifting.
 - **No modal participation factors or effective masses.** The solver reports
   eigenvalues and mode shapes only, so there is no direct indication of which
   modes matter for a given excitation direction.
-
-### Known defects
-
-These are defects in the current implementation rather than deliberate
-simplifications. They are listed so that results can be interpreted correctly.
-
-- **The reported modal frequency is an eigenvalue, not a frequency.** The value
-  stored by the modal setup and shown in the 3D view as *Freq.* with units of Hz
-  is `lambda = omega^2` in `rad^2/s^2`. Convert it with
-  `f = sqrt(lambda) / (2*pi)`.
-- **The eigenvalue normalisation is inconsistent across methods.** The inversion
-  and ascending sort that turn the raw iteration values into `omega^2` are
-  applied only when more than one eigenvalue was extracted. Requesting exactly
-  one mode with the *Multiple modes* method, or using *Only most dominant mode*,
-  returns a value on a different scale. Extract at least two modes when the
-  numerical value matters.
-- **The von Mises stress is overestimated.** The solver reports `QN + QS` where
-  the classical definition is `sqrt(QN^2 + QS^2)`. The two agree in pure tension
-  and in pure shear, and the reported value is up to about 41 % too high when
-  the normal and shear parts are comparable. It is always conservative, never
-  unsafe, but it is not the von Mises stress.
-- **Line element stress is scaled by the cross area.** For a line element the
-  reported *Normal stress* is `E * A * eps`, which is the axial **force** in
-  newtons rather than a stress in pascals. It coincides with the stress only for
-  a unit cross area. The thermal term of the same expression carries a further
-  factor of the cross area and is dimensionally inconsistent.
-- **Individual stress components are not stored.** `sigma_xx` through `tau_xy`
-  are computed during recovery but only the three derived measures are written
-  out, so a directional stress check has to be made from those.
-- **The inertia term of the nodal force recovery is always zero.** Nodal forces
-  are recovered as `M*a + K*u`, but the nodal acceleration is only ever read
-  back from a stored *Acceleration* result which no solver writes, and no
-  boundary, initial or environment condition supplies it. The `M*a` term is
-  therefore inert and the reported force is `K*u` alone.
-- **The Force result is only offered for modal analysis in variable lists.** The
-  static and transient solvers store it, but it is registered as a result of the
-  modal problem type only, so it may not appear in the monitoring point variable
-  selector for a plain stress analysis.
-- **The Velocity initial condition has no effect.** It is offered for the stress
-  problem type but the solver never reads it.
-- **The optional flag of the Displacement boundary condition is inert.** The
-  condition is declared as having optional components, but nothing in the
-  application or the solver reads that flag, so all three displacement
-  components are always constrained together.
-- **The local direction of a surface constraint is ignored.** *Normal
-  displacement* and *Roller displacement* offer a local direction editor for
-  every entity type, but the entered direction is honoured only on point
-  entities. Surfaces use their averaged element normals and lines use their
-  element direction.

@@ -19,7 +19,8 @@ typedef enum _BCTreeColumn
 } BCTreeColumn;
 
 BCTree::BCTree(QWidget *parent) :
-    QTreeWidget(parent)
+    QTreeWidget(parent),
+    populatePending(false)
 {
     this->setRootIsDecorated(true);
     this->setSelectionMode(QAbstractItemView::NoSelection);
@@ -127,6 +128,22 @@ void BCTree::populate()
     this->blockSignals(signalsWereBlocked);
 }
 
+void BCTree::schedulePopulate()
+{
+    // Rebuilding the tree deletes its items. Doing that directly from an item
+    // signal would destroy the item Qt is still working with, so the rebuild is
+    // postponed until the current event has been fully processed.
+    if (this->populatePending)
+    {
+        return;
+    }
+    this->populatePending = true;
+    QMetaObject::invokeMethod(this,[this](){
+        this->populatePending = false;
+        this->populate();
+    },Qt::QueuedConnection);
+}
+
 void BCTree::onItemChanged(QTreeWidgetItem *item, int column)
 {
     if (!item || column != BC_TREE_PROPERTY_NAME)
@@ -167,7 +184,7 @@ void BCTree::onItemChanged(QTreeWidgetItem *item, int column)
     }
 
     this->updateSelectedEntities();
-    this->populate();
+    this->schedulePopulate();
 }
 
 void BCTree::updateSelectedEntities() const
@@ -372,6 +389,12 @@ void BCTree::onButtonValueClicked(int id)
                 continue;
             }
             VariableValueEdit *lineEdit = dynamic_cast<VariableValueEdit*>(this->itemWidget(this->topLevelItem(i),BC_TREE_PROPERTY_VALUE));
+            if (!lineEdit)
+            {
+                // Rows which carry no component - such as the local direction -
+                // hold no value editor.
+                continue;
+            }
             lineEdit->setValue(this->bc.getComponent(cPosition).getValue(0));
             lineEdit->setEnabled(this->bc.getComponent(cPosition).size() == 1);
         }

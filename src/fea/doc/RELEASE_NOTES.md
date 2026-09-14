@@ -35,8 +35,29 @@
   the system menubar at the top of the screen. The option is taken into account on
   the next application start
 
+- Added a heat transfer theory manual under `help/theory` - `theory_heat.md` -
+  covering the formulation, the boundary conditions and their units, the parts
+  of the user interface which belong to the problem type and a worked tutorial
+- Applying a results variable as **Scalar** or as **Displacement** now clears
+  that role from every other variable of the entity. Only one variable at a time
+  can be displayed, and a variable left over from a previously solved problem
+  type used to win the lookup and leave the entity in its plain colour
+
 ### Bug fixes
 
+- Selecting or unselecting a property of the **Displacement** boundary condition
+  crashed the application. The tree rebuilt itself from its own `itemChanged`
+  signal, destroying the item Qt was still working with; the rebuild is now
+  postponed until the current event has been processed. *Displacement* is the
+  only boundary condition whose components carry a check box, which is why it
+  was the only one affected
+- Results could not be displayed on a volume. An entity keeps its results
+  display data for variables which are no longer in the model, and the lookup
+  returned the first of them rather than one the model holds, so a volume left
+  over from a stress analysis kept selecting *Von Mises stress* and rendered in
+  its plain colour while the temperature was shown correctly on surfaces and
+  cuts. Every scalar and displacement lookup of the 3D view now resolves to a
+  variable the model actually holds
 - Menus, tool bars and the model tree context menu show all of their separators.
   They were all built from one shared separator action, which a widget can only
   hold once, so every menu ended up with a single separator at its bottom.

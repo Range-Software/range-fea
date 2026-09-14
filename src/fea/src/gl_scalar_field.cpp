@@ -105,8 +105,7 @@ void GLScalarField::draw()
 
     const Model &rModel = Application::instance()->getSession()->getModel(this->entityID.getMid());
 
-    RVariableType scalarVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
-    uint scalarVariablePosition = rModel.findVariable(scalarVariableType);
+    uint scalarVariablePosition = rModel.findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR);
     const RVariable *pScalarVariable = nullptr;
     GLTexture texture;
     if (scalarVariablePosition != RConstants::eod)
@@ -115,8 +114,7 @@ void GLScalarField::draw()
         texture.load(pScalarVariable->getVariableData().getValueRangeName());
     }
 
-    RVariableType displacementVariableType = this->getData().findVariableByDisplayType(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
-    uint displacementVariablePosition = rModel.findVariable(displacementVariableType);
+    uint displacementVariablePosition = rModel.findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
     const RVariable *pDisplacementVariable = nullptr;
     if (displacementVariablePosition != RConstants::eod)
     {

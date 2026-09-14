@@ -12,7 +12,7 @@ of the graphical user interface that drive it, and two worked tutorials.
 3. [Tutorial - static stress analysis](#3-tutorial---static-stress-analysis)
 4. [Tutorial - modal analysis](#4-tutorial---modal-analysis)
 5. [Checking a model](#5-checking-a-model)
-6. [Limitations and known defects](#6-limitations-and-known-defects)
+6. [Limitations](#6-limitations)
 
 ---
 
@@ -289,7 +289,7 @@ M * du/dt + K * u = f
 ```
 
 with a theta scheme, where `alpha` is the time-march approximation coefficient
-(`0` backward, `0.5` central, `1` forward):
+(`1` backward, `0.5` central, `0` forward):
 
 ```
 ( M + alpha*dt*K ) * u_n+1 = dt*f + ( M - (1-alpha)*dt*K ) * u_n
@@ -340,9 +340,24 @@ number of subspace vectors and iterations.
 Subspace iteration carries a block of vectors, projects `K` and `M` onto the
 subspace they span and solves the resulting small dense eigenproblem exactly.
 A few extra vectors beyond the requested number of modes are carried along,
-because they make the wanted modes converge markedly faster. The eigenvalues
+because they make the wanted modes converge markedly faster. For `p` requested
+modes the block holds `min(2p, p+8)` vectors, which is the usual compromise
+between the speed of convergence and the cost of an iteration. The eigenvalues
 come out as `lambda` directly and are sorted ascending, so **mode 0 is the
 fundamental mode**.
+
+**This is where the run time goes.** One subspace iteration performs one full
+linear solve per vector of the block, so asking for 10 modes costs 18 solves per
+iteration and asking for 100 costs 108. The iteration stops early only when
+**every** requested eigenvalue has settled to within the convergence value, and
+the highest requested mode is always the last to settle - so a large mode count
+both makes each iteration expensive and makes the early stop unlikely. Ask for
+the modes you actually intend to look at.
+
+If the requested modes have not settled by the last iteration the solver says so
+in the log and reports the change it reached, rather than presenting the
+unconverged values without comment. The lowest modes of such a run are usually
+still sound; the highest are not.
 
 The mass matrix is always assembled for a modal analysis, so the density must be
 present on every entity that takes part.
@@ -482,11 +497,23 @@ problem type. Leave it disabled for a static analysis.
 |---|---|---|
 | Modal method | *Only most dominant mode* or *Multiple modes* | Multiple modes |
 | Iterations | iterations of the eigenvalue solver; disabled for the dominant-mode method | 100 |
-| Extract modes | how many modes to extract; capped by the iteration count and disabled for the dominant-mode method | 100 |
+| Extract modes | how many modes to extract; disabled for the dominant-mode method | 10 |
 | Convergence value | eigenvalue solver convergence threshold | 1.0e-9 |
 
-The default of 100 modes is generous. Extracting fewer modes is much faster, and
-the low modes are the ones that matter - start with 5 to 10.
+The two counts are independent: the iterations refine the whole set of modes
+together, they do not produce them one at a time.
+
+**Extract modes is the setting that decides how long the run takes.** Each mode
+adds a linear solve to every iteration, and the run can only stop early once all
+of the requested modes have settled, so the cost grows faster than the count.
+Ten is a sensible starting point and is the default; a hundred is a different
+order of calculation, and on a large mesh it can take hours. Raise it only when
+you know you need the higher modes.
+
+If a run does take longer than you expect, the solver log names the subspace
+vector it is working on, so the progress within an iteration is visible, and it
+prints the convergence rate reached after each iteration next to the value
+required.
 
 ### 2.3 Material tab
 
@@ -734,9 +761,9 @@ Open the `Problem` tab and in *Modal analysis setup* set:
 | Extract modes | `6` |
 | Convergence value | `1.0e-9` |
 
-Six modes is a sensible starting point. Extracting the default 100 modes on a
-large mesh is slow, because every subspace vector costs a full linear solve in
-every iteration.
+Six modes is a sensible starting point, and fewer than the default ten. Every
+extra mode adds a linear solve to every iteration, so a large mode count on a
+large mesh is slow.
 
 Choose `Only most dominant mode` when a single mode is all that is needed; it
 uses inverse power iteration on a single vector and is much cheaper.
@@ -808,8 +835,10 @@ static load changes the shape a structure vibrates in.
 | The first eigenvalues are near zero | the model is under-constrained, or a part is disconnected - a genuine mechanism |
 | The eigenvalue solver does not converge | too few iterations, or an ill-conditioned mass matrix because an entity has no density or no geometric measure |
 | Extracting modes is very slow | too many modes requested; each mode costs a full linear solve |
-| A frequency looks absurd | the subspace iteration has not converged - raise the iteration count, or check the density and the constraints |
+| The run takes hours, or never seems to end | too many modes requested - each one costs a linear solve in every iteration, and the run cannot stop early until all of them have settled. Watch the subspace vector count in the log to see the progress within an iteration |
+| A frequency looks absurd | the subspace iteration has not converged - the log says so at the end of an unconverged run; extract fewer modes, raise the iteration count, or check the density and the constraints |
 | Mode shapes look identical | closely spaced modes of a symmetric structure, or too few subspace iterations to separate them |
+| Fewer records than the modes requested | the subspace lost independent directions; the log says how many modes were extracted and stores only those |
 
 ---
 
@@ -851,7 +880,7 @@ converging rather than drifting.
 
 ---
 
-## 6. Limitations and known defects
+## 6. Limitations
 
 ### Modelling limitations
 
@@ -876,16 +905,3 @@ converging rather than drifting.
 - **No modal participation factors or effective masses.** The solver reports
   eigenvalues and mode shapes only, so there is no direct indication of which
   modes matter for a given excitation direction.
-
-### Known defects
-
-No defects of the structural solver are known at the time of writing. The
-limitations above are deliberate simplifications rather than faults.
-
-Constraints arriving at a node from several entities used to overwrite one
-another, so that a *Displacement* naming global directions was re-read in the
-local frame of a *Roller displacement* sharing the same node. That is no longer
-the case: every constraint of a node is now kept and the node frame is built
-from the whole collection (section 1.5). Mixing a global and a local constraint
-on one node is a supported way to model, and a genuine conflict between two of
-them is reported instead of being silently resolved.
