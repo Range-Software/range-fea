@@ -168,7 +168,7 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
     // changed per-element; GLElementGroup::paint() sets it at callList() time.
     if (!GLFunctions::isRecordingVBO())
     {
-        this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", this->twoSidedFace);
+        GLStateCache::instance().setTwoSided(this->twoSidedFace);
     }
 
     GLFunctions::begin(GL_TRIANGLE_FAN);
@@ -220,7 +220,7 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
 
     if (!GLFunctions::isRecordingVBO())
     {
-        this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", false);
+        GLStateCache::instance().setTwoSided(false);
     }
 }
 

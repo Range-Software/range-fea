@@ -61,33 +61,30 @@ void GLAxis::setSize(float size)
 void GLAxis::initialize()
 {
     // Save current settings
-    GL_SAFE_CALL(glGetBooleanv(GL_DEPTH_TEST, &this->depthTestEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmoothEnabled));
-    GL_SAFE_CALL(glGetIntegerv(GL_LINE_SMOOTH_HINT, &this->lineSmoothHint));
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
+    this->depthTestEnabled = GLStateCache::instance().getDepthTest();
+    this->lineSmoothEnabled = GLStateCache::instance().getLineSmooth();
+    this->normalizeEnabled = GLStateCache::instance().getNormalize();
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
+    this->lineWidth = GLStateCache::instance().getLineWidth();
+    this->cullFaceEnabled = GLStateCache::instance().getCullFace();
     // Initialize environment
-    GL_SAFE_CALL(glEnable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE));
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
+    GLStateCache::instance().setDepthTest(GL_TRUE);
+    GLStateCache::instance().setLineSmooth(GL_TRUE);
+    GLStateCache::instance().setNormalize(GL_TRUE);
     GLStateCache::instance().disableLighting();
-    GL_SAFE_CALL(glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setCullFace(GL_FALSE);
+    GLStateCache::instance().setLineWidth(1.0f);
 }
 
 void GLAxis::finalize()
 {
     // Restore previous environment
-    GL_SAFE_CALL(this->depthTestEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(this->lineSmoothEnabled ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setDepthTest(this->depthTestEnabled);
+    GLStateCache::instance().setLineSmooth(this->lineSmoothEnabled);
+    GLStateCache::instance().setNormalize(this->normalizeEnabled);
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
-    GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GLenum(this->lineSmoothHint)));
+    GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 //    glBlendFunc(GL_SRC_ALPHA, this->bendAlphaFunc);
 }
 
@@ -116,12 +113,10 @@ void GLAxis::draw()
             this->getGLWidget()->renderText(0.0,0.0,double(axisScale),QString("Z") + postFix);
 
             GLboolean stipple;
-            GL_SAFE_CALL(glGetBooleanv(GL_LINE_STIPPLE,&stipple));
+            stipple = GLStateCache::instance().getLineStipple();
 
-            GL_SAFE_CALL(glPushAttrib(GL_ENABLE_BIT));
 
-            GL_SAFE_CALL(glLineStipple(6, 0xAAAA));
-            GL_SAFE_CALL(glEnable(GL_LINE_STIPPLE));
+            GLStateCache::instance().setLineStipple(GL_TRUE, 6, 0xAAAA);
 
             GLFunctions::begin(GL_LINES);
 
@@ -154,11 +149,10 @@ void GLAxis::draw()
 
             GLFunctions::end();
 
-            GL_SAFE_CALL(glPopAttrib());
 
             if (!stipple)
             {
-                GL_SAFE_CALL(glDisable(GL_LINE_STIPPLE));
+                GLStateCache::instance().setLineStipple(GL_FALSE);
             }
             break;
         }

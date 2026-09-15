@@ -79,10 +79,10 @@ void GLScalarField::initialize()
     }
 
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
+    this->normalize = GLStateCache::instance().getNormalize();
 
     GLStateCache::instance().disableLighting();
-    GL_SAFE_CALL(glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setNormalize(GL_FALSE);
 }
 
 void GLScalarField::finalize()
@@ -93,7 +93,7 @@ void GLScalarField::finalize()
     }
 
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setNormalize(this->normalize);
 }
 
 void GLScalarField::draw()

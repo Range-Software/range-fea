@@ -4,6 +4,7 @@
 
 #include "application.h"
 #include "action.h"
+#include "render_backend.h"
 #include "solver_manager.h"
 
 Application::Application(int &argc, char **argv)
@@ -66,6 +67,78 @@ const MainWindow *Application::getMainWindow() const
 MainWindow *Application::getMainWindow()
 {
     return qobject_cast<MainWindow*>(this->mainWindow);
+}
+
+QList<RArgumentOption> Application::getAdditionalArgumentOptions() const
+{
+    QList<RArgumentOption> options;
+
+    // The stored application settings provide the default; the command line
+    // overrides it for a single run without changing what is stored.
+    const ApplicationSettings *settings = this->getApplicationSettings();
+
+    options.append(RArgumentOption("render-backend",
+                                   RArgumentOption::String,
+                                   QVariant(RenderBackend::toString(settings->getRenderBackend())),
+                                   "Rendering backend to use (" + RenderBackend::getTypeNames().join("|") + ")",
+                                   RArgumentOption::Optional,
+                                   false));
+    options.append(RArgumentOption("rhi-api",
+                                   RArgumentOption::String,
+                                   QVariant(RenderBackend::toString(settings->getRhiApi())),
+                                   "Graphics API for the rhi rendering backend (" + RenderBackend::getRhiApiNames().join("|") + ")",
+                                   RArgumentOption::Optional,
+                                   false));
+
+    return options;
+}
+
+void Application::processAdditionalArguments(const RArgumentsParser &argumentsParser)
+{
+    // Start from what the user configured in the application settings.
+    RenderBackend::setType(this->getApplicationSettings()->getRenderBackend());
+    RenderBackend::setRhiApi(this->getApplicationSettings()->getRhiApi());
+
+    // A command line switch overrides the stored setting for this run only.
+    if (argumentsParser.isSet("render-backend"))
+    {
+        bool isOk = false;
+        const QString name(argumentsParser.getValue("render-backend").toString());
+        RenderBackend::Type type = RenderBackend::typeFromString(name, &isOk);
+        if (isOk)
+        {
+            RenderBackend::setType(type);
+        }
+        else
+        {
+            RLogger::warning("Unknown rendering backend \'%s\'. Falling back to \'%s\'.\n",
+                             name.toUtf8().constData(),
+                             RenderBackend::toString(RenderBackend::getType()).toUtf8().constData());
+        }
+    }
+
+    if (argumentsParser.isSet("rhi-api"))
+    {
+        bool isOk = false;
+        const QString name(argumentsParser.getValue("rhi-api").toString());
+        RenderBackend::RhiApi api = RenderBackend::rhiApiFromString(name, &isOk);
+        if (isOk)
+        {
+            RenderBackend::setRhiApi(api);
+        }
+        else
+        {
+            RLogger::warning("Unknown RHI graphics API \'%s\'. Falling back to \'auto\'.\n",
+                             name.toUtf8().constData());
+        }
+    }
+
+    QString backendInfo(RenderBackend::toString(RenderBackend::getType()));
+    if (RenderBackend::isRhi())
+    {
+        backendInfo += " (api: " + RenderBackend::toString(RenderBackend::getRhiApi()) + ")";
+    }
+    RLogger::info("Rendering backend: %s\n", backendInfo.toUtf8().constData());
 }
 
 void Application::initialize()

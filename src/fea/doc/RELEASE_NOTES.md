@@ -42,6 +42,24 @@
   that role from every other variable of the entity. Only one variable at a time
   can be displayed, and a variable left over from a previously solved problem
   type used to win the lookup and leave the entity in its plain colour
+- The 3D view can be rendered through **QRhi**, Qt's rendering hardware interface,
+  next to the legacy **OpenGL** pipeline. Both backends share the whole scene
+  traversal and draw the same geometry; `GLWidget` keeps the view, the picking and
+  the display properties and delegates the drawing to a render surface which is a
+  `QOpenGLWidget` or a `QRhiWidget`. Value ranges, message and info boxes and the
+  projected text labels moved to a transparent overlay widget, because a
+  `QRhiWidget` cannot be painted into with `QPainter`
+- The backend is chosen in the **General** tab of the application settings,
+  together with the graphics API used by QRhi - automatic, Metal, Vulkan,
+  Direct3D 11, Direct3D 12, OpenGL or null - offering only the APIs which exist on
+  the platform. Both are stored per user and are taken into account on the next
+  application start, which is reported next to the option
+- The stored setting can be overridden for a single run with the `--render-backend`
+  and `--rhi-api` command line options, which do not change what is stored
+- Two fixed-function features have no QRhi counterpart and are ignored by that
+  backend: line stipple, so dashed grid and axis lines are drawn solid, and line
+  widths greater than one on graphics APIs without wide line support, Metal among
+  them
 
 ### Bug fixes
 

@@ -7,6 +7,7 @@
 #include <QtOpenGL>
 
 #include "gl_frustum.h"
+#include "render_matrix_stack.h"
 
 GLFrustum::GLFrustum()
 {
@@ -26,9 +27,9 @@ void GLFrustum::extractFromGL()
     double projection[16];
     double mvp[16];
 
-    // Get current matrices from OpenGL
-    glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+    // Get current matrices from the backend independent matrix stack.
+    RenderMatrixStack::getModelViewGL(modelview);
+    RenderMatrixStack::getProjectionGL(projection);
 
     // Multiply projection * modelview to get combined matrix.
     // OpenGL matrices are column-major: element at (row r, col c) is stored at index c*4+r.

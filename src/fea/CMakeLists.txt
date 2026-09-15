@@ -68,6 +68,7 @@ qt_add_executable(fea
     src/gl_entity_list.cpp
     src/gl_functions.cpp
     src/gl_frustum.cpp
+    src/gl_render_surface.cpp
     src/gl_shader_program.cpp
     src/gl_grid.cpp
     src/gl_interpolated_element.cpp
@@ -146,12 +147,17 @@ qt_add_executable(fea
     src/problem_tree.cpp
     src/push_button.cpp
     src/radiation_setup_widget.cpp
+    src/render_backend.cpp
+    src/render_matrix_stack.cpp
+    src/render_overlay_widget.cpp
     src/remove_entity_dialog.cpp
     src/rename_model_dialog.cpp
     src/report_dialog.cpp
     src/report_generator.cpp
     src/results_variable_selector.cpp
     src/results_variable_tree.cpp
+    src/rhi_render_surface.cpp
+    src/rhi_renderer.cpp
     src/scalar_field_dialog.cpp
     src/session.cpp
     src/session_entity_id.cpp
@@ -247,6 +253,7 @@ qt_add_executable(fea
     src/gl_entity_list.h
     src/gl_functions.h
     src/gl_grid.h
+    src/gl_render_surface.h
     src/gl_interpolated_element.h
     src/gl_interpolated_entity.h
     src/gl_line.h
@@ -322,12 +329,18 @@ qt_add_executable(fea
     src/problem_tree.h
     src/push_button.h
     src/radiation_setup_widget.h
+    src/render_backend.h
+    src/render_matrix_stack.h
+    src/render_overlay_widget.h
+    src/render_surface.h
     src/remove_entity_dialog.h
     src/rename_model_dialog.h
     src/report_dialog.h
     src/report_generator.h
     src/results_variable_selector.h
     src/results_variable_tree.h
+    src/rhi_render_surface.h
+    src/rhi_renderer.h
     src/scalar_field_dialog.h
     src/session.h
     src/session_entity_id.h
@@ -363,6 +376,7 @@ target_link_libraries(fea
         range-gui-lib
         range-solver-lib
         OpenGL::GL
+        Qt6::GuiPrivate
         Qt6::OpenGL
         Qt6::OpenGLWidgets
         Qt6::Multimedia
@@ -631,6 +645,14 @@ qt_add_resources(fea shaders
         src/shaders/main.frag
         src/shaders/flat.vert
         src/shaders/flat.frag
+)
+
+qt_add_resources(fea shaders-rhi
+    PREFIX "/shaders/rhi"
+    BASE "src/shaders/rhi"
+    FILES
+        src/shaders/rhi/main.vert.qsb
+        src/shaders/rhi/main.frag.qsb
 )
 
 qt_add_translations(fea

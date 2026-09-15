@@ -74,7 +74,7 @@ if(MSVC)
     set(OpenMP_RUNTIME_MSVC llvm)
 endif()
 find_package(OpenMP REQUIRED)
-find_package(Qt6 6.10 REQUIRED COMPONENTS Core Concurrent HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
+find_package(Qt6 6.10 REQUIRED COMPONENTS Core Concurrent Gui GuiPrivate HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
 qt_standard_project_setup()
 
 # Unit tests (opt-in). Configure with -DRANGE_BUILD_TESTS=ON and run `ctest`.

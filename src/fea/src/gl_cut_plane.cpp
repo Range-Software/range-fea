@@ -52,33 +52,30 @@ void GLCutPlane::setSize(float size)
 void GLCutPlane::initialize()
 {
     // Save current settings
-    GL_SAFE_CALL(glGetBooleanv(GL_DEPTH_TEST, &this->depthTestEnabled));
-    GL_SAFE_CALL(glGetBooleanv(GL_LINE_SMOOTH, &this->lineSmoothEnabled));
-    GL_SAFE_CALL(glGetIntegerv(GL_LINE_SMOOTH_HINT, &this->lineSmoothHint));
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
+    this->depthTestEnabled = GLStateCache::instance().getDepthTest();
+    this->lineSmoothEnabled = GLStateCache::instance().getLineSmooth();
+    this->normalizeEnabled = GLStateCache::instance().getNormalize();
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
+    this->lineWidth = GLStateCache::instance().getLineWidth();
+    this->cullFaceEnabled = GLStateCache::instance().getCullFace();
     // Initialize environment
-    GL_SAFE_CALL(glEnable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE));
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
+    GLStateCache::instance().setDepthTest(GL_TRUE);
+    GLStateCache::instance().setLineSmooth(GL_TRUE);
+    GLStateCache::instance().setNormalize(GL_TRUE);
     GLStateCache::instance().disableLighting();
-    GL_SAFE_CALL(glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setCullFace(GL_FALSE);
+    GLStateCache::instance().setLineWidth(1.0f);
 }
 
 void GLCutPlane::finalize()
 {
     // Restore previous environment
-    GL_SAFE_CALL(this->depthTestEnabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(this->lineSmoothEnabled ? glEnable(GL_LINE_SMOOTH) : glDisable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setDepthTest(this->depthTestEnabled);
+    GLStateCache::instance().setLineSmooth(this->lineSmoothEnabled);
+    GLStateCache::instance().setNormalize(this->normalizeEnabled);
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
-    GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT, this->lineSmoothHint));
+    GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 
 void GLCutPlane::draw()
@@ -117,30 +114,30 @@ void GLCutPlane::draw()
 
     this->getGLWidget()->qglColor(QColor(255,255,255,100));
 
-    GL_SAFE_CALL(glNormal3d(this->normal[0],this->normal[1],this->normal[2]));
+    GLFunctions::normal3d(this->normal[0],this->normal[1],this->normal[2]);
     GLFunctions::begin(GL_TRIANGLE_FAN);
-    GL_SAFE_CALL(glVertex3d(n1.getX(),n1.getY(),n1.getZ()));
-    GL_SAFE_CALL(glVertex3d(n2.getX(),n2.getY(),n2.getZ()));
-    GL_SAFE_CALL(glVertex3d(n3.getX(),n3.getY(),n3.getZ()));
-    GL_SAFE_CALL(glVertex3d(n4.getX(),n4.getY(),n4.getZ()));
+    GLFunctions::vertex3d(n1.getX(),n1.getY(),n1.getZ());
+    GLFunctions::vertex3d(n2.getX(),n2.getY(),n2.getZ());
+    GLFunctions::vertex3d(n3.getX(),n3.getY(),n3.getZ());
+    GLFunctions::vertex3d(n4.getX(),n4.getY(),n4.getZ());
     GLFunctions::end();
 
     this->getGLWidget()->qglColor(QColor(255,0,0,255));
 
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setLineWidth(1.0f);
 
     GLFunctions::begin(GL_LINE_LOOP);
-    GL_SAFE_CALL(glVertex3d(n1.getX(),n1.getY(),n1.getZ()));
-    GL_SAFE_CALL(glVertex3d(n2.getX(),n2.getY(),n2.getZ()));
-    GL_SAFE_CALL(glVertex3d(n3.getX(),n3.getY(),n3.getZ()));
-    GL_SAFE_CALL(glVertex3d(n4.getX(),n4.getY(),n4.getZ()));
+    GLFunctions::vertex3d(n1.getX(),n1.getY(),n1.getZ());
+    GLFunctions::vertex3d(n2.getX(),n2.getY(),n2.getZ());
+    GLFunctions::vertex3d(n3.getX(),n3.getY(),n3.getZ());
+    GLFunctions::vertex3d(n4.getX(),n4.getY(),n4.getZ());
     GLFunctions::end();
 
     GLFunctions::begin(GL_LINES);
-    GL_SAFE_CALL(glVertex3d(nw.getX(),nw.getY(),nw.getZ()));
-    GL_SAFE_CALL(glVertex3d(ne.getX(),ne.getY(),ne.getZ()));
-    GL_SAFE_CALL(glVertex3d(ns.getX(),ns.getY(),ns.getZ()));
-    GL_SAFE_CALL(glVertex3d(nn.getX(),nn.getY(),nn.getZ()));
+    GLFunctions::vertex3d(nw.getX(),nw.getY(),nw.getZ());
+    GLFunctions::vertex3d(ne.getX(),ne.getY(),ne.getZ());
+    GLFunctions::vertex3d(ns.getX(),ns.getY(),ns.getZ());
+    GLFunctions::vertex3d(nn.getX(),nn.getY(),nn.getZ());
     GLFunctions::end();
 
     uint nDivs = 10;
@@ -148,7 +145,7 @@ void GLCutPlane::draw()
 
     this->getGLWidget()->qglColor(QColor(255,50,0,255));
 
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setLineWidth(1.0f);
 
     for (uint i=0;i<=nDivs;i++)
     {
@@ -166,10 +163,10 @@ void GLCutPlane::draw()
         nodeNorth.transform(R,this->position);
 
         GLFunctions::begin(GL_LINES);
-        GL_SAFE_CALL(glVertex3d(nodeEast.getX(),nodeEast.getY(),nodeEast.getZ()));
-        GL_SAFE_CALL(glVertex3d(nodeWest.getX(),nodeWest.getY(),nodeWest.getZ()));
-        GL_SAFE_CALL(glVertex3d(nodeSouth.getX(),nodeSouth.getY(),nodeSouth.getZ()));
-        GL_SAFE_CALL(glVertex3d(nodeNorth.getX(),nodeNorth.getY(),nodeNorth.getZ()));
+        GLFunctions::vertex3d(nodeEast.getX(),nodeEast.getY(),nodeEast.getZ());
+        GLFunctions::vertex3d(nodeWest.getX(),nodeWest.getY(),nodeWest.getZ());
+        GLFunctions::vertex3d(nodeSouth.getX(),nodeSouth.getY(),nodeSouth.getZ());
+        GLFunctions::vertex3d(nodeNorth.getX(),nodeNorth.getY(),nodeNorth.getZ());
         GLFunctions::end();
     }
 }

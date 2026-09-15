@@ -39,16 +39,16 @@ GLPoint &GLPoint::operator =(const GLPoint &glPoint)
 void GLPoint::initialize()
 {
     // Save current settings
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->prevPointSize));
+    this->prevPointSize = GLStateCache::instance().getPointSize();
     this->lightingEnabled = GLStateCache::instance().getLighting();
     // Initialize environment
-    GL_SAFE_CALL(glPointSize(this->pointSize));
+    GLStateCache::instance().setPointSize(this->pointSize);
     GLStateCache::instance().disableLighting();
 }
 
 void GLPoint::finalize()
 {
-    GL_SAFE_CALL(glPointSize(this->prevPointSize));
+    GLStateCache::instance().setPointSize(this->prevPointSize);
 
     GLStateCache::instance().setLighting(this->lightingEnabled);
 }

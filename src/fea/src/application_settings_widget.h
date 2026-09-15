@@ -28,6 +28,10 @@ class ApplicationSettingsWidget : public RApplicationSettingsWidget
         QSpinBox *nThreadsSpin;
         //! Number of history records spin button.
         QSpinBox *nHistoryRecordsSpin;
+        //! Rendering backend combo box.
+        QComboBox *renderBackendCombo;
+        //! QRhi graphics API combo box.
+        QComboBox *rhiApiCombo;
 
     public:
 
@@ -38,6 +42,9 @@ class ApplicationSettingsWidget : public RApplicationSettingsWidget
 
         //! Create tab containing general settings.
         QWidget *createGeneralTab();
+
+        //! Select the item carrying the given value, without emitting a change.
+        static void selectComboValue(QComboBox *comboBox, int value);
 
     public slots:
 
@@ -54,6 +61,12 @@ class ApplicationSettingsWidget : public RApplicationSettingsWidget
 
         //! Number of history records changed.
         void onNHistoryRecordsChanged(int nHistoryRecords);
+
+        //! Rendering backend changed.
+        void onRenderBackendChanged(int index);
+
+        //! QRhi graphics API changed.
+        void onRhiApiChanged(int index);
 
 };
 

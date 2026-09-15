@@ -52,6 +52,30 @@ sudo apt install ./build-Release/range-fea-1.2.1-linux-x86_64.deb
 sudo dnf install ./build-Release/range-fea-1.2.1-linux-x86_64.rpm
 ```
 
+## Rendering backends
+
+The GUI can render the 3D view either through the legacy OpenGL pipeline or through
+Qt's Rendering Hardware Interface, which runs on Metal, Vulkan, Direct3D or OpenGL.
+
+The backend is configured in _Application settings → General → Rendering backend_,
+together with the graphics API used by the `rhi` backend. Both are stored per user
+and applied the next time the application starts.
+
+The stored setting can be overridden for a single run from the command line:
+
+```
+fea --render-backend=opengl                  # legacy OpenGL pipeline (default)
+fea --render-backend=rhi                     # Qt Rendering Hardware Interface
+fea --render-backend=rhi --rhi-api=metal     # auto|opengl|vulkan|metal|d3d11|d3d12|null
+```
+
+A command line override does not change the stored setting.
+
+Both backends share the whole scene traversal, so they render the same geometry.
+Two fixed-function features have no QRhi equivalent and are therefore ignored by the
+`rhi` backend: line stipple (dashed grid and axis lines are drawn solid) and line
+widths greater than one on APIs without wide-line support, such as Metal.
+
 ## Download
 To download already built binaries please visit http://range-software.com
 

@@ -44,20 +44,20 @@ GLArrow &GLArrow::operator =(const GLArrow &glArrow)
 void GLArrow::initialize()
 {
     // Save current settings
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
+    this->normalizeEnabled = GLStateCache::instance().getNormalize();
+    this->lineWidth = GLStateCache::instance().getLineWidth();
+    this->cullFaceEnabled = GLStateCache::instance().getCullFace();
     // Initialize environment
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setNormalize(GL_TRUE);
+    GLStateCache::instance().setCullFace(GL_FALSE);
+    GLStateCache::instance().setLineWidth(1.0f);
 }
 
 void GLArrow::finalize()
 {
-    this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE);
-    this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    GLStateCache::instance().setNormalize(this->normalizeEnabled);
+    GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 
 void GLArrow::draw()

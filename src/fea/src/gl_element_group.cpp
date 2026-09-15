@@ -379,15 +379,14 @@ void GLElementGroup::draw()
     // element colour; when true the shader colours back faces silver (different colour).
     if (this->getUseGlList())
     {
-        GLShaderProgram &shader = this->getGLWidget()->getMainShaderProgram();
         if (this->twoSidedFace)
         {
-            shader.setUniformBool("uTwoSided", true);
+            GLStateCache::instance().setTwoSided(true);
         }
         pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
         if (this->twoSidedFace)
         {
-            shader.setUniformBool("uTwoSided", false);
+            GLStateCache::instance().setTwoSided(false);
         }
     }
 

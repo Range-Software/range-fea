@@ -9,6 +9,8 @@
 
 #include <QtOpenGL>
 
+struct RhiBufferData;
+
 //! Vertex data structure for VBO rendering.
 struct GLVertexData
 {
@@ -18,11 +20,12 @@ struct GLVertexData
     GLubyte color[4];
 };
 
-//! OpenGL Vertex Buffer Object manager.
-//! Uses fixed-function VBO rendering (glVertexPointer / glDrawArrays) compatible
-//! with the legacy pipeline.  A session of GL recording produces multiple
-//! glBegin/glEnd batches; all batches are accumulated CPU-side and uploaded to
-//! the GPU in a single glBufferData call at the end of the session.
+//! Vertex buffer manager, shared by both rendering backends.
+//! A session of geometry recording produces multiple glBegin/glEnd batches; all
+//! batches are accumulated CPU-side and uploaded to the GPU in a single call at
+//! the end of the session.  With the OpenGL backend the destination is a VBO
+//! drawn through glDrawArrays, with the QRhi backend a QRhiBuffer whose batches
+//! have been expanded to the triangle/line/point lists QRhi supports.
 class GLVertexBuffer
 {
 
@@ -74,6 +77,8 @@ class GLVertexBuffer
         //! Whether any geometry recorded into this VBO used the 1D texture (colour map).
         //! Set during recording; used by callList() to drive uUseTexture uniform.
         bool usesTexture;
+        //! QRhi side of the buffer (nullptr with the OpenGL backend).
+        RhiBufferData *rhiData;
 
     private:
 

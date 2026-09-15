@@ -37,16 +37,16 @@ void GLNode::_init(const GLNode *pGlNode)
 void GLNode::initialize()
 {
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
+    this->pointSize = GLStateCache::instance().getPointSize();
 
     GLStateCache::instance().disableLighting();
-    GL_SAFE_CALL(glPointSize(10.0f));
+    GLStateCache::instance().setPointSize(10.0f);
 }
 
 void GLNode::finalize()
 {
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(glPointSize(this->pointSize));
+    GLStateCache::instance().setPointSize(this->pointSize);
 }
 
 void GLNode::draw()

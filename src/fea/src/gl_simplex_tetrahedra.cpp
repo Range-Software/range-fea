@@ -123,8 +123,8 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
 
     GLboolean cullState;
 
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE,&cullState));
-    GL_SAFE_CALL(glDisable(GL_CULL_FACE));
+    cullState = GLStateCache::instance().getCullFace();
+    GLStateCache::instance().setCullFace(GL_FALSE);
 
     GLFunctions::begin(GL_TRIANGLES);
     // 021
@@ -178,7 +178,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
         GLStateCache::instance().disableTexture1D();
     }
 
-    GL_SAFE_CALL(cullState ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
+    GLStateCache::instance().setCullFace(cullState);
 }
 
 void GLSimplexTetrahedra::drawWired(bool useTexture)

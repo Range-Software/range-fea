@@ -51,11 +51,17 @@ class Application : public RApplication
         //! Return pointer to main window.
         MainWindow *getMainWindow();
 
-        //! Initialize main window and other user objects.
-        void initialize();
+        //! Return the rendering backend command line options.
+        QList<RArgumentOption> getAdditionalArgumentOptions() const override;
+
+        //! Select the rendering backend from the command line.
+        void processAdditionalArguments(const RArgumentsParser &argumentsParser) override;
 
         //! Initialize main window and other user objects.
-        void finalize();
+        void initialize() override;
+
+        //! Initialize main window and other user objects.
+        void finalize() override;
 
 };
 

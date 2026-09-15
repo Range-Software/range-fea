@@ -17,6 +17,8 @@ const QString ApplicationSettings::sessionFileNameKey = "session/fileName";
 const QString ApplicationSettings::nThreadsKey = "application/nThreads";
 const QString ApplicationSettings::nHistoryRecordsKey = "application/nHistoryRecords";
 const QString ApplicationSettings::solverPathKey = "application/solverPath";
+const QString ApplicationSettings::renderBackendKey = "application/renderBackend";
+const QString ApplicationSettings::rhiApiKey = "application/rhiApi";
 
 ApplicationSettings::ApplicationSettings(QObject *parent)
     : RApplicationSettings{parent}
@@ -87,6 +89,54 @@ void ApplicationSettings::setNHistoryRecords(uint nHistoryRecords)
     }
 }
 
+RenderBackend::Type ApplicationSettings::getRenderBackend() const
+{
+    // Stored by name so the settings file stays readable and survives reordering
+    // of the enum.  Anything unrecognised falls back to the default.
+    const QString name(this->value(ApplicationSettings::renderBackendKey,
+                                   RenderBackend::toString(ApplicationSettings::getDefaultRenderBackend())).toString());
+
+    bool isOk = false;
+    RenderBackend::Type renderBackend = RenderBackend::typeFromString(name, &isOk);
+
+    return isOk ? renderBackend : ApplicationSettings::getDefaultRenderBackend();
+}
+
+void ApplicationSettings::setRenderBackend(RenderBackend::Type renderBackend)
+{
+    if (this->getRenderBackend() == renderBackend)
+    {
+        return;
+    }
+
+    this->setValue(ApplicationSettings::renderBackendKey, RenderBackend::toString(renderBackend));
+
+    emit this->renderBackendChanged(renderBackend);
+}
+
+RenderBackend::RhiApi ApplicationSettings::getRhiApi() const
+{
+    const QString name(this->value(ApplicationSettings::rhiApiKey,
+                                   RenderBackend::toString(ApplicationSettings::getDefaultRhiApi())).toString());
+
+    bool isOk = false;
+    RenderBackend::RhiApi rhiApi = RenderBackend::rhiApiFromString(name, &isOk);
+
+    return isOk ? rhiApi : ApplicationSettings::getDefaultRhiApi();
+}
+
+void ApplicationSettings::setRhiApi(RenderBackend::RhiApi rhiApi)
+{
+    if (this->getRhiApi() == rhiApi)
+    {
+        return;
+    }
+
+    this->setValue(ApplicationSettings::rhiApiKey, RenderBackend::toString(rhiApi));
+
+    emit this->rhiApiChanged(rhiApi);
+}
+
 uint ApplicationSettings::getMaxThreads()
 {
     return uint(omp_get_num_procs());
@@ -114,4 +164,14 @@ uint ApplicationSettings::getDefaultNThreads()
 uint ApplicationSettings::getDefaultNHistoryRecords()
 {
     return 3;
+}
+
+RenderBackend::Type ApplicationSettings::getDefaultRenderBackend()
+{
+    return RenderBackend::Type::OpenGL;
+}
+
+RenderBackend::RhiApi ApplicationSettings::getDefaultRhiApi()
+{
+    return RenderBackend::RhiApi::Auto;
 }

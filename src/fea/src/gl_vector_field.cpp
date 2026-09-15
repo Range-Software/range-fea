@@ -80,20 +80,20 @@ void GLVectorField::initialize()
     }
 
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
-    GL_SAFE_CALL(glGetBooleanv(GL_CULL_FACE, &this->cullFaceEnabled));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    this->normalize = GLStateCache::instance().getNormalize();
+    this->cullFaceEnabled = GLStateCache::instance().getCullFace();
+    this->lineWidth = GLStateCache::instance().getLineWidth();
 
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setLineWidth(1.0f);
     if (this->getData().getDrawArrowHeads())
     {
-        GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-        GL_SAFE_CALL(glDisable(GL_CULL_FACE));
+        GLStateCache::instance().setNormalize(GL_TRUE);
+        GLStateCache::instance().setCullFace(GL_FALSE);
     }
     else
     {
         GLStateCache::instance().disableLighting();
-        GL_SAFE_CALL(glDisable(GL_NORMALIZE));
+        GLStateCache::instance().setNormalize(GL_FALSE);
     }
 }
 
@@ -105,9 +105,9 @@ void GLVectorField::finalize()
     }
 
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(this->cullFaceEnabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    GLStateCache::instance().setNormalize(this->normalize);
+    GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 
 void GLVectorField::draw()

@@ -42,20 +42,20 @@ GLLine &GLLine::operator =(const GLLine &glLine)
 void GLLine::initialize()
 {
     // Save current settings
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalizeEnabled));
+    this->normalizeEnabled = GLStateCache::instance().getNormalize();
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    this->lineWidth = GLStateCache::instance().getLineWidth();
     // Initialize environment
-    GL_SAFE_CALL(glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setNormalize(GL_FALSE);
     GLStateCache::instance().disableLighting();
-    GL_SAFE_CALL(glLineWidth(this->width));
+    GLStateCache::instance().setLineWidth(this->width);
 }
 
 void GLLine::finalize()
 {
-    GL_SAFE_CALL(this->normalizeEnabled ? glEnable(GL_NORMALIZE) :glDisable(GL_NORMALIZE));
+    GLStateCache::instance().setNormalize(this->normalizeEnabled);
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 
 void GLLine::draw()

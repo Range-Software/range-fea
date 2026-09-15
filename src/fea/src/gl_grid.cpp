@@ -3,6 +3,7 @@
 #include "gl_line.h"
 #include "gl_node.h"
 #include "gl_widget.h"
+#include "gl_state_cache.h"
 
 void GLGrid::_init(const GLGrid *pGlGrid)
 {
@@ -125,12 +126,10 @@ void GLGrid::draw()
     {
         if (n % 10 != 0 && (n+1)*sdt + this->gMin < this->gMax)
         {
-            GL_SAFE_CALL(glGetBooleanv(GL_LINE_STIPPLE,&stipple));
+            stipple = GLStateCache::instance().getLineStipple();
 
-            GL_SAFE_CALL(glPushAttrib(GL_ENABLE_BIT));
 
-            GL_SAFE_CALL(glLineStipple(6, 0xAAAA));
-            GL_SAFE_CALL(glEnable(GL_LINE_STIPPLE));
+            GLStateCache::instance().setLineStipple(GL_TRUE, 6, 0xAAAA);
         }
 
         // X - Y
@@ -145,11 +144,10 @@ void GLGrid::draw()
 
         if (n % 10 != 0 && (n+1)*sdt + this->gMin < this->gMax)
         {
-            GL_SAFE_CALL(glPopAttrib());
 
             if (!stipple)
             {
-                GL_SAFE_CALL(glDisable(GL_LINE_STIPPLE));
+                GLStateCache::instance().setLineStipple(GL_FALSE);
             }
         }
 

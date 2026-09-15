@@ -108,7 +108,7 @@ void GLSimplexPoint::drawNormal(const RModelRaw &sphereModel, bool volumeElement
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().setTexture1D(GL_TRUE);
         GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
     }
 
@@ -143,7 +143,7 @@ void GLSimplexPoint::drawNormal(const RModelRaw &sphereModel, bool volumeElement
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().setTexture1D(GL_FALSE);
     }
 
     GLStateCache::instance().setLighting(lightingEnabled);
@@ -156,7 +156,7 @@ void GLSimplexPoint::drawWired(const RModelRaw &sphereModel, bool volumeElement,
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glEnable(GL_TEXTURE_1D));
+        GLStateCache::instance().setTexture1D(GL_TRUE);
         GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
     }
 
@@ -187,7 +187,7 @@ void GLSimplexPoint::drawWired(const RModelRaw &sphereModel, bool volumeElement,
 
     if (useTexture)
     {
-        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+        GLStateCache::instance().setTexture1D(GL_FALSE);
     }
 
     GLStateCache::instance().setLighting(lightingEnabled);

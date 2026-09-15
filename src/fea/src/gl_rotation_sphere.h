@@ -11,7 +11,6 @@ class GLRotationSphere : public GLObject
         // Environment settings
         GLboolean depthTestEnabled;
         GLboolean lineSmoothEnabled;
-        GLint lineSmoothHint;
         GLboolean normalizeEnabled;
         GLboolean lightingEnabled;
         GLfloat lineWidth;

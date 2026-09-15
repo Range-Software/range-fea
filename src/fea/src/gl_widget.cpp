@@ -19,6 +19,12 @@
 #include "gl_rotation_sphere.h"
 #include "gl_functions.h"
 #include "gl_state_cache.h"
+#include "gl_render_surface.h"
+#include "rhi_render_surface.h"
+#include "render_backend.h"
+#include "render_matrix_stack.h"
+#include "render_overlay_widget.h"
+#include "rhi_renderer.h"
 #include "pick_list.h"
 #include "application.h"
 #include "application_settings.h"
@@ -58,7 +64,7 @@ static void matrixToGL(const QMatrix4x4 &m, double out[16])
 }
 
 GLWidget::GLWidget(uint modelID, QWidget *parent)
-    : QOpenGLWidget(parent),
+    : QWidget(parent),
       modelID(modelID),
       drx(0.0),
       dry(0.0),
@@ -81,7 +87,10 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       twoSidedFace(false),
       lightsNeedUpdate(true),
       cachedNLights(0),
-      currentGLColor(Qt::white)
+      currentGLColor(Qt::white),
+      renderSurface(nullptr),
+      overlayWidget(nullptr),
+      clearColor(Qt::black)
 {
     // Initialise projMatrix to identity (column-major).
     for (int i = 0; i < 16; i++) this->projMatrix[i] = (i % 5 == 0) ? 1.0 : 0.0;
@@ -91,8 +100,20 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
     this->setFocusPolicy(Qt::StrongFocus);
     this->setAutoFillBackground(false);
 
-    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-    this->setFormat(format);
+    // Create the backend specific render surface and stack the 2D overlay on top.
+    if (RenderBackend::isRhi())
+    {
+        this->renderSurface = new RhiRenderSurface(this, this);
+    }
+    else
+    {
+        this->renderSurface = new GLRenderSurface(this, this);
+    }
+    this->renderSurface->asWidget()->setGeometry(this->rect());
+
+    this->overlayWidget = new RenderOverlayWidget(this, this);
+    this->overlayWidget->setGeometry(this->rect());
+    this->overlayWidget->raise();
 
     QString displayPropertiesFileName(Application::instance()->getSession()->getModel(this->modelID).buildDataFileName(RGLDisplayProperties::getDefaultFileExtension(true)));
 
@@ -151,10 +172,19 @@ QSize GLWidget::sizeHint() const
     return QSize(400, 400);
 }
 
-void GLWidget::initializeGL()
+void GLWidget::initializeRender()
 {
     R_LOG_TRACE_IN;
     this->resetView(-45.0, 0.0, -135.0);
+
+    RenderMatrixStack::reset();
+
+    if (RenderBackend::isRhi())
+    {
+        // Shaders of the QRhi backend are baked at build time and loaded by RhiRenderer.
+        R_LOG_TRACE_OUT;
+        return;
+    }
 
     RLogger::info("GL_VERSION  : %s\n", glGetString(GL_VERSION));
     RLogger::info("GL_RENDERER : %s\n", glGetString(GL_RENDERER));
@@ -188,39 +218,52 @@ void GLWidget::initializeGL()
     R_LOG_TRACE_OUT;
 }
 
-void GLWidget::resizeGL(int width, int height)
+void GLWidget::resizeRender(int width, int height)
 {
     R_LOG_TRACE_IN;
-    GL_SAFE_CALL(glViewport(0, 0, GLsizei(width*this->desktopDevicePixelRatio), GLsizei(height*this->desktopDevicePixelRatio)));
-    GL_SAFE_CALL(glMatrixMode(GL_PROJECTION));
-    GL_SAFE_CALL(glLoadIdentity());
+    if (width <= 0 || height <= 0)
+    {
+        R_LOG_TRACE_OUT;
+        return;
+    }
+
+    RenderMatrixStack::setViewport(0, 0,
+                                   int(width*this->desktopDevicePixelRatio),
+                                   int(height*this->desktopDevicePixelRatio));
 
     GLdouble winRatio = GLdouble(height)/GLdouble(width);
     GLdouble winScale = this->calculateViewDepth();
 
-    GL_SAFE_CALL(glOrtho(-1.0, 1.0, -winRatio, winRatio, -winScale, winScale));
-    GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
+    RenderMatrixStack::setOrtho(-1.0, 1.0, -winRatio, winRatio, -winScale, winScale);
     R_LOG_TRACE_OUT;
 }
 
-void GLWidget::paintGL()
+void GLWidget::paintRender()
 {
     R_LOG_TRACE_IN;
     this->qglClearColor(this->displayProperties.getBgColor());
 
-    GL_SAFE_CALL(glPushMatrix());
-    GL_SAFE_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+    // Text labels are collected during the traversal below and drawn afterwards
+    // by the 2D overlay, so the list from the previous frame is dropped here.
+    this->glTextRenderer.clear();
 
-    // Set common GL state once per frame (reduces redundant state changes)
-    GL_SAFE_CALL(glEnable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
-    GL_SAFE_CALL(glEnable(GL_MULTISAMPLE));
-    GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
-    GL_SAFE_CALL(glEnable(GL_BLEND));
-    GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    RenderMatrixStack::pushMatrix();
 
-    // Initialize state cache once per frame (reads current GL state)
+    if (RenderBackend::isOpenGL())
+    {
+        // The QRhi backend clears at the start of its single render pass.
+        GL_SAFE_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+        GL_SAFE_CALL(glShadeModel(GL_SMOOTH));
+        GL_SAFE_CALL(glEnable(GL_MULTISAMPLE));
+        GL_SAFE_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    }
+
+    // Initialize state cache once per frame (write-through, no GPU query)
     GLStateCache::instance().initialize();
+    GLStateCache::instance().setDepthTest(GL_TRUE);
+    GLStateCache::instance().setDepthFunc(GL_LEQUAL);
+    GLStateCache::instance().setBlend(GL_TRUE);
+    GLStateCache::instance().setClipPlane(false);
 
     if (this->displayProperties.getBgGradient())
     {
@@ -229,24 +272,72 @@ void GLWidget::paintGL()
 
     this->drawModel();
 
-    GL_SAFE_CALL(glPopMatrix());
-    GL_SAFE_CALL(glFlush());
+    RenderMatrixStack::popMatrix();
 
-    QPainter painter(this);
+    if (RenderBackend::isOpenGL())
+    {
+        GL_SAFE_CALL(glFlush());
+    }
 
+    // The overlay repaints with the labels this frame produced.
+    if (this->overlayWidget)
+    {
+        this->overlayWidget->update();
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void GLWidget::paintOverlay(QPainter &painter)
+{
+    R_LOG_TRACE_IN;
     this->glTextRenderer.render(painter);
-    this->glTextRenderer.clear();
 
     painter.setFont(QGuiApplication::font());
 
     this->drawValueRanges(painter);
     this->drawMessageBox(painter,false);
     this->drawInfoBox(painter,false);
-
-    painter.end();
-
-    this->makeCurrent();
     R_LOG_TRACE_OUT;
+}
+
+void GLWidget::update()
+{
+    QWidget::update();
+    if (this->renderSurface)
+    {
+        this->renderSurface->requestUpdate();
+    }
+    if (this->overlayWidget)
+    {
+        this->overlayWidget->update();
+    }
+}
+
+const QColor &GLWidget::getClearColor() const
+{
+    return this->clearColor;
+}
+
+void GLWidget::releaseRenderResources()
+{
+    R_LOG_TRACE_IN;
+    this->glModelList.clear();
+    this->glVoidModelList.clear();
+    R_LOG_TRACE_OUT;
+}
+
+void GLWidget::resizeEvent(QResizeEvent *resizeEvent)
+{
+    QWidget::resizeEvent(resizeEvent);
+    if (this->renderSurface)
+    {
+        this->renderSurface->asWidget()->setGeometry(this->rect());
+    }
+    if (this->overlayWidget)
+    {
+        this->overlayWidget->setGeometry(this->rect());
+        this->overlayWidget->raise();
+    }
 }
 
 void GLWidget::drawBackgroundGradient()
@@ -254,33 +345,35 @@ void GLWidget::drawBackgroundGradient()
     R_LOG_TRACE_IN;
 
     // MAIN VIEWPORT
-    GL_SAFE_CALL(glViewport(0, 0, GLsizei(this->width()*this->desktopDevicePixelRatio), GLsizei(this->height()*this->desktopDevicePixelRatio)));
+    RenderMatrixStack::setViewport(0, 0,
+                                   int(this->width()*this->desktopDevicePixelRatio),
+                                   int(this->height()*this->desktopDevicePixelRatio));
 
-    GL_SAFE_CALL(glMatrixMode(GL_PROJECTION));
-    GL_SAFE_CALL(glLoadIdentity());
+    RenderMatrixStack::setOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    RenderMatrixStack::loadIdentity();
 
-    GL_SAFE_CALL(glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0));
-
-    GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
-    GL_SAFE_CALL(glLoadIdentity());
-
-    GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
-
-    GL_SAFE_CALL(glDisable(GL_LIGHTING));
-    GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
-    // Note: GL_BLEND, glBlendFunc, glShadeModel, glDepthFunc already set in paintGL()
+    // The gradient is a full-screen backdrop: it neither tests nor writes depth,
+    // which replaces the depth buffer clear the OpenGL backend used to do here
+    // (QRhi can only clear at the start of a render pass).
+    GLStateCache &stateCache = GLStateCache::instance();
+    stateCache.setDepthTest(GL_FALSE);
+    stateCache.setDepthMask(GL_FALSE);
+    stateCache.disableLighting();
+    stateCache.setLineSmooth(GL_TRUE);
 
     GLFunctions::begin(GL_TRIANGLE_FAN);
 
     this->qglColor(QColor(255,255,255,0));
-    GL_SAFE_CALL(glVertex3d( 1.0,  0.3, 0.0));
-    GL_SAFE_CALL(glVertex3d(-1.0,  0.3, 0.0));
-    GL_SAFE_CALL(glColor4f(1.0f,1.0f,1.0f,0.4f));
+    GLFunctions::vertex3d( 1.0,  0.3, 0.0);
+    GLFunctions::vertex3d(-1.0,  0.3, 0.0);
     this->qglColor(QColor(255,255,255,100));
-    GL_SAFE_CALL(glVertex3d(-1.0, -1.0, 0.0));
-    GL_SAFE_CALL(glVertex3d( 1.0, -1.0, 0.0));
+    GLFunctions::vertex3d(-1.0, -1.0, 0.0);
+    GLFunctions::vertex3d( 1.0, -1.0, 0.0);
 
     GLFunctions::end();
+
+    stateCache.setDepthMask(GL_TRUE);
+    stateCache.setDepthTest(GL_TRUE);
     R_LOG_TRACE_OUT;
 }
 
@@ -288,49 +381,44 @@ void GLWidget::drawModel()
 {
     R_LOG_TRACE_IN;
     // MAIN VIEWPORT
-    GL_SAFE_CALL(glViewport(0, 0, GLsizei(this->width()*this->desktopDevicePixelRatio), GLsizei(this->height()*this->desktopDevicePixelRatio)));
-
-    GL_SAFE_CALL(glMatrixMode(GL_PROJECTION));
-    GL_SAFE_CALL(glLoadIdentity());
+    RenderMatrixStack::setViewport(0, 0,
+                                   int(this->width()*this->desktopDevicePixelRatio),
+                                   int(this->height()*this->desktopDevicePixelRatio));
 
     GLdouble winRatio = GLdouble(this->height())/GLdouble(this->width());
     GLdouble winScale = this->calculateViewDepth();
 
-    GL_SAFE_CALL(glOrtho(-1.0, 1.0, -winRatio, winRatio, -winScale, winScale));
+    RenderMatrixStack::setOrtho(-1.0, 1.0, -winRatio, winRatio, -winScale, winScale);
+    RenderMatrixStack::getProjectionGL(this->projMatrix);
 
-    // Cache the projection matrix CPU-side (same parameters as glOrtho above).
-    {
-        QMatrix4x4 pm;
-        pm.ortho(-1.0f, 1.0f, float(-winRatio), float(winRatio), float(-winScale), float(winScale));
-        matrixToGL(pm, this->projMatrix);
-    }
+    RenderMatrixStack::loadIdentity();
 
-    GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
-    GL_SAFE_CALL(glLoadIdentity());
-
-    GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
+    GLStateCache &stateCache = GLStateCache::instance();
+    stateCache.enableLighting();
 
     // Only update lights when they change (cached lighting setup)
-    GL_SAFE_CALL(glEnable(GL_LIGHTING));
     if (this->lightsNeedUpdate || this->cachedNLights != this->displayProperties.getNLights())
     {
         RLogger::trace("Updating lights\n");
-        // Disable all lights first if count changed
-        if (this->cachedNLights != this->displayProperties.getNLights())
+        if (RenderBackend::isOpenGL())
         {
-            for (uint i=0;i<8;i++)
+            // Disable all lights first if count changed
+            if (this->cachedNLights != this->displayProperties.getNLights())
             {
-                GL_SAFE_CALL(glDisable(GL_LIGHT0 + i));
+                for (uint i=0;i<8;i++)
+                {
+                    GL_SAFE_CALL(glDisable(GL_LIGHT0 + i));
+                }
             }
+            for (uint i=0;i<this->displayProperties.getNLights();i++)
+            {
+                this->showLight(this->displayProperties.getLight(i));
+            }
+            GL_SAFE_CALL(glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1.0));
+            GL_SAFE_CALL(glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE));
+            GL_SAFE_CALL(glEnable(GL_COLOR_MATERIAL));
+            GL_SAFE_CALL(glMaterialf(GL_FRONT, GL_SHININESS, 1.0));
         }
-        for (uint i=0;i<this->displayProperties.getNLights();i++)
-        {
-            this->showLight(this->displayProperties.getLight(i));
-        }
-        GL_SAFE_CALL(glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, 1.0));
-        GL_SAFE_CALL(glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE));
-        GL_SAFE_CALL(glEnable(GL_COLOR_MATERIAL));
-        GL_SAFE_CALL(glMaterialf(GL_FRONT, GL_SHININESS, 1.0));
         this->cachedNLights = this->displayProperties.getNLights();
         this->lightsNeedUpdate = false;
     }
@@ -340,23 +428,15 @@ void GLWidget::drawModel()
     this->applyTransformations();
     if (this->clippingPlaneEnabled)
     {
-        // Set clip plane while modelview = identity so the plane equation is
-        // specified directly in eye space.  glClipPlane transforms by M^{-T},
-        // which is identity here, so the stored plane equals what we pass in.
-        const GLdouble clippingPlane[4] = {
+        // Set the clip plane while the model-view is identity so the plane
+        // equation is specified directly in eye space.
+        const double clippingPlane[4] = {
             0.0, 0.0, -1.0,
-            -GLdouble(this->scale) + 2.0 * this->clippingPlaneDistance * GLdouble(this->scale)
+            -double(this->scale) + 2.0 * this->clippingPlaneDistance * double(this->scale)
         };
-        GL_SAFE_CALL(glClipPlane(GL_CLIP_PLANE0, clippingPlane));
+        stateCache.setClipPlane(false, clippingPlane);
     }
-    // Upload the updated accumulated matrix directly — no glMultMatrixd+glGetDoublev.
-    GL_SAFE_CALL(glLoadMatrixd(this->gMatrix));
-
-    // Note: GL_BLEND, glBlendFunc, glShadeModel already set in paintGL()
-
-    GL_SAFE_CALL(glHint(GL_POINT_SMOOTH_HINT,GL_DONT_CARE));
-    GL_SAFE_CALL(glHint(GL_LINE_SMOOTH_HINT,GL_DONT_CARE));
-    GL_SAFE_CALL(glHint(GL_POLYGON_SMOOTH_HINT,GL_FASTEST));
+    RenderMatrixStack::loadMatrix(this->gMatrix);
 
     if (this->displayProperties.getDrawGlobalAxis())
     {
@@ -381,65 +461,70 @@ void GLWidget::drawModel()
         gRotationSphere.paint();
     }
 
-    GL_SAFE_CALL(glEnable(GL_DEPTH_TEST));
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
-    GL_SAFE_CALL(glEnable(GL_POINT_SMOOTH));
-    GL_SAFE_CALL(glEnable(GL_LINE_SMOOTH));
-    GL_SAFE_CALL(glDisable(GL_POLYGON_SMOOTH));
+    stateCache.setDepthTest(GL_TRUE);
+    stateCache.setNormalize(GL_TRUE);
+    stateCache.setLineSmooth(GL_TRUE);
+    if (RenderBackend::isOpenGL())
+    {
+        GL_SAFE_CALL(glEnable(GL_POINT_SMOOTH));
+        GL_SAFE_CALL(glDisable(GL_POLYGON_SMOOTH));
+    }
 
     // Set default point/line sizes for entity rendering (avoids per-entity state queries)
-    GL_SAFE_CALL(glPointSize(10.0f));
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    stateCache.setPointSize(10.0f);
+    stateCache.setLineWidth(1.0f);
 
     // Apply model scale
-    GL_SAFE_CALL(glScaled(GLdouble(this->mscale),GLdouble(this->mscale),GLdouble(this->mscale)));
+    RenderMatrixStack::scale(double(this->mscale),double(this->mscale),double(this->mscale));
 
     if (this->clippingPlaneEnabled)
     {
-        GL_SAFE_CALL(glEnable(GL_CLIP_PLANE0));
+        stateCache.setClipPlane(true);
+    }
+
+    // Upload the light set the QRhi shaders read from their uniform block.
+    if (RenderBackend::isRhi())
+    {
+        std::vector<QVector4D> positions;
+        std::vector<QVector4D> ambients;
+        std::vector<QVector4D> diffuses;
+        this->collectLights(positions, ambients, diffuses);
+        if (RhiRenderer *renderer = RhiRenderer::current())
+        {
+            renderer->setLights(positions, ambients, diffuses);
+        }
+        stateCache.setTwoSided(false);
     }
 
     // Bind the GLSL shader for model rendering and upload frame uniforms.
     // Full modelview = accumulated rotation/translation matrix × model scale.
-    if (this->mainShaderProgram.isValid())
+    if (RenderBackend::isOpenGL() && this->mainShaderProgram.isValid())
     {
-        QMatrix4x4 mv = matrixFromGL(this->gMatrix);
-        mv.scale(float(this->mscale));
+        std::vector<QVector4D> positions;
+        std::vector<QVector4D> ambients;
+        std::vector<QVector4D> diffuses;
+        this->collectLights(positions, ambients, diffuses);
 
         this->mainShaderProgram.bind();
-        GLStateCache::instance().setShaderProgram(&this->mainShaderProgram);
+        stateCache.setShaderProgram(&this->mainShaderProgram);
 
-        this->mainShaderProgram.setUniformMatrix4x4("uProjection", matrixFromGL(this->projMatrix));
-        this->mainShaderProgram.setUniformMatrix4x4("uModelView", mv);
+        this->mainShaderProgram.setUniformMatrix4x4("uProjection", RenderMatrixStack::getProjection());
+        this->mainShaderProgram.setUniformMatrix4x4("uModelView", RenderMatrixStack::getModelView());
 
-        // Upload light parameters — only enabled lights (matches original glEnable(GL_LIGHTi) behaviour).
-        // Positions are uploaded as-is (camera-relative/eye-space) because the original glLightfv()
-        // calls were made before glLoadMatrixd(gMatrix), i.e. with identity modelview.
-        uint nUpload = 0;
-        for (uint i = 0; i < this->displayProperties.getNLights(); i++)
+        for (size_t i = 0; i < positions.size(); i++)
         {
-            const RGLLight &light = this->displayProperties.getLight(i);
-            if (!light.getEnabled())
-            {
-                continue;
-            }
             char buf[64];
 
-            const RR3Vector &pos = light.getPosition();
-            snprintf(buf, sizeof(buf), "uLights[%u].position", nUpload);
-            this->mainShaderProgram.setUniformVector3D(buf, QVector3D(float(pos[0]), float(pos[1]), float(pos[2])));
+            snprintf(buf, sizeof(buf), "uLights[%u].position", uint(i));
+            this->mainShaderProgram.setUniformVector3D(buf, positions[i].toVector3D());
 
-            const QColor &amb = light.getAmbient();
-            snprintf(buf, sizeof(buf), "uLights[%u].ambient", nUpload);
-            this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(amb.redF()), float(amb.greenF()), float(amb.blueF()), float(amb.alphaF())));
+            snprintf(buf, sizeof(buf), "uLights[%u].ambient", uint(i));
+            this->mainShaderProgram.setUniformVector4D(buf, ambients[i]);
 
-            const QColor &dif = light.getDiffuse();
-            snprintf(buf, sizeof(buf), "uLights[%u].diffuse", nUpload);
-            this->mainShaderProgram.setUniformVector4D(buf, QVector4D(float(dif.redF()), float(dif.greenF()), float(dif.blueF()), float(dif.alphaF())));
-
-            nUpload++;
+            snprintf(buf, sizeof(buf), "uLights[%u].diffuse", uint(i));
+            this->mainShaderProgram.setUniformVector4D(buf, diffuses[i]);
         }
-        this->mainShaderProgram.setUniformInt("uNumLights", int(nUpload));
+        this->mainShaderProgram.setUniformInt("uNumLights", int(positions.size()));
 
         this->mainShaderProgram.setUniformBool("uUseLighting", true);
         this->mainShaderProgram.setUniformBool("uUseTexture", false);
@@ -466,7 +551,7 @@ void GLWidget::drawModel()
 
     if (this->clippingPlaneEnabled)
     {
-        GL_SAFE_CALL(glDisable(GL_CLIP_PLANE0));
+        stateCache.setClipPlane(false);
     }
 
     // Draw draw-engine objects (shader must still be bound for VBO normal/lighting to work)
@@ -478,10 +563,10 @@ void GLWidget::drawModel()
     }
 
     // Release shader — draw-engine objects above need it, everything below uses fixed-function.
-    if (this->mainShaderProgram.isValid())
+    if (RenderBackend::isOpenGL() && this->mainShaderProgram.isValid())
     {
         this->mainShaderProgram.release();
-        GLStateCache::instance().setShaderProgram(nullptr);
+        stateCache.setShaderProgram(nullptr);
     }
 
     // Draw local directions
@@ -559,45 +644,45 @@ void GLWidget::drawModel()
     if (this->drawStreamLinePosition && this->streamLinePosition != RR3Vector(0.0,0.0,0.0))
     {
         RLogger::trace("Draw stream line position\n");
-        glPushMatrix();
+        RenderMatrixStack::pushMatrix();
 
-        glTranslated(this->streamLinePosition[0],this->streamLinePosition[1],this->streamLinePosition[2]);
+        RenderMatrixStack::translate(this->streamLinePosition[0],this->streamLinePosition[1],this->streamLinePosition[2]);
 
         GLAxis gAxis(this,GL_AXIS_POSITION,tr("Stream line"));
         gAxis.setSize(0.8f);
         gAxis.paint();
 
-        glPopMatrix();
+        RenderMatrixStack::popMatrix();
     }
 
     // Draw geometry scale origin
     if (this->drawScaleOrigin && this->scaleOrigin != RR3Vector(0.0,0.0,0.0))
     {
         RLogger::trace("Draw geometry scale origin\n");
-        glPushMatrix();
+        RenderMatrixStack::pushMatrix();
 
-        glTranslated(this->scaleOrigin[0],this->scaleOrigin[1],this->scaleOrigin[2]);
+        RenderMatrixStack::translate(this->scaleOrigin[0],this->scaleOrigin[1],this->scaleOrigin[2]);
 
         GLAxis gAxis(this,GL_AXIS_POSITION,tr("Scale"));
         gAxis.setSize(0.8f);
         gAxis.paint();
 
-        glPopMatrix();
+        RenderMatrixStack::popMatrix();
     }
 
     // Draw geometry rotation origin
     if (this->drawRotationOrigin && this->rotationOrigin != RR3Vector(0.0,0.0,0.0))
     {
         RLogger::trace("Draw geometry rotation origin\n");
-        glPushMatrix();
+        RenderMatrixStack::pushMatrix();
 
-        glTranslated(this->rotationOrigin[0],this->rotationOrigin[1],this->rotationOrigin[2]);
+        RenderMatrixStack::translate(this->rotationOrigin[0],this->rotationOrigin[1],this->rotationOrigin[2]);
 
         GLAxis gAxis(this,GL_AXIS_POSITION,tr("Rotation"));
         gAxis.setSize(0.8f);
         gAxis.paint();
 
-        glPopMatrix();
+        RenderMatrixStack::popMatrix();
     }
 
     // Draw cut plane.
@@ -612,22 +697,32 @@ void GLWidget::drawModel()
     // Restore original scale.
     RLogger::trace("Restore scale\n");
     double invMscale = 1.0/double(this->mscale);
-    GL_SAFE_CALL(glScaled(invMscale,invMscale,invMscale));
+    RenderMatrixStack::scale(invMscale,invMscale,invMscale);
 
     if (this->displayProperties.getDrawLocalAxis())
     {
         RLogger::trace("Draw local axis\n");
         // LOWER-LEFT CORNER VIEWPORT
-        GL_SAFE_CALL(glViewport (0,0,GLWidget::lAxisWpWidth*this->desktopDevicePixelRatio,GLWidget::lAxisWpHeight*this->desktopDevicePixelRatio));
+        RenderMatrixStack::setViewport(0, 0,
+                                       int(GLWidget::lAxisWpWidth*this->desktopDevicePixelRatio),
+                                       int(GLWidget::lAxisWpHeight*this->desktopDevicePixelRatio));
 
-        GL_SAFE_CALL(glMatrixMode(GL_PROJECTION));
-        GL_SAFE_CALL(glLoadIdentity());
+        RenderMatrixStack::setOrtho(-1.0, 1.0, -1.0, 1.0, -winScale, winScale);
 
-        GL_SAFE_CALL(glOrtho(-1.0, 1.0, -1.0, 1.0, -winScale, winScale));
-
-        GL_SAFE_CALL(glMatrixMode(GL_MODELVIEW));
-
-        GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
+        // The indicator has to sit in front of the model.  OpenGL clears the
+        // depth buffer for that; QRhi cannot clear inside a pass, so the
+        // indicator is squeezed into the near end of the depth range instead.
+        if (RenderBackend::isRhi())
+        {
+            if (RhiRenderer *renderer = RhiRenderer::current())
+            {
+                renderer->setDepthRange(0.0f, 0.05f);
+            }
+        }
+        else
+        {
+            GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
+        }
 
         // Update lMatrix CPU-side (same rotation increments, no translation).
         {
@@ -639,13 +734,20 @@ void GLWidget::drawModel()
             QMatrix4x4 lNew = lDelta * matrixFromGL(this->lMatrix);
             matrixToGL(lNew, this->lMatrix);
         }
-        // Upload directly — no glLoadIdentity+glRotatef+glMultMatrixd+glGetDoublev.
-        GL_SAFE_CALL(glLoadMatrixd(this->lMatrix));
+        RenderMatrixStack::loadMatrix(this->lMatrix);
 
         // Draw local axis.
         GLAxis lAxis(this,GL_AXIS_LOCAL);
         lAxis.setSize(0.7f);
         lAxis.paint();
+
+        if (RenderBackend::isRhi())
+        {
+            if (RhiRenderer *renderer = RhiRenderer::current())
+            {
+                renderer->setDepthRange(0.0f, 1.0f);
+            }
+        }
     }
 
     this->dtx = this->dty = this->dtz = 0.0;
@@ -1401,6 +1503,44 @@ double GLWidget::calculateViewDepth() const
     return 1000.0 * double(this->scale);
 }
 
+void GLWidget::collectLights(std::vector<QVector4D> &positions,
+                             std::vector<QVector4D> &ambients,
+                             std::vector<QVector4D> &diffuses) const
+{
+    R_LOG_TRACE_IN;
+    positions.clear();
+    ambients.clear();
+    diffuses.clear();
+
+    // Only enabled lights are collected, which matches the glEnable(GL_LIGHTi)
+    // behaviour of the fixed-function pipeline.  Positions are eye space: the
+    // original glLightfv() calls were made while the model-view was identity.
+    for (uint i = 0; i < this->displayProperties.getNLights(); i++)
+    {
+        const RGLLight &light = this->displayProperties.getLight(i);
+        if (!light.getEnabled())
+        {
+            continue;
+        }
+        if (positions.size() >= 8)
+        {
+            break;
+        }
+
+        const RR3Vector &position = light.getPosition();
+        positions.push_back(QVector4D(float(position[0]), float(position[1]), float(position[2]), 0.0f));
+
+        const QColor &ambient = light.getAmbient();
+        ambients.push_back(QVector4D(float(ambient.redF()), float(ambient.greenF()),
+                                     float(ambient.blueF()), float(ambient.alphaF())));
+
+        const QColor &diffuse = light.getDiffuse();
+        diffuses.push_back(QVector4D(float(diffuse.redF()), float(diffuse.greenF()),
+                                     float(diffuse.blueF()), float(diffuse.alphaF())));
+    }
+    R_LOG_TRACE_OUT;
+}
+
 void GLWidget::showLight(const RGLLight &rGlLight)
 {
     R_LOG_TRACE_IN;
@@ -2120,7 +2260,7 @@ void GLWidget::setTwoSidedFace(bool twoSidedFace)
 void GLWidget::takeScreenShot(const QString &fileName)
 {
     R_LOG_TRACE_IN;
-    QPixmap screenShot(QPixmap::fromImage(this->grabFramebuffer()));
+    QPixmap screenShot(QPixmap::fromImage(this->renderSurface->grabImage()));
     QString format = "PNG";
     QString saveFileName(fileName);
 
@@ -2190,10 +2330,14 @@ void GLWidget::qglColor(const QColor &color)
 void GLWidget::qglClearColor(const QColor &clearColor)
 {
     R_LOG_TRACE_IN;
-    GL_SAFE_CALL(glClearColor(GLclampf(clearColor.redF()),
-                              GLclampf(clearColor.greenF()),
-                              GLclampf(clearColor.blueF()),
-                              GLclampf(clearColor.alphaF())));
+    this->clearColor = clearColor;
+    if (RenderBackend::isOpenGL())
+    {
+        GL_SAFE_CALL(glClearColor(GLclampf(clearColor.redF()),
+                                  GLclampf(clearColor.greenF()),
+                                  GLclampf(clearColor.blueF()),
+                                  GLclampf(clearColor.alphaF())));
+    }
     R_LOG_TRACE_OUT;
 }
 
@@ -2205,9 +2349,14 @@ void GLWidget::renderText(double x, double y, double z, const QString &str, cons
     // but we use the cached projMatrix to avoid that readback.
     int height = this->height();
     GLdouble model[16];
+    int viewport[4];
     GLint view[4];
-    GL_SAFE_CALL(glGetDoublev(GL_MODELVIEW_MATRIX, model));
-    GL_SAFE_CALL(glGetIntegerv(GL_VIEWPORT, &view[0]));
+    RenderMatrixStack::getModelViewGL(model);
+    RenderMatrixStack::getViewport(viewport);
+    for (int i = 0; i < 4; i++)
+    {
+        view[i] = GLint(viewport[i]);
+    }
     GLdouble textPosX = 0, textPosY = 0, textPosZ = 0;
     this->project(x, y, z,
                   model, this->projMatrix, &view[0],

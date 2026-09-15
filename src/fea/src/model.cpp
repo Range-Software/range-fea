@@ -2129,8 +2129,8 @@ void Model::glDraw(GLWidget *glWidget) const
         glWidget->getGLModelList().setNGlIsoLists(this->getNIsos());
 
         GLint depthFunc;
-        GL_SAFE_CALL(glGetIntegerv(GL_DEPTH_FUNC, &depthFunc));
-        GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
+        depthFunc = GLint(GLStateCache::instance().getDepthFunc());
+        GLStateCache::instance().setDepthFunc(GL_LEQUAL);
 
         uint modelID = Application::instance()->getSession()->findModelByPtr(this);
 
@@ -2155,7 +2155,7 @@ void Model::glDraw(GLWidget *glWidget) const
             const bool transparentPass = (pass >= 1);
             if (pass == 1)
             {
-                GL_SAFE_CALL(glDepthMask(GL_FALSE));
+                GLStateCache::instance().setDepthMask(GL_FALSE);
                 stateCache.enableCullFace();
                 stateCache.setCullFaceMode(GL_FRONT);  // cull front → draw back (silver)
             }
@@ -2265,7 +2265,7 @@ void Model::glDraw(GLWidget *glWidget) const
 
             if (pass == 2)
             {
-                GL_SAFE_CALL(glDepthMask(GL_TRUE));
+                GLStateCache::instance().setDepthMask(GL_TRUE);
                 stateCache.disableCullFace();
             }
         } // three-pass loop
@@ -2333,7 +2333,7 @@ void Model::glDraw(GLWidget *glWidget) const
             }
         }
 
-        GL_SAFE_CALL(glDepthFunc(GLenum(depthFunc)));
+        GLStateCache::instance().setDepthFunc(GLenum(depthFunc));
     }
     catch (const RError &error)
     {
@@ -2360,12 +2360,12 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
         GLfloat pointSize;
 
         lightingEnabled = GLStateCache::instance().getLighting();
-        GL_SAFE_CALL(glGetIntegerv(GL_DEPTH_FUNC, &depthFunc));
-        GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &pointSize));
+        depthFunc = GLint(GLStateCache::instance().getDepthFunc());
+        pointSize = GLStateCache::instance().getPointSize();
 
         GLStateCache::instance().disableLighting();
-        GL_SAFE_CALL(glDepthFunc(GL_LEQUAL));
-        GL_SAFE_CALL(glPointSize(10.0));
+        GLStateCache::instance().setDepthFunc(GL_LEQUAL);
+        GLStateCache::instance().setPointSize(10.0);
 
         for (int i=0;i<pickedItems.size();i++)
         {
@@ -2540,8 +2540,8 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
         }
 
         GLStateCache::instance().setLighting(lightingEnabled);
-        GL_SAFE_CALL(glDepthFunc(GLenum(depthFunc)));
-        GL_SAFE_CALL(glPointSize(pointSize));
+        GLStateCache::instance().setDepthFunc(GLenum(depthFunc));
+        GLStateCache::instance().setPointSize(pointSize);
     }
     catch (const RError &error)
     {

@@ -10,10 +10,11 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include <QOpenGLWidget>
+#include <QWidget>
 
 #include <QColor>
 #include <QMatrix4x4>
+#include <QVector4D>
 
 #include "gl_display_properties.h"
 #include "gl_acion_event.h"
@@ -23,7 +24,18 @@
 #include "session_entity_id.h"
 #include "session_node_id.h"
 
-class GLWidget : public QOpenGLWidget
+class QPainter;
+class RenderSurface;
+class RenderOverlayWidget;
+
+//! Model view widget.
+//!
+//! GLWidget owns the whole view: transformations, picking, display properties
+//! and the draw traversal.  Putting pixels on the screen is delegated to a
+//! RenderSurface child widget — either a QOpenGLWidget or a QRhiWidget — chosen
+//! at start-up by the --render-backend command line option.  A transparent
+//! RenderOverlayWidget stacked on top carries the QPainter based 2D decoration.
+class GLWidget : public QWidget
 {
     Q_OBJECT
 
@@ -122,6 +134,12 @@ class GLWidget : public QOpenGLWidget
         double projMatrix[16];
         //! Last color set via qglColor() — used by renderText() instead of glGetDoublev.
         QColor currentGLColor;
+        //! Render surface doing the actual drawing (OpenGL or QRhi).
+        RenderSurface *renderSurface;
+        //! Transparent 2D overlay stacked on top of the render surface.
+        RenderOverlayWidget *overlayWidget;
+        //! Background colour the render surface clears to.
+        QColor clearColor;
 
     public:
 
@@ -182,16 +200,34 @@ class GLWidget : public QOpenGLWidget
         //! Render text.
         void renderText(double x,double y,double z,const QString &str,const QFont & font = QFont());
 
+        //! Schedule a repaint of the render surface and the 2D overlay.
+        //! Intentionally shadows QWidget::update(): every caller holds a GLWidget.
+        void update();
+
+        //! Return the colour the render surface clears to.
+        const QColor &getClearColor() const;
+
+        // --- Render surface callbacks ---------------------------------------
+
+        //! Initialize the scene.  Called once by the render surface.
+        void initializeRender();
+
+        //! React to a render surface resize.
+        void resizeRender(int width, int height);
+
+        //! Draw the 3D scene.
+        void paintRender();
+
+        //! Draw the 2D overlay on top of the rendered scene.
+        void paintOverlay(QPainter &painter);
+
+        //! Drop backend resources held by the model lists.
+        void releaseRenderResources();
+
     protected:
 
-        //! Initialize scene.
-        void initializeGL();
-
-        //! Resize scene.
-        void resizeGL(int width, int height);
-
-        //! Paint scene.
-        void paintGL();
+        //! Keep the render surface and the overlay covering the whole widget.
+        void resizeEvent(QResizeEvent *resizeEvent);
 
         //! Draw background gradient.
         void drawBackgroundGradient();
@@ -261,6 +297,11 @@ class GLWidget : public QOpenGLWidget
 
         //! Calculate view depth for glOrtho()
         double calculateViewDepth() const;
+
+        //! Collect the enabled lights as eye-space position / ambient / diffuse vectors.
+        void collectLights(std::vector<QVector4D> &positions,
+                           std::vector<QVector4D> &ambients,
+                           std::vector<QVector4D> &diffuses) const;
 
         //! Show light.
         void showLight(const RGLLight &rGlLight);

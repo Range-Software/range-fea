@@ -8,6 +8,8 @@
 
 #include <rgl_application_settings.h>
 
+#include "render_backend.h"
+
 class ApplicationSettings : public RApplicationSettings
 {
 
@@ -19,6 +21,8 @@ class ApplicationSettings : public RApplicationSettings
         static const QString nThreadsKey;
         static const QString nHistoryRecordsKey;
         static const QString solverPathKey;
+        static const QString renderBackendKey;
+        static const QString rhiApiKey;
 
     public:
 
@@ -52,6 +56,20 @@ class ApplicationSettings : public RApplicationSettings
         //! Set number of history records.
         void setNHistoryRecords(uint nHistoryRecords);
 
+        //! Return the rendering backend to be used for the 3D view.
+        RenderBackend::Type getRenderBackend() const;
+
+        //! Set the rendering backend to be used for the 3D view.
+        //! Takes effect the next time the application starts.
+        void setRenderBackend(RenderBackend::Type renderBackend);
+
+        //! Return the graphics API the QRhi rendering backend should use.
+        RenderBackend::RhiApi getRhiApi() const;
+
+        //! Set the graphics API the QRhi rendering backend should use.
+        //! Takes effect the next time the application starts.
+        void setRhiApi(RenderBackend::RhiApi rhiApi);
+
         //! Return maximum number of Threads.
         static uint getMaxThreads();
 
@@ -64,10 +82,22 @@ class ApplicationSettings : public RApplicationSettings
         //! Return default number of history records.
         static uint getDefaultNHistoryRecords();
 
+        //! Return default rendering backend.
+        static RenderBackend::Type getDefaultRenderBackend();
+
+        //! Return default graphics API for the QRhi rendering backend.
+        static RenderBackend::RhiApi getDefaultRhiApi();
+
     signals:
 
         //! Number of history records has changed.
         void nHistoryRecordsChanged(uint nHistoryRecords);
+
+        //! Rendering backend has changed.
+        void renderBackendChanged(RenderBackend::Type renderBackend);
+
+        //! Graphics API of the QRhi rendering backend has changed.
+        void rhiApiChanged(RenderBackend::RhiApi rhiApi);
 
 };
 

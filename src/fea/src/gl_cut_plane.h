@@ -15,7 +15,6 @@ class GLCutPlane : public GLObject, public RPlane
         // Environment settings.
         GLboolean depthTestEnabled;
         GLboolean lineSmoothEnabled;
-        GLint lineSmoothHint;
         GLboolean normalizeEnabled;
         GLboolean lightingEnabled;
         GLfloat lineWidth;

@@ -52,14 +52,14 @@ void GLInterpolatedEntity::initialize()
     }
 
     this->lightingEnabled = GLStateCache::instance().getLighting();
-    GL_SAFE_CALL(glGetBooleanv(GL_NORMALIZE, &this->normalize));
-    GL_SAFE_CALL(glGetFloatv(GL_POINT_SIZE, &this->pointSize));
-    GL_SAFE_CALL(glGetFloatv(GL_LINE_WIDTH, &this->lineWidth));
+    this->normalize = GLStateCache::instance().getNormalize();
+    this->pointSize = GLStateCache::instance().getPointSize();
+    this->lineWidth = GLStateCache::instance().getLineWidth();
 
-    GL_SAFE_CALL(glEnable(GL_NORMALIZE));
+    GLStateCache::instance().setNormalize(GL_TRUE);
     GLStateCache::instance().enableLighting();
-    GL_SAFE_CALL(glPointSize(10.0f));
-    GL_SAFE_CALL(glLineWidth(1.0f));
+    GLStateCache::instance().setPointSize(10.0f);
+    GLStateCache::instance().setLineWidth(1.0f);
 }
 
 void GLInterpolatedEntity::finalize()
@@ -70,9 +70,9 @@ void GLInterpolatedEntity::finalize()
     }
 
     GLStateCache::instance().setLighting(this->lightingEnabled);
-    GL_SAFE_CALL(this->normalize ? glEnable(GL_NORMALIZE) : glDisable(GL_NORMALIZE));
-    GL_SAFE_CALL(glPointSize(this->pointSize));
-    GL_SAFE_CALL(glLineWidth(this->lineWidth));
+    GLStateCache::instance().setNormalize(this->normalize);
+    GLStateCache::instance().setPointSize(this->pointSize);
+    GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 
 void GLInterpolatedEntity::draw()
@@ -142,9 +142,9 @@ void GLInterpolatedEntity::draw()
     }
 
     // Cut/iso/stream entities are two-sided (no "inside" concept — don't render back faces as silver).
-    this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", true);
+    GLStateCache::instance().setTwoSided(true);
     pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
-    this->getGLWidget()->getMainShaderProgram().setUniformBool("uTwoSided", false);
+    GLStateCache::instance().setTwoSided(false);
 
     this->texture.unload();
 }

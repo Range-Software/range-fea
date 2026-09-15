@@ -10,6 +10,8 @@
 #include "gl_vertex_buffer.h"
 #include "gl_functions.h"
 #include "gl_state_cache.h"
+#include "render_backend.h"
+#include "rhi_renderer.h"
 
 // GLVertexBuffer implementation
 
@@ -30,6 +32,7 @@ void GLVertexBuffer::_init(const GLVertexBuffer *pBuffer)
     this->currentColor[3] = 255;
     this->currentTexCoord = 0.0f;
     this->usesTexture = false;
+    this->rhiData = RenderBackend::isRhi() ? new RhiBufferData() : nullptr;
 
     if (pBuffer)
     {
@@ -50,17 +53,25 @@ GLVertexBuffer::GLVertexBuffer(const GLVertexBuffer &buffer)
 GLVertexBuffer::~GLVertexBuffer()
 {
     this->release();
+    delete this->rhiData;
+    this->rhiData = nullptr;
 }
 
 GLVertexBuffer &GLVertexBuffer::operator=(const GLVertexBuffer &buffer)
 {
     this->release();
+    delete this->rhiData;
+    this->rhiData = nullptr;
     this->_init(&buffer);
     return *this;
 }
 
 bool GLVertexBuffer::isValid() const
 {
+    if (RenderBackend::isRhi())
+    {
+        return this->valid && this->rhiData && this->rhiData->buffer != nullptr;
+    }
     return this->valid && this->vboId != 0;
 }
 
@@ -112,6 +123,24 @@ void GLVertexBuffer::uploadToGPU()
     if (this->vertices.empty())
     {
         // Nothing recorded — do not touch valid flag so caller can detect empty.
+        return;
+    }
+
+    if (RenderBackend::isRhi())
+    {
+        RhiRenderer *renderer = RhiRenderer::current();
+        if (!renderer || !this->rhiData)
+        {
+            return;
+        }
+        renderer->uploadVertexBuffer(this->vertices, this->batches, *this->rhiData);
+
+        this->vertexCount = GLsizei(this->vertices.size());
+        this->valid = (this->rhiData->buffer != nullptr);
+
+        // Free CPU-side vertex data — the expanded copy now lives on the GPU.
+        this->vertices.clear();
+        this->vertices.shrink_to_fit();
         return;
     }
 
@@ -185,6 +214,16 @@ void GLVertexBuffer::addVertex(GLfloat x, GLfloat y, GLfloat z)
 
 void GLVertexBuffer::render() const
 {
+    if (RenderBackend::isRhi())
+    {
+        RhiRenderer *renderer = RhiRenderer::current();
+        if (renderer && this->valid && this->rhiData)
+        {
+            renderer->drawVertexBuffer(*this->rhiData, this->usesTexture);
+        }
+        return;
+    }
+
     if (!this->valid || this->vboId == 0 || this->batches.empty())
     {
         return;
@@ -250,6 +289,16 @@ void GLVertexBuffer::render() const
 
 void GLVertexBuffer::release()
 {
+    if (this->rhiData)
+    {
+        RhiRenderer::destroyBuffer(*this->rhiData);
+        this->valid = false;
+        this->vertexCount = 0;
+        this->vertices.clear();
+        this->batches.clear();
+        return;
+    }
+
     QOpenGLContext *ctx = QOpenGLContext::currentContext();
     if (ctx)
     {

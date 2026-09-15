@@ -952,34 +952,49 @@
 <context>
     <name>ApplicationSettingsWidget</name>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="10"/>
+        <location filename="../src/application_settings_widget.cpp" line="11"/>
         <source>General</source>
         <translation>Všeobecné</translation>
     </message>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="20"/>
+        <location filename="../src/application_settings_widget.cpp" line="21"/>
         <source>Solver executable</source>
         <translation>Spustiteľný súbor riešiča</translation>
     </message>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="22"/>
+        <location filename="../src/application_settings_widget.cpp" line="23"/>
         <source>Select Range solver executable</source>
         <translation>Vybrať Range riešič</translation>
     </message>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="24"/>
+        <location filename="../src/application_settings_widget.cpp" line="25"/>
         <source>All files</source>
         <translation>Všetky súbory</translation>
     </message>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="27"/>
+        <location filename="../src/application_settings_widget.cpp" line="28"/>
         <source>Number of threads</source>
         <translation>Počet vlákien</translation>
     </message>
     <message>
-        <location filename="../src/application_settings_widget.cpp" line="36"/>
+        <location filename="../src/application_settings_widget.cpp" line="37"/>
         <source>Number of history (undo) records</source>
         <translation>Počet historických (naspäť) záznamov</translation>
+    </message>
+    <message>
+        <location filename="../src/application_settings_widget.cpp" line="46"/>
+        <source>Rendering backend</source>
+        <translation>Vykresľovacie jadro</translation>
+    </message>
+    <message>
+        <location filename="../src/application_settings_widget.cpp" line="58"/>
+        <source>Graphics API</source>
+        <translation>Grafické API</translation>
+    </message>
+    <message>
+        <location filename="../src/application_settings_widget.cpp" line="72"/>
+        <source>The rendering backend is applied the next time the application starts.</source>
+        <translation>Vykresľovacie jadro sa použije pri nasledujúcom spustení aplikácie.</translation>
     </message>
 </context>
 <context>
