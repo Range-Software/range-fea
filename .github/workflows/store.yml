@@ -1,0 +1,234 @@
+name: Store packages (App Store / Microsoft Store)
+
+# Store packages are built on demand, not on every push: each run consumes a
+# build number in App Store Connect / Partner Center once it is uploaded.
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: 'Upload the package to App Store Connect / Partner Center'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  mac-app-store:
+    name: Apple App Store package
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Prep macOS
+        run: |
+          brew update
+          brew install ninja libomp || true
+
+      - name: Install OpenSSL (macOS)
+        run: |
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl@3 || true
+          echo "OPENSSL_ROOT=$(brew --prefix openssl@3)" >> $GITHUB_ENV
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          host: mac
+          target: desktop
+          arch: clang_64
+          cache: true
+          aqtversion: '==3.3.*'
+          modules: 'qthttpserver qtwebsockets qtimageformats qtmultimedia'
+
+      - name: Create and unlock keychain
+        run: |
+          security create-keychain -p "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -lut 21600 build.keychain
+          security unlock-keychain -p "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          security list-keychains -s build.keychain login.keychain
+        env:
+          MAC_KEYCHAIN_PASSWORD: ${{ secrets.MAC_KEYCHAIN_PASSWORD }}
+
+      # Two certificates are needed: "3rd Party Mac Developer Application" signs
+      # the bundle, "3rd Party Mac Developer Installer" signs the .pkg.
+      - name: Import App Store certificates
+        run: |
+          set -euo pipefail
+          base64 -d <<< "$MAC_APP_STORE_CERT_P12" > appstore.p12
+          security import appstore.p12 -k build.keychain -P "$MAC_APP_STORE_CERT_P12_PASSWORD" \
+            -T /usr/bin/codesign -T /usr/bin/productbuild -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple:,codesign:,productbuild: \
+            -s -k "$MAC_KEYCHAIN_PASSWORD" build.keychain
+          rm -f appstore.p12
+          security find-identity -v
+        env:
+          MAC_APP_STORE_CERT_P12: ${{ secrets.MAC_APP_STORE_CERT_P12 }}
+          MAC_APP_STORE_CERT_P12_PASSWORD: ${{ secrets.MAC_APP_STORE_CERT_P12_PASSWORD }}
+          MAC_KEYCHAIN_PASSWORD: ${{ secrets.MAC_KEYCHAIN_PASSWORD }}
+
+      - name: Write provisioning profile
+        run: |
+          set -euo pipefail
+          echo "$MAC_PROVISION_PROFILE" | base64 -d > "$RUNNER_TEMP/range-fea.provisionprofile"
+        env:
+          MAC_PROVISION_PROFILE: ${{ secrets.MAC_PROVISION_PROFILE }}
+
+      - name: Write App Store Connect API key
+        run: |
+          set -euo pipefail
+          mkdir -p $HOME/.private_keys
+          echo "$AC_API_KEY_P8" | base64 -d > $HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8
+          chmod 600 $HOME/.private_keys/AuthKey_${AC_API_KEY_ID}.p8
+        env:
+          AC_API_KEY_P8: ${{ secrets.AC_API_KEY_P8 }}
+          AC_API_KEY_ID: ${{ secrets.AC_API_KEY_ID }}
+
+      - name: Configure
+        run: |
+          OMP_PREFIX="$(brew --prefix libomp)"
+          cmake -S src -B build-store -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DRANGE_STORE_BUILD=ON \
+            -DOpenMP_INCLUDES="${OMP_PREFIX}/include" \
+            -DOpenMP_LIBRARY="${OMP_PREFIX}/lib/libomp.dylib" \
+            -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT" \
+            -DMACOS_BUNDLE_IDENTIFIER="$MACOS_BUNDLE_IDENTIFIER" \
+            -DMACOS_APP_STORE_APP_CERT="$MACOS_APP_STORE_APP_CERT" \
+            -DMACOS_APP_STORE_INSTALLER_CERT="$MACOS_APP_STORE_INSTALLER_CERT" \
+            -DMACOS_PROVISION_PROFILE="$RUNNER_TEMP/range-fea.provisionprofile"
+        env:
+          OPENSSL_ROOT: ${{ env.OPENSSL_ROOT }}
+          MACOS_BUNDLE_IDENTIFIER: ${{ vars.MACOS_BUNDLE_IDENTIFIER || 'com.range-software.fea' }}
+          MACOS_APP_STORE_APP_CERT: ${{ secrets.MACOS_APP_STORE_APP_CERT }}
+          MACOS_APP_STORE_INSTALLER_CERT: ${{ secrets.MACOS_APP_STORE_INSTALLER_CERT }}
+
+      - name: Build
+        run: cmake --build build-store --parallel
+
+      - name: Sign and package for the App Store
+        run: cmake --build build-store --target mac-app-store
+
+      - name: Verify package
+        run: |
+          set -euo pipefail
+          PKG="$(/usr/bin/find build-store -maxdepth 1 -name '*.pkg' -print -quit)"
+          echo "Package: $PKG"
+          APP="$(/usr/bin/find build-store -maxdepth 2 -name '*.app' -print -quit)"
+          # The submission is rejected without these, so fail early instead.
+          codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - -
+          test -f "$APP/Contents/embedded.provisionprofile"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: range-fea-mac-app-store
+          path: build-store/*.pkg
+          if-no-files-found: error
+
+      - name: Upload to App Store Connect
+        if: inputs.upload
+        run: |
+          set -euo pipefail
+          PKG="$(/usr/bin/find build-store -maxdepth 1 -name '*.pkg' -print -quit)"
+          xcrun altool --upload-app --type macos --file "$PKG" \
+            --apiKey "$AC_API_KEY_ID" --apiIssuer "$AC_API_ISSUER_ID"
+        env:
+          AC_API_KEY_ID: ${{ secrets.AC_API_KEY_ID }}
+          AC_API_ISSUER_ID: ${{ secrets.AC_API_ISSUER_ID }}
+
+  microsoft-store:
+    name: Microsoft Store package
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Ensure Ninja
+        run: choco install ninja -y || echo "Ninja already present"
+        shell: pwsh
+
+      - name: Install OpenSSL
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $installDir = 'C:\OpenSSL'
+          choco install openssl.light -y --params "/InstallDir:$installDir"
+          if (Test-Path "$installDir\bin\openssl.exe") {
+            "OPENSSL_ROOT=$installDir" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.11.1'
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          cache: true
+          aqtversion: '==3.3.*'
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
+          modules: 'qthttpserver qtwebsockets qtimageformats qtmultimedia'
+
+      # makeappx.exe ships with the Windows SDK, which is preinstalled on the
+      # runner but not on PATH.
+      - name: Add Windows SDK tools to PATH
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $sdk = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Directory |
+                 Where-Object { Test-Path "$($_.FullName)\x64\makeappx.exe" } |
+                 Sort-Object Name -Descending |
+                 Select-Object -First 1
+          if (-not $sdk) { throw 'makeappx.exe not found in the Windows SDK' }
+          "$($sdk.FullName)\x64" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Host "Using SDK tools from $($sdk.FullName)\x64"
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S src -B build-store -G Ninja `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DRANGE_STORE_BUILD=ON `
+            -DOPENSSL_ROOT_DIR="$env:OPENSSL_ROOT" `
+            -DMSIX_IDENTITY_NAME="$env:MSIX_IDENTITY_NAME" `
+            -DMSIX_PUBLISHER="$env:MSIX_PUBLISHER" `
+            -DMSIX_PUBLISHER_DISPLAY_NAME="$env:MSIX_PUBLISHER_DISPLAY_NAME"
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME || 'RangeSoftware.RangeFEA' }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER || 'CN=Range Software' }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME || 'Range Software' }}
+
+      - name: Build
+        run: cmake --build build-store --parallel
+
+      - name: Pack MSIX
+        run: cmake --build build-store --target msix
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: range-fea-microsoft-store
+          path: build-store/*.msix
+          if-no-files-found: error
+
+      # Partner Center has no first-party CLI; the package is submitted through
+      # the Store submission API, which needs an Entra ID application.
+      - name: Upload to Partner Center
+        if: inputs.upload
+        shell: pwsh
+        run: |
+          Write-Host "Uploading to Partner Center is not automated yet."
+          Write-Host "Attach the MSIX artifact of this run to the submission in Partner Center,"
+          Write-Host "or configure the Microsoft Store submission API and extend this step."
+          exit 1

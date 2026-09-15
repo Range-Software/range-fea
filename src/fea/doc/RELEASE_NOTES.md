@@ -60,6 +60,25 @@
   backend: line stipple, so dashed grid and axis lines are drawn solid, and line
   widths greater than one on graphics APIs without wide line support, Metal among
   them
+- The build can produce packages for the **Apple App Store** and the **Microsoft
+  Store**, enabled with `-DRANGE_STORE_BUILD=ON`. An ordinary release build is
+  unaffected: the store artifacts are built by their own `mac-app-store` and
+  `msix` targets, next to the DMG, the Inno Setup installer and the Linux packages
+- On macOS the bundle is sandboxed and signed with the two *3rd Party Mac
+  Developer* certificates, carries the Mac App Store provisioning profile and is
+  wrapped into an installer package. `Info.plist` is generated from a template
+  rather than patched after the build, so the bundle identifier, the application
+  category, the copyright and the encryption declaration the store requires are
+  all present. The bundled `fea-solver` and `openssl` executables are signed to
+  inherit the sandbox of the application
+- On Windows the installation tree is packed into an MSIX package with
+  `makeappx.exe`. The manifest is generated from a template and the tile and store
+  logos are taken from `pixmaps/msix`
+- A store build defines `STORE_BUILD`, which removes the built-in software update
+  checker. Both stores forbid an application from downloading and installing its
+  own updates
+- Added a `Store packages` workflow building both packages on demand and
+  uploading the macOS package to App Store Connect
 
 ### Bug fixes
 

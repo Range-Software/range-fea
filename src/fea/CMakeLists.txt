@@ -405,10 +405,30 @@ elseif (APPLE)
     set_source_files_properties("${APP_ICON}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
     target_sources(fea PRIVATE "${APP_ICON}")
 
-    add_custom_command(TARGET fea POST_BUILD
-        COMMAND /usr/libexec/PlistBuddy -c "Set :CFBundleName '${PROJECT_SHORT_NAME}'" "$<TARGET_BUNDLE_DIR_NAME:${PROJECT_TARGET_NAME}>/Contents/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleName string '${PROJECT_SHORT_NAME}'" "$<TARGET_BUNDLE_DIR_NAME:${PROJECT_TARGET_NAME}>/Contents/Info.plist"
-        COMMAND /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName '${PROJECT_SHORT_NAME}'" "$<TARGET_BUNDLE_DIR_NAME:${PROJECT_TARGET_NAME}>/Contents/Info.plist" || /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string '${PROJECT_SHORT_NAME}'" "$<TARGET_BUNDLE_DIR_NAME:${PROJECT_TARGET_NAME}>/Contents/Info.plist"
-        COMMENT "Set CFBundleName and CFBundleDisplayName"
+    # Info.plist is generated from a template rather than patched after the
+    # build, because the App Store requires keys CMake does not write on its own
+    # (bundle identifier, category, copyright, encryption declaration).
+    set(MACOSX_BUNDLE_EXECUTABLE_NAME "${PROJECT_TARGET_NAME}${DEBUG_EXT}")
+    set(MACOSX_BUNDLE_ICON_FILE "${PROJECT_PACKAGE_NAME}")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "${MACOS_BUNDLE_IDENTIFIER}")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_SHORT_REL_NAME}")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
+    set(MACOSX_BUNDLE_CATEGORY "${MACOS_APP_CATEGORY}")
+    set(MACOSX_BUNDLE_COPYRIGHT "Copyright (C) ${PROJECT_YEAR} ${PROJECT_AUTHOR}")
+    if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+        set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0")
+    endif()
+
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/macos/Info.plist.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
+        @ONLY
+    )
+
+    set_target_properties(fea
+        PROPERTIES
+            MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
     )
 endif()
 
