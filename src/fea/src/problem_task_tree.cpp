@@ -22,8 +22,7 @@ ProblemTaskTree::ProblemTaskTree(const RProblemTaskItem &rTaskTree, QWidget *par
 
     this->treeWidget->expandAll();
 
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_NAME);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_VALUE);
+    this->resizeColumns();
 
     QObject::connect(this->treeWidget,&QTreeWidget::itemSelectionChanged,
                      this,&ProblemTaskTree::onItemSelectionChanged);
@@ -96,11 +95,17 @@ void ProblemTaskTree::addTaskItemToWidget(QTreeWidgetItem *parent, const RProble
 
     item->setData(ProblemTaskTree::C_NAME,Qt::UserRole,QVariant(taskItem.getProblemType()));
     item->setData(ProblemTaskTree::C_VALUE,Qt::UserRole,QVariant(taskItem.getNIterations()));
+    item->setData(ProblemTaskTree::C_CVG_VALUE,Qt::UserRole,QVariant(taskItem.getCvgValue()));
 
     if (taskItem.getProblemType() == R_PROBLEM_NONE)
     {
         item->setText(ProblemTaskTree::C_NAME,tr("# of iterations") + ":");
         item->setText(ProblemTaskTree::C_VALUE,QLocale().toString(taskItem.getNIterations()));
+        item->setText(ProblemTaskTree::C_CVG_NAME,tr("Convergence") + ":");
+        item->setText(ProblemTaskTree::C_CVG_VALUE,QLocale().toString(taskItem.getCvgValue(),'g',6));
+        item->setToolTip(ProblemTaskTree::C_CVG_VALUE,
+                         tr("The iterations end as soon as every task of the group has converged below this value.")
+                         + " " + tr("Zero runs all of them."));
 
         for (uint i=0;i<taskItem.getNChildren();i++)
         {
@@ -111,6 +116,14 @@ void ProblemTaskTree::addTaskItemToWidget(QTreeWidgetItem *parent, const RProble
     {
         item->setText(ProblemTaskTree::C_NAME,RProblem::getName(taskItem.getProblemType()));
         item->setFirstColumnSpanned(true);
+    }
+}
+
+void ProblemTaskTree::resizeColumns()
+{
+    for (int i=0;i<ProblemTaskTree::N_COLUMNS;i++)
+    {
+        this->treeWidget->resizeColumnToContents(i);
     }
 }
 
@@ -130,9 +143,11 @@ void ProblemTaskTree::addWidgetItemToTree(RProblemTaskItem &taskItem, const QTre
 {
     RProblemType problemType = RProblemType(item->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt());
     uint nIterations = item->data(ProblemTaskTree::C_VALUE,Qt::UserRole).toUInt();
+    double cvgValue = item->data(ProblemTaskTree::C_CVG_VALUE,Qt::UserRole).toDouble();
 
     RProblemTaskItem newItem(problemType);
     newItem.setNIterations(nIterations);
+    newItem.setCvgValue(cvgValue);
 
     if (problemType == R_PROBLEM_NONE)
     {
@@ -200,24 +215,40 @@ void ProblemTaskTree::onItemSelectionChanged()
 
 void ProblemTaskTree::onItemChanged(QTreeWidgetItem *item, int column)
 {
-    if (column != ProblemTaskTree::C_VALUE)
+    bool ok;
+
+    if (column == ProblemTaskTree::C_VALUE)
     {
+        uint nIterations = item->text(column).toUInt(&ok);
+
+        if (ok && nIterations > 0)
+        {
+            item->setData(ProblemTaskTree::C_VALUE,Qt::UserRole,nIterations);
+            emit this->changed();
+        }
+        else
+        {
+            nIterations = item->data(ProblemTaskTree::C_VALUE,Qt::UserRole).toUInt();
+            item->setText(ProblemTaskTree::C_VALUE,QLocale().toString(nIterations));
+        }
         return;
     }
 
-    bool ok;
-
-    uint nIterations = item->text(column).toUInt(&ok);
-
-    if (ok && nIterations > 0)
+    if (column == ProblemTaskTree::C_CVG_VALUE)
     {
-        item->setData(ProblemTaskTree::C_VALUE,Qt::UserRole,nIterations);
-        emit this->changed();
-    }
-    else
-    {
-        nIterations = item->data(ProblemTaskTree::C_VALUE,Qt::UserRole).toUInt();
-        item->setText(ProblemTaskTree::C_VALUE,QLocale().toString(nIterations));
+        double cvgValue = item->text(column).toDouble(&ok);
+
+        if (ok && cvgValue >= 0.0)
+        {
+            item->setData(ProblemTaskTree::C_CVG_VALUE,Qt::UserRole,cvgValue);
+            emit this->changed();
+        }
+        else
+        {
+            cvgValue = item->data(ProblemTaskTree::C_CVG_VALUE,Qt::UserRole).toDouble();
+            item->setText(ProblemTaskTree::C_CVG_VALUE,QLocale().toString(cvgValue,'g',6));
+        }
+        return;
     }
 }
 
@@ -227,7 +258,7 @@ void ProblemTaskTree::onItemDoubleClicked(QTreeWidgetItem *item, int column)
 
     bool isEditable = false;
 
-    if (column == ProblemTaskTree::C_VALUE)
+    if (column == ProblemTaskTree::C_VALUE || column == ProblemTaskTree::C_CVG_VALUE)
     {
         isEditable = (RProblemType(item->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt()) == R_PROBLEM_NONE);
     }
@@ -296,8 +327,7 @@ void ProblemTaskTree::onUpButtonClicked()
     }
 
     this->treeWidget->setCurrentItem(item);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_NAME);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_VALUE);
+    this->resizeColumns();
 
     emit this->changed();
 }
@@ -352,8 +382,7 @@ void ProblemTaskTree::onDownButtonClicked()
     }
 
     this->treeWidget->setCurrentItem(item);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_NAME);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_VALUE);
+    this->resizeColumns();
 
     emit this->changed();
 }
@@ -375,9 +404,12 @@ void ProblemTaskTree::onIndentButtonClicked()
 
     newItem->setText(ProblemTaskTree::C_NAME,"# of iterations:");
     newItem->setText(ProblemTaskTree::C_VALUE,QLocale().toString(1));
+    newItem->setText(ProblemTaskTree::C_CVG_NAME,tr("Convergence") + ":");
+    newItem->setText(ProblemTaskTree::C_CVG_VALUE,QLocale().toString(RProblemTaskItem::defaultCvgValue,'g',6));
 
     newItem->setData(ProblemTaskTree::C_NAME,Qt::UserRole,QVariant(R_PROBLEM_NONE));
     newItem->setData(ProblemTaskTree::C_VALUE,Qt::UserRole,QVariant(1));
+    newItem->setData(ProblemTaskTree::C_CVG_VALUE,Qt::UserRole,QVariant(RProblemTaskItem::defaultCvgValue));
 
     parent->insertChild(index,newItem);
     newItem->addChild(item);
@@ -394,8 +426,7 @@ void ProblemTaskTree::onIndentButtonClicked()
     }
 
     this->treeWidget->setCurrentItem(item);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_NAME);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_VALUE);
+    this->resizeColumns();
 
     emit this->changed();
 }
@@ -431,8 +462,7 @@ void ProblemTaskTree::onUnindentButtonClicked()
     }
 
     this->treeWidget->setCurrentItem(item);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_NAME);
-    this->treeWidget->resizeColumnToContents(ProblemTaskTree::C_VALUE);
+    this->resizeColumns();
 
     emit this->changed();
 }

@@ -141,6 +141,16 @@ void Application::processAdditionalArguments(const RArgumentsParser &argumentsPa
     RLogger::info("Rendering backend: %s\n", backendInfo.toUtf8().constData());
 }
 
+void Application::resetSettings()
+{
+    RApplication::resetSettings();
+
+    // Re-apply the settings which have already been consumed by the constructor.
+    RJobSettings defaultJobSettings = RJob::getDefaultJobSettings();
+    defaultJobSettings.setNOmpThreads(this->getApplicationSettings()->getNThreads());
+    RJob::setDefaultJobSettings(defaultJobSettings);
+}
+
 void Application::initialize()
 {
     // Initialize action list

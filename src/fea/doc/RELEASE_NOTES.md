@@ -30,6 +30,13 @@
   *Displacement* and rolled on a tilted plane by *Roller displacement* at the
   same time. Two entities asking for different values in the same direction stop
   the run with an error naming the node
+- The `--reset-settings` command line option resets all application settings to their
+  default values before the main window is built, which is the way out of a
+  configuration keeping the application from starting. The stored session is part of
+  the settings, so the application starts with an empty document
+- The reset re-applies the number of solver threads, which the application reads
+  once while it is starting and so would otherwise keep from the settings being
+  discarded
 - On macOS the **Appearance** tab of the application settings offers a *do not use
   native menubar* option, which draws the menubar inside the main window instead of
   the system menubar at the top of the screen. The option is taken into account on
@@ -38,6 +45,21 @@
 - Added a heat transfer theory manual under `help/theory` - `theory_heat.md` -
   covering the formulation, the boundary conditions and their units, the parts
   of the user interface which belong to the problem type and a worked tutorial
+- The problem task flow dialog offers a **Convergence** value next to
+  **# of iterations** on every task group. The group ends its iterations as soon
+  as every task in it has converged below that value instead of always running
+  the full count, which for a flow model is most of the run time. It defaults to
+  `1e-5`; `0` restores the former behaviour of running every iteration
+- The value is stored with the model, which raises the model file format to
+  **1.3.1**. Models written by this version are not readable by earlier ones;
+  models written by earlier ones load unchanged and pick up the default
+- Added a fluid flow theory manual under `help/theory` - `theory_fluid.md` -
+  covering all three fluid problem types (*Incompressible viscous flow*,
+  *Heat transfer in fluids* and *Contaminant dispersion*): the stabilised
+  Navier-Stokes formulation, the non-linear task group iteration the flow solver
+  depends on, the boundary conditions and their units, the parts of the user
+  interface which belong to the problem types, and worked steady-state and
+  transient tutorials
 - Applying a results variable as **Scalar** or as **Displacement** now clears
   that role from every other variable of the entity. Only one variable at a time
   can be displayed, and a variable left over from a previously solved problem

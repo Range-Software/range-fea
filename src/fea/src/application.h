@@ -57,6 +57,9 @@ class Application : public RApplication
         //! Select the rendering backend from the command line.
         void processAdditionalArguments(const RArgumentsParser &argumentsParser) override;
 
+        //! Reset all application settings to default values.
+        void resetSettings() override;
+
         //! Initialize main window and other user objects.
         void initialize() override;
 

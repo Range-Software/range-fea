@@ -7,6 +7,8 @@
 #include <rbl_logger.h>
 #include <rbl_utils.h>
 
+#include <rsolverfluid.h>
+
 #include "main_task.h"
 #include "solver_task.h"
 #include "command_processor.h"
@@ -33,6 +35,7 @@ void MainTask::run()
         validOptions.append(RArgumentOption("monitoring-file",RArgumentOption::Path,QVariant(),"Monitoring file name",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("nthreads",RArgumentOption::Integer,QVariant(1),"Number of threads to use",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("restart",RArgumentOption::Switch,QVariant(),"Restart solver",RArgumentOption::Optional,false));
+        validOptions.append(RArgumentOption("verify-jacobian",RArgumentOption::Switch,QVariant(),"Compare the fluid solver matrix with a finite difference of its residual (few elements only)",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("task-id",RArgumentOption::Path,QVariant(),"Task ID for inter process communication",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("task-server",RArgumentOption::Path,QVariant(),"Task server for inter process communication",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("log-debug",RArgumentOption::Switch,QVariant(),"Switch on debug log level",RArgumentOption::Logger,false));
@@ -59,6 +62,13 @@ void MainTask::run()
         if (argumentsParser.isSet("log-debug"))
         {
             RLogger::getInstance().setLevel(R_LOG_LEVEL_DEBUG);
+        }
+        if (argumentsParser.isSet("verify-jacobian"))
+        {
+            // Reassembles the whole system twice per unknown - a diagnostic for
+            // a mesh of a few elements, never for a real model.
+            RLogger::warning("Jacobian verification is enabled - the run will be slow.\n");
+            RSolverFluid::setVerifyJacobian(true);
         }
         if (argumentsParser.isSet("log-trace"))
         {

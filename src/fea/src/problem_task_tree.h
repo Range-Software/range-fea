@@ -17,6 +17,8 @@ class ProblemTaskTree : public QWidget
         {
             C_NAME = 0,
             C_VALUE,
+            C_CVG_NAME,
+            C_CVG_VALUE,
             N_COLUMNS
         };
 
@@ -51,6 +53,9 @@ class ProblemTaskTree : public QWidget
 
         //! Add widget item to task tree.
         static void addWidgetItemToTree(RProblemTaskItem &taskItem, const QTreeWidgetItem *item);
+
+        //! Resize every column to its contents.
+        void resizeColumns();
 
     protected slots:
 
