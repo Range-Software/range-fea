@@ -67,6 +67,36 @@ void GLElementGroup::setSurfaceThickness(double surfaceThickness)
     this->surfaceThickness = surfaceThickness;
 }
 
+size_t GLElementGroup::findDisplaySignature(const REntityGroupData &entityGroupData)
+{
+    int r = 0, g = 0, b = 0, a = 0;
+    entityGroupData.getColor(r,g,b,a);
+
+    size_t signature = 1;
+
+    auto addFlag = [&signature](bool flag)
+    {
+        signature = signature * 2 + (flag ? 1 : 0);
+    };
+
+    addFlag(entityGroupData.getDrawWire());
+    addFlag(entityGroupData.getDrawEdges());
+    addFlag(entityGroupData.getDrawNodes());
+    addFlag(entityGroupData.getDrawElementNumbers());
+    addFlag(entityGroupData.getDrawNodeNumbers());
+    addFlag(entityGroupData.getDrawArrowHeads());
+    addFlag(entityGroupData.getDrawEqualArrowLength());
+    addFlag(entityGroupData.getDrawArrowFrom());
+    addFlag(entityGroupData.getColorByPatch());
+    addFlag(entityGroupData.getColorByViewFactor());
+    addFlag(entityGroupData.getSelected());
+
+    signature = signature * 4294967296u
+              + size_t(((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff));
+
+    return signature;
+}
+
 void GLElementGroup::initialize()
 {
     // Note: GL_NORMALIZE, point size (10.0f), and line width (1.0f) are now set once
@@ -131,7 +161,14 @@ void GLElementGroup::draw()
             return;
     }
 
-    bool needsRebuild = !pGlEntityList->getVBOValid(GL_ENTITY_LIST_ITEM_NORMAL);
+    // The recorded VBO bakes in which parts of the entity are drawn, so it is
+    // recorded again whenever those properties differ from the ones it was
+    // recorded with - a display property whose invalidation was missed would
+    // otherwise leave the entity drawn the way it was when first displayed.
+    size_t displaySignature = GLElementGroup::findDisplaySignature(this->getData());
+
+    bool needsRebuild = !pGlEntityList->getVBOValid(GL_ENTITY_LIST_ITEM_NORMAL) ||
+                        pGlEntityList->getBuildSignature(GL_ENTITY_LIST_ITEM_NORMAL) != displaySignature;
 
     if (needsRebuild)
     {
@@ -371,6 +408,7 @@ void GLElementGroup::draw()
         if (this->getUseGlList())
         {
             GLFunctions::endVBORecording();
+            pGlEntityList->setBuildSignature(GL_ENTITY_LIST_ITEM_NORMAL,displaySignature);
         }
     }
 

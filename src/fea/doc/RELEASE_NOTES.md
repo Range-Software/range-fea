@@ -101,9 +101,32 @@
   own updates
 - Added a `Store packages` workflow building both packages on demand and
   uploading the macOS package to App Store Connect
+- Added an electro-statics theory manual under `help/theory` -
+  `theory_electrostatics.md` - covering the Poisson formulation and what
+  separates an electro-static analysis from a current-flow one, the two boundary
+  conditions and their units, the coupling to heat transfer and magneto-statics,
+  the parts of the user interface which belong to the problem type and two
+  worked tutorials
+- Added a magneto-statics theory manual under `help/theory` -
+  `theory_magnetostatics.md` - covering the vector Poisson formulation, the
+  current density it takes from an electro-statics task as its only source, the
+  parts of the user interface which belong to the problem type and a worked
+  tutorial. The problem type is incomplete, and the manual says so at the top and
+  lists what is wrong rather than leaving the value of the result to be guessed
+- The **Geometry** menu offers a **Merge nodes** action next to *Merge near
+  nodes*. It merges the picked nodes - at least two, per model - into a single
+  node placed in their center and reconstructs every element which contained
+  them, downgrading an element which degenerates in the process. Unlike *Merge
+  near nodes* it takes no tolerance and merges exactly what is picked, however
+  far apart the nodes are
 
 ### Bug fixes
 
+- Swapping element or surface normals left the model edges as they were. Model
+  edges are found from the angle between the normals of neighbouring elements
+  and are cached, and none of *Swap element normal*, *Swap normals* and
+  *Synchronize normals* marked that cache as out of date, so the edges only
+  caught up with the model after some later operation happened to rebuild them
 - Selecting or unselecting a property of the **Displacement** boundary condition
   crashed the application. The tree rebuilt itself from its own `itemChanged`
   signal, destroying the item Qt was still working with; the rebuild is now
@@ -140,6 +163,93 @@
   they are optional for the selected problem, or when they are one of several
   accepted alternatives. An acoustic entity carrying a density and a speed of
   sound is no longer flagged for missing a modulus of elasticity
+- The electrostatic **Electric field**, **Current density**, **Electric energy**
+  and **Joule heat** results are densities again. The recovered potential
+  gradient was weighted by the Jacobian determinant of the element, and on a
+  surface by its thickness as well, so each of them scaled with the size of the
+  element it was computed in and drifted instead of converging as the mesh was
+  refined. The electric potential and the electrical resistivity, whose two
+  factors cancel, were never affected
+- The **Charge density** boundary condition enters the system with the sign the
+  Poisson equation calls for. It was assembled negatively on line, surface and
+  volume elements and positively on point elements, so a positive space charge
+  lowered the potential around it, and a point charge behaved the other way
+  round from a volume charge of the same value
+- **Joule heat** is the dissipation density `sigma*|E|^2` in `W/m^3`, which is
+  what a *Heat transfer* task integrates over the element when it picks the
+  value up as a source. It carried a characteristic element size on top of that,
+  so a resistive heating chain delivered a power which depended on the mesh
+- Together these three corrections change the results of every model using the
+  *Electro-statics* problem type. A model driven only by prescribed potentials
+  keeps its potential field and gains corrected element results; a model using
+  *Charge density* on a line, surface or volume also changes the sign of its
+  potential
+- **Relative permittivity** is shown as `N/A` rather than `C^2` and **Charge
+  density** as `C/m^3` rather than `C`, which is what the solver reads them as.
+  **Electric energy** and **Joule heat** are shown as `J/m^3` and `W/m^3`, the
+  densities they are
+- The **Magneto-statics** problem type computes a different field. Its source
+  term used the vacuum permittivity where the vacuum permeability belongs and
+  carried a shape function factor the weak form does not, and the current
+  density it takes from the electro-statics task is now averaged onto the nodes
+  rather than assigned from one neighbouring element. **Magnetic field** is also
+  offered by the magneto-statics problem type rather than by electro-statics,
+  which never computes it
+- Magneto-statics remains incomplete. No boundary condition exists for it, so
+  nothing constrains the field and the level of the computed result is arbitrary.
+  The theory manual says so at the top and lists what is left
+- The material database is no longer read from disk every time the model
+  selection or the problem changes. A row of the material manager carries only
+  the name and the file path of its material, so matching the database against
+  the problem type read every file of it again - on every entity selection, and
+  on every boundary, initial or environment condition change. Materials are
+  cached as they are read, and the cache is rebuilt by the directory watcher,
+  which is what it is there for
+- Reading a material is not free of side effects - a file which is not in the
+  default format is converted and the former one removed - so keeping it to the
+  directory watcher also stops an ordinary selection change from writing to the
+  materials directory
+- A row removed from the material manager is deleted rather than only taken out
+  of the tree, which leaked it
+- The **Pick details** tab lists every picked item. It built the first one and
+  left the loop, so a pick of six nodes showed a single entry - and that entry
+  was left without its heading and without its computed results, because the
+  same early exit skipped the code which fills those in
+- A picked node is marked with a cross drawn as geometry rather than with a
+  single point. A point takes its size from the point size state in the OpenGL
+  backend and from `gl_PointSize` in the RHI one, and the OpenGL shaders do not
+  write it, so the marker was not reliably visible. Picking a node had always
+  worked - nothing was drawn to show for it
+- An entity is drawn again when its display properties change. The vertex buffer
+  of an entity records what it was told to draw and was kept until something
+  invalidated it explicitly, so a property whose invalidation was missed left the
+  entity drawn the way it was when first displayed - *Draw element nodes* taking
+  effect only after another property was switched on and off. The properties a
+  buffer was recorded with are now stored with it and compared before it is
+  reused, so a missed invalidation corrects itself on the next frame
+- An entity keeps one vertex buffer instead of three. The two reserved for picked
+  elements and picked nodes were never recorded into or drawn - picked items are
+  drawn as an overlay straight from the pick list - and only ever invalidated
+- Enabling **Draw element nodes** made every surface disappear under the QRhi
+  backend. The vertex buffer of an entity is grown when the geometry no longer
+  fits it, and growing it destroys the buffer together with the list of
+  primitive batches just recorded for it, leaving the geometry uploaded with
+  nothing left to draw it with. Switching the property off again fitted the
+  geometry back into the buffer already allocated, which is why the surfaces
+  returned. The batch list is now handed to the buffer only once the buffer is
+  ready
+- Element nodes were drawn a single pixel wide under the QRhi backend with
+  Direct3D selected, which is the default on Windows, leaving them all but
+  invisible. A point size greater than one pixel is an OpenGL and Vulkan only
+  feature; Direct3D and Metal rasterise every point one pixel wide whatever
+  size is asked for. Points are now expanded into two triangles apiece and
+  sized in the vertex shader, so a node is the same size on every graphics
+  API
+- A picked node is highlighted by a solid marker. The crosshair marking it was
+  drawn in the same white and at the same width as the element edges it sits
+  on, so it was hard to make out against a dense mesh. The node now carries a
+  small solid body in a colour nothing else in the view uses, with the
+  crosshair reaching past it to show the exact position
 
 ### Submodules
 

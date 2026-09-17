@@ -45,23 +45,30 @@ GLStateCache &GLStateCache::instance()
 
 void GLStateCache::initialize()
 {
-    // Write-through cache: set known default state without GPU queries.
-    // GPU state is set in GLWidget::paintGL() at frame start, so we just
-    // mirror those values here. This avoids expensive CPU-GPU sync points.
+    // Mirror the state OpenGL itself starts from, without querying it.
+    //
+    // This must not mirror the values the frame is about to be set up with:
+    // nothing is written to the GPU here, so claiming a value the GPU does not
+    // hold makes the setter which would have written it do nothing. The point
+    // size is what this used to claim - the cache said 10, the GPU held its
+    // own default of 1, and every point was drawn one pixel wide until some
+    // other value was set and restored, which forced the two real calls the
+    // cache had skipped. The same held for the depth test, the depth function
+    // and blending, each of which paintGL() sets immediately below.
     this->lineSmooth = GL_FALSE;
-    this->lighting = GL_TRUE;
+    this->lighting = GL_FALSE;
     this->normalize = GL_FALSE;
-    this->depthTest = GL_TRUE;
+    this->depthTest = GL_FALSE;
     this->depthMask = GL_TRUE;
-    this->blend = GL_TRUE;
+    this->blend = GL_FALSE;
     this->texture1D = GL_FALSE;
     this->texture2D = GL_FALSE;
     this->cullFace = GL_FALSE;
     this->lineStipple = GL_FALSE;
     this->polygonOffsetFill = GL_FALSE;
     this->cullFaceMode = GL_BACK;
-    this->depthFunc = GL_LEQUAL;
-    this->pointSize = 10.0f;
+    this->depthFunc = GL_LESS;
+    this->pointSize = 1.0f;
     this->lineWidth = 1.0f;
     this->polygonOffsetFactor = 0.0f;
     this->polygonOffsetUnits = 0.0f;

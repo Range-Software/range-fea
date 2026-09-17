@@ -43,6 +43,7 @@ void ActionList::processAvailability()
     this->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_BOOL_INTERSECTION)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_MERGE_NEAR_NODES)->setEnabled(false);
+    this->getAction(Action::ACTION_GEOMETRY_MERGE_NODES)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_MOVE_NODE)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE)->setEnabled(false);
@@ -126,6 +127,7 @@ void ActionList::processAvailability()
         this->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_BOOL_INTERSECTION)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_MERGE_NEAR_NODES)->setEnabled(true);
+        this->getAction(Action::ACTION_GEOMETRY_MERGE_NODES)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_MOVE_NODE)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE)->setEnabled(true);

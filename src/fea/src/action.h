@@ -87,6 +87,7 @@ class Action : public RAction
             ACTION_GEOMETRY_BOOL_DIFFERENCE,
             ACTION_GEOMETRY_BOOL_INTERSECTION,
             ACTION_GEOMETRY_MERGE_NEAR_NODES,
+            ACTION_GEOMETRY_MERGE_NODES,
             ACTION_GEOMETRY_MOVE_NODE,
             ACTION_GEOMETRY_REMOVE_NODE,
             ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE,
@@ -305,6 +306,9 @@ class Action : public RAction
 
         //! Merge near nodes.
         void onGeometryMergeNearNodes();
+
+        //! Merge selected nodes.
+        void onGeometryMergeNodes();
 
         //! Move node.
         void onGeometryMoveNode();

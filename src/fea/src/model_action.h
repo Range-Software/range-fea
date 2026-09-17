@@ -45,6 +45,9 @@ class ModelAction : public RJob
         //! Merge nearNodes.
         void mergeNearNodes(const ModelActionInput &modelActionInput);
 
+        //! Merge nodes.
+        void mergeNodes(const ModelActionInput &modelActionInput);
+
         //! Merge entities.
         void mergeEntities(const ModelActionInput &modelActionInput);
 

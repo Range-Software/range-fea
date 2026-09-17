@@ -1,4 +1,5 @@
 #include <QString>
+#include <algorithm>
 #include <cmath>
 #include <limits>
 
@@ -794,6 +795,66 @@ void Model::closeSurfaceHole(QList<uint> edgeIDs)
     RLogger::unindent();
 }
 
+void Model::swapElementNormals(const QList<uint> &elementIDs)
+{
+    bool normalSwapped = false;
+
+    foreach (uint elementID, elementIDs)
+    {
+        if (elementID < this->getNElements())
+        {
+            normalSwapped |= this->getElement(elementID).swapNormal();
+        }
+    }
+
+    if (normalSwapped)
+    {
+        // Model edges are found from the angle between the normals of
+        // neighboring elements, so they no longer match the model.
+        this->invalidateConsolidationCache(Model::ConsolidateEdgeElements);
+    }
+    this->consolidate(Model::ConsolidateEdgeElements);
+}
+
+void Model::swapSurfaceNormals(const QList<uint> &surfaceIDs)
+{
+    std::vector<bool> elementBook(this->getNElements(),false);
+
+    foreach (uint surfaceID, surfaceIDs)
+    {
+        if (surfaceID >= this->getNSurfaces())
+        {
+            continue;
+        }
+        const RSurface &rSurface = this->getSurface(surfaceID);
+        for (uint i=0;i<rSurface.size();i++)
+        {
+            elementBook[rSurface.get(i)] = true;
+        }
+    }
+
+    QList<uint> elementIDs;
+    for (uint i=0;i<elementBook.size();i++)
+    {
+        if (elementBook[i])
+        {
+            elementIDs.append(i);
+        }
+    }
+
+    this->swapElementNormals(elementIDs);
+}
+
+void Model::syncSurfaceNormals()
+{
+    this->RModel::syncSurfaceNormals();
+
+    // Model edges are found from the angle between the normals of
+    // neighboring elements, so they no longer match the model.
+    this->invalidateConsolidationCache(Model::ConsolidateEdgeElements);
+    this->consolidate(Model::ConsolidateEdgeElements);
+}
+
 void Model::transformGeometry(const GeometryTransformInput &geometryTransformInput, const QList<SessionEntityID> &entityIDs)
 {
     this->consolidate(Model::ConsolidateActionAll);
@@ -959,6 +1020,53 @@ uint Model::mergeNearNodes(double tolerance)
     {
         this->invalidateConsolidationCache();
     }
+    this->consolidate(Model::ConsolidateActionAll);
+
+    return nMerged;
+}
+
+uint Model::mergeNodes(const QList<uint> &nodeIDs)
+{
+    QList<uint> sortedNodeIDs;
+    foreach (uint nodeID, nodeIDs)
+    {
+        if (nodeID < this->getNNodes() && !sortedNodeIDs.contains(nodeID))
+        {
+            sortedNodeIDs.append(nodeID);
+        }
+    }
+    std::sort(sortedNodeIDs.begin(),sortedNodeIDs.end());
+
+    if (sortedNodeIDs.size() < 2)
+    {
+        return 0;
+    }
+
+    uint targetNodeID = sortedNodeIDs.first();
+
+    // Place the resulting node in the center of all merged nodes.
+    double x = 0.0, y = 0.0, z = 0.0;
+    foreach (uint nodeID, sortedNodeIDs)
+    {
+        x += this->getNode(nodeID).getX();
+        y += this->getNode(nodeID).getY();
+        z += this->getNode(nodeID).getZ();
+    }
+    double nNodes = double(sortedNodeIDs.size());
+    this->getNode(targetNodeID).set(x/nNodes,y/nNodes,z/nNodes);
+
+    // Merge starting from the highest node ID - removing a node shifts down
+    // only the IDs above it, so the remaining (lower) IDs stay valid.
+    uint nMerged = 0;
+    for (int i=sortedNodeIDs.size()-1;i>0;i--)
+    {
+        this->RModel::mergeNodes(targetNodeID,sortedNodeIDs[i],false,true);
+        nMerged++;
+    }
+
+    this->fixElementGroupRelations();
+
+    this->invalidateConsolidationCache();
     this->consolidate(Model::ConsolidateActionAll);
 
     return nMerged;
@@ -2350,6 +2458,39 @@ void Model::glDraw(GLWidget *glWidget) const
     R_LOG_TRACE_OUT;
 }
 
+//! Draw a solid octahedron centred on the given node.
+//! A marker made of lines alone is easily lost among the element edges it sits
+//! on - they are drawn in the same colour and are the same width - so a picked
+//! node carries a small filled body as well.  The faces are wound outwards so
+//! that the marker keeps its colour whether or not back faces are culled.
+static void drawPickedNodeMarker(const RNode &node, double size)
+{
+    const double x = node.getX();
+    const double y = node.getY();
+    const double z = node.getZ();
+
+    const double vertices[6][3] = {
+        {x+size,y,z}, {x-size,y,z},
+        {x,y+size,z}, {x,y-size,z},
+        {x,y,z+size}, {x,y,z-size}
+    };
+    static const uint faces[8][3] = {
+        {0,2,4}, {2,1,4}, {1,3,4}, {3,0,4},
+        {2,0,5}, {1,2,5}, {3,1,5}, {0,3,5}
+    };
+
+    GLFunctions::begin(GL_TRIANGLES);
+    for (uint i=0;i<8;i++)
+    {
+        for (uint j=0;j<3;j++)
+        {
+            const double *vertex = vertices[faces[i][j]];
+            GLFunctions::vertex3d(vertex[0],vertex[1],vertex[2]);
+        }
+    }
+    GLFunctions::end();
+}
+
 void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) const
 {
     R_LOG_TRACE_IN;
@@ -2481,7 +2622,6 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
             }
             else if (itemType == PICK_ITEM_NODE)
             {
-                glWidget->qglColor(QColor(Qt::white));
                 bool nodeFound = false;
                 RNode node;
 
@@ -2532,9 +2672,31 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
 
                 if (nodeFound)
                 {
-                    GLFunctions::begin(GL_POINTS);
-                    GLObject::glVertexNode(node);
-                    GLFunctions::end();
+                    // Mark the node with real geometry rather than with a
+                    // single GL_POINTS vertex. The size of a point is taken
+                    // from the point size state by the OpenGL backend and from
+                    // gl_PointSize by the RHI one, so a bare point is not
+                    // reliably visible.
+                    //
+                    // The node is highlighted by a solid body, which reads
+                    // against a busy mesh where thin lines do not, and keeps
+                    // the cross for the exact position. The cross reaches past
+                    // the body so that it stays a crosshair rather than a blob.
+                    double markerSize = 0.01 / this->findNodeScale();
+
+                    glWidget->qglColor(QColor(Qt::yellow));
+                    drawPickedNodeMarker(node,markerSize);
+
+                    glWidget->qglColor(QColor(Qt::white));
+                    for (uint k=0;k<3;k++)
+                    {
+                        RR3Vector markerStart(node.getX(),node.getY(),node.getZ());
+                        RR3Vector markerEnd(markerStart);
+                        markerStart[k] -= 2.5*markerSize;
+                        markerEnd[k] += 2.5*markerSize;
+
+                        GLLine(glWidget,markerStart,markerEnd,2.0).paint();
+                    }
                 }
             }
         }
@@ -3315,7 +3477,10 @@ void Model::consolidate(int consolidateActionMask)
             !cacheIsValid(Model::ConsolidateSurfaceNeighbors))
         {
             this->setSurfaceNeighbors(this->findSurfaceNeighbors());
-            this->syncSurfaceNormals();
+            // Base class call - the cache invalidation Model::syncSurfaceNormals()
+            // performs is done by the block below, and consolidating from inside
+            // a consolidation would recurse.
+            this->RModel::syncSurfaceNormals();
             this->validConsolidationCacheMask |= Model::ConsolidateSurfaceNeighbors;
             this->invalidateConsolidationCache(Model::ConsolidateEdgeElements |
                                                Model::ConsolidateHoleElements |

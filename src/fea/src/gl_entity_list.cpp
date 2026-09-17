@@ -4,11 +4,19 @@
 
 GLEntityList::GLEntityList()
 {
+    for (int i = 0; i < GL_ENTITY_LIST_ITEM_N_LISTS; i++)
+    {
+        this->buildSignature[i] = 0;
+    }
 }
 
 GLEntityList::GLEntityList(const GLEntityList &)
 {
     // GPU resources are not copied — new entity list starts invalid.
+    for (int i = 0; i < GL_ENTITY_LIST_ITEM_N_LISTS; i++)
+    {
+        this->buildSignature[i] = 0;
+    }
 }
 
 GLEntityList::~GLEntityList()
@@ -21,6 +29,7 @@ GLEntityList &GLEntityList::operator =(const GLEntityList &)
     for (int i = 0; i < GL_ENTITY_LIST_ITEM_N_LISTS; i++)
     {
         this->vbo[i].invalidate();
+        this->buildSignature[i] = 0;
     }
     return (*this);
 }
@@ -49,6 +58,24 @@ void GLEntityList::setVBOInvalid(GLuint listPosition)
     if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
     {
         this->vbo[listPosition].invalidate();
+        this->buildSignature[listPosition] = 0;
+    }
+}
+
+size_t GLEntityList::getBuildSignature(GLuint listPosition) const
+{
+    if (listPosition >= GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        return 0;
+    }
+    return this->buildSignature[listPosition];
+}
+
+void GLEntityList::setBuildSignature(GLuint listPosition, size_t signature)
+{
+    if (listPosition < GL_ENTITY_LIST_ITEM_N_LISTS)
+    {
+        this->buildSignature[listPosition] = signature;
     }
 }
 

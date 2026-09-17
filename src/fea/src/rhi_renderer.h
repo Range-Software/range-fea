@@ -30,6 +30,7 @@ struct RhiUniformBlock
     float lightDiffuse[RHI_MAX_LIGHTS][4];    //!< light diffuse colours
     float params[4];                          //!< x=nLights, y=useTexture, z=useLighting, w=twoSided
     float params2[4];                         //!< x=clipEnabled, y=pointSize, z/w reserved
+    float params3[4];                         //!< x=pointQuad, y/z=viewport size (px), w reserved
 };
 
 //! Per-GLVertexBuffer QRhi state.  Kept out of GLVertexBuffer itself so that the
@@ -41,7 +42,10 @@ struct RhiBufferData
     {
         Triangles = 0,
         Lines,
-        Points
+        Points,
+        //! Points expanded into screen facing quads.  Drawn as a triangle
+        //! list, but state wise a point: unlit, unculled and not offset.
+        PointQuads
     };
 
     //! Converted primitive batch, ready for a single draw call.
@@ -228,7 +232,7 @@ class RhiRenderer
     private:
 
         //! Fill a uniform block from the current matrix stack and state cache.
-        int recordUniformBlock(bool useTexture, bool useLighting, float pointSize);
+        int recordUniformBlock(bool useTexture, bool useLighting, float pointSize, bool pointQuad);
 
         //! Return (creating if needed) the pipeline matching the draw item state.
         QRhiGraphicsPipeline *acquirePipeline(const DrawItem &item);

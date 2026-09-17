@@ -53,6 +53,10 @@ class GLElementGroup : public GLEntity, public RElementGroup
         //! Set surface thickness.
         void setSurfaceThickness(double surfaceThickness);
 
+        //! Build a signature of the display properties which decide what is
+        //! recorded into the entity vertex buffer.
+        static size_t findDisplaySignature(const REntityGroupData &entityGroupData);
+
     protected:
 
         //! Initialize scene.

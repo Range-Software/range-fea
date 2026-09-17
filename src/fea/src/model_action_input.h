@@ -13,6 +13,7 @@ typedef enum _ModelActionType
     MODEL_ACTION_MARK_SURFACES,
     MODEL_ACTION_CLOSE_SURFACE_HOLE,
     MODEL_ACTION_MERGE_NEAR_NODES,
+    MODEL_ACTION_MERGE_NODES,
     MODEL_ACTION_MERGE_ENTITIES,
     MODEL_ACTION_REMOVE_ENTITIES,
     MODEL_ACTION_CREATE_ELEMENT,
@@ -168,6 +169,9 @@ class ModelActionInput
 
         //! Set merge near nodes and its input.
         void setMergeNearNodes(double tolerance);
+
+        //! Set merge nodes and its input.
+        void setMergeNodes(const QList<uint> &nodeIDs);
 
         //! Set merge entities and its input.
         void setMergeEntities(const QList<SessionEntityID> &entityIDs);

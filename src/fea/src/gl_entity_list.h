@@ -5,9 +5,10 @@
 
 typedef enum _GLEntityListItemType
 {
+    //! Geometry of the entity. Picked elements and picked nodes are drawn as
+    //! an overlay straight from the pick list rather than from a buffer of
+    //! their own, so this is the only one an entity keeps.
     GL_ENTITY_LIST_ITEM_NORMAL = 0,
-    GL_ENTITY_LIST_ITEM_PICK_ELEMENT,
-    GL_ENTITY_LIST_ITEM_PICK_NODE,
     GL_ENTITY_LIST_ITEM_N_LISTS
 } GLEntityListItemType;
 
@@ -18,6 +19,13 @@ class GLEntityList
 
         //! VBO for each list type.
         GLVertexBuffer vbo[GL_ENTITY_LIST_ITEM_N_LISTS];
+
+        //! Display properties the VBO of each list type was recorded with.
+        //! A recorded VBO bakes in what it was told to draw, so it has to be
+        //! recorded again when those properties change. Comparing them here
+        //! catches a change whose invalidation was missed rather than leaving
+        //! the entity drawn the way it was when it was first displayed.
+        size_t buildSignature[GL_ENTITY_LIST_ITEM_N_LISTS];
 
         //! Constructor.
         GLEntityList();
@@ -45,6 +53,12 @@ class GLEntityList
 
         //! Invalidate VBO for the specified list type (alias for setVBOInvalid).
         void setListInvalid(GLuint listPosition);
+
+        //! Return the display properties signature the given list was recorded with.
+        size_t getBuildSignature(GLuint listPosition) const;
+
+        //! Store the display properties signature the given list was recorded with.
+        void setBuildSignature(GLuint listPosition, size_t signature);
 
         // Compat stubs — used by gl_scalar_field, gl_vector_field, gl_interpolated_entity.
         // These redirect to the VBO path so those callers need no changes.

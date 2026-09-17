@@ -150,21 +150,7 @@ void MaterialManagerTree::updateProblemTypeMask()
     for (int i=0;i<this->treeWidget->topLevelItemCount();i++)
     {
         QTreeWidgetItem *item = this->treeWidget->topLevelItem(i);
-
-        QString filePath = item->text(ColumnType::ColumnFile);
-        RMaterial material;
-        try
-        {
-            material = MaterialManagerTree::read(filePath);
-            item->setText(ColumnType::ColumnFile,filePath);
-        }
-        catch (const RError &error)
-        {
-            RLogger::error("Failed to read material file \"%s\". %s\n",
-                           filePath.toUtf8().constData(),
-                           error.getMessage().toUtf8().constData());
-        }
-        this->setItemValid(item,material.validForProblemType(this->problemTypeMask));
+        this->setItemValid(item,this->findItemMaterial(item).validForProblemType(this->problemTypeMask));
     }
     this->treeWidget->blockSignals(signalsBlockedOld);
     R_LOG_TRACE_OUT
@@ -182,6 +168,8 @@ void MaterialManagerTree::setItemValid(QTreeWidgetItem *item, bool valid)
 void MaterialManagerTree::updateItem(QTreeWidgetItem *item, const RMaterial &material, const QString &filePath, bool setSelected)
 {
     R_LOG_TRACE_IN;
+
+    this->materialCache.insert(filePath,material);
 
     bool signalsBlockedOld = this->signalsBlocked();
     this->treeWidget->blockSignals(true);
@@ -205,6 +193,50 @@ void MaterialManagerTree::updateItem(QTreeWidgetItem *item, const RMaterial &mat
     }
 
     R_LOG_TRACE_OUT;
+}
+
+RMaterial MaterialManagerTree::findItemMaterial(QTreeWidgetItem *item, bool *ok)
+{
+    R_LOG_TRACE_IN;
+
+    if (ok)
+    {
+        *ok = true;
+    }
+
+    QString filePath = item->text(ColumnType::ColumnFile);
+
+    QMap<QString,RMaterial>::const_iterator iter = this->materialCache.constFind(filePath);
+    if (iter != this->materialCache.constEnd())
+    {
+        R_LOG_TRACE_RETURN(iter.value());
+    }
+
+    RMaterial material;
+    try
+    {
+        QString readFilePath(filePath);
+        material = MaterialManagerTree::read(readFilePath);
+        if (readFilePath != filePath)
+        {
+            // The file was converted to the default format while being read.
+            item->setText(ColumnType::ColumnFile,readFilePath);
+            filePath = readFilePath;
+        }
+        this->materialCache.insert(filePath,material);
+    }
+    catch (const RError &error)
+    {
+        RLogger::error("Failed to read material file \"%s\". %s\n",
+                       filePath.toUtf8().constData(),
+                       error.getMessage().toUtf8().constData());
+        if (ok)
+        {
+            *ok = false;
+        }
+    }
+
+    R_LOG_TRACE_RETURN(material);
 }
 
 QStringList MaterialManagerTree::findFiles(const QString &name) const
@@ -320,6 +352,9 @@ void MaterialManagerTree::write(const QString &fileName, const RMaterial &materi
 void MaterialManagerTree::onMaterialChanged(const RMaterial &material)
 {
     QString filePath = MaterialManagerTree::buildFilePath(material);
+    // Keep the cache in step with the file right away rather than waiting for
+    // the directory watcher to report the write.
+    this->materialCache.insert(filePath,material);
     try
     {
         MaterialManagerTree::write(filePath,material);
@@ -335,6 +370,10 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
     R_LOG_TRACE_IN;
 
     QFileInfoList fileInfoList = QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot,QDir::Name);
+
+    // This is the authoritative refresh from disk - every item which survives
+    // it goes through updateItem(), which fills the cache in again.
+    this->materialCache.clear();
 
     for (int i=this->treeWidget->topLevelItemCount()-1; i>=0; i--)
     {
@@ -363,7 +402,8 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
         }
         if (!fileInList)
         {
-            this->treeWidget->takeTopLevelItem(i);
+            // takeTopLevelItem() passes the ownership of the item to the caller.
+            delete this->treeWidget->takeTopLevelItem(i);
         }
     }
 
@@ -652,26 +692,23 @@ void MaterialManagerTree::onItemChanged(QTreeWidgetItem *item, int column)
 
     QString oldName = item->data(ColumnType::ColumnName,Qt::UserRole).toString();
     QString newName = item->text(ColumnType::ColumnName);
-    QString filePath = item->text(ColumnType::ColumnFile);
 
-    RMaterial material;
-    try
+    bool materialRead = false;
+    RMaterial material = this->findItemMaterial(item,&materialRead);
+    if (!materialRead)
     {
-        material = MaterialManagerTree::read(filePath);
-        item->setText(ColumnType::ColumnFile,filePath);
-    }
-    catch (const RError &error)
-    {
-        RLogger::error("Failed to read material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
-
         R_LOG_TRACE_OUT;
         return;
     }
+
+    // findItemMaterial() may have corrected the path while converting the file.
+    QString filePath = item->text(ColumnType::ColumnFile);
 
     if (oldName != newName)
     {
         material.setName(newName);
         item->setData(ColumnType::ColumnName,Qt::UserRole,QVariant(newName));
+        this->materialCache.insert(filePath,material);
 
         try
         {
@@ -756,21 +793,7 @@ void MaterialManagerTree::onItemSelectionChanged()
     {
         for (QTreeWidgetItem *item : std::as_const(items))
         {
-            QString filePath = item->text(ColumnType::ColumnFile);
-            RMaterial material;
-            try
-            {
-                material = MaterialManagerTree::read(filePath);
-                item->setText(ColumnType::ColumnFile,filePath);
-            }
-            catch (const RError &error)
-            {
-                RLogger::error("Failed to read material file \"%s\". %s\n",
-                               filePath.toUtf8().constData(),
-                               error.getMessage().toUtf8().constData());
-            }
-
-            emit this->materialSelected(material);
+            emit this->materialSelected(this->findItemMaterial(item));
         }
     }
     R_LOG_TRACE_OUT;

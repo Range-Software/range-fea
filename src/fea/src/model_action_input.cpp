@@ -170,6 +170,12 @@ void ModelActionInput::setMergeNearNodes(double tolerance)
     this->tolerance = tolerance;
 }
 
+void ModelActionInput::setMergeNodes(const QList<uint> &nodeIDs)
+{
+    this->type = MODEL_ACTION_MERGE_NODES;
+    this->nodeIDs = nodeIDs;
+}
+
 void ModelActionInput::setMergeEntities(const QList<SessionEntityID> &entityIDs)
 {
     this->type = MODEL_ACTION_MERGE_ENTITIES;

@@ -1186,6 +1186,7 @@ void GLWidget::processActionEvent()
     else if (glActionEventType == GLActionEvent::PickNode)
     {
         pickFound = Application::instance()->getSession()->getModel(this->modelID).findPickedNode(pickRayPosition,pickRayDirection,pickTolerance,pickItem);
+        RLogger::trace("Pick node: %s (tolerance = %g).\n",pickFound ? "found" : "not found",pickTolerance);
     }
     else if (glActionEventType == GLActionEvent::PickHoleElement)
     {
@@ -1753,32 +1754,24 @@ void GLWidget::onDisplayPropertiesChanged(uint modelID, REntityGroupType element
             if (this->glModelList.getNGlPointLists() > entityID)
             {
                 this->glModelList.getGlPointList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                this->glModelList.getGlPointList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                this->glModelList.getGlPointList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
             }
             break;
         case R_ENTITY_GROUP_LINE:
             if (this->glModelList.getNGlLineLists() > entityID)
             {
                 this->glModelList.getGlLineList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                this->glModelList.getGlLineList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                this->glModelList.getGlLineList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
             }
             break;
         case R_ENTITY_GROUP_SURFACE:
             if (this->glModelList.getNGlSurfaceLists() > entityID)
             {
                 this->glModelList.getGlSurfaceList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                this->glModelList.getGlSurfaceList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                this->glModelList.getGlSurfaceList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
             }
             break;
         case R_ENTITY_GROUP_VOLUME:
             if (this->glModelList.getNGlVolumeLists() > entityID)
             {
                 this->glModelList.getGlVolumeList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                this->glModelList.getGlVolumeList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                this->glModelList.getGlVolumeList(entityID).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
             }
             break;
         case R_ENTITY_GROUP_VECTOR_FIELD:
@@ -1842,8 +1835,6 @@ void GLWidget::onVariableDataChanged(uint modelID, RVariableType variableType)
                 if (egVarData.find(variableType) != egVarData.end())
                 {
                     this->glModelList.getGlPointList(j).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlPointList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlPointList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
             }
         }
@@ -1856,8 +1847,6 @@ void GLWidget::onVariableDataChanged(uint modelID, RVariableType variableType)
                 if (egVarData.find(variableType) != egVarData.end())
                 {
                     this->glModelList.getGlLineList(j).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlLineList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlLineList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
             }
         }
@@ -1870,8 +1859,6 @@ void GLWidget::onVariableDataChanged(uint modelID, RVariableType variableType)
                 if (egVarData.find(variableType) != egVarData.end())
                 {
                     this->glModelList.getGlSurfaceList(j).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlSurfaceList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlSurfaceList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
             }
         }
@@ -1884,8 +1871,6 @@ void GLWidget::onVariableDataChanged(uint modelID, RVariableType variableType)
                 if (egVarData.find(variableType) != egVarData.end())
                 {
                     this->glModelList.getGlVolumeList(j).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlVolumeList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlVolumeList(j).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
             }
         }
@@ -1977,32 +1962,24 @@ void GLWidget::onVariableDataChanged(const SessionEntityID &entityID, RVariableT
                 if (this->glModelList.getNGlPointLists() > entityID.getEid())
                 {
                     this->glModelList.getGlPointList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlPointList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlPointList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
                 break;
             case R_ENTITY_GROUP_LINE:
                 if (this->glModelList.getNGlLineLists() > entityID.getEid())
                 {
                     this->glModelList.getGlLineList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlLineList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlLineList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
                 break;
             case R_ENTITY_GROUP_SURFACE:
                 if (this->glModelList.getNGlSurfaceLists() > entityID.getEid())
                 {
                     this->glModelList.getGlSurfaceList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlSurfaceList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlSurfaceList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
                 break;
             case R_ENTITY_GROUP_VOLUME:
                 if (this->glModelList.getNGlVolumeLists() > entityID.getEid())
                 {
                     this->glModelList.getGlVolumeList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_NORMAL);
-                    this->glModelList.getGlVolumeList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_ELEMENT);
-                    this->glModelList.getGlVolumeList(entityID.getEid()).setListInvalid(GL_ENTITY_LIST_ITEM_PICK_NODE);
                 }
                 break;
             case R_ENTITY_GROUP_VECTOR_FIELD:

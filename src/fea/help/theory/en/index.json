@@ -6,12 +6,20 @@
             "file":  "theory_acoustic.md"
         },
         {
+            "title": "Electro-statics",
+            "file":  "theory_electrostatics.md"
+        },
+        {
             "title": "Fluid flow",
             "file":  "theory_fluid.md"
         },
         {
             "title": "Heat transfer",
             "file":  "theory_heat.md"
+        },
+        {
+            "title": "Magneto-statics",
+            "file":  "theory_magnetostatics.md"
         },
         {
             "title": "Stress",

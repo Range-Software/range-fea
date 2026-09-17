@@ -141,8 +141,6 @@ void PickDetailsTree::populate()
                     childItem->setText(PICK_DETAILS_TREE_COLUMN_5,"[m]");
                 }
             }
-
-            break;
         }
         else if (rPickItems[i].getItemType() == PICK_ITEM_NODE)
         {
@@ -170,14 +168,13 @@ void PickDetailsTree::populate()
             childItem = new QTreeWidgetItem(topItem);
             childItem->setText(PICK_DETAILS_TREE_COLUMN_1,tr("Type") + ":");
             childItem->setText(PICK_DETAILS_TREE_COLUMN_5,REntityGroup::getTypeName(rEntityID.getType()));
-
-            break;
         }
         else if (rPickItems[i].getItemType() == PICK_ITEM_HOLE_ELEMENT)
         {
-            itemText = tr("Edge") + " # " + QLocale().toString(rPickItems[i].getElementPosition());
+            // A hole element carries no details of its own - the item is
+            // dropped and the remaining picked items are still listed.
             delete topItem;
-            break;
+            continue;
         }
 
         QMultiMap<RVariableType, PickValue> resultsValues = rModel.getPickedResultsValues(rPickItems[i]);

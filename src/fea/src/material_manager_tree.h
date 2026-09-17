@@ -3,6 +3,7 @@
 
 #include <QTreeWidget>
 #include <QPushButton>
+#include <QMap>
 
 #include <rml_material.h>
 
@@ -21,6 +22,13 @@ class MaterialManagerTree : public QWidget
 
         //! Problem type mask.
         RProblemTypeMask problemTypeMask;
+
+        //! Materials of the tree items, by file path. An item carries only the
+        //! name and the file path of its material, so without this every
+        //! material has to be read from its file again whenever an item has to
+        //! be matched against the problem type - which happens on every model
+        //! selection and problem change. Rebuilt by onDirectoryChanged().
+        QMap<QString,RMaterial> materialCache;
 
         QTreeWidget *treeWidget;
 
@@ -45,6 +53,11 @@ class MaterialManagerTree : public QWidget
 
         //! Update item with material to the tree.
         void updateItem(QTreeWidgetItem *item, const RMaterial &material, const QString &filePath, bool setSelected);
+
+        //! Return material belonging to given item.
+        //! The material is read from its file and cached if it is not cached yet.
+        //! If ok is given it is set to false when the material could not be read.
+        RMaterial findItemMaterial(QTreeWidgetItem *item, bool *ok = nullptr);
 
         //! Return file names for given name.
         QStringList findFiles(const QString &name) const;

@@ -622,6 +622,7 @@ qt_add_resources(fea icons-geometry
         pixmaps/range-element_create.svg
         pixmaps/range-element_remove.svg
         pixmaps/range-merge_near_nodes.svg
+        pixmaps/range-merge_nodes.svg
         pixmaps/range-move_node.svg
         pixmaps/range-node_remove.svg
         pixmaps/range-node_remove_and_close.svg

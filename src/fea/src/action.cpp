@@ -142,6 +142,7 @@ QString Action::getName(Type type)
         case ACTION_GEOMETRY_BOOL_DIFFERENCE:                 return "geometry-bool_difference";
         case ACTION_GEOMETRY_BOOL_INTERSECTION:               return "geometry-bool_intersection";
         case ACTION_GEOMETRY_MERGE_NEAR_NODES:                return "geometry-merge_near_nodes";
+        case ACTION_GEOMETRY_MERGE_NODES:                     return "geometry-merge_nodes";
         case ACTION_GEOMETRY_MOVE_NODE:                       return "geometry-move_node";
         case ACTION_GEOMETRY_REMOVE_NODE:                     return "geometry-remove_node";
         case ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE:      return "geometry-remove_node_and_close_hole";
@@ -264,6 +265,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_BOOL_DIFFERENCE, tr("Difference"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_bool_difference.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryBoolDifference));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_BOOL_INTERSECTION, tr("Intersection"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_bool_intersection.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryBoolIntersection));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_MERGE_NEAR_NODES, tr("Merge near nodes"), "", "", ":/icons/geometry/pixmaps/range-merge_near_nodes.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryMergeNearNodes));
+    Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_MERGE_NODES, tr("Merge nodes"), "", "", ":/icons/geometry/pixmaps/range-merge_nodes.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryMergeNodes));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_MOVE_NODE, tr("Move node"), "", "", ":/icons/geometry/pixmaps/range-move_node.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryMoveNode));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_REMOVE_NODE, tr("Remove node"), "", "Ctrl+Shift+X", ":/icons/geometry/pixmaps/range-node_remove.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryRemoveNode));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE, tr("Remove node and close hole"), "", "", ":/icons/geometry/pixmaps/range-node_remove_and_close.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryRemoveNodeAndCloseHole));
@@ -1113,6 +1115,70 @@ void Action::onGeometryMergeNearNodes()
     {
         MergeNearNodesDialog mergeNearNodesDialog(selectedModelIDs[i],Application::instance()->getMainWindow());
         mergeNearNodesDialog.exec();
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onGeometryMergeNodes()
+{
+    R_LOG_TRACE_IN;
+    PickList &pickList = Application::instance()->getSession()->getPickList();
+
+    QList<uint> modelIDs = pickList.getModelIDs();
+
+    uint nSubmitted = 0;
+
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        QList<uint> nodeIDs;
+        QVector<PickItem> nodePickItems;
+
+        QVector<PickItem> pickItems = pickList.getItems(modelIDs[i]);
+        for (int j=0;j<pickItems.size();j++)
+        {
+            if (pickItems[j].getItemType() == PICK_ITEM_NODE)
+            {
+                uint elementID = pickItems[j].getElementID();
+                uint nodeID = pickItems[j].getNodeID();
+                if (elementID != RConstants::eod && nodeID != RConstants::eod)
+                {
+                    if (!nodeIDs.contains(nodeID))
+                    {
+                        nodeIDs.append(nodeID);
+                    }
+                    nodePickItems.append(pickItems[j]);
+                }
+            }
+        }
+
+        // A single node has nothing to be merged with - leave it picked.
+        if (nodeIDs.size() < 2)
+        {
+            continue;
+        }
+
+        for (int j=0;j<nodePickItems.size();j++)
+        {
+            pickList.removeItem(nodePickItems[j]);
+        }
+
+        ModelActionInput modelActionInput(modelIDs[i]);
+        modelActionInput.setMergeNodes(nodeIDs);
+
+        ModelAction *modelAction = new ModelAction;
+        modelAction->setAutoDelete(true);
+        modelAction->addAction(modelActionInput);
+        RJobManager::getInstance().submit(modelAction);
+
+        nSubmitted++;
+    }
+
+    if (nSubmitted == 0)
+    {
+        QMessageBox::information(Application::instance()->getMainWindow(),
+                                 tr("Merge nodes"),
+                                 tr("At least two nodes of one model must be selected."),
+                                 QMessageBox::Close);
     }
     R_LOG_TRACE_OUT;
 }

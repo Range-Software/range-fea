@@ -468,8 +468,28 @@ namespace
             }
             case GL_POINTS:
             {
-                topology = RhiBufferData::Points;
-                dst.insert(dst.end(), src, src + n);
+                // A point size greater than one pixel is an OpenGL and Vulkan
+                // only feature; D3D and Metal rasterise every point a single
+                // pixel wide.  Each point therefore becomes two triangles which
+                // the vertex shader sizes in pixels and turns towards the
+                // viewer.  The corner of the quad a vertex stands for is held
+                // in its normal, which a point has no other use for.
+                topology = RhiBufferData::PointQuads;
+                static const float corners[6][2] = {
+                    {-1.0f,-1.0f}, { 1.0f,-1.0f}, { 1.0f, 1.0f},
+                    {-1.0f,-1.0f}, { 1.0f, 1.0f}, {-1.0f, 1.0f}
+                };
+                for (size_t i = 0; i < n; i++)
+                {
+                    for (uint c = 0; c < 6; c++)
+                    {
+                        GLVertexData vertex = src[i];
+                        vertex.normal[0] = corners[c][0];
+                        vertex.normal[1] = corners[c][1];
+                        vertex.normal[2] = 0.0f;
+                        dst.push_back(vertex);
+                    }
+                }
                 return true;
             }
             default:
@@ -498,6 +518,11 @@ void RhiRenderer::uploadVertexBuffer(const std::vector<GLVertexData> &vertices,
     std::vector<GLVertexData> expanded;
     expanded.reserve(vertices.size() * 3 / 2);
 
+    // The batch list is handed to the buffer only once the buffer is ready.
+    // Growing the buffer destroys it, and destroying it clears the batch list
+    // with it, which would leave the geometry uploaded but never drawn.
+    std::vector<RhiBufferData::Batch> newBatches;
+
     for (const GLVertexBuffer::Batch &batch : batches)
     {
         if (batch.count <= 0)
@@ -521,15 +546,15 @@ void RhiRenderer::uploadVertexBuffer(const std::vector<GLVertexData> &vertices,
 
         // Merge with the preceding batch whenever the topology and the state
         // driving the pipeline are identical — fewer draw calls per frame.
-        if (!data.batches.empty() &&
-            data.batches.back().topology == topology &&
-            data.batches.back().first + data.batches.back().count == first)
+        if (!newBatches.empty() &&
+            newBatches.back().topology == topology &&
+            newBatches.back().first + newBatches.back().count == first)
         {
-            data.batches.back().count += count;
+            newBatches.back().count += count;
         }
         else
         {
-            data.batches.push_back({topology, first, count});
+            newBatches.push_back({topology, first, count});
         }
     }
 
@@ -560,6 +585,8 @@ void RhiRenderer::uploadVertexBuffer(const std::vector<GLVertexData> &vertices,
     }
 
     this->getResourceUpdates()->uploadStaticBuffer(data.buffer, 0, size, expanded.data());
+
+    data.batches = std::move(newBatches);
 }
 
 void RhiRenderer::destroyBuffer(RhiBufferData &data)
@@ -579,7 +606,7 @@ void RhiRenderer::destroyBuffer(RhiBufferData &data)
     data.batches.clear();
 }
 
-int RhiRenderer::recordUniformBlock(bool useTexture, bool useLighting, float pointSize)
+int RhiRenderer::recordUniformBlock(bool useTexture, bool useLighting, float pointSize, bool pointQuad)
 {
     const GLStateCache &stateCache = GLStateCache::instance();
 
@@ -631,10 +658,18 @@ int RhiRenderer::recordUniformBlock(bool useTexture, bool useLighting, float poi
     block.params[0] = float(nLights);
     block.params[1] = useTexture ? 1.0f : 0.0f;
     block.params[2] = useLighting ? 1.0f : 0.0f;
-    block.params[3] = stateCache.getTwoSided() ? 1.0f : 0.0f;
+    // An expanded point has no meaningful facing, so it is always two sided.
+    // A back facing quad would otherwise be shaded as the back of a surface.
+    block.params[3] = (stateCache.getTwoSided() || pointQuad) ? 1.0f : 0.0f;
 
     block.params2[0] = stateCache.getClipPlaneEnabled() ? 1.0f : 0.0f;
     block.params2[1] = pointSize;
+
+    // The shader sizes an expanded point in pixels, so it needs the viewport.
+    const QRhiViewport vp = this->currentViewport();
+    block.params3[0] = pointQuad ? 1.0f : 0.0f;
+    block.params3[1] = qMax(1.0f, vp.viewport()[2]);
+    block.params3[2] = qMax(1.0f, vp.viewport()[3]);
 
     this->uniformBlocks.push_back(block);
 
@@ -653,6 +688,7 @@ void RhiRenderer::drawVertexBuffer(const RhiBufferData &data, bool usesTexture)
     for (const RhiBufferData::Batch &batch : data.batches)
     {
         const bool isFilled = (batch.topology == RhiBufferData::Triangles);
+        const bool isPointQuad = (batch.topology == RhiBufferData::PointQuads);
         // Lines and points are never lit — this mirrors the OpenGL backend.
         const bool useLighting = isFilled && stateCache.getLighting() == GL_TRUE;
         const bool useTexture = usesTexture && this->activeColorMap != nullptr;
@@ -662,7 +698,7 @@ void RhiRenderer::drawVertexBuffer(const RhiBufferData &data, bool usesTexture)
         item.buffer      = data.buffer;
         item.firstVertex = batch.first;
         item.vertexCount = batch.count;
-        item.uniformSlot = this->recordUniformBlock(useTexture, useLighting, stateCache.getPointSize());
+        item.uniformSlot = this->recordUniformBlock(useTexture, useLighting, stateCache.getPointSize(), isPointQuad);
         item.texture     = useTexture ? this->activeColorMap : this->whiteTexture;
         item.depthTest   = stateCache.getDepthTest() == GL_TRUE;
         item.depthWrite  = stateCache.getDepthMask() == GL_TRUE;
@@ -703,6 +739,7 @@ void RhiRenderer::drawImmediate(const GLVertexData *vertices, size_t count, GLen
 
     const GLStateCache &stateCache = GLStateCache::instance();
     const bool isFilled = (topology == RhiBufferData::Triangles);
+    const bool isPointQuad = (topology == RhiBufferData::PointQuads);
     const bool useLighting = isFilled && stateCache.getLighting() == GL_TRUE;
     const bool useTexture = stateCache.getTexture1D() == GL_TRUE && this->activeColorMap != nullptr;
 
@@ -711,7 +748,7 @@ void RhiRenderer::drawImmediate(const GLVertexData *vertices, size_t count, GLen
     item.buffer      = nullptr;   // resolved to the streaming buffer at flush time
     item.firstVertex = base;
     item.vertexCount = expandedCount;
-    item.uniformSlot = this->recordUniformBlock(useTexture, useLighting, stateCache.getPointSize());
+    item.uniformSlot = this->recordUniformBlock(useTexture, useLighting, stateCache.getPointSize(), isPointQuad);
     item.texture     = useTexture ? this->activeColorMap : this->whiteTexture;
     item.depthTest   = stateCache.getDepthTest() == GL_TRUE;
     item.depthWrite  = stateCache.getDepthMask() == GL_TRUE;
@@ -793,6 +830,8 @@ QRhiGraphicsPipeline *RhiRenderer::acquirePipeline(const DrawItem &item)
     {
         case RhiBufferData::Lines:  pipeline->setTopology(QRhiGraphicsPipeline::Lines);     break;
         case RhiBufferData::Points: pipeline->setTopology(QRhiGraphicsPipeline::Points);    break;
+        // PointQuads falls through to Triangles - the point state it keeps
+        // (unlit, unculled, not depth biased) travels with the draw item.
         default:                    pipeline->setTopology(QRhiGraphicsPipeline::Triangles); break;
     }
 
@@ -911,7 +950,16 @@ void RhiRenderer::flush(QRhiCommandBuffer *cb, QRhiRenderTarget *renderTarget, c
         }
 
         // Every shader resource binding references the uniform buffer, so they
-        // all have to be rebuilt once the buffer is replaced.
+        // all have to be rebuilt once the buffer is replaced. Each pipeline was
+        // created against one of those bindings and keeps it for its layout, so
+        // the pipelines go with them - a cached pipeline left pointing at a
+        // deleted binding stops drawing what it was built for.
+        for (QRhiGraphicsPipeline *pipeline : std::as_const(this->pipelines))
+        {
+            delete pipeline;
+        }
+        this->pipelines.clear();
+
         for (QRhiShaderResourceBindings *srb : std::as_const(this->bindings))
         {
             delete srb;
@@ -1013,8 +1061,25 @@ void RhiRenderer::flush(QRhiCommandBuffer *cb, QRhiRenderTarget *renderTarget, c
 
     cb->endPass();
 
-    RLogger::trace("RhiRenderer: submitted %d draw items, %d uniform slots, %d streamed vertices\n",
+    int nTriangleItems = 0;
+    int nLineItems = 0;
+    int nPointItems = 0;
+    for (const DrawItem &item : this->drawItems)
+    {
+        switch (item.topology)
+        {
+            case RhiBufferData::Lines:      nLineItems++;  break;
+            case RhiBufferData::Points:
+            case RhiBufferData::PointQuads: nPointItems++; break;
+            default:                        nTriangleItems++; break;
+        }
+    }
+
+    RLogger::trace("RhiRenderer: submitted %d draw items (%d triangle, %d line, %d point), %d uniform slots, %d streamed vertices\n",
                    int(this->drawItems.size()),
+                   nTriangleItems,
+                   nLineItems,
+                   nPointItems,
                    int(this->uniformBlocks.size()),
                    int(this->immediateVertices.size()));
 

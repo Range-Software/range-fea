@@ -51,6 +51,10 @@ void ModelAction::executeAction(const ModelActionInput &modelActionInput)
                 Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Merge near nodes"));
                 this->mergeNearNodes(modelActionInput);
                 break;
+            case MODEL_ACTION_MERGE_NODES:
+                Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Merge nodes"));
+                this->mergeNodes(modelActionInput);
+                break;
             case MODEL_ACTION_MERGE_ENTITIES:
                 Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Merge entities"));
                 this->mergeEntities(modelActionInput);
@@ -212,6 +216,19 @@ void ModelAction::mergeNearNodes(const ModelActionInput &modelActionInput)
     RLogger::info("Merging near nodes\n");
     RLogger::indent();
     uint nMerged = rModel.mergeNearNodes(modelActionInput.getTolerance());
+    RLogger::info("Number of merged nodes = %u\n",nMerged);
+    RLogger::unindent();
+
+    Application::instance()->getSession()->setModelChanged(modelActionInput.getModelID());
+}
+
+void ModelAction::mergeNodes(const ModelActionInput &modelActionInput)
+{
+    Model &rModel = Application::instance()->getSession()->getModel(modelActionInput.getModelID());
+
+    RLogger::info("Merging nodes\n");
+    RLogger::indent();
+    uint nMerged = rModel.mergeNodes(modelActionInput.getNodeIDs());
     RLogger::info("Number of merged nodes = %u\n",nMerged);
     RLogger::unindent();
 
@@ -721,13 +738,7 @@ void ModelAction::swapSurfaceElementNormal(const ModelActionInput &modelActionIn
     RLogger::info("Swapping normals of selected surface elements\n");
     RLogger::indent();
 
-    const QList<uint> &elementIDs = modelActionInput.getElementIDs();
-
-    for (int i=0;i<elementIDs.size();i++)
-    {
-        RElement &rElement = rModel.getElement(elementIDs[i]);
-        rElement.swapNormal();
-    }
+    rModel.swapElementNormals(modelActionInput.getElementIDs());
 
     RLogger::unindent();
 
@@ -741,34 +752,8 @@ void ModelAction::swapSurfaceNormals(const ModelActionInput &modelActionInput)
     RLogger::info("Swapping normals of selected surface entities\n");
     RLogger::indent();
 
-    const QList<SessionEntityID> &entityIDs = modelActionInput.getEntityIDs();
+    rModel.swapSurfaceNormals(SessionEntityID::getEntityIDs(modelActionInput.getEntityIDs(),R_ENTITY_GROUP_SURFACE));
 
-    std::vector<bool> elementIDs;
-    elementIDs.resize(rModel.getNElements(),false);
-
-    for (int i=0;i<entityIDs.size();i++)
-    {
-        if (entityIDs.at(i).getType() != R_ENTITY_GROUP_SURFACE)
-        {
-            continue;
-        }
-        RSurface &rSurface = rModel.getSurface(entityIDs.at(i).getEid());
-
-        for (uint j=0;j<rSurface.size();j++)
-        {
-            elementIDs[rSurface.get(j)] = true;
-
-        }
-    }
-
-    for (uint i=0;i<elementIDs.size();i++)
-    {
-        if (elementIDs[i])
-        {
-            RElement &rElement = rModel.getElement(i);
-            rElement.swapNormal();
-        }
-    }
     RLogger::unindent();
 
     Application::instance()->getSession()->setModelChanged(modelActionInput.getModelID());
@@ -782,7 +767,6 @@ void ModelAction::syncSurfaceNormals(const ModelActionInput &modelActionInput)
     RLogger::indent();
 
     rModel.syncSurfaceNormals();
-    rModel.consolidate(Model::ConsolidateHoleElements | Model::ConsolidateEdgeElements | Model::ConsolidateSliverElements);
 
     RLogger::unindent();
 

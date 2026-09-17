@@ -182,6 +182,18 @@ class Model : public RModel
         //! Close surface hole.
         void closeSurfaceHole(QList<uint> edgeIDs);
 
+        //! Swap normals of given elements.
+        //! Consolidation caches depending on element normals are rebuilt.
+        void swapElementNormals(const QList<uint> &elementIDs);
+
+        //! Swap normals of all elements of given surfaces.
+        //! Consolidation caches depending on element normals are rebuilt.
+        void swapSurfaceNormals(const QList<uint> &surfaceIDs);
+
+        //! Synchronize surface normals.
+        //! Consolidation caches depending on element normals are rebuilt.
+        void syncSurfaceNormals();
+
         //! Transform model geometry.
         void transformGeometry(const GeometryTransformInput &geometryTransformInput, const QList<SessionEntityID> &entityIDs);
 
@@ -193,6 +205,11 @@ class Model : public RModel
 
         //! Merge near nodes.
         uint mergeNearNodes(double tolerance = RConstants::eps);
+
+        //! Merge given nodes into a single node placed in their center.
+        //! Elements containing merged nodes are reconstructed.
+        //! Return number of merged (removed) nodes.
+        uint mergeNodes(const QList<uint> &nodeIDs);
 
         //! Purge unused nodes.
         uint purgeUnusedNodes();

@@ -409,6 +409,7 @@ void MainWindow::createMenus()
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_MERGE_NEAR_NODES));
+    menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_MERGE_NODES));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_MOVE_NODE));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE));
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE));

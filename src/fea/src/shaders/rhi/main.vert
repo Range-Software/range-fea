@@ -22,6 +22,7 @@ layout(std140, binding = 0) uniform Ubuf {
     vec4 lightDiffuse[8];
     vec4 params;    // x = number of lights, y = use texture, z = use lighting, w = two sided
     vec4 params2;   // x = clipping enabled, y = point size
+    vec4 params3;   // x = point quad expansion, y = viewport width, z = viewport height
 } ubuf;
 
 void main()
@@ -30,6 +31,17 @@ void main()
 
     gl_Position  = ubuf.mvp * vec4(aPosition, 1.0);
     gl_PointSize = ubuf.params2.y;
+
+    // An expanded point carries the corner of its quad in the normal, as a
+    // sign per axis. The quad is sized here rather than where it was built
+    // so that it stays the requested number of pixels across whatever the
+    // projection does with the point. NDC spans the viewport over 2.0, so
+    // half of a size of p pixels is p / viewport away from the centre.
+    if (ubuf.params3.x > 0.5)
+    {
+        vec2 halfSize = vec2(ubuf.params2.y) / vec2(ubuf.params3.y, ubuf.params3.z);
+        gl_Position.xy += aNormal.xy * halfSize * gl_Position.w;
+    }
 
     vNormal   = mat3(ubuf.normalMatrix) * aNormal;
     vColor    = aColor;
