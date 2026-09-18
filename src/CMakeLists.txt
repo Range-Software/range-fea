@@ -1,4 +1,12 @@
 cmake_minimum_required(VERSION 3.21)
+
+# Minimum macOS version - macOS 26 (Tahoe) is the last release running on Intel
+# processors. Set before project() so every library and the application are
+# built for the same version; an explicit -DCMAKE_OSX_DEPLOYMENT_TARGET wins.
+if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "26.0" CACHE STRING "Minimum macOS version" FORCE)
+endif()
+
 project(RangeFea)
 
 set(CMAKE_CXX_STANDARD 20)

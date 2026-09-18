@@ -416,10 +416,6 @@ elseif (APPLE)
     set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
     set(MACOSX_BUNDLE_CATEGORY "${MACOS_APP_CATEGORY}")
     set(MACOSX_BUNDLE_COPYRIGHT "Copyright (C) ${PROJECT_YEAR} ${PROJECT_AUTHOR}")
-    if(NOT CMAKE_OSX_DEPLOYMENT_TARGET)
-        set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0")
-    endif()
-
     configure_file(
         ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/macos/Info.plist.in
         ${CMAKE_CURRENT_BINARY_DIR}/Info.plist
