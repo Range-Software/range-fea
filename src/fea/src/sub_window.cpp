@@ -21,7 +21,7 @@ void SubWindow::createSubWindow()
     R_LOG_TRACE_IN;
     QString windowTitle = Application::instance()->getSession()->getModel(this->modelID).getName();
     this->setWindowTitle(windowTitle);
-    this->setWindowIcon(RIcon::fromFile(":/icons/logos/pixmaps/range-fea.svg"));
+    this->setWindowIcon(RIcon::fromFile(Application::windowIconFile()));
 
     QWidget *mainWidget = new QWidget(this);
     this->setWidget(mainWidget);

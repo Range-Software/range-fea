@@ -111,22 +111,39 @@ set(MSIX_PUBLISHER_DISPLAY_NAME "${PROJECT_FAMILY_NAME}" CACHE STRING
 set(MSIX_APPLICATION_ID "RangeFEA" CACHE STRING
     "MSIX Application/Id; letters and digits only")
 
-add_library(common_defines INTERFACE)
-target_compile_definitions(common_defines
-    INTERFACE
-        VERSION="${PROJECT_VERSION}"
-        YEAR=${PROJECT_YEAR}
-        PACKAGENAME="${PROJECT_PACKAGE_NAME}"
-        NAME="${PROJECT_HUMAN_REL_NAME}"
-        SHORTNAME="${PROJECT_SHORT_NAME}"
-        FAMILYNAME="${PROJECT_FAMILY_NAME}"
-        TITLE="${PROJECT_TITLE}"
-        DESCRIPTION="${PROJECT_DESCRIPTION}"
-        AUTHOR="${PROJECT_AUTHOR}"
-        EMAIL="${PROJECT_EMAIL}"
-        WWW="${PROJECT_WWW}"
-        WWWDOMAIN="${PROJECT_WWW_DOMAIN}"
+# Project metadata goes to a generated UTF-8 header instead of -D flags. Non-ASCII
+# text on the compiler command line (the author name) is re-encoded through the
+# console code page by some Windows generators (MinGW Makefiles), which garbles it.
+file(CONFIGURE
+    OUTPUT "${CMAKE_BINARY_DIR}/generated/range_vendor.h"
+    CONTENT [[
+#ifndef RANGE_VENDOR_H
+#define RANGE_VENDOR_H
+
+#define VERSION "@PROJECT_VERSION@"
+#define YEAR @PROJECT_YEAR@
+#define PACKAGENAME "@PROJECT_PACKAGE_NAME@"
+#define NAME "@PROJECT_HUMAN_REL_NAME@"
+#define SHORTNAME "@PROJECT_SHORT_NAME@"
+#define FAMILYNAME "@PROJECT_FAMILY_NAME@"
+#define TITLE "@PROJECT_TITLE@"
+#define DESCRIPTION "@PROJECT_DESCRIPTION@"
+#define AUTHOR "@PROJECT_AUTHOR@"
+#define EMAIL "@PROJECT_EMAIL@"
+#define WWW "@PROJECT_WWW@"
+#define WWWDOMAIN "@PROJECT_WWW_DOMAIN@"
+
+#endif // RANGE_VENDOR_H
+]]
+    @ONLY
 )
+
+add_library(common_defines INTERFACE)
+target_include_directories(common_defines INTERFACE "${CMAKE_BINARY_DIR}/generated")
+if(MSVC)
+    # Read sources and the generated header as UTF-8 regardless of the system code page.
+    target_compile_options(common_defines INTERFACE /utf-8)
+endif()
 
 if(RANGE_STORE_BUILD)
     target_compile_definitions(common_defines INTERFACE STORE_BUILD)

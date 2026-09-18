@@ -27,6 +27,10 @@ class Application : public RApplication
         //! Return application instance.
         static Application *instance() noexcept;
 
+        //! Return resource path of the application window icon.
+        //! Windows gets a full bleed variant, the default one follows the macOS icon grid.
+        static QString windowIconFile();
+
         //! Return const pointer to application settings.
         const ApplicationSettings *getApplicationSettings() const;
 

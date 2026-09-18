@@ -16,6 +16,7 @@
 #include <rgl_message_box.h>
 
 #include "action.h"
+#include "application.h"
 #include "bc_manager_tree.h"
 #include "bc_tree.h"
 #include "document_tree.h"
@@ -62,7 +63,7 @@ MainWindow::MainWindow(Session *session,
     this->applyShortcutsToActions();
 
     this->setWindowTitle(RVendor::name() + " :: " + tr("Finite Element Analysis"));
-    this->setWindowIcon(RIcon::fromFile(":/icons/logos/pixmaps/range-fea.svg"));
+    this->setWindowIcon(RIcon::fromFile(Application::windowIconFile()));
 
     int toolbarIconSize = this->applicationSettings->getToolbarIconSize();
     this->setIconSize(QSize(toolbarIconSize,toolbarIconSize));

@@ -468,6 +468,7 @@ fea_add_icon_resources(icons-action "/icons/action"
 fea_add_icon_resources(icons-logos "/icons/logos"
         pixmaps/range-app.svg
         pixmaps/range-fea.svg
+        pixmaps/range-fea-windows.svg
 )
 
 fea_add_icon_resources(icons-file "/icons/file"
