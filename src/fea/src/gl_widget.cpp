@@ -128,6 +128,7 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
                   SIGNAL(variableDataChanged(SessionEntityID,RVariableType)),
                   SLOT(onVariableDataChanged(SessionEntityID,RVariableType)));
     QObject::connect(Application::instance()->getSession(),&Session::modelChanged,this,&GLWidget::onModelChanged);
+    QObject::connect(Application::instance()->getSession(),&Session::modelSelectionChanged,this,&GLWidget::onModelSelectionChanged);
     QObject::connect(Application::instance()->getSession(),&Session::resultsChanged,this,&GLWidget::onResultsChanged);
     QObject::connect(Application::instance()->getSession(),&Session::beginDrawStreamLinePosition,this,&GLWidget::onBeginDrawStreamLinePosition);
     QObject::connect(Application::instance()->getSession(),&Session::endDrawStreamLinePosition,this,&GLWidget::onEndDrawStreamLinePosition);
@@ -494,6 +495,7 @@ void GLWidget::drawModel()
             renderer->setLights(positions, ambients, diffuses);
         }
         stateCache.setTwoSided(false);
+        stateCache.setHighlight(false);
     }
 
     // Bind the GLSL shader for model rendering and upload frame uniforms.
@@ -529,6 +531,7 @@ void GLWidget::drawModel()
         this->mainShaderProgram.setUniformBool("uUseLighting", true);
         this->mainShaderProgram.setUniformBool("uUseTexture", false);
         this->mainShaderProgram.setUniformBool("uTwoSided", false);
+        this->mainShaderProgram.setUniformBool("uHighlight", false);
         this->mainShaderProgram.setUniformInt("uColorMap", 0);
     }
 
@@ -2042,6 +2045,18 @@ void GLWidget::onModelChanged(uint modelID)
     this->calculateModelScale();
     this->glModelList.clear();
     this->update();
+    R_LOG_TRACE_OUT;
+}
+
+void GLWidget::onModelSelectionChanged(uint modelID)
+{
+    R_LOG_TRACE_IN;
+    // Selected entities are drawn highlighted, which is a shader state rather
+    // than part of the recorded geometry - a repaint is all it takes.
+    if (this->modelID == modelID)
+    {
+        this->update();
+    }
     R_LOG_TRACE_OUT;
 }
 

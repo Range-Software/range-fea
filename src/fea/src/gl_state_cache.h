@@ -48,6 +48,9 @@ class GLStateCache
         //! Whether back faces are shaded like front faces (cut planes, iso surfaces).
         bool twoSided;
 
+        //! Whether the entity being drawn is highlighted (selected).
+        bool highlight;
+
         //! Whether the clipping plane is active.
         bool clipPlaneEnabled;
         //! Clipping plane equation in eye space.
@@ -105,6 +108,9 @@ class GLStateCache
         //! Return whether back faces are shaded like front faces.
         bool getTwoSided() const;
 
+        //! Return whether the entity being drawn is highlighted.
+        bool getHighlight() const;
+
         //! Return whether the clipping plane is active.
         bool getClipPlaneEnabled() const;
 
@@ -136,6 +142,8 @@ class GLStateCache
         void setPointSize(GLfloat size);
         void setLineWidth(GLfloat width);
         void setTwoSided(bool twoSided);
+        //! Highlight (lighten) what is drawn next - used for selected entities.
+        void setHighlight(bool highlight);
         void setClipPlane(bool enabled, const double plane[4] = nullptr);
 
         // Convenience methods for enable/disable

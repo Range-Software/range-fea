@@ -21,7 +21,7 @@ layout(std140, binding = 0) uniform Ubuf {
     vec4 lightAmbient[8];
     vec4 lightDiffuse[8];
     vec4 params;    // x = number of lights, y = use texture, z = use lighting, w = two sided
-    vec4 params2;   // x = clipping enabled, y = point size
+    vec4 params2;   // x = clipping enabled, y = point size, z = highlight
     vec4 params3;   // x = point quad expansion, y = viewport width, z = viewport height
 } ubuf;
 

@@ -664,6 +664,7 @@ int RhiRenderer::recordUniformBlock(bool useTexture, bool useLighting, float poi
 
     block.params2[0] = stateCache.getClipPlaneEnabled() ? 1.0f : 0.0f;
     block.params2[1] = pointSize;
+    block.params2[2] = stateCache.getHighlight() ? 1.0f : 0.0f;
 
     // The shader sizes an expanded point in pixels, so it needs the viewport.
     const QRhiViewport vp = this->currentViewport();

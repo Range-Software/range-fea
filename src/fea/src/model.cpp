@@ -2276,6 +2276,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNVolumes();i++)
             {
                 if (entityIsTransparent(this->getVolume(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getVolume(i).getData().getSelected());
                 GLElementGroup glElementGroup(glWidget,this->getVolume(i),SessionEntityID(modelID,R_ENTITY_GROUP_VOLUME,i));
                 glElementGroup.setParentModel(this);
                 glElementGroup.setUseGlList(true);
@@ -2286,6 +2287,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNSurfaces();i++)
             {
                 if (entityIsTransparent(this->getSurface(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getSurface(i).getData().getSelected());
                 GLElementGroup glElementGroup(glWidget,this->getSurface(i),SessionEntityID(modelID,R_ENTITY_GROUP_SURFACE,i));
                 glElementGroup.setParentModel(this);
                 glElementGroup.setSurfaceThickness(this->getSurface(i).getThickness());
@@ -2298,6 +2300,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNLines();i++)
             {
                 if (entityIsTransparent(this->getLine(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getLine(i).getData().getSelected());
                 GLElementGroup glElementGroup(glWidget,this->getLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_LINE,i));
                 glElementGroup.setParentModel(this);
                 glElementGroup.setLineCrossArea(this->getLine(i).getCrossArea());
@@ -2309,6 +2312,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNPoints();i++)
             {
                 if (entityIsTransparent(this->getPoint(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getPoint(i).getData().getSelected());
                 GLElementGroup glElementGroup(glWidget,this->getPoint(i),SessionEntityID(modelID,R_ENTITY_GROUP_POINT,i));
                 glElementGroup.setParentModel(this);
                 glElementGroup.setPointVolume(this->getPoint(i).getVolume());
@@ -2320,6 +2324,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNVectorFields();i++)
             {
                 if (entityIsTransparent(this->getVectorField(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getVectorField(i).getData().getSelected());
                 GLVectorField glVectorField(glWidget,this->getVectorField(i),SessionEntityID(modelID,R_ENTITY_GROUP_VECTOR_FIELD,i));
                 glVectorField.setApplyEnvironmentSettings(false);
                 glVectorField.setParentModel(this);
@@ -2331,6 +2336,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNScalarFields();i++)
             {
                 if (entityIsTransparent(this->getScalarField(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getScalarField(i).getData().getSelected());
                 GLScalarField glScalarField(glWidget,this->getScalarField(i),SessionEntityID(modelID,R_ENTITY_GROUP_SCALAR_FIELD,i));
                 glScalarField.setApplyEnvironmentSettings(false);
                 glScalarField.setParentModel(this);
@@ -2342,6 +2348,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNStreamLines();i++)
             {
                 if (entityIsTransparent(this->getStreamLine(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getStreamLine(i).getData().getSelected());
                 GLInterpolatedEntity glStreamLine(glWidget,this->getStreamLine(i),SessionEntityID(modelID,R_ENTITY_GROUP_STREAM_LINE,i));
                 glStreamLine.setApplyEnvironmentSettings(false);
                 glStreamLine.setParentModel(this);
@@ -2353,6 +2360,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNCuts();i++)
             {
                 if (entityIsTransparent(this->getCut(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getCut(i).getData().getSelected());
                 GLInterpolatedEntity glCut(glWidget,this->getCut(i),SessionEntityID(modelID,R_ENTITY_GROUP_CUT,i));
                 glCut.setApplyEnvironmentSettings(false);
                 glCut.setParentModel(this);
@@ -2364,6 +2372,7 @@ void Model::glDraw(GLWidget *glWidget) const
             for (uint i=0;i<this->getNIsos();i++)
             {
                 if (entityIsTransparent(this->getIso(i)) != transparentPass) { continue; }
+                stateCache.setHighlight(this->getIso(i).getData().getSelected());
                 GLInterpolatedEntity glIso(glWidget,this->getIso(i),SessionEntityID(modelID,R_ENTITY_GROUP_ISO,i));
                 glIso.setApplyEnvironmentSettings(false);
                 glIso.setParentModel(this);
@@ -2377,6 +2386,8 @@ void Model::glDraw(GLWidget *glWidget) const
                 stateCache.disableCullFace();
             }
         } // three-pass loop
+
+        stateCache.setHighlight(false);
 
         if (glWidget->getGLDisplayProperties().getShowModelEdges())
         {

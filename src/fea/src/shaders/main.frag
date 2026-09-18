@@ -8,9 +8,13 @@ varying float vTexCoord;
 uniform bool      uUseTexture;
 uniform bool      uUseLighting;
 uniform bool      uTwoSided;
+uniform bool      uHighlight;
 uniform sampler1D uColorMap;
 
 struct Light { vec3 position; vec4 ambient; vec4 diffuse; };
+
+// Fraction by which a highlighted (selected) entity is moved towards white.
+const float highlightAmount = 0.2;
 
 uniform int   uNumLights;
 uniform Light uLights[8];
@@ -22,16 +26,24 @@ void main()
     vec4 baseColor = (!gl_FrontFacing && !uTwoSided)
                      ? vec4(0.75, 0.75, 0.75, vColor.a)
                      : ((uUseTexture && vTexCoord >= 0.0) ? texture1D(uColorMap, vTexCoord) : vColor);
-    if (!uUseLighting || uNumLights == 0) { gl_FragColor = baseColor; return; }
-    // Flip normal for back faces so lighting looks correct from the viewer's side.
-    vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
-    vec4 result = vec4(0.0);
-    for (int i = 0; i < uNumLights; i++)
+    vec3 color = baseColor.rgb;
+    if (uUseLighting && uNumLights > 0)
     {
-        vec3  lightDir = normalize(uLights[i].position);
-        float diff     = max(dot(norm, lightDir), 0.0);
-        result += uLights[i].ambient  * baseColor;
-        result += diff * uLights[i].diffuse * baseColor;
+        // Flip normal for back faces so lighting looks correct from the viewer's side.
+        vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
+        vec4 result = vec4(0.0);
+        for (int i = 0; i < uNumLights; i++)
+        {
+            vec3  lightDir = normalize(uLights[i].position);
+            float diff     = max(dot(norm, lightDir), 0.0);
+            result += uLights[i].ambient  * baseColor;
+            result += diff * uLights[i].diffuse * baseColor;
+        }
+        color = result.rgb;
     }
-    gl_FragColor = vec4(result.rgb, baseColor.a);
+    if (uHighlight)
+    {
+        color = mix(color, vec3(1.0), highlightAmount);
+    }
+    gl_FragColor = vec4(color, baseColor.a);
 }

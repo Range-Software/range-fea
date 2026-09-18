@@ -340,6 +340,9 @@ class GLWidget : public QWidget
         //! Slot to catch signal emitted when model has changed
         void onModelChanged(uint modelID);
 
+        //! Slot to catch signal emitted when model selection has changed.
+        void onModelSelectionChanged(uint modelID);
+
         //! Slot to catch signal emitted when results have changed
         void onResultsChanged(uint modelID);
 

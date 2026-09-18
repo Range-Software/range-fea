@@ -27,6 +27,7 @@ GLStateCache::GLStateCache()
     , polygonOffsetFactor(0.0f)
     , polygonOffsetUnits(0.0f)
     , twoSided(false)
+    , highlight(false)
     , clipPlaneEnabled(false)
     , initialized(false)
     , shaderProgram(nullptr)
@@ -73,6 +74,7 @@ void GLStateCache::initialize()
     this->polygonOffsetFactor = 0.0f;
     this->polygonOffsetUnits = 0.0f;
     this->twoSided = false;
+    this->highlight = false;
     this->initialized = true;
 }
 
@@ -110,6 +112,7 @@ GLfloat GLStateCache::getPolygonOffsetFactor() const { return this->polygonOffse
 GLfloat GLStateCache::getPolygonOffsetUnits() const { return this->polygonOffsetUnits; }
 
 bool GLStateCache::getTwoSided() const { return this->twoSided; }
+bool GLStateCache::getHighlight() const { return this->highlight; }
 bool GLStateCache::getClipPlaneEnabled() const { return this->clipPlaneEnabled; }
 const double *GLStateCache::getClipPlane() const { return this->clipPlane; }
 
@@ -306,6 +309,15 @@ void GLStateCache::setTwoSided(bool twoSided)
     if (this->shaderProgram)
     {
         this->shaderProgram->setUniformBool("uTwoSided", twoSided);
+    }
+}
+
+void GLStateCache::setHighlight(bool highlight)
+{
+    this->highlight = highlight;
+    if (this->shaderProgram)
+    {
+        this->shaderProgram->setUniformBool("uHighlight", highlight);
     }
 }
 

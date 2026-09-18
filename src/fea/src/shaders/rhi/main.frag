@@ -17,9 +17,12 @@ layout(std140, binding = 0) uniform Ubuf {
     vec4 lightAmbient[8];
     vec4 lightDiffuse[8];
     vec4 params;    // x = number of lights, y = use texture, z = use lighting, w = two sided
-    vec4 params2;   // x = clipping enabled, y = point size
+    vec4 params2;   // x = clipping enabled, y = point size, z = highlight
     vec4 params3;   // x = point quad expansion, y = viewport width, z = viewport height
 } ubuf;
+
+// Fraction by which a highlighted (selected) entity is moved towards white.
+const float highlightAmount = 0.2;
 
 // Colour map — an Nx1 strip standing in for the 1D texture of the OpenGL backend.
 layout(binding = 1) uniform sampler2D uColorMap;
@@ -44,23 +47,28 @@ void main()
                         ? texture(uColorMap, vec2(clamp(vTexCoord, 0.0, 1.0), 0.5))
                         : vColor);
 
-    if (!useLighting || numLights == 0)
+    vec3 color = baseColor.rgb;
+
+    if (useLighting && numLights > 0)
     {
-        fragColor = baseColor;
-        return;
+        // Flip the normal for back faces so lighting looks correct from the viewer's side.
+        vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
+
+        vec4 result = vec4(0.0);
+        for (int i = 0; i < numLights; i++)
+        {
+            vec3  lightDir = normalize(ubuf.lightPosition[i].xyz);
+            float diff     = max(dot(norm, lightDir), 0.0);
+            result += ubuf.lightAmbient[i] * baseColor;
+            result += diff * ubuf.lightDiffuse[i] * baseColor;
+        }
+        color = result.rgb;
     }
 
-    // Flip the normal for back faces so lighting looks correct from the viewer's side.
-    vec3 norm = gl_FrontFacing ? normalize(vNormal) : normalize(-vNormal);
-
-    vec4 result = vec4(0.0);
-    for (int i = 0; i < numLights; i++)
+    if (ubuf.params2.z > 0.5)
     {
-        vec3  lightDir = normalize(ubuf.lightPosition[i].xyz);
-        float diff     = max(dot(norm, lightDir), 0.0);
-        result += ubuf.lightAmbient[i] * baseColor;
-        result += diff * ubuf.lightDiffuse[i] * baseColor;
+        color = mix(color, vec3(1.0), highlightAmount);
     }
 
-    fragColor = vec4(result.rgb, baseColor.a);
+    fragColor = vec4(color, baseColor.a);
 }

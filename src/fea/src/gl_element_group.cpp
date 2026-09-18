@@ -89,7 +89,6 @@ size_t GLElementGroup::findDisplaySignature(const REntityGroupData &entityGroupD
     addFlag(entityGroupData.getDrawArrowFrom());
     addFlag(entityGroupData.getColorByPatch());
     addFlag(entityGroupData.getColorByViewFactor());
-    addFlag(entityGroupData.getSelected());
 
     signature = signature * 4294967296u
               + size_t(((r & 0xff) << 24) | ((g & 0xff) << 16) | ((b & 0xff) << 8) | (a & 0xff));

@@ -83,6 +83,12 @@
   role from every other variable of the entity. Only one variable at a time can
   be displayed, and a variable left over from a previously solved problem type
   used to win the lookup and leave the entity in its plain colour
+- Entities selected in the model tree are **highlighted** in the 3D view: their
+  colour is drawn a fifth of the way towards white, and so is the colour map of
+  an entity displaying a scalar result or a vector magnitude. The lightening is
+  a shader state applied in both rendering backends, so changing the selection
+  only repaints the view - the recorded geometry of an entity is no longer
+  rebuilt when it is selected or deselected
 
 #### Materials
 

@@ -29,7 +29,7 @@ struct RhiUniformBlock
     float lightAmbient[RHI_MAX_LIGHTS][4];    //!< light ambient colours
     float lightDiffuse[RHI_MAX_LIGHTS][4];    //!< light diffuse colours
     float params[4];                          //!< x=nLights, y=useTexture, z=useLighting, w=twoSided
-    float params2[4];                         //!< x=clipEnabled, y=pointSize, z/w reserved
+    float params2[4];                         //!< x=clipEnabled, y=pointSize, z=highlight, w reserved
     float params3[4];                         //!< x=pointQuad, y/z=viewport size (px), w reserved
 };
 
