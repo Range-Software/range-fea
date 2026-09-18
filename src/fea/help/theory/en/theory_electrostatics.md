@@ -254,7 +254,7 @@ The electrostatics solver produces two results that other solvers consume.
 |---|---|---|
 | Electro-statics -> heat | Joule heat | added to the source term of every element |
 | Electro-statics -> fluid heat | Joule heat | added to the source term of every element |
-| Electro-statics -> magneto-statics | Current density | drives the magnetic field solve |
+| Electro-statics -> magneto-statics | Current density | source of the magnetic field |
 | Heat -> electro-statics | Temperature | selects the row of every temperature-dependent material table |
 
 **Joule heat** is picked up by a *Heat transfer* task placed **after** the
@@ -264,9 +264,9 @@ heating therefore needs no setup beyond ordering the two tasks - tutorial 4 walk
 through it.
 
 **Magneto-statics** is a separate problem type that *requires* an electrostatics
-task: it reads the element current density this solver stores and solves for the
-magnetic field from it, on volume elements only. Add the electrostatics task
-first.
+task: it reads the element current density this solver stores - on volume,
+surface and line entities alike - and evaluates the magnetic field of that
+current with the Biot-Savart law. Add the electrostatics task first.
 
 Because the solver reports itself as converged unconditionally, a task group that
 contains only an electrostatics task always stops after one iteration. Iterating

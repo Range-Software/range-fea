@@ -134,9 +134,9 @@
   non-linear task group iteration the flow solver depends on),
   `theory_electrostatics.md` (including what separates an electro-static
   analysis from a current-flow one and the coupling to heat transfer and
-  magneto-statics) and `theory_magnetostatics.md`, which states at the top that
-  the problem type is incomplete and lists what is wrong rather than leaving the
-  value of the result to be guessed
+  magneto-statics) and `theory_magnetostatics.md` (the Biot-Savart evaluation,
+  what an open current path in an electro-static model means for the field, and
+  how to see the field around a conductor)
 
 #### Packaging
 
@@ -188,16 +188,22 @@
 - Units corrected to what the solver reads and writes: **Relative permittivity**
   `N/A` instead of `C^2`, **Charge density** `C/m^3` instead of `C`, **Electric
   energy** `J/m^3` and **Joule heat** `W/m^3`
-- **Magneto-statics** computes a different field. Its source term used the
-  vacuum permittivity where the vacuum permeability belongs and carried a shape
-  function factor the weak form does not, and the current density it takes from
-  the electro-statics task is now averaged onto the nodes rather than assigned
-  from one neighbouring element. **Magnetic field** is offered by the
-  magneto-statics problem type rather than by electro-statics, which never
-  computes it
-- Magneto-statics remains incomplete. No boundary condition exists for it, so
-  nothing constrains the field and the level of the computed result is
-  arbitrary. The theory manual says so at the top and lists what is left
+- **Magneto-statics** computes the magnetic field of the electro-static current
+  with the Biot-Savart law. It used to solve a field equation for it which had no
+  boundary condition of any kind, so every model was singular and the level of
+  the field was arbitrary; the Biot-Savart law needs no boundary and gives the
+  field of the current exactly, the far field included. Every model using the
+  problem type computes a different field
+- Line entities with a cross area and surface entities with a thickness carry
+  current into the magnetic field as well as volume entities, and every node of
+  the model receives a value - a meshed region around the conductor that carries
+  no current shows the field in the space around it
+- The field is that of the modelled current. When the current enters and leaves
+  the body at its electrodes, the field of the supply leads is not included,
+  which matters far from the conductor; the theory manual explains when to model
+  the return path
+- **Magnetic field** is offered by the magneto-statics problem type rather than
+  by electro-statics, which never computes it
 
 #### Solver setup
 
