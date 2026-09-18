@@ -7,6 +7,7 @@
 #include "central_tab_widget.h"
 #include "application.h"
 #include "solver_manager.h"
+#include <rgl_icon.h>
 
 const QString CentralTabWidget::informationIconFile(":/icons/file/pixmaps/range-information.svg");
 const QString CentralTabWidget::importantIconFile(":/icons/file/pixmaps/range-important.svg");
@@ -142,7 +143,7 @@ void CentralTabWidget::setTabTitle(CentralTabWidget::Type tabType, RMessage::Typ
         // TODO: For unknown reason this hangs if text is printed from QDialog::exec()
         if (useTabIcons)
         {
-            this->setTabIcon(tabPosition,QIcon(iconFile));
+            this->setTabIcon(tabPosition,RIcon::fromFile(iconFile));
         }
         if (iconFile == CentralTabWidget::informationIconFile)
         {

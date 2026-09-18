@@ -8,6 +8,7 @@
 #include "gl_widget.h"
 #include "color_combo_box.h"
 #include "light_properties_widget.h"
+#include <rgl_icon.h>
 
 typedef enum _PropertiesListColumn
 {
@@ -24,9 +25,9 @@ GLDisplayPropertiesDialog::GLDisplayPropertiesDialog(GLWidget *pGlWidget, QWidge
     this->setWindowTitle(QString(tr("Display preferences")));
     this->resize(500,500);
 
-    QIcon defaultIcon(":/icons/action/pixmaps/range-undo.svg");
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon defaultIcon = RIcon::fromFile(":/icons/action/pixmaps/range-undo.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

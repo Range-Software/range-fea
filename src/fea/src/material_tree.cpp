@@ -6,12 +6,13 @@
 #include "material_property_line_edit.h"
 #include "material_property_edit_dialog.h"
 #include "push_button.h"
+#include <rgl_icon.h>
 
 MaterialTree::MaterialTree(QWidget *parent) :
     QWidget{parent}
 {
-    QIcon addIcon(":/icons/file/pixmaps/range-new.svg");
-    QIcon removeIcon(":/icons/action/pixmaps/range-close.svg");
+    QIcon addIcon = RIcon::fromFile(":/icons/file/pixmaps/range-new.svg");
+    QIcon removeIcon = RIcon::fromFile(":/icons/action/pixmaps/range-close.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout(mainLayout);

@@ -13,6 +13,7 @@
 #include "model_action.h"
 #include <rbl_job_manager.h>
 #include "application.h"
+#include <rgl_icon.h>
 
 static uint mid = RConstants::eod;
 static double edgeLength = RConstants::eps;
@@ -28,8 +29,8 @@ CoarsenSurfaceDialog::CoarsenSurfaceDialog(uint modelID, const QList<SessionEnti
         this->findGeometryLimits();
     }
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Coarsen surface elements"));
 

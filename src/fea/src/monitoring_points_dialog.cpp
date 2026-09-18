@@ -7,6 +7,7 @@
 #include "monitoring_points_dialog.h"
 #include "application.h"
 #include "variable_selector.h"
+#include <rgl_icon.h>
 
 MonitoringPointsDialog::MonitoringPointsDialog(uint modelID, QWidget *parent) :
     QDialog(parent),
@@ -17,8 +18,8 @@ MonitoringPointsDialog::MonitoringPointsDialog(uint modelID, QWidget *parent) :
     this->setWindowTitle(tr("Define monitoring points"));
     this->resize(600,300);
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout(mainLayout);

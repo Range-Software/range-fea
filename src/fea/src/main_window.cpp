@@ -37,6 +37,7 @@
 #include "main_window.h"
 #include "session.h"
 #include "geometry_transform_widget.h"
+#include <rgl_icon.h>
 
 MainWindow::MainWindow(Session *session,
                        RCloudSessionManager *cloudSession,
@@ -61,7 +62,7 @@ MainWindow::MainWindow(Session *session,
     this->applyShortcutsToActions();
 
     this->setWindowTitle(RVendor::name() + " :: " + tr("Finite Element Analysis"));
-    this->setWindowIcon(QIcon(":/icons/logos/pixmaps/range-fea.svg"));
+    this->setWindowIcon(RIcon::fromFile(":/icons/logos/pixmaps/range-fea.svg"));
 
     int toolbarIconSize = this->applicationSettings->getToolbarIconSize();
     this->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
@@ -286,7 +287,7 @@ void MainWindow::createMenus()
     menuFile->setTitle(tr("File"));
     QMenu *menuFileSession = new QMenu(menuFile);
     menuFileSession->setTitle(tr("Session"));
-    menuFileSession->setIcon(QIcon(":/icons/file/pixmaps/range-session->svg"));
+    menuFileSession->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-session.svg"));
     menuFileSession->addAction(this->actionList->getAction(Action::ACTION_SESSION_NEW));
     menuFileSession->addAction(this->actionList->getAction(Action::ACTION_SESSION_OPEN));
     menuFileSession->addAction(this->actionList->getAction(Action::ACTION_SESSION_SAVE));
@@ -299,7 +300,7 @@ void MainWindow::createMenus()
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE_AS));
     QMenu *menuFileExport = new QMenu(menuFile);
     menuFileExport->setTitle(tr("Export"));
-    menuFileExport->setIcon(QIcon(":/icons/file/pixmaps/range-model_save_as.svg"));
+    menuFileExport->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-model_save_as.svg"));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_MSH));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_RAW));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII));
@@ -323,7 +324,7 @@ void MainWindow::createMenus()
     menuGeometry->addSeparator();
     QMenu *menuGeometryDraw = new QMenu(menuGeometry);
     menuGeometryDraw->setTitle(tr("Draw"));
-    menuGeometryDraw->setIcon(QIcon(":/icons/geometry/pixmaps/range-draw_geometry.svg"));
+    menuGeometryDraw->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-draw_geometry.svg"));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_POINT));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_LINE));
     menuGeometryDraw->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_TRIANGLE));
@@ -339,16 +340,16 @@ void MainWindow::createMenus()
     menuGeometry->addSeparator();
 //    QMenu *menuGeometryPoint = new QMenu(menuGeometry);
 //    menuGeometryPoint->setTitle(tr("Point"));
-//    menuGeometryPoint->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_point.svg"));
+//    menuGeometryPoint->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_point.svg"));
 //    menuGeometry->addAction(menuGeometryPoint->menuAction());
     QMenu *menuGeometryLine = new QMenu(menuGeometry);
     menuGeometryLine->setTitle(tr("Line"));
-    menuGeometryLine->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_line.svg"));
+    menuGeometryLine->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_line.svg"));
     menuGeometryLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_LINE_GENERATE_FROM_EDGES));
     menuGeometry->addAction(menuGeometryLine->menuAction());
     QMenu *menuGeometrySurface = new QMenu(menuGeometry);
     menuGeometrySurface->setTitle(tr("Surface"));
-    menuGeometrySurface->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_surface.svg"));
+    menuGeometrySurface->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_surface.svg"));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_MARK));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_NORMALS));
@@ -360,7 +361,7 @@ void MainWindow::createMenus()
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS));
     QMenu *menuGeometryBoolOperations = new QMenu(menuGeometrySurface);
     menuGeometryBoolOperations->setTitle(tr("Boolean operations"));
-    menuGeometryBoolOperations->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_surface_bool_operation.svg"));
+    menuGeometryBoolOperations->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_surface_bool_operation.svg"));
     menuGeometryBoolOperations->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_UNION));
     menuGeometryBoolOperations->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE));
     menuGeometryBoolOperations->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_INTERSECTION));
@@ -368,37 +369,37 @@ void MainWindow::createMenus()
     menuGeometry->addAction(menuGeometrySurface->menuAction());
     QMenu *menuGeometryVolume = new QMenu(menuGeometry);
     menuGeometryVolume->setTitle(tr("Volume"));
-    menuGeometryVolume->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_volume.svg"));
+    menuGeometryVolume->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_volume.svg"));
     menuGeometryVolume->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
     menuGeometry->addAction(menuGeometryVolume->menuAction());
     menuGeometry->addSeparator();
     QMenu *menuGeometryCut = new QMenu(menuGeometry);
     menuGeometryCut->setTitle(tr("Cut"));
-    menuGeometryCut->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_cut.svg"));
+    menuGeometryCut->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_cut.svg"));
     menuGeometryCut->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CUT_CREATE));
     menuGeometryCut->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_CUT_EDIT));
     menuGeometry->addAction(menuGeometryCut->menuAction());
     QMenu *menuGeometryIso = new QMenu(menuGeometry);
     menuGeometryIso->setTitle(tr("Iso"));
-    menuGeometryIso->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_iso.svg"));
+    menuGeometryIso->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_iso.svg"));
     menuGeometryIso->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ISO_CREATE));
     menuGeometryIso->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_ISO_EDIT));
     menuGeometry->addAction(menuGeometryIso->menuAction());
     QMenu *menuGeometryStreamLine = new QMenu(menuGeometry);
     menuGeometryStreamLine->setTitle(tr("Stream line"));
-    menuGeometryStreamLine->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_stream_line.svg"));
+    menuGeometryStreamLine->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_stream_line.svg"));
     menuGeometryStreamLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_STREAM_LINE_CREATE));
     menuGeometryStreamLine->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_STREAM_LINE_EDIT));
     menuGeometry->addAction(menuGeometryStreamLine->menuAction());
     QMenu *menuGeometryScalarField = new QMenu(menuGeometry);
     menuGeometryScalarField->setTitle(tr("Scalar field"));
-    menuGeometryScalarField->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_scalar_field.svg"));
+    menuGeometryScalarField->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_scalar_field.svg"));
     menuGeometryScalarField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE));
     menuGeometryScalarField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_EDIT));
     menuGeometry->addAction(menuGeometryScalarField->menuAction());
     QMenu *menuGeometryVectorField = new QMenu(menuGeometry);
     menuGeometryVectorField->setTitle(tr("Vector field"));
-    menuGeometryVectorField->setIcon(QIcon(":/icons/geometry/pixmaps/range-entity_vector_field.svg"));
+    menuGeometryVectorField->setIcon(RIcon::fromFile(":/icons/geometry/pixmaps/range-entity_vector_field.svg"));
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE));
     menuGeometryVectorField->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT));
     menuGeometry->addAction(menuGeometryVectorField->menuAction());

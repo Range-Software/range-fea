@@ -5,6 +5,7 @@
 #include "application.h"
 #include "gl_display_properties_dialog.h"
 #include "clipping_plane_widget.h"
+#include <rgl_icon.h>
 
 SubWindow::SubWindow (uint modelID, QWidget *parent)
     : QMdiSubWindow(parent)
@@ -20,7 +21,7 @@ void SubWindow::createSubWindow()
     R_LOG_TRACE_IN;
     QString windowTitle = Application::instance()->getSession()->getModel(this->modelID).getName();
     this->setWindowTitle(windowTitle);
-    this->setWindowIcon(QIcon(":/icons/logos/pixmaps/range-fea.svg"));
+    this->setWindowIcon(RIcon::fromFile(":/icons/logos/pixmaps/range-fea.svg"));
 
     QWidget *mainWidget = new QWidget(this);
     this->setWidget(mainWidget);
@@ -44,28 +45,28 @@ void SubWindow::createSubWindow()
     QAction *actionResetO = new QAction(this);
     actionResetO->setText(tr("Reset to original view."));
     actionResetO->setShortcut(QString("O"));
-    actionResetO->setIcon(QIcon(":/icons/file/pixmaps/range-resetO.svg"));
+    actionResetO->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-resetO.svg"));
     this->toolBar->addAction(actionResetO);
     QObject::connect(actionResetO,&QAction::triggered,this,&SubWindow::onResetO);
 
     QAction *actionResetX = new QAction(this);
     actionResetX->setText(tr("Reset to X plane."));
     actionResetX->setShortcut(QString("X"));
-    actionResetX->setIcon(QIcon(":/icons/file/pixmaps/range-resetX.svg"));
+    actionResetX->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-resetX.svg"));
     this->toolBar->addAction(actionResetX);
     QObject::connect(actionResetX,&QAction::triggered,this,&SubWindow::onResetX);
 
     QAction *actionResetY = new QAction(this);
     actionResetY->setText(tr("Reset to Y plane."));
     actionResetY->setShortcut(QString("Y"));
-    actionResetY->setIcon(QIcon(":/icons/file/pixmaps/range-resetY.svg"));
+    actionResetY->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-resetY.svg"));
     this->toolBar->addAction(actionResetY);
     QObject::connect(actionResetY,&QAction::triggered,this,&SubWindow::onResetY);
 
     QAction *actionResetZ = new QAction(this);
     actionResetZ->setText(tr("Reset to Z plane."));
     actionResetZ->setShortcut(QString("Z"));
-    actionResetZ->setIcon(QIcon(":/icons/file/pixmaps/range-resetZ.svg"));
+    actionResetZ->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-resetZ.svg"));
     this->toolBar->addAction(actionResetZ);
     QObject::connect(actionResetZ,&QAction::triggered,this,&SubWindow::onResetZ);
 
@@ -74,7 +75,7 @@ void SubWindow::createSubWindow()
     QAction *actionScreenshot = new QAction(this);
     actionScreenshot->setText(tr("Screenshot."));
     actionScreenshot->setShortcut(QString("Ctrl+P"));
-    actionScreenshot->setIcon(QIcon(":/icons/file/pixmaps/range-screenshot.svg"));
+    actionScreenshot->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-screenshot.svg"));
     this->toolBar->addAction(actionScreenshot);
     QObject::connect(actionScreenshot,&QAction::triggered,this,&SubWindow::onScreenshot);
 
@@ -95,7 +96,7 @@ void SubWindow::createSubWindow()
     QAction *actionPreferences = new QAction(this);
     actionPreferences->setText(tr("Display preferences."));
     actionPreferences->setShortcut(QString("Ctrl+P"));
-    actionPreferences->setIcon(QIcon(":/icons/application/pixmaps/range-display_preferences.svg"));
+    actionPreferences->setIcon(RIcon::fromFile(":/icons/application/pixmaps/range-display_preferences.svg"));
     this->toolBar->addAction(actionPreferences);
     QObject::connect(actionPreferences,&QAction::triggered,this,&SubWindow::onPreferences);
 

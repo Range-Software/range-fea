@@ -6,6 +6,7 @@
 #include <rbl_logger.h>
 
 #include "problem_selector_dialog.h"
+#include <rgl_icon.h>
 
 ProblemSelectorDialog::ProblemSelectorDialog(QWidget *parent) :
     QDialog(parent)
@@ -13,8 +14,8 @@ ProblemSelectorDialog::ProblemSelectorDialog(QWidget *parent) :
     R_LOG_TRACE_IN;
     this->setWindowTitle(tr("Problem type selector"));
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

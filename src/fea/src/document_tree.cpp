@@ -3,6 +3,7 @@
 
 #include "document_tree.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 typedef enum _DocumentTreeColumn
 {
@@ -24,7 +25,7 @@ DocumentTree::DocumentTree(QWidget *parent) :
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
     headerItem->setText(DOCUMENT_TREE_COLUMN_NAME,QString(tr("File name")));
-    headerItem->setIcon(DOCUMENT_TREE_COLUMN_NAME,QIcon(":/icons/mime/pixmaps/range-file-document.svg"));
+    headerItem->setIcon(DOCUMENT_TREE_COLUMN_NAME,RIcon::fromFile(":/icons/mime/pixmaps/range-file-document.svg"));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(DOCUMENT_TREE_COLUMN_FILENAME,true);

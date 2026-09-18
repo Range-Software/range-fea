@@ -9,6 +9,7 @@
 #include "geometry_transform_widget.h"
 #include "model_action.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 GeometryTransformWidget::GeometryTransformWidget(QWidget *parent) :
     QWidget(parent)
@@ -95,10 +96,10 @@ GeometryTransformWidget::GeometryTransformWidget(QWidget *parent) :
     QHBoxLayout *buttonsLayout = new QHBoxLayout;
     vBoxLayout->addLayout(buttonsLayout);
 
-    this->cancelButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-cancel.svg"),tr("Cancel"));
+    this->cancelButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg"),tr("Cancel"));
     buttonsLayout->addWidget(this->cancelButton);
 
-    this->okButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-ok.svg"),tr("Ok"));
+    this->okButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg"),tr("Ok"));
     buttonsLayout->addWidget(this->okButton);
 
     this->enableOkButton();

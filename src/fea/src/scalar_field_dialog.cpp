@@ -7,6 +7,7 @@
 
 #include "application.h"
 #include "scalar_field_dialog.h"
+#include <rgl_icon.h>
 
 ScalarFieldDialog::ScalarFieldDialog(uint modelID, QWidget *parent) :
     QDialog(parent),
@@ -87,8 +88,8 @@ int ScalarFieldDialog::exec()
 
 void ScalarFieldDialog::createDialog()
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->resize(500,400);
 

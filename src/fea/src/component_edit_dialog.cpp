@@ -6,6 +6,7 @@
 
 #include "component_edit_dialog.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 ComponentEditDialog::ComponentEditDialog(RConditionComponent &component, QWidget *parent) :
     QDialog(parent),
@@ -14,8 +15,8 @@ ComponentEditDialog::ComponentEditDialog(RConditionComponent &component, QWidget
     this->setWindowTitle(tr("Component editor"));
     this->resize(400,500);
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

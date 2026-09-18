@@ -5,6 +5,7 @@
 
 #include "geometry_translate_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 const RR3Vector GeometryTranslateWidget::defaultTranslation = RR3Vector(0.0,0.0,0.0);
 
@@ -53,7 +54,7 @@ GeometryTranslateWidget::GeometryTranslateWidget(const RR3Vector &translation, Q
     QLabel *zDistanceUnit = new QLabel("[m]");
     layout->addWidget(zDistanceUnit,2,2,1,1);
 
-    QPushButton *originButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-undo.svg"),tr("Origin"));
+    QPushButton *originButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-undo.svg"),tr("Origin"));
     layout->addWidget(originButton,3,0,1,3);
 
     QObject::connect(originButton,
@@ -61,7 +62,7 @@ GeometryTranslateWidget::GeometryTranslateWidget(const RR3Vector &translation, Q
                      this,
                      &GeometryTranslateWidget::setOrigin);
 
-    QPushButton *centerButton = new QPushButton(QIcon(":/icons/file/pixmaps/range-undo.svg"),tr("Center"));
+    QPushButton *centerButton = new QPushButton(RIcon::fromFile(":/icons/file/pixmaps/range-undo.svg"),tr("Center"));
     layout->addWidget(centerButton,4,0,1,3);
 
     QObject::connect(centerButton,
@@ -69,7 +70,7 @@ GeometryTranslateWidget::GeometryTranslateWidget(const RR3Vector &translation, Q
                      this,
                      &GeometryTranslateWidget::setCenter);
 
-    QPushButton *resetButton = new QPushButton(QIcon(":/icons/file/pixmaps/range-undo.svg"),tr("Reset"));
+    QPushButton *resetButton = new QPushButton(RIcon::fromFile(":/icons/file/pixmaps/range-undo.svg"),tr("Reset"));
     layout->addWidget(resetButton,5,0,1,3);
 
     QObject::connect(resetButton,

@@ -3,12 +3,13 @@
 #include <rbl_logger.h>
 
 #include "local_direction_widget.h"
+#include <rgl_icon.h>
 
 LocalDirectionWidget::LocalDirectionWidget(const QString &title, const RLocalDirection &localDirection, QWidget *parent)
     : QGroupBox(title, parent)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QGridLayout *layout = new QGridLayout;
     this->setLayout(layout);

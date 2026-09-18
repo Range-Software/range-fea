@@ -5,6 +5,7 @@
 
 #include "geometry_rotate_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 const RR3Vector GeometryRotateWidget::defaultAngles = RR3Vector(0.0,0.0,0.0);
 
@@ -58,7 +59,7 @@ GeometryRotateWidget::GeometryRotateWidget(const RR3Vector &center, const RR3Vec
     QLabel *zAngleUnit = new QLabel(QString::fromUtf8("[°]"));
     layout->addWidget(zAngleUnit,2,2,1,1);
 
-    QPushButton *anglesResetButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-undo.svg"),tr("Reset"));
+    QPushButton *anglesResetButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-undo.svg"),tr("Reset"));
     layout->addWidget(anglesResetButton,2,3,1,1);
 
     this->rotationCenter = new PositionWidget(tr("Rotation center"),center,false);

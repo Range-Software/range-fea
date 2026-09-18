@@ -5,11 +5,12 @@
 
 #include "model_statistics_dialog.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 ModelStatisticsDialog::ModelStatisticsDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
 {
-    QIcon closeIcon(":/icons/action/pixmaps/range-close.svg");
+    QIcon closeIcon = RIcon::fromFile(":/icons/action/pixmaps/range-close.svg");
 
     this->setWindowTitle(tr("Model statistics"));
     this->resize(860,600);

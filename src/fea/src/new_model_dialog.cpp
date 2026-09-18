@@ -8,12 +8,13 @@
 #include "model.h"
 #include "new_model_dialog.h"
 #include "model_io.h"
+#include <rgl_icon.h>
 
 NewModelDialog::NewModelDialog(QWidget *parent) :
     QDialog(parent)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Create a new model"));
     this->resize(300,-1);

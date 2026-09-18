@@ -11,6 +11,7 @@
 #include "application.h"
 #include "mark_entity_dialog.h"
 #include "model_action.h"
+#include <rgl_icon.h>
 
 double MarkEntityDialog::separationAngle = 45.0;
 
@@ -18,8 +19,8 @@ MarkEntityDialog::MarkEntityDialog(REntityGroupType entityType, QWidget *parent)
     : QDialog(parent)
     , entityType(entityType)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QString windowTitleStr = tr("Mark entity") + " (" + RElementGroup::getTypeName(entityType) + ")";
     this->setWindowTitle(tr(windowTitleStr.toUtf8().constData()));

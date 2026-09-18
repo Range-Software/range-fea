@@ -6,6 +6,7 @@
 
 #include "position_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 #define MINIMUM_VALUE (-DBL_MAX*0.1)
 #define MAXIMUM_VALUE (DBL_MAX*0.1)
@@ -15,8 +16,8 @@ PositionWidget::PositionWidget(const QString &title, const RR3Vector &position, 
     , horizontalLayout(horizontalLayout)
     , showButtonBox(true)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QGridLayout *layout = new QGridLayout;
     this->setLayout(layout);

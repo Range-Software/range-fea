@@ -4,6 +4,7 @@
 #include <QDialogButtonBox>
 
 #include "material_property_add_dialog.h"
+#include <rgl_icon.h>
 
 MaterialPropertyAddDialog::MaterialPropertyAddDialog(RMaterial &material, QWidget *parent) :
     QDialog(parent),
@@ -12,8 +13,8 @@ MaterialPropertyAddDialog::MaterialPropertyAddDialog(RMaterial &material, QWidge
     this->setWindowTitle(tr("Material property editor"));
     this->resize(300,300);
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

@@ -7,14 +7,15 @@
 #include "bool_intersection_dialog.h"
 #include "model_action.h"
 #include <rbl_job_manager.h>
+#include <rgl_icon.h>
 
 BoolIntersectionDialog::BoolIntersectionDialog(uint modelID, const QList<SessionEntityID> &entityIDs, QWidget *parent) :
     QDialog(parent),
     modelID(modelID),
     entityIDs(entityIDs)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Intersection"));
 

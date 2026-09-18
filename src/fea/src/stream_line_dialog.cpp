@@ -6,6 +6,7 @@
 
 #include "application.h"
 #include "stream_line_dialog.h"
+#include <rgl_icon.h>
 
 StreamLineDialog::StreamLineDialog(uint modelID, QWidget *parent) :
     QDialog(parent),
@@ -67,8 +68,8 @@ int StreamLineDialog::exec()
 
 void StreamLineDialog::createDialog()
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QString windowTitleStr = tr("Stream line editor");
     this->setWindowTitle(windowTitleStr);

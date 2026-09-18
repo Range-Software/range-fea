@@ -6,6 +6,7 @@
 
 #include "drop_results_dialog.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 static bool clearResults = true;
 static bool deleteResults = false;
@@ -16,8 +17,8 @@ DropResultsDialog::DropResultsDialog(QWidget *parent) :
     this->setWindowTitle(tr("Drop results"));
     this->resize(600,300);
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

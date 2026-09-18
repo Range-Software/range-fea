@@ -5,6 +5,7 @@
 
 #include "application.h"
 #include "problem_task_dialog.h"
+#include <rgl_icon.h>
 
 ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
@@ -15,8 +16,8 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     this->setWindowTitle(tr("Problem task flow"));
     this->resize(600,300);
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

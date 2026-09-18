@@ -8,10 +8,11 @@
 
 #include "convergence_graph_widget.h"
 #include "graph_widget.h"
+#include <rgl_icon.h>
 
 ConvergenceGraphWidget::ConvergenceGraphWidget(const QString &convergenceFileName, QWidget *parent) : QWidget(parent)
 {
-    QIcon clearIcon(":/icons/action/pixmaps/range-clear.svg");
+    QIcon clearIcon = RIcon::fromFile(":/icons/action/pixmaps/range-clear.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

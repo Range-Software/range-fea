@@ -11,6 +11,7 @@
 #include "graph_dialog.h"
 #include "graph_object.h"
 #include "value_set_generator_dialog.h"
+#include <rgl_icon.h>
 
 namespace ValueTableTreeTypes
 {
@@ -66,7 +67,7 @@ ValueTable::ValueTable(QWidget *parent) :
 
     this->importFromFileAction = new QAction(this);
     this->importFromFileAction->setText(tr("Import from file"));
-    this->importFromFileAction->setIcon(QIcon(":/icons/file/pixmaps/range-open.svg"));
+    this->importFromFileAction->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-open.svg"));
     this->addAction(this->importFromFileAction);
 
     QObject::connect(this->importFromFileAction,

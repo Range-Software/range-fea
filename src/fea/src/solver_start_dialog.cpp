@@ -15,6 +15,7 @@
 #include "solver_setup_checker.h"
 #include "solver_start_dialog.h"
 #include "solver_task.h"
+#include <rgl_icon.h>
 
 SolverStartDialog::SolverStartDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
@@ -30,8 +31,8 @@ SolverStartDialog::SolverStartDialog(uint modelID, QWidget *parent)
 
     this->setWindowTitle(tr("Start solver"));
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);

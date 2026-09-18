@@ -9,13 +9,14 @@
 #include "find_sliver_elements_dialog.h"
 #include "application.h"
 #include "model_action.h"
+#include <rgl_icon.h>
 
 FindSliverElementsDialog::FindSliverElementsDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
     , modelID(modelID)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Find sliver elements"));
 

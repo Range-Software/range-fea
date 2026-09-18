@@ -12,6 +12,7 @@
 #include "model_action.h"
 #include <rbl_job_manager.h>
 #include "value_scale.h"
+#include <rgl_icon.h>
 
 typedef enum _ResultsVariableTreeColumn
 {
@@ -372,7 +373,7 @@ void ResultsVariableTree::populate()
         QObject::connect(applyOnNodeButton,&QPushButton::clicked,this,&ResultsVariableTree::onApplyOnNodeClicked);
     }
 
-    QPushButton *removeVariableButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-cancel.svg"),tr("Remove variable"));
+    QPushButton *removeVariableButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg"),tr("Remove variable"));
     actionsLayout->addWidget(removeVariableButton);
     QObject::connect(removeVariableButton,&QPushButton::clicked,this,&ResultsVariableTree::onRemoveVariableClicked);
 

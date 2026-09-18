@@ -4,6 +4,7 @@
 #include "model_tree.h"
 #include "action.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 typedef enum _ModelTreeEntity
 {
@@ -77,7 +78,7 @@ ModelTree::ModelTree(ActionList *actionList, QWidget *parent)
     this->setColumnCount(MODEL_TREE_N_COLUMNS);
 
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
-    headerItem->setIcon(MODEL_TREE_COLUMN_NAME,QIcon(":/icons/mime/pixmaps/range-model.svg"));
+    headerItem->setIcon(MODEL_TREE_COLUMN_NAME,RIcon::fromFile(":/icons/mime/pixmaps/range-model.svg"));
     headerItem->setText(MODEL_TREE_COLUMN_NAME,tr("Name"));
     headerItem->setText(MODEL_TREE_COLUMN_NUMBER,QString("#"));
     headerItem->setText(MODEL_TREE_COLUMN_TYPE,QString("type"));

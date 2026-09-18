@@ -10,14 +10,15 @@
 #include "cut_dialog.h"
 #include "direction_widget.h"
 #include "position_widget.h"
+#include <rgl_icon.h>
 
 CutDialog::CutDialog(uint modelID, uint entityID, QWidget *parent)
     : QDialog(parent)
     , modelID(modelID)
     , entityID(entityID)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Cut editor"));
     this->resize(500,650);

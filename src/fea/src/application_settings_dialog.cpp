@@ -10,6 +10,7 @@
 
 #include "application_settings_dialog.h"
 #include "application_settings_widget.h"
+#include <rgl_icon.h>
 
 ApplicationSettingsDialog::ApplicationSettingsDialog(ApplicationSettings *applicationSettings, QWidget *parent) :
     QDialog(parent)
@@ -17,8 +18,8 @@ ApplicationSettingsDialog::ApplicationSettingsDialog(ApplicationSettings *applic
     this->setWindowTitle(tr("Application settings"));
     this->resize(500,500);
 
-    QIcon defaultIcon(":/icons/action/pixmaps/range-undo.svg");
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon defaultIcon = RIcon::fromFile(":/icons/action/pixmaps/range-undo.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout(mainLayout);

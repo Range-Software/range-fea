@@ -8,13 +8,14 @@
 #include "application.h"
 #include "model_action.h"
 #include <rbl_job_manager.h>
+#include <rgl_icon.h>
 
 RemoveEntityDialog::RemoveEntityDialog(REntityGroupTypeMask entityTypeMask, QWidget *parent) :
     QDialog(parent),
     entityTypeMask(entityTypeMask)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QString windowTitleStr = tr("Remove entities");
     this->setWindowTitle(tr(windowTitleStr.toUtf8().constData()));

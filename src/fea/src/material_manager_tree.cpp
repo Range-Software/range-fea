@@ -10,6 +10,7 @@
 
 #include "material_manager_tree.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     : QWidget{parent}
@@ -17,8 +18,8 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
 {
     R_LOG_TRACE_IN;
 
-    QIcon newIcon(":/icons/file/pixmaps/range-material_new.svg");
-    QIcon deleteIcon(":/icons/file/pixmaps/range-material_delete.svg");
+    QIcon newIcon = RIcon::fromFile(":/icons/file/pixmaps/range-material_new.svg");
+    QIcon deleteIcon = RIcon::fromFile(":/icons/file/pixmaps/range-material_delete.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout(mainLayout);

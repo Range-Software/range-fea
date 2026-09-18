@@ -5,6 +5,7 @@
 
 #include "draw_input_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 DrawInputWidget::DrawInputWidget(QWidget *parent) :
     QWidget(parent)
@@ -87,9 +88,9 @@ DrawInputWidget::DrawInputWidget(QWidget *parent) :
     this->mergeNodesCheck->setCheckState(Qt::Checked);
     layout->addWidget(this->mergeNodesCheck,1,0,1,2);
 
-    QIcon removeIcon(":/icons/file/pixmaps/range-remove.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon removeIcon = RIcon::fromFile(":/icons/file/pixmaps/range-remove.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
 
     this->removeButton = new QPushButton(removeIcon,tr("Remove"));
     this->removeButton->setDisabled(true);

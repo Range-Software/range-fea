@@ -3,12 +3,13 @@
 #include <QFontDatabase>
 
 #include "text_edit_widget.h"
+#include <rgl_icon.h>
 
 TextEditWidget::TextEditWidget(QWidget *parent)
     : QWidget(parent)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *layout = new QVBoxLayout;
     this->setLayout(layout);

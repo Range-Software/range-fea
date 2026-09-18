@@ -4,14 +4,15 @@
 #include <QLabel>
 
 #include "direction_widget.h"
+#include <rgl_icon.h>
 
 
 DirectionWidget::DirectionWidget(const QString &title, const RR3Vector &direction, QWidget *parent)
     : QGroupBox(title, parent)
     , showButtonBox(true)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QGridLayout *layout = new QGridLayout;
     this->setLayout(layout);

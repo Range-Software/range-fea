@@ -5,6 +5,7 @@
 
 #include "geometry_scale_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 GeometryScaleWidget::GeometryScaleWidget(const RR3Vector &center, const RR3Vector &scale, QWidget *parent)
     : QWidget(parent)
@@ -29,7 +30,7 @@ GeometryScaleWidget::GeometryScaleWidget(const RR3Vector &center, const RR3Vecto
     this->sameScaleLineEdit->setValue(this->defaultScale[0]);
     sameLayout->addWidget(this->sameScaleLineEdit,0,1,1,1);
 
-    QPushButton *sameScaleResetButton = new QPushButton(QIcon(":/icons/action/pixmaps/range-undo.svg"),tr("Reset"));
+    QPushButton *sameScaleResetButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-undo.svg"),tr("Reset"));
     sameLayout->addWidget(sameScaleResetButton,0,2,1,1);
 
     QObject::connect(sameScaleResetButton,
@@ -71,7 +72,7 @@ GeometryScaleWidget::GeometryScaleWidget(const RR3Vector &center, const RR3Vecto
     this->scaleCenter->hideSliders();
     vBoxLayout->addWidget(this->scaleCenter);
 
-    QPushButton *differentScaleResetButton = new QPushButton(QIcon(":/icons/file/pixmaps/range-undo.svg"),tr("Reset"));
+    QPushButton *differentScaleResetButton = new QPushButton(RIcon::fromFile(":/icons/file/pixmaps/range-undo.svg"),tr("Reset"));
     differentLayout->addWidget(differentScaleResetButton,2,2,1,1);
 
     QObject::connect(differentScaleResetButton,

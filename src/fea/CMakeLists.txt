@@ -432,35 +432,45 @@ elseif (APPLE)
     )
 endif()
 
-qt_add_resources(fea icons-application
-    PREFIX "/icons/application"
-    FILES
+# Adds icon resources under given prefix together with their dark color scheme
+# variants from pixmaps/dark (loaded at runtime through RIcon::fromFile).
+function(fea_add_icon_resources name prefix)
+    set(files ${ARGN})
+    foreach(file IN LISTS ARGN)
+        get_filename_component(fileName ${file} NAME)
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/pixmaps/dark/${fileName}")
+            list(APPEND files pixmaps/dark/${fileName})
+        endif()
+    endforeach()
+    qt_add_resources(fea ${name}
+        PREFIX ${prefix}
+        FILES ${files}
+    )
+endfunction()
+
+fea_add_icon_resources(icons-application "/icons/application"
         pixmaps/range-application_settings.svg
         pixmaps/range-display_preferences.svg
         pixmaps/range-quit.svg
         pixmaps/range-startup.svg
 )
 
-qt_add_resources(fea icons-action
-    PREFIX "/icons/action"
-    FILES
+fea_add_icon_resources(icons-action "/icons/action"
+        pixmaps/range-add.svg
         pixmaps/range-cancel.svg
         pixmaps/range-clear.svg
         pixmaps/range-close.svg
         pixmaps/range-ok.svg
+        pixmaps/range-remove.svg
         pixmaps/range-undo.svg
 )
 
-qt_add_resources(fea icons-logos
-    PREFIX "/icons/logos"
-    FILES
+fea_add_icon_resources(icons-logos "/icons/logos"
         pixmaps/range-app.svg
         pixmaps/range-fea.svg
 )
 
-qt_add_resources(fea icons-file
-    PREFIX "/icons/file"
-    FILES
+fea_add_icon_resources(icons-file "/icons/file"
         pixmaps/range-session.svg
         pixmaps/range-session_new.svg
         pixmaps/range-session_open.svg
@@ -499,18 +509,14 @@ qt_add_resources(fea icons-file
         pixmaps/range-severe.svg
 )
 
-qt_add_resources(fea icons-problem
-    PREFIX "/icons/problem"
-    FILES
+fea_add_icon_resources(icons-problem "/icons/problem"
         pixmaps/range-problem_task_flow.svg
         pixmaps/range-problem_matrix_solver.svg
         pixmaps/range-problem_monitoring_points.svg
         pixmaps/range-problem_reset.svg
 )
 
-qt_add_resources(fea icons-solver
-    PREFIX "/icons/solver"
-    FILES
+fea_add_icon_resources(icons-solver "/icons/solver"
         pixmaps/range-solver-start.svg
         pixmaps/range-solver-stop.svg
         pixmaps/range-solver-kill.svg
@@ -545,9 +551,7 @@ qt_add_resources(fea icons-colorscale
         pixmaps/range-scale-24-Value_limits_R.png
 )
 
-qt_add_resources(fea icons-media
-    PREFIX "/icons/media"
-    FILES
+fea_add_icon_resources(icons-media "/icons/media"
         pixmaps/range-play_play.svg
         pixmaps/range-play_pause.svg
         pixmaps/range-play_last.svg
@@ -557,16 +561,12 @@ qt_add_resources(fea icons-media
         pixmaps/range-play_record.svg
 )
 
-qt_add_resources(fea icons-mime
-    PREFIX "/icons/mime"
-    FILES
+fea_add_icon_resources(icons-mime "/icons/mime"
         pixmaps/range-model.svg
         pixmaps/range-file-document.svg
 )
 
-qt_add_resources(fea icons-geometry
-    PREFIX "/icons/geometry"
-    FILES
+fea_add_icon_resources(icons-geometry "/icons/geometry"
         pixmaps/range-undo.svg
         pixmaps/range-redo.svg
         pixmaps/range-draw_geometry.svg
@@ -628,9 +628,7 @@ qt_add_resources(fea icons-geometry
         pixmaps/range-node_remove_and_close.svg
 )
 
-qt_add_resources(fea icons-report
-    PREFIX "/icons/report"
-    FILES
+fea_add_icon_resources(icons-report "/icons/report"
         pixmaps/range-report.svg
         pixmaps/range-report_model_statistics.svg
         pixmaps/range-report_monitoring_point.svg
@@ -638,15 +636,11 @@ qt_add_resources(fea icons-report
         pixmaps/range-report-convergence.svg
 )
 
-qt_add_resources(fea icons-general
-    PREFIX "/icons/general"
-    FILES
+fea_add_icon_resources(icons-general "/icons/general"
         pixmaps/range-generic_action.svg
 )
 
-qt_add_resources(fea icons-cloud
-    PREFIX "/icons/cloud"
-    FILES
+fea_add_icon_resources(icons-cloud "/icons/cloud"
         pixmaps/range-access_rights.svg
         pixmaps/range-download.svg
         pixmaps/range-file_manager.svg

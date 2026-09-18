@@ -16,6 +16,7 @@
 #include "application.h"
 #include "video_settings_dialog.h"
 #include "video_encoder.h"
+#include <rgl_icon.h>
 
 ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
     : QWidget(parent)
@@ -40,21 +41,21 @@ ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
 
     QList<QAction*> actions;
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_first.svg"),"First",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_first.svg"),"First",this));
     QObject::connect(actions.last(), &QAction::triggered, this->tree, &ModelRecordsTree::markFirst);
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_backward.svg"),"Backward",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_backward.svg"),"Backward",this));
     QObject::connect(actions.last(), &QAction::triggered, this->tree, &ModelRecordsTree::markPrevious);
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_play.svg"),"Play",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_play.svg"),"Play",this));
     // Start playback at the selected "From" record (jumpToFirst = true); pausing ignores it.
     QObject::connect(actions.last(), &QAction::triggered, this, [this](){ this->playToggle(true); });
     this->playAction = actions.last();
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_forward.svg"),"Forward",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_forward.svg"),"Forward",this));
     QObject::connect(actions.last(), &QAction::triggered, this->tree, &ModelRecordsTree::markNext);
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_last.svg"),"Last",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_last.svg"),"Last",this));
     QObject::connect(actions.last(), &QAction::triggered, this->tree, &ModelRecordsTree::markLast);
 
     toolBar->addActions(actions);
@@ -65,7 +66,7 @@ ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
 
     actions.clear();
 
-    actions.append(new QAction(QIcon(":/icons/media/pixmaps/range-play_record.svg"),"Record",this));
+    actions.append(new QAction(RIcon::fromFile(":/icons/media/pixmaps/range-play_record.svg"),"Record",this));
     QObject::connect(actions.last(), &QAction::triggered, this, &ModelRecordsSelector::onRecordVideo);
     this->recordAction = actions.last();
 
@@ -263,14 +264,14 @@ void ModelRecordsSelector::playToggle(bool jumpToFirst)
     if (this->markNextIndicator)
     {
         Application::instance()->getMainWindow()->progressAutoHideDisable();
-        this->playAction->setIcon(QIcon(":/icons/media/pixmaps/range-play_pause.svg"));
+        this->playAction->setIcon(RIcon::fromFile(":/icons/media/pixmaps/range-play_pause.svg"));
         this->playAction->setText("Pause");
 
         this->loadNextRecord(jumpToFirst);
     }
     else
     {
-        this->playAction->setIcon(QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+        this->playAction->setIcon(RIcon::fromFile(":/icons/media/pixmaps/range-play_play.svg"));
         this->playAction->setText("Play");
         this->recordAction->setEnabled(true);
         Application::instance()->getMainWindow()->progressAutoHideEnable();
@@ -299,7 +300,7 @@ void ModelRecordsSelector::loadNextRecord(bool jumpToFirst)
         }
         this->markNextIndicator = false;
         this->recordIndicator = false;
-        this->playAction->setIcon(QIcon(":/icons/media/pixmaps/range-play_play.svg"));
+        this->playAction->setIcon(RIcon::fromFile(":/icons/media/pixmaps/range-play_play.svg"));
         this->playAction->setText("Play");
         this->recordAction->setEnabled(true);
         Application::instance()->getMainWindow()->progressAutoHideEnable();

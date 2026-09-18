@@ -12,6 +12,7 @@
 
 #include "model_records_tree.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 namespace
 {
@@ -21,7 +22,7 @@ const int MarkedRecordColumnWidth = 48;
 
 void setMarkedRecordIcon(QTreeWidgetItem *item, int column, bool marked)
 {
-    item->setIcon(column,marked ? QIcon(MarkedRecordIcon) : QIcon());
+    item->setIcon(column,marked ? RIcon::fromFile(MarkedRecordIcon) : QIcon());
 }
 
 void setMarkedRecord(QTreeWidgetItem *item, int column, bool marked, bool modelSelected)
@@ -85,7 +86,7 @@ ModelRecordsTree::ModelRecordsTree(QWidget *parent)
     QTreeWidgetItem* headerItem = new QTreeWidgetItem();
     headerItem->setText(ModelRecordsTree::RecordNumber,QString(tr("Record")));
     headerItem->setText(ModelRecordsTree::RecordFileName,QString(tr("File name")));
-    headerItem->setIcon(ModelRecordsTree::Marked,QIcon(MarkedRecordIcon));
+    headerItem->setIcon(ModelRecordsTree::Marked,RIcon::fromFile(MarkedRecordIcon));
     this->setHeaderItem(headerItem);
 
     this->setColumnHidden(ModelRecordsTree::ModelID,true);

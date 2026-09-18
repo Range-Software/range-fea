@@ -9,6 +9,7 @@
 
 #include "monitoring_point_graph_dialog.h"
 #include "graph_dialog.h"
+#include <rgl_icon.h>
 
 MonitoringPointGraphDialog::MonitoringPointGraphDialog(const QString &monitoringFileName, QWidget *parent) :
     QDialog(parent)
@@ -24,7 +25,7 @@ MonitoringPointGraphDialog::MonitoringPointGraphDialog(const QString &monitoring
                        error.getMessage().toUtf8().constData());
     }
 
-    QIcon closeIcon(":/icons/action/pixmaps/range-close.svg");
+    QIcon closeIcon = RIcon::fromFile(":/icons/action/pixmaps/range-close.svg");
 
     this->setWindowTitle(tr("Monitoring point"));
     this->resize(600,400);

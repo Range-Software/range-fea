@@ -8,14 +8,15 @@
 #include <QMediaRecorder>
 
 #include "video_settings_dialog.h"
+#include <rgl_icon.h>
 
 VideoSettingsDialog::VideoSettingsDialog(const VideoSettings &videoSettings, uint numberOfRecords, QWidget *parent)
     : QDialog{parent}
     , videoSettings{videoSettings}
     , numberOfRecords{numberOfRecords}
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Video settings"));
 

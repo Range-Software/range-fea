@@ -5,13 +5,14 @@
 
 #include "rename_model_dialog.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 RenameModelDialog::RenameModelDialog(uint modelId, QWidget *parent)
 	: QDialog(parent)
     , modelId(modelId)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Rename model"));
 

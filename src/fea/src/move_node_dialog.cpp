@@ -5,14 +5,15 @@
 #include "move_node_dialog.h"
 #include "position_widget.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 MoveNodeDialog::MoveNodeDialog(uint modelID, const QList<uint> &nodeIDs, QWidget *parent) :
     QDialog(parent),
     modelID(modelID),
     nodeIDs(nodeIDs)
 {
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     this->setWindowTitle(tr("Move node"));
 

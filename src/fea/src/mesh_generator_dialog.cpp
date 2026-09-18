@@ -9,6 +9,7 @@
 #include "mesh_generator_dialog.h"
 #include "mesh_generator.h"
 #include "application.h"
+#include <rgl_icon.h>
 
 MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     QDialog(parent),
@@ -20,8 +21,8 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
 
     this->setWindowTitle(tr("Generate 3D mesh"));
 
-    QIcon cancelIcon(":/icons/action/pixmaps/range-cancel.svg");
-    QIcon okIcon(":/icons/action/pixmaps/range-ok.svg");
+    QIcon cancelIcon = RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg");
+    QIcon okIcon = RIcon::fromFile(":/icons/action/pixmaps/range-ok.svg");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);
