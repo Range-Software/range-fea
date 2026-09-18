@@ -28,7 +28,7 @@ GLElementBase::GLElementBase(GLWidget *glWidget, const Model *pModel, uint eleme
     , elementID(elementID)
     , pScalarVariable(nullptr)
     , pDisplacementVariable(nullptr)
-    , nodePointSize(10.0f)
+    , nodePointSize(GLElementBase::defaultNodePointSize)
     , edgeLineWidth(1.0f)
 {
     this->_init();

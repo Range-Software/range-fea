@@ -16,6 +16,11 @@ typedef enum _GLElementDrawMode
 class GLElementBase : public GLObject
 {
 
+    public:
+
+        //! Size of a point used to draw a node.
+        static constexpr GLfloat defaultNodePointSize = 10.0f;
+
     protected:
 
         //! Draw mode.

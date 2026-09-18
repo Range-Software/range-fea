@@ -1342,11 +1342,17 @@ void GLWidget::wheelEvent(QWheelEvent *mouseEvent)
     }
     else if (this->actionEvent.getType() == GLActionEvent::Zoom)
     {
+        // Shift while scrolling zooms in coarse steps for crossing a large
+        // range of scales quickly.
+        const float zoomSpeed = (mouseEvent->modifiers() & Qt::ShiftModifier) ? 10.0f : 1.0f;
+
         this->dtx = 2.0f*x/w - 1.0f;
         this->dty = 2.0f*y/h - 1.0f;
         this->dty = (0.5f - y/h)*2.0f*h/w;
-//        float zoomScale = float(numSteps.y())/(10.0f*scaleFactor);
-        float zoomScale = float(numSteps.y())/float(this->height());
+        // A step of one or more collapses or mirrors the scene, which the fast
+        // zoom can reach on a single flick of a pixel-delta wheel, so the step
+        // is held short of it.
+        float zoomScale = qBound(-0.9f,zoomSpeed*float(numSteps.y())/float(this->height()),0.9f);
         this->dtx *= zoomScale;
         this->dty *= zoomScale;
         this->dscale = -zoomScale;

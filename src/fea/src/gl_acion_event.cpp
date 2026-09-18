@@ -25,6 +25,7 @@ const std::vector<GLActionCombination> GLActionEvent::glActionCombinations =
     { Qt::ControlModifier,                     0, Qt::NoButton,     Qt::ScrollUpdate,  GLActionEvent::TranslateZ      },
     // Zoom
     { Qt::NoModifier,                          0, Qt::NoButton,     Qt::ScrollUpdate,  GLActionEvent::Zoom            },
+    { Qt::ShiftModifier,                       0, Qt::NoButton,     Qt::ScrollUpdate,  GLActionEvent::Zoom            },
     { Qt::ShiftModifier | Qt::AltModifier,     0, Qt::LeftButton,   Qt::NoScrollPhase, GLActionEvent::Zoom            },
     // Rotate
     { Qt::ShiftModifier,                       0, Qt::LeftButton,   Qt::NoScrollPhase, GLActionEvent::Rotate          },

@@ -2458,39 +2458,6 @@ void Model::glDraw(GLWidget *glWidget) const
     R_LOG_TRACE_OUT;
 }
 
-//! Draw a solid octahedron centred on the given node.
-//! A marker made of lines alone is easily lost among the element edges it sits
-//! on - they are drawn in the same colour and are the same width - so a picked
-//! node carries a small filled body as well.  The faces are wound outwards so
-//! that the marker keeps its colour whether or not back faces are culled.
-static void drawPickedNodeMarker(const RNode &node, double size)
-{
-    const double x = node.getX();
-    const double y = node.getY();
-    const double z = node.getZ();
-
-    const double vertices[6][3] = {
-        {x+size,y,z}, {x-size,y,z},
-        {x,y+size,z}, {x,y-size,z},
-        {x,y,z+size}, {x,y,z-size}
-    };
-    static const uint faces[8][3] = {
-        {0,2,4}, {2,1,4}, {1,3,4}, {3,0,4},
-        {2,0,5}, {1,2,5}, {3,1,5}, {0,3,5}
-    };
-
-    GLFunctions::begin(GL_TRIANGLES);
-    for (uint i=0;i<8;i++)
-    {
-        for (uint j=0;j<3;j++)
-        {
-            const double *vertex = vertices[faces[i][j]];
-            GLFunctions::vertex3d(vertex[0],vertex[1],vertex[2]);
-        }
-    }
-    GLFunctions::end();
-}
-
 void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) const
 {
     R_LOG_TRACE_IN;
@@ -2506,7 +2473,7 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
 
         GLStateCache::instance().disableLighting();
         GLStateCache::instance().setDepthFunc(GL_LEQUAL);
-        GLStateCache::instance().setPointSize(10.0);
+        GLStateCache::instance().setPointSize(GLElementBase::defaultNodePointSize);
 
         for (int i=0;i<pickedItems.size();i++)
         {
@@ -2672,31 +2639,20 @@ void Model::glDraw(GLWidget *glWidget, const QVector<PickItem> &pickedItems) con
 
                 if (nodeFound)
                 {
-                    // Mark the node with real geometry rather than with a
-                    // single GL_POINTS vertex. The size of a point is taken
-                    // from the point size state by the OpenGL backend and from
-                    // gl_PointSize by the RHI one, so a bare point is not
-                    // reliably visible.
-                    //
-                    // The node is highlighted by a solid body, which reads
-                    // against a busy mesh where thin lines do not, and keeps
-                    // the cross for the exact position. The cross reaches past
-                    // the body so that it stays a crosshair rather than a blob.
-                    double markerSize = 0.01 / this->findNodeScale();
+                    // Highlight the picked node with the very mark an unpicked
+                    // node carries - a single point - only white and slightly
+                    // larger, so that it reads as the same node rather than as
+                    // a different kind of object.
+                    const GLfloat highlightPointSize = 1.1f * GLElementBase::defaultNodePointSize;
 
-                    glWidget->qglColor(QColor(Qt::yellow));
-                    drawPickedNodeMarker(node,markerSize);
+                    GLStateCache::instance().setPointSize(highlightPointSize);
 
                     glWidget->qglColor(QColor(Qt::white));
-                    for (uint k=0;k<3;k++)
-                    {
-                        RR3Vector markerStart(node.getX(),node.getY(),node.getZ());
-                        RR3Vector markerEnd(markerStart);
-                        markerStart[k] -= 2.5*markerSize;
-                        markerEnd[k] += 2.5*markerSize;
+                    GLFunctions::begin(GL_POINTS);
+                    GLFunctions::vertex3d(node.getX(),node.getY(),node.getZ());
+                    GLFunctions::end();
 
-                        GLLine(glWidget,markerStart,markerEnd,2.0).paint();
-                    }
+                    GLStateCache::instance().setPointSize(GLElementBase::defaultNodePointSize);
                 }
             }
         }
