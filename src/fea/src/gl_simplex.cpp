@@ -5,17 +5,11 @@ void GLSimplex::_init(const GLSimplex *pGlSimplex)
     if (pGlSimplex)
     {
         this->nodes = pGlSimplex->nodes;
-        this->edgeNodes = pGlSimplex->edgeNodes;
         this->nodeTextureCoordinates = pGlSimplex->nodeTextureCoordinates;
         this->nodeIds = pGlSimplex->nodeIds;
         this->id = pGlSimplex->id;
         this->color = pGlSimplex->color;
         this->drawTypeMask = pGlSimplex->drawTypeMask;
-    }
-    else
-    {
-        this->edgeNodes.resize(this->nodes.size());
-        std::fill(this->edgeNodes.begin(),this->edgeNodes.end(),true);
     }
 }
 
@@ -44,11 +38,6 @@ GLSimplex &GLSimplex::operator =(const GLSimplex &glSimplex)
     this->GLObject::operator =(glSimplex);
     this->_init(&glSimplex);
     return (*this);
-}
-
-void GLSimplex::setEdgeNodes(const std::vector<bool> &edgeNodes)
-{
-    this->edgeNodes = edgeNodes;
 }
 
 void GLSimplex::setNodeTextureCoordinates(const std::vector<double> &nodeTextureCoordinates)

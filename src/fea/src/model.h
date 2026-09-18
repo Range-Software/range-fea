@@ -451,6 +451,11 @@ class Model : public RModel
         //! Return true if element is on edge.
         bool elementIsOnEdge(uint elementID) const;
 
+        //! Find visible faces of tetrahedral element - bit i stands for the face opposite to node i.
+        //! Face is visible when it is not shared with a neighbor element from the same group.
+        //! Falls back to faces with all nodes on edge when volume neighbors are not available.
+        uint findVolumeElementVisibleFaces(uint elementID, const std::vector<bool> &elementIsInGroup) const;
+
         //! Find intersected element by pick ray.
         bool findPickedElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem);
 

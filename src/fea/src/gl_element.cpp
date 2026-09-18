@@ -12,6 +12,7 @@ void GLElement::_init(const GLElement *pGlElement)
         this->pointVolume = pGlElement->pointVolume;
         this->lineCrossArea = pGlElement->lineCrossArea;
         this->surfaceThickness = pGlElement->surfaceThickness;
+        this->visibleFaces = pGlElement->visibleFaces;
     }
 }
 
@@ -21,6 +22,7 @@ GLElement::GLElement(GLWidget *glWidget, const Model *pModel, uint elementID, co
     , pointVolume(0.0)
     , lineCrossArea(0.0)
     , surfaceThickness(0.0)
+    , visibleFaces(GLSimplexTetrahedra::AllFaces)
 {
     this->_init();
 }
@@ -57,6 +59,11 @@ void GLElement::setLineCrossArea(double lineCrossArea)
 void GLElement::setSurfaceThickness(double surfaceThickness)
 {
     this->surfaceThickness = surfaceThickness;
+}
+
+void GLElement::setVisibleFaces(uint visibleFaces)
+{
+    this->visibleFaces = visibleFaces;
 }
 
 void GLElement::setPrecomputedData(const GLElementPrecomputedData *pData)
@@ -109,15 +116,8 @@ GLElementPrecomputedData GLElement::precompute() const
         this->findScalarNodeValues(this->elementID, *this->pScalarVariable, data.textureCoords);
     }
 
-    // Edge node flags (tetrahedra only)
-    if (data.type == R_ELEMENT_TETRA1)
-    {
-        data.edgeNodes.resize(nn);
-        for (uint i = 0; i < nn; i++)
-        {
-            data.edgeNodes[i] = this->pModel->nodeIsOnEdge(this->getNodeId(i));
-        }
-    }
+    // Visible faces (tetrahedra only)
+    data.visibleFaces = this->visibleFaces;
 
     // Draw mask (assumes GL_ELEMENT_DRAW_NORMAL mode)
     if (this->elementGroupData.getDrawWire())
@@ -186,10 +186,7 @@ void GLElement::drawFromPrecomputed(const GLElementPrecomputedData &data)
         case R_ELEMENT_TETRA1:
         {
             GLSimplexTetrahedra tetra(this->getGLWidget(), data.nodes);
-            if (!data.edgeNodes.empty())
-            {
-                tetra.setEdgeNodes(data.edgeNodes);
-            }
+            tetra.setVisibleFaces(data.visibleFaces);
             if (!data.textureCoords.empty())
             {
                 tetra.setNodeTextureCoordinates(data.textureCoords);
@@ -566,12 +563,7 @@ void GLElement::drawTetrahedra()
     nodes.push_back(node4.toVector());
 
     GLSimplexTetrahedra tetrahedra(this->getGLWidget(),nodes);
-    std::vector<bool> edgeNodes(this->size());
-    for (uint i=0;i<this->size();i++)
-    {
-        edgeNodes[i] = this->pModel->nodeIsOnEdge(this->getNodeId(i));
-    }
-    tetrahedra.setEdgeNodes(edgeNodes);
+    tetrahedra.setVisibleFaces(this->visibleFaces);
 
     int drawMask = 0;
 

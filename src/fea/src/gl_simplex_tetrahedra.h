@@ -8,6 +8,16 @@
 class GLSimplexTetrahedra : public GLSimplex
 {
 
+    public:
+
+        //! Mask with all four faces visible.
+        static const uint AllFaces = 0xF;
+
+    protected:
+
+        //! Visible faces - bit i stands for the face opposite to node i.
+        uint visibleFaces;
+
     private:
 
         //! Internal initialization function.
@@ -26,6 +36,18 @@ class GLSimplexTetrahedra : public GLSimplex
 
         //! Assignment operator.
         GLSimplexTetrahedra &operator =(const GLSimplexTetrahedra &glTetrahedra);
+
+        //! Set visible faces - bit i stands for the face opposite to node i.
+        void setVisibleFaces(uint visibleFaces);
+
+        //! Return true if face opposite to given node is visible.
+        bool faceIsVisible(uint oppositeNode) const;
+
+        //! Return true if edge between given nodes is visible (at least one of its faces is).
+        bool edgeIsVisible(uint node1, uint node2) const;
+
+        //! Return true if node is visible (at least one of its faces is).
+        bool nodeIsVisible(uint node) const;
 
     protected:
 

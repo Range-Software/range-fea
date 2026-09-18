@@ -264,6 +264,13 @@
   left the loop, so a pick of six nodes showed a single entry - and that entry
   was left without its heading and its computed results, because the same early
   exit skipped the code which fills those in
+- A transparent volume showed rows of triangles along its edges and corners. A
+  tetrahedron face was drawn whenever all three of its nodes lay on the model
+  boundary, so a tetrahedron sitting in a corner, with its nodes spread over two
+  neighbouring walls, had its inner faces drawn as well. An opaque volume hid
+  them behind the true boundary, a transparent one layered them over it. A face
+  is now drawn only when no other element of the same volume shares it, which
+  also leaves inner edges out of the wire frame and fewer triangles to draw
 
 #### Materials
 

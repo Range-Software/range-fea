@@ -7,12 +7,13 @@ void GLSimplexTetrahedra::_init(const GLSimplexTetrahedra *pGlTetrahedra)
 {
     if (pGlTetrahedra)
     {
-
+        this->visibleFaces = pGlTetrahedra->visibleFaces;
     }
 }
 
 GLSimplexTetrahedra::GLSimplexTetrahedra(GLWidget *glWidget, const std::vector<RR3Vector> &nodes)
     : GLSimplex(glWidget,nodes)
+    , visibleFaces(GLSimplexTetrahedra::AllFaces)
 {
     this->_init();
 }
@@ -33,6 +34,28 @@ GLSimplexTetrahedra &GLSimplexTetrahedra::operator =(const GLSimplexTetrahedra &
     this->GLSimplex::operator =(glTetrahedra);
     this->_init(&glTetrahedra);
     return (*this);
+}
+
+void GLSimplexTetrahedra::setVisibleFaces(uint visibleFaces)
+{
+    this->visibleFaces = visibleFaces & GLSimplexTetrahedra::AllFaces;
+}
+
+bool GLSimplexTetrahedra::faceIsVisible(uint oppositeNode) const
+{
+    return (this->visibleFaces & (1u << oppositeNode)) != 0;
+}
+
+bool GLSimplexTetrahedra::edgeIsVisible(uint node1, uint node2) const
+{
+    // Edge is shared by the two faces opposite to the remaining two nodes.
+    return (this->visibleFaces & ~((1u << node1) | (1u << node2))) != 0;
+}
+
+bool GLSimplexTetrahedra::nodeIsVisible(uint node) const
+{
+    // Node is shared by all faces except the one opposite to it.
+    return (this->visibleFaces & ~(1u << node)) != 0;
 }
 
 void GLSimplexTetrahedra::initialize()
@@ -112,7 +135,7 @@ void GLSimplexTetrahedra::draw()
 
 void GLSimplexTetrahedra::drawNormal(bool useTexture)
 {
-    if (!this->edgeNodes[0] && !this->edgeNodes[1] && !this->edgeNodes[2] && !this->edgeNodes[3])
+    if (this->visibleFaces == 0)
     {
         return;
     }
@@ -128,7 +151,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
 
     GLFunctions::begin(GL_TRIANGLES);
     // 021
-    if (this->edgeNodes[0] && this->edgeNodes[2] && this->edgeNodes[1])
+    if (this->faceIsVisible(3))
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[2]),RNode(this->nodes[1])).getNormal()));
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
@@ -139,7 +162,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 013
-    if (this->edgeNodes[0] && this->edgeNodes[1] && this->edgeNodes[3])
+    if (this->faceIsVisible(2))
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[1]),RNode(this->nodes[3])).getNormal()));
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
@@ -150,7 +173,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
         GLObject::glVertexNode(this->nodes[3]);
     }
     // 032
-    if (this->edgeNodes[0] && this->edgeNodes[3] && this->edgeNodes[2])
+    if (this->faceIsVisible(1))
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[0]),RNode(this->nodes[3]),RNode(this->nodes[2])).getNormal()));
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
@@ -161,7 +184,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
         GLObject::glVertexNode(this->nodes[2]);
     }
     // 123
-    if (this->edgeNodes[1] && this->edgeNodes[2] && this->edgeNodes[3])
+    if (this->faceIsVisible(0))
     {
         GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[1]),RNode(this->nodes[2]),RNode(this->nodes[3])).getNormal()));
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
@@ -183,7 +206,7 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
 
 void GLSimplexTetrahedra::drawWired(bool useTexture)
 {
-    if (!this->edgeNodes[0] && !this->edgeNodes[1] && !this->edgeNodes[2] && !this->edgeNodes[3])
+    if (this->visibleFaces == 0)
     {
         return;
     }
@@ -194,7 +217,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
 
     GLFunctions::begin(GL_LINES);
     // 01
-    if (this->edgeNodes[0] && this->edgeNodes[1])
+    if (this->edgeIsVisible(0,1))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[0]));
         GLObject::glVertexNode(this->nodes[0]);
@@ -202,7 +225,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 12
-    if (this->edgeNodes[1] && this->edgeNodes[2])
+    if (this->edgeIsVisible(1,2))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[1]));
         GLObject::glVertexNode(this->nodes[1]);
@@ -210,7 +233,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLObject::glVertexNode(this->nodes[2]);
     }
     // 20
-    if (this->edgeNodes[2] && this->edgeNodes[0])
+    if (this->edgeIsVisible(2,0))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[2]));
         GLObject::glVertexNode(this->nodes[2]);
@@ -218,7 +241,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLObject::glVertexNode(this->nodes[0]);
     }
     // 30
-    if (this->edgeNodes[3] && this->edgeNodes[0])
+    if (this->edgeIsVisible(3,0))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
@@ -226,7 +249,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLObject::glVertexNode(this->nodes[0]);
     }
     // 31
-    if (this->edgeNodes[3] && this->edgeNodes[1])
+    if (this->edgeIsVisible(3,1))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
@@ -234,7 +257,7 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLObject::glVertexNode(this->nodes[1]);
     }
     // 32
-    if (this->edgeNodes[3] && this->edgeNodes[2])
+    if (this->edgeIsVisible(3,2))
     {
         if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[3]));
         GLObject::glVertexNode(this->nodes[3]);
@@ -255,7 +278,7 @@ void GLSimplexTetrahedra::drawNodes()
 
     for (uint i=0;i<nn;i++)
     {
-        if (this->edgeNodes[i])
+        if (this->nodeIsVisible(i))
         {
             GLFunctions::begin(GL_POINTS);
             GLObject::glVertexNode(this->nodes[i]);

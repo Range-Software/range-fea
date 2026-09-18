@@ -14,7 +14,7 @@ struct GLElementPrecomputedData
     RElementType type;                 //!< element geometry type
     std::vector<RR3Vector> nodes;      //!< final node positions (displacement applied)
     std::vector<double> textureCoords; //!< per-node scalar texture coords (empty if none)
-    std::vector<bool> edgeNodes;       //!< per-node edge flags (tetrahedra only)
+    uint visibleFaces;                 //!< visible face mask, bit i = face opposite node i (tetrahedra only)
     QColor color;
     int drawMask;
     bool twoSidedFace;
@@ -25,6 +25,7 @@ struct GLElementPrecomputedData
     GLElementPrecomputedData()
         : valid(false)
         , type(R_ELEMENT_POINT)
+        , visibleFaces(0xF)
         , drawMask(0)
         , twoSidedFace(false)
         , pointVolume(0.0)
@@ -44,6 +45,8 @@ class GLElement : public GLElementBase, public RElement
         double lineCrossArea;
         //! Surface thickness.
         double surfaceThickness;
+        //! Visible faces - bit i stands for the face opposite to node i (tetrahedra only).
+        uint visibleFaces;
         //! Optional pre-computed data (not owned; valid for one paint() call).
         const GLElementPrecomputedData *pPrecomputed;
 
@@ -75,10 +78,13 @@ class GLElement : public GLElementBase, public RElement
         //! Set surface thickness.
         void setSurfaceThickness(double surfaceThickness);
 
+        //! Set visible faces - bit i stands for the face opposite to node i (tetrahedra only).
+        void setVisibleFaces(uint visibleFaces);
+
         //! Set pre-computed data pointer (not owned; must outlive the paint() call).
         void setPrecomputedData(const GLElementPrecomputedData *pData);
 
-        //! Pre-compute element data (node positions, scalar values, edge flags).
+        //! Pre-compute element data (node positions, scalar values, visible faces).
         //! Pure CPU work — safe to call from a worker thread.
         GLElementPrecomputedData precompute() const;
 

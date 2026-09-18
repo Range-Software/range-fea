@@ -24,8 +24,6 @@ class GLSimplex : public GLObject
 
         //! Polygon nodes.
         std::vector<RR3Vector> nodes;
-        //! Polygon nodes.
-        std::vector<bool> edgeNodes;
         //! Polygon node texture coordinates.
         std::vector<double> nodeTextureCoordinates;
         //! Polygon node IDs.
@@ -55,9 +53,6 @@ class GLSimplex : public GLObject
 
         //! Assignment operator.
         GLSimplex &operator =(const GLSimplex &glSimplex);
-
-        //! Set node texture coordinates.
-        void setEdgeNodes(const std::vector<bool> &edgeNodes);
 
         //! Set node texture coordinates.
         void setNodeTextureCoordinates(const std::vector<double> &nodeTextureCoordinates);

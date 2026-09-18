@@ -2921,6 +2921,77 @@ bool Model::elementIsOnEdge(uint elementID) const
     return false;
 }
 
+uint Model::findVolumeElementVisibleFaces(uint elementID, const std::vector<bool> &elementIsInGroup) const
+{
+    const RElement &element = this->getElement(elementID);
+    if (element.getType() != R_ELEMENT_TETRA1)
+    {
+        return 0xF;
+    }
+
+    uint visibleFaces = 0;
+
+    const std::vector<uint> *pNeighborIDs = this->getNeighborIDs(elementID);
+    if (!pNeighborIDs)
+    {
+        for (uint i=0;i<4;i++)
+        {
+            bool allOnEdge = true;
+            for (uint j=0;j<4;j++)
+            {
+                if (j != i && !this->nodeIsOnEdge(element.getNodeId(j)))
+                {
+                    allOnEdge = false;
+                    break;
+                }
+            }
+            if (allOnEdge)
+            {
+                visibleFaces |= (1u << i);
+            }
+        }
+        return visibleFaces;
+    }
+
+    visibleFaces = 0xF;
+    for (uint neighborID : *pNeighborIDs)
+    {
+        if (neighborID >= elementIsInGroup.size() || !elementIsInGroup[neighborID])
+        {
+            continue;
+        }
+        const RElement &neighbor = this->getElement(neighborID);
+        // Shared face is the one opposite to the only node not present in the neighbor.
+        uint nShared = 0;
+        uint oppositeNode = 0;
+        for (uint i=0;i<4;i++)
+        {
+            bool found = false;
+            for (uint j=0;j<neighbor.size();j++)
+            {
+                if (element.getNodeId(i) == neighbor.getNodeId(j))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+            {
+                nShared++;
+            }
+            else
+            {
+                oppositeNode = i;
+            }
+        }
+        if (nShared == 3)
+        {
+            visibleFaces &= ~(1u << oppositeNode);
+        }
+    }
+    return visibleFaces;
+}
+
 bool Model::findPickedElement(const RR3Vector &position, const RR3Vector &direction, double tolerance, PickItem &pickItem)
 {
     R_LOG_TRACE_IN;

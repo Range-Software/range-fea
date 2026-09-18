@@ -4,6 +4,7 @@
 #include "gl_functions.h"
 #include "gl_element_group.h"
 #include "gl_element.h"
+#include "gl_simplex_tetrahedra.h"
 #include "gl_state_cache.h"
 #include "gl_widget.h"
 #include "model.h"
@@ -281,19 +282,50 @@ void GLElementGroup::draw()
 
         // Suggestion 3: parallel edgeElements filter — two-pass, read-only model access
         const int nTotal = int(this->size());
+
+        // Volume elements draw only faces which are not shared with another element of this group,
+        // so that faces inside the volume never show through when it is transparent.
+        const bool isVolume = (this->getEntityID().getType() == R_ENTITY_GROUP_VOLUME);
+        std::vector<bool> elementIsInGroup;
+        if (isVolume)
+        {
+            elementIsInGroup.assign(pModel->getNElements(), false);
+            for (int k=0;k<nTotal;k++)
+            {
+                elementIsInGroup[this->get(uint(k))] = true;
+            }
+        }
+
         std::vector<uint8_t> isEdge(uint(nTotal), 0);
+        std::vector<uint8_t> visibleFaces(uint(nTotal), GLSimplexTetrahedra::AllFaces);
 #pragma omp parallel for schedule(static)
         for (int k=0;k<nTotal;k++)
         {
-            isEdge[uint(k)] = pModel->elementIsOnEdge(this->get(uint(k))) ? 1 : 0;
+            uint elementID = this->get(uint(k));
+            if (!pModel->elementIsOnEdge(elementID))
+            {
+                continue;
+            }
+            if (isVolume)
+            {
+                visibleFaces[uint(k)] = uint8_t(pModel->findVolumeElementVisibleFaces(elementID,elementIsInGroup));
+                if (visibleFaces[uint(k)] == 0)
+                {
+                    continue;
+                }
+            }
+            isEdge[uint(k)] = 1;
         }
         RUVector edgeElements;
+        RUVector edgeElementVisibleFaces;
         edgeElements.reserve(uint(nTotal));
+        edgeElementVisibleFaces.reserve(uint(nTotal));
         for (int k=0;k<nTotal;k++)
         {
             if (isEdge[uint(k)])
             {
                 edgeElements.push_back(this->get(uint(k)));
+                edgeElementVisibleFaces.push_back(visibleFaces[uint(k)]);
             }
         }
 
@@ -335,6 +367,7 @@ void GLElementGroup::draw()
             glElement.setLineCrossArea(this->lineCrossArea);
             glElement.setSurfaceThickness(this->surfaceThickness);
             glElement.setTwoSidedFace(this->twoSidedFace);
+            glElement.setVisibleFaces(edgeElementVisibleFaces[uint(i)]);
             precomputed[uint(i)] = glElement.precompute();
         }
 
