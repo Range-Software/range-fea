@@ -114,11 +114,13 @@ void GLSimplexTetrahedra::draw()
     if (drawTypeMask & GLSimplex::ElementEdges)
     {
         this->getGLWidget()->qglColor(Qt::black);
-        this->drawWired(useTexture);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
+        this->drawWired(false); // never textured - edges are always black
     }
     if (drawTypeMask & GLSimplex::ElementNodes)
     {
         this->getGLWidget()->qglColor(Qt::black);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
         this->drawNodes();
     }
     if (drawTypeMask & GLSimplex::Wired)

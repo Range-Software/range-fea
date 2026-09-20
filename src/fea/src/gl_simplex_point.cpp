@@ -88,6 +88,7 @@ void GLSimplexPoint::draw()
     if (drawTypeMask & GLSimplex::ElementNodes)
     {
         this->getGLWidget()->qglColor(Qt::black);
+        GLFunctions::texCoord1f(-1.0f); // sentinel: use vColor in shader, not the colormap
         this->drawNodes(sphereModel,volumeElement);
     }
     if (drawTypeMask & GLSimplex::Wired)
