@@ -479,17 +479,25 @@ convention as the heat solver. *Heat rate (unit area)* and *Heat rate (unit
 volume)* are offered by the interface for this problem type but are **not read**
 by the fluid heat solver; use *Heat* for a source here.
 
-**Coupling.** The solver publishes its solved node temperature and the node
-velocity magnitude for the rest of the task flow. That is what the **Forced
-convection** boundary condition of the plain *Heat transfer* solver consumes: a
-wall between a meshed solid and a meshed fluid picks up the bulk temperature and
-mean speed of the fluid behind it rather than the fall-back values entered with
-the condition. Radiative heat and Joule heat arriving from other solvers are
-added to the source term the same way as in the heat solver.
+**Coupling.** A wall between a meshed fluid and a meshed solid carrying the
+**Forced convection** condition of the plain *Heat transfer* solver couples the
+two. Once the heat solver has run, the fluid heat solver holds the wall nodes at
+the temperature of the solid - until then the wall is insulated - and hands back,
+for every wall element, the pair `(h, Tf)` that reproduces the heat flux its
+solution takes through the wall. The heat solver applies that pair as a
+convection condition. The flux is the residual of the fluid equations at the wall
+nodes, consistent with the discretisation, so it stays accurate in a thin thermal
+boundary layer. The wall temperature is relaxed with an Aitken factor from pass
+to pass, which settles the exchange in a handful of passes. The heat transfer
+theory manual describes the scheme under *Conjugate heat transfer*. Radiative
+heat and Joule heat arriving from other solvers are added to the source term the
+same way as in the heat solver.
 
-The fluid heat solver reports itself as converged unconditionally - it is linear
-once the flow field is fixed, so one solve is the final answer. A group holding
-both therefore ends when the flow task converges.
+Uncoupled, the fluid heat solver reports itself as converged unconditionally -
+it is linear once the flow field is fixed, so one solve is the final answer. A
+group holding both therefore ends when the flow task converges. With coupled
+walls it reports the relative change of its temperature field instead, so the
+group iterates until the wall temperature has settled.
 
 Results: **Temperature** as a node scalar and **Heat flux** as an element
 vector, the conductive flux `-k*grad(T)`.
@@ -620,8 +628,8 @@ The combinations worth knowing:
 - *Incompressible viscous flow* and *Heat transfer in fluids* in one group - a
   heated or cooled flow;
 - *Heat transfer in fluids* and a separate *Heat transfer* task on a meshed
-  solid - conjugate heat transfer through a wall, with the solid's *Forced
-  convection* walls driven by the computed fluid state.
+  solid, the fluid heat task first, in one group of several iterations -
+  conjugate heat transfer through the walls carrying *Forced convection*.
 
 Flow excludes *Flow through porous media* and *Modal analysis*; the two
 companion problem types each require a flow task to be present.

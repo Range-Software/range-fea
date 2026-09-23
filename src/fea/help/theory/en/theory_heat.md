@@ -198,17 +198,17 @@ from:
   enter. Use it whenever the convection coefficient is known from a handbook, a
   measurement or a previous calculation. It is the only one of the three that is
   fully under your control.
-- **Forced convection** computes `h` from a correlation for external flow along
-  a flat plate, using the fluid properties and the hydraulic diameter you enter.
-  Two of its inputs are normally not the ones you enter: where the surface
-  borders a meshed fluid and a *Fluid heat transfer* task has produced a result,
-  `Tf` is the bulk temperature and `v` the mean speed that solver holds for the
-  element behind the wall, so the wall follows the fluid as it heats up and
-  speeds up. The *Fluid temperature* and *Velocity* components are the
-  fall-backs, used on any surface no such result covers - a model with no fluid
-  domain, or the first pass of a coupled run. A fluid at rest counts as no
-  result, so a velocity field of zeros falls back rather than collapsing the
-  Reynolds number. The log says which of the two sources is in use.
+- **Forced convection** has two modes. On a wall between a meshed solid and a
+  meshed fluid, once a *Heat transfer in fluids* task has produced a result,
+  it couples the two solves directly - no correlation is involved, since the
+  resolved flow already carries the convection. The fluid heat solver hands
+  over, for every element of the wall, the pair `(h, Tf)` that reproduces the
+  heat flux its own solution takes through the wall; see *Conjugate heat
+  transfer* in 1.6. Everywhere else - a surface bordering no meshed fluid, or
+  the first pass of a coupled run before the fluid heat task has run - `h` is
+  computed from a correlation for external flow along a flat plate, using the
+  fluid properties, the hydraulic diameter, the *Fluid temperature* and the
+  *Velocity* you enter. The log says which of the two is in use.
 - **Natural convection** computes `h` from a correlation for horizontal plates,
   using the fluid properties, the hydraulic diameter and the temperature
   difference between the wall and the fluid.
@@ -263,7 +263,8 @@ and the geometry are left to enter:
 Replace them for any other fluid - they are the fluid's properties, not the
 material of the wall. *Natural convection* is therefore ready to solve as
 assigned; *Forced convection* still needs a **velocity**, which no default can
-guess.
+guess - unless the surface borders a meshed fluid, where none of these values
+is read.
 
 Every one of those groups divides by `mu`, `k` or `d`, and `Re` and `Pr` fall to
 zero if `rho`, `c` or `v` do, which would leave `h = 0` and a surface that never
@@ -275,10 +276,11 @@ Value of 'Velocity' configured in 'Forced convection' boundary condition on
 entity 'Surface' is zero - the convection correlation can not be evaluated.
 ```
 
-A velocity of zero that the *fluid heat* solver computed is a different matter -
-it is a result, not a mistake. The wall is then left unconvected for that pass
-and the log says so, rather than the solve being stopped or the configured
-velocity being used against what the flow says.
+The velocity the flow solver computes is never fed into the correlation. A
+no-slip wall holds the fluid at rest, so the velocity next to it is zero, and
+the correlation would need the free-stream velocity and the bulk temperature,
+which a general three dimensional flow does not define. A wall bordering a
+meshed fluid is coupled to the fluid solve instead.
 
 Three consequences are worth keeping in mind:
 
@@ -329,6 +331,8 @@ task flow.
 | Stress -> heat | Displacement | the mesh is deformed for the heat solve and restored afterwards |
 | Heat -> stress | Temperature | drives the thermal expansion term of the structural solver |
 | Heat -> any solver | Temperature | selects the row of every temperature-dependent material table |
+| Fluid heat -> heat | Wall `(h, Tf)` | drives the *Forced convection* walls bordering a meshed fluid |
+| Heat -> fluid heat | Solid temperature | holds the same walls at the temperature of the solid in the fluid solve |
 
 **Radiative heat transfer** is a separate problem type with its own solver. It
 requires a *Heat transfer* task, solves an enclosure radiosity system over
@@ -340,11 +344,54 @@ ends the group when its patch heat stops changing.
 **Joule heat** arrives the same way from an *Electro-statics* task placed before
 the heat task, so resistive heating needs no further setup.
 
-Because the heat solver reports itself as converged unconditionally, a task
-group that contains only a heat task always stops after one iteration. Iterating
-is worthwhile when something the heat solve depends on is itself lagged -
-radiative heat, a natural convection coefficient, or a strongly
-temperature-dependent conductivity.
+Unless it is coupled to a fluid, the heat solver reports itself as converged
+unconditionally, so a task group that contains only a heat task always stops
+after one iteration. Iterating is worthwhile when something the heat solve
+depends on is itself lagged - radiative heat, a natural convection coefficient,
+or a strongly temperature-dependent conductivity.
+
+#### Conjugate heat transfer
+
+The heat solver solves **solids only**. A volume whose material is a fluid -
+a gas or a liquid, or a material of unspecified state that carries a dynamic
+viscosity, which covers every fluid of the material database - is never part
+of the heat solve, whatever properties or conditions it carries. So is a point,
+line or surface entity lying inside the fluid, such as an inlet; a condition on
+it that only the heat solver reads is reported in the log. The fluid domain
+belongs to the *Heat transfer in fluids* problem type, which carries the heat
+with the flow.
+
+The two meet on walls carrying the **Forced convection** condition. With both
+tasks in one problem task group - the fluid heat task first - every pass of the
+group does the following:
+
+1. The fluid heat solver holds the wall nodes at the temperature the heat
+   solver last computed in the solid (on the very first pass, when there is no
+   such temperature yet, the wall is insulated), solves the fluid, and takes the
+   heat flux entering the fluid at every wall node. That flux is the residual of
+   the fluid equations at the node, the one a single solve of both domains
+   would see, so a thin thermal boundary layer costs no accuracy.
+2. For every wall element it hands over the pair `(h, Tf)`. `h = k * G` is the
+   conductance of the first fluid element behind the wall - `k` over the height
+   of the element above the wall, for a tetrahedron - and `Tf` is set so that
+   `q = h * (Tw - Tf)` is the flux of step 1.
+3. The heat solver applies them to the wall as it would a *Simple convection*
+   condition, solves the solid, and hands its wall temperature back.
+
+The pair `(h, Tf)` is a numerical device that makes the two solves agree - `h`
+is not the heat transfer coefficient of a handbook, and it changes with the
+mesh. What converges is the temperature and the flux through the wall, which
+are those of the coupled problem. Nothing about the velocity of the fluid next
+to the wall is needed, which is why a no-slip wall - where the flow is at rest -
+transfers heat just as it should.
+
+The wall temperature passed to the fluid is relaxed with an **Aitken factor**
+computed from the last two passes. Without it, a poorly conducting solid next to
+a well-resolved fluid can need hundreds of passes; with it the group typically
+settles in a handful. Both solvers report the relative change of their
+temperature field as their convergence while they are coupled, so set the
+convergence value of the task group - `1e-6` is a reasonable start - and give it
+enough iterations. A convergence value of zero runs all of them.
 
 ### 1.7 Steady-state analysis
 
@@ -437,8 +484,10 @@ The **heat transfer coefficient** is stored as well. It is the coefficient the
 solver actually used on each surface element, which is the only way to see what
 the *Forced convection* and *Natural convection* correlations produced - and on
 a natural convection surface it varies from element to element, since it depends
-on the local wall temperature. It is zero on every element that carries no
-convection condition.
+on the local wall temperature. On a wall coupled to a fluid it is the conductance
+of the first fluid element, which depends on the mesh - see *Conjugate heat
+transfer* in 1.6. It is zero on every element that carries no convection
+condition.
 
 | Result | Apply to | Meaning |
 |---|---|---|
@@ -527,6 +576,10 @@ An entity missing any of them is not solved, and the setup checker warns before
 the run starts. If you are not doing radiative heat transfer, an emissivity of
 `0` is enough to satisfy the requirement.
 
+The material also has to be a **solid**. A volume whose material is a gas or a
+liquid - or has no state set and carries a dynamic viscosity - is left to the
+*Heat transfer in fluids* problem type even if it has all four properties.
+
 Every property is a table against temperature, so a temperature-dependent
 conductivity is honoured - evaluated at the element temperature of the previous
 run, which makes it worth iterating the task when the dependence is strong.
@@ -551,10 +604,9 @@ The conditions of section 1.4 are offered. Notes on using them:
   naturally rated per unit volume or area.
 - The three **convection** conditions apply to surfaces only. Assign *Simple
   convection* unless you have a specific reason to let the solver correlate the
-  coefficient for you; it is the predictable one. *Forced convection* prefers
-  the fluid temperature and velocity computed by the fluid heat solver on the
-  other side of the wall, and falls back to its own *Fluid temperature* and
-  *Velocity* components where there is no such result.
+  coefficient for you; it is the predictable one. *Forced convection* on a wall
+  bordering a meshed fluid couples the solid to the fluid heat solve and reads
+  none of its components; elsewhere it correlates the coefficient from them.
 - Every component is a table against time, so a prescribed temperature or a heat
   source can be given a time history for a transient run. This is how a duty
   cycle or a ramped heater is modelled.
@@ -715,7 +767,8 @@ thermal expansion term automatically.
 | *Entity has material assigned which is missing required properties* | one of the four required properties is absent - often the emissivity |
 | The whole model sits at one temperature | no heat is entering, or nothing drives a gradient away from the prescribed value |
 | Temperatures are absurdly high | a density in `W/m^3` was entered into a *Heat* condition, which takes the total in watts, or the convection coefficient is far too small |
-| Nothing is cooled | a *Forced convection* wall was disabled because the fluid heat result has the fluid at rest - the log names the entity |
+| A wall between solid and fluid does not cool | the fluid heat task runs after the heat task, or the group runs a single iteration - put the fluid heat task first and let the group iterate |
+| The fluid is ignored by the heat solve | intended - a fluid material is solved by *Heat transfer in fluids* only |
 | Temperatures come out near `293.15` K everywhere | the entity was not solved - check the log for a missing material property |
 
 ---
