@@ -29,10 +29,10 @@ jobs:
           - os: windows-latest
             arch: x64
             qt_host: windows
-            qt_arch: win64_msvc2024_64
+            qt_arch: win64_msvc2022_64
             qt_version: '6.12.0'
-            # Qt 6.11 split the Windows desktop repo into per-toolchain folders
-            # (qt6_6111/qt6_6111_msvc2022_64 instead of qt6_6111/qt6_6111).
+            # Qt 6.12 split the Windows desktop repo into per-toolchain folders
+            # (qt6_6120/qt6_6111_msvc2022_64 instead of qt6_6120/qt6_6120).
             # Released aqtinstall 3.3.0 still requests the old path and 404s.
             # Fixed by aqtinstall PR #1000, unreleased as of 2026-07; drop this
             # once a release after 3.3.0 ships. See miurahr/aqtinstall#1007.
