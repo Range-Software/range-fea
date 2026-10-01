@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.25)
 
 # Minimum macOS version - macOS 26 (Tahoe) is the last release running on Intel
 # processors. Set before project() so every library and the application are
@@ -82,7 +82,7 @@ if(MSVC)
     set(OpenMP_RUNTIME_MSVC llvm)
 endif()
 find_package(OpenMP REQUIRED)
-find_package(Qt6 6.10 REQUIRED COMPONENTS Core Concurrent Gui GuiPrivate HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
+find_package(Qt6 6.12 REQUIRED COMPONENTS Core Concurrent Gui GuiPrivate HttpServer Network Widgets OpenGL OpenGLWidgets Multimedia PrintSupport LinguistTools)
 qt_standard_project_setup()
 
 # Unit tests (opt-in). Configure with -DRANGE_BUILD_TESTS=ON and run `ctest`.
@@ -180,16 +180,19 @@ foreach(tgt IN LISTS all_targets)
     add_subdirectory(${tgt})
     set_debug_suffix_if_needed(${tgt})
     if(EXISTS "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md")
+        # The copy carries the target name, because several targets can share
+        # one output directory (fea and fea-solver both land in the build root)
+        # and a plain RELEASE_NOTES.md would be overwritten by the last one.
         add_custom_target(copy-release-notes-${tgt} ALL
             COMMAND ${CMAKE_COMMAND} -E copy
                     "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
-                    "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES.md"
+                    "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES_${tgt}.md"
             DEPENDS ${tgt}
             COMMENT "Copying RELEASE_NOTES.md for ${tgt}"
             VERBATIM
         )
         if(NOT APPLE)
-            install(FILES "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES.md"
+            install(FILES "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
                     DESTINATION doc
                     RENAME "RELEASE_NOTES_${tgt}.md"
                     COMPONENT Application)
