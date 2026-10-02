@@ -445,9 +445,13 @@ function(fea_add_icon_resources name prefix)
 endfunction()
 
 fea_add_icon_resources(icons-application "/icons/application"
+        pixmaps/range-about.svg
         pixmaps/range-application_settings.svg
         pixmaps/range-display_preferences.svg
+        pixmaps/range-license.svg
+        pixmaps/range-qt.svg
         pixmaps/range-quit.svg
+        pixmaps/range-release_notes.svg
         pixmaps/range-startup.svg
 )
 
@@ -498,7 +502,6 @@ fea_add_icon_resources(icons-file "/icons/file"
         pixmaps/range-remove.svg
         pixmaps/range-refresh.svg
         pixmaps/range-download.svg
-        pixmaps/range-qt.svg
         pixmaps/range-important.svg
         pixmaps/range-help.svg
         pixmaps/range-fea.ico
