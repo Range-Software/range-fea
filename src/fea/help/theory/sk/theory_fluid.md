@@ -961,7 +961,9 @@ domain, `L / |v|`, divided by that step.
    `0`, the release concentration at the moment the release starts, and `0`
    again when it ends.
 
-Each value is valid **from** the time given. This time-triggered condition is
+Between two given times the value is interpolated linearly, and after the last
+time the last value is kept, so a release that should start abruptly needs two
+entries close together. This time-dependent condition is
 what turns a steady inlet into a release event, and it is the heart of a
 dispersion model.
 
@@ -1006,7 +1008,7 @@ the march. Without it the run starts from rest and the first steps are wasted.
 |---|---|
 | The concentration never leaves the inlet | the flow field is zero - the flow task is missing from the group, or the run was not restarted from a converged flow |
 | The plume smears out almost immediately | the Courant number is far above 1, or the mesh is too coarse along the path |
-| The concentration goes negative or overshoots | the time step is too large for the mesh, so the stabilised advection is ringing |
+| The concentration goes negative or overshoots | the time step is too large for the mesh, so the stabilised advection is ringing. Slight undershoots next to a steep front are normal; the solution is not clipped at zero, because clipping would add contaminant |
 | Only one record was written | the output frequency is `0`, which writes the last step only |
 | Each step's residual stays high | too few iterations per time step - the flow within each step is not converged |
 | The plume never spreads sideways | that is the model: the diffusivity is zero, so lateral spreading comes only from the flow field |

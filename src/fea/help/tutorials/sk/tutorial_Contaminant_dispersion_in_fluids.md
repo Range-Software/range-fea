@@ -76,7 +76,7 @@ Aplikujte okrajovú podmienku **Koncentrácia častíc** na entitu modelu **Prí
 
 Nezadávajte hodnotu, ale kliknite na tlačidlo **Upraviť časovo závislé hodnoty** na zadanie časovo spustenej (časový profil) okrajovej podmienky.
 
-V dialógu **Editor komponentov** možno zadávať časovo závislé hodnoty. Hodnoty sú vždy platné **od** zadaného času.
+V dialógu **Editor komponentov** možno zadávať časovo závislé hodnoty. Medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom zadanom čase zostáva platná posledná hodnota. Pri hodnotách uvedených nižšie preto koncentrácia na vstupe počas prvých 10 sekúnd stúpa z 0 na 1 `[kg/m^3]` a medzi 10. a 15. sekundou klesne späť na 0.
 
 ![CFD – Podmienka koncentrácie častíc](image-CFD-Particle_concentration_condition.png)
 

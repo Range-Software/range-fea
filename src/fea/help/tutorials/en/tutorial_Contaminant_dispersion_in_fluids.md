@@ -126,7 +126,7 @@ Apply **Particle concentration** boundary condition to **Inflow** model entity.
 
 Do not specify value but expand the **Particle concentration** property (arrow in front of its name) and click on **Edit time dependent values** button, to specify time-triggered (time-profile) boundary condition.
 
-In the **Component editor** dialog, time-dependent values can be specified. Values are always valid **from** the specified time. Set **Number of values** to **3** and enter values as shown below (double click on a cell to edit it), then click **Ok**.
+In the **Component editor** dialog, time-dependent values can be specified. Between two specified times the value is interpolated linearly, and after the last specified time the last value is kept. With the values below the inflow concentration therefore rises from 0 to 1 `[kg/m^3]` during the first 10 seconds and falls back to 0 between 10 and 15 seconds. Set **Number of values** to **3** and enter values as shown below (double click on a cell to edit it), then click **Ok**.
 
 ![CFD - Particle concentration condition](image-CFD-Particle_concentration_condition.png)
 

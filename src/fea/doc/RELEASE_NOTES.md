@@ -218,6 +218,21 @@
   accepted alternatives. An acoustic entity carrying a density and a speed of
   sound is no longer flagged for missing a modulus of elasticity
 
+#### Contaminant dispersion
+
+- A transient contaminant dispersion run no longer blows up. The particle
+  concentration used to grow far above the highest inflow value, first where
+  the flow recirculates, because of errors in the stabilisation of the
+  equations and because negative values were clipped to zero after every
+  time step. On the tutorial channel model the maximum now follows the inflow
+  value (`0.618` at time-step 618, where `3326` was reported before).
+  Negative concentrations now appear instead of being hidden by the clipping;
+  they are numerical undershoots, not missing contaminant, and are largest at a
+  few nodes
+- The *Contaminant dispersion in fluids* tutorial states that time-dependent
+  values are interpolated linearly between the given times. It used to say
+  that each value applies from its time onwards
+
 #### Solver control
 
 - **Stop solver** and **Kill solver** are enabled only while a solver is
