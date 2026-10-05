@@ -1,3 +1,3 @@
 # Resetovať nastavenia
 
-Resetuje (zahodí) všetky nastavenia **Typu problému**.
+Resetuje (zahodí) všetky nastavenia **Typu úlohy**.

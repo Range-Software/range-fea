@@ -4,9 +4,9 @@
 
 
 Okrajové podmienky sú:
-- **Špecifické pre problém** – Každý **Typ problému** definuje vlastnú sadu **okrajových podmienok**.
+- **Špecifické pre úlohu** – Každý **Typ úlohy** definuje vlastnú sadu **okrajových podmienok**.
 - **Explicitné** – Na hranici je predpísané presné riešenie (napr. **Teplota** pre **Prestup tepla**). V zozname **Okrajových podmienok** zobrazené tučným písmom.
 - **Implicitné** – Naznačujú riešenie na hranici (napr. **Tepelný tok** pre **Prestup tepla**).
 
 
-Ak je problém **prechodový** (časovo závislý), možno okrajovej podmienke priradiť časovo závislé hodnoty.
+Ak je úloha **prechodová** (časovo závislá), možno okrajovej podmienke priradiť časovo závislé hodnoty.

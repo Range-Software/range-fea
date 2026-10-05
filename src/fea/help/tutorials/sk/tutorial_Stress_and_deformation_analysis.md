@@ -1,6 +1,6 @@
 # Analýza napätia a deformácie
 
-Tento tutoriál demonštruje, ako nastaviť a vyriešiť problém **Analýzy napätia**. Na tento účel bude jednoduchý nosník podopretý na oboch koncoch so zaťažením v strede.
+Tento tutoriál demonštruje, ako nastaviť a vyriešiť úlohu **Analýzy napätia**. Na tento účel bude jednoduchý nosník podopretý na oboch koncoch so zaťažením v strede.
 
 ## 1. Načítať model
 
@@ -8,21 +8,21 @@ Tento tutoriál demonštruje, ako nastaviť a vyriešiť problém **Analýzy nap
 
 Zobrazí sa dialóg **Otvoriť model**. Vyberte súbor **Beam.tmsh** a kliknite na **Otvoriť** na načítanie modelu.
 
-Keďže tomuto modelu nie je priradený žiadny fyzikálny problém, krátko po dokončení načítania modelu sa zobrazí dialóg **Postup riešenia problému**.
+Keďže tomuto modelu nie je priradená žiadna fyzikálna úloha, krátko po dokončení načítania modelu sa zobrazí dialóg **Postup riešenia úlohy**.
 
-![Postup riešenia problému – prázdny](image-Problem_task_flow-empty.png)
+![Postup riešenia úlohy – prázdny](image-Problem_task_flow-empty.png)
 
-Kliknite na tlačidlo **Pridať typ problému** a zobrazí sa dialóg **Výber typu problému**. Nájdite a zaškrtnite **Analýza napätia** a kliknite na **Ok** na potvrdenie.
+Kliknite na tlačidlo **Pridať typ úlohy** a zobrazí sa dialóg **Výber typu úlohy**. Nájdite a zaškrtnite **Analýza napätia** a kliknite na **Ok** na potvrdenie.
 
-![Výber typu problému – Napätie](image-Problem_type_selector-Stress.png)
+![Výber typu úlohy – Napätie](image-Problem_type_selector-Stress.png)
 
-**Postup riešenia problému** by teraz mal zobrazovať 1 iteráciu **Analýzy napätia**. Kliknite na **Ok** na potvrdenie.
+**Postup riešenia úlohy** by teraz mal zobrazovať 1 iteráciu **Analýzy napätia**. Kliknite na **Ok** na potvrdenie.
 
-![Postup riešenia problému – Napätie](image-Problem_task_flow-Stress.png)
+![Postup riešenia úlohy – Napätie](image-Problem_task_flow-Stress.png)
 
 ## 2. Vygenerovať 3D sieť
 
-Na vyriešenie tohto problému musí byť vygenerovaná objemová sieť.
+Na vyriešenie tejto úlohy musí byť vygenerovaná objemová sieť.
 
 **Menu:** _Geometria -> Objem -> Generovať tetraedrálnu sieť_
 
@@ -83,9 +83,9 @@ Podmienky prostredia sa priraďujú rovnakým spôsobom ako okrajové podmienky.
 
 ![Priradené gravitačné zrýchlenie](image-Assigned_gravity_ec.png)
 
-## 6. Vyriešiť problém
+## 6. Vyriešiť úlohu
 
-Keď je problém správne nakonfigurovaný, možno ho vyriešiť.
+Keď je úloha správne nakonfigurovaná, možno ju vyriešiť.
 
 **Menu:** _Riešenie -> Spustiť riešič_
 

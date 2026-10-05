@@ -1,13 +1,13 @@
 # Rozptyl kontaminantu v tekutinách
 
-Tento tutoriál demonštruje, ako nastaviť pokročilú multifyzikálnu simuláciu vrátane nelineárneho iteratívneho problému, ako je **CFD (výpočtová dynamika tekutín)**.
+Tento tutoriál demonštruje, ako nastaviť pokročilú multifyzikálnu simuláciu vrátane nelineárnej iteratívnej úlohy, ako je **CFD (výpočtová dynamika tekutín)**.
 
-Na vyriešenie **rozptylu kontaminantu v tekutine** je potrebné nakonfigurovať nasledujúce typy problémov:
+Na vyriešenie **rozptylu kontaminantu v tekutine** je potrebné nakonfigurovať nasledujúce typy úloh:
 
 1. **Rozptyl kontaminantu** – Výpočet rozloženia kontaminantu v prúdovom poli.
 2. **Nestlačiteľné viskózne prúdenie** – Ustálené a prechodové prúdenie newtonských tekutín.
 
-Keďže **CFD** je nelineárny problém, vyžaduje iteratívne riešenie. Tento problém bude vyriešený v dvoch krokoch:
+Keďže **CFD** je nelineárna úloha, vyžaduje iteratívne riešenie. Táto úloha bude vyriešená v dvoch krokoch:
 
 1. **Ustálený stav** – Najprv je potrebné získať „počiatočné" prúdové pole a rozloženie tlaku.
 2. **Prechodový stav** – V druhom kroku sa použije **časové krokovanie** na získanie prechodového riešenia.
@@ -16,15 +16,15 @@ Keďže **CFD** je nelineárny problém, vyžaduje iteratívne riešenie. Tento 
 
 Načítajte model **Channel.tmsh**.
 
-## 2. Postup riešenia problému (krok 1)
+## 2. Postup riešenia úlohy (krok 1)
 
-Najprv je potrebné konvergované počiatočné prúdenie. Z tohto dôvodu je potrebné ustálené riešenie nestlačiteľného viskózneho prúdenia. V dialógu **Postup riešenia problému** vyberte príslušný typ problému a nastavte **Počet iterácií:** na **2000**. Na to dvakrát kliknite na počiatočnú hodnotu.
+Najprv je potrebné konvergované počiatočné prúdenie. Z tohto dôvodu je potrebné ustálené riešenie nestlačiteľného viskózneho prúdenia. V dialógu **Postup riešenia úlohy** vyberte príslušný typ úlohy a nastavte **Počet iterácií:** na **2000**. Na to dvakrát kliknite na počiatočnú hodnotu.
 
-![CFD – Postup riešenia problému – ustálený stav](image-CFD-Problem_task_flow_steady.png)
+![CFD – Postup riešenia úlohy – ustálený stav](image-CFD-Problem_task_flow_steady.png)
 
 ## 3. Vygenerovať 3D sieť
 
-Na vyriešenie tohto problému musí byť vygenerovaná objemová sieť.
+Na vyriešenie tejto úlohy musí byť vygenerovaná objemová sieť.
 
 **Menu:** _Geometria -> Objem -> Generovať tetraedrálnu sieť_
 
@@ -46,7 +46,7 @@ Priraďte nasledujúce okrajové podmienky k **plošným** entitám podľa nasle
     - _Tlak (implicitný)_
         - Tlak = 0 `[Pa]`
 
-## 6. Vyriešiť problém
+## 6. Vyriešiť úlohu
 
 Postupujte rovnako ako v predchádzajúcich tutoriáloch.
 
@@ -54,19 +54,19 @@ Riešič bude chvíľu počítať všetky iterácie, kým nenájde konvergované
 
 **Menu:** _Správa -> Konvergencia riešiča_
 
-## 7. Postup riešenia problému (krok 2)
+## 7. Postup riešenia úlohy (krok 2)
 
-Po konvergencii riešiča možno nakonfigurovať **prechodový** problém vrátane **Rozptylu kontaminantu**.
+Po konvergencii riešiča možno nakonfigurovať **prechodovú** úlohu vrátane **Rozptylu kontaminantu**.
 
-Keďže **Nestlačiteľné viskózne prúdenie** je nelineárny problém, vždy bude potrebovať určitý počet nelineárnych iterácií na nájdenie konvergovaného riešenia pre každý časový krok. **Postup riešenia** by mal vyzerať tak, ako je zobrazené na nasledujúcej snímke obrazovky.
+Keďže **Nestlačiteľné viskózne prúdenie** je nelineárna úloha, vždy bude potrebovať určitý počet nelineárnych iterácií na nájdenie konvergovaného riešenia pre každý časový krok. **Postup riešenia** by mal vyzerať tak, ako je zobrazené na nasledujúcej snímke obrazovky.
 
-![CFD – Postup riešenia problému](image-CFD-Problem_task_flow.png)
+![CFD – Postup riešenia úlohy](image-CFD-Problem_task_flow.png)
 
 ## 8. Nastavenie časového riešiča
 
-Kliknite na záložku **Nastavenie problému**. Povoľte **Časový riešič** a zadajte hodnoty podľa nasledujúcej snímky obrazovky.
+Kliknite na záložku **Nastavenie úlohy**. Povoľte **Časový riešič** a zadajte hodnoty podľa nasledujúcej snímky obrazovky.
 
-![CFD – Časový riešič problému](image-CFD-Problem_time_solver.png)
+![CFD – Časový riešič úlohy](image-CFD-Problem_time_solver.png)
 
 ## 9. Okrajové podmienky
 
@@ -80,9 +80,9 @@ V dialógu **Editor komponentov** možno zadávať časovo závislé hodnoty. Ho
 
 ![CFD – Podmienka koncentrácie častíc](image-CFD-Particle_concentration_condition.png)
 
-## 10. Vyriešiť problém (reštart)
+## 10. Vyriešiť úlohu (reštart)
 
-Po úplnej konfigurácii problému reštartujte riešič. Postup je rovnaký ako pri spustení riešiča, ale musí byť vybraté políčko **Reštartovať riešič / pokračovať**. Tým riešič použije už vypočítané výsledky ako východiskový bod a bude pokračovať v simulácii s časovým krokovaním.
+Po úplnej konfigurácii úlohy reštartujte riešič. Postup je rovnaký ako pri spustení riešiča, ale musí byť vybraté políčko **Reštartovať riešič / pokračovať**. Tým riešič použije už vypočítané výsledky ako východiskový bod a bude pokračovať v simulácii s časovým krokovaním.
 
 ![CFD – Reštart riešiča](image-CFD-Solver_restart.png)
 

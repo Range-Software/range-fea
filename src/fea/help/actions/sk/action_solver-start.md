@@ -3,4 +3,4 @@
 Spustí **úlohu riešiča** na pozadí pre vybraný model.
 
 
-**Úloha riešiča** vykoná všetky **Úlohy problémov** definované v **Postupe riešenia problémov**.
+**Úloha riešiča** vykoná všetky **Kroky úloh** definované v **Postupe riešenia úloh**.

@@ -1,7 +1,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <QMessageBox>
+
+#include <rgl_message_box.h>
 
 #include <rbl_error.h>
 #include <rbl_logger.h>
@@ -51,12 +52,11 @@ void ConvergenceGraphWidget::onClearButtonClicked()
 {
     try
     {
-        int response = QMessageBox::question(this,
-                                          tr("Clear convergence log"),
-                                          tr("Are you sure you want to clear the convergence log?"),
-                                          QMessageBox::Yes | QMessageBox::No,
-                                          QMessageBox::No);
-        if (response == QMessageBox::Yes)
+        RMessageBox::StandardButton response = RMessageBox::question(
+            this,
+            tr("Clear convergence log"),
+            tr("Are you sure you want to clear the convergence log?"));
+        if (response == RMessageBox::Yes)
         {
             this->graphObject->clearSourceFile();
         }

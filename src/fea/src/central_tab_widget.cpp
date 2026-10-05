@@ -1,8 +1,8 @@
-#include <QMessageBox>
 #include <QApplication>
 #include <QScrollBar>
 
 #include <rgl_logger_handler.h>
+#include <rgl_message_box.h>
 
 #include "central_tab_widget.h"
 #include "application.h"
@@ -197,7 +197,7 @@ void CentralTabWidget::onInfoPrinted(const RMessage &message)
 
 void CentralTabWidget::onNoticePrinted(const RMessage &message)
 {
-    QMessageBox::information(this,tr("Notice"),QString(RMessage::messageToLogString(message)).replace("NOTICE: ",""));
+    RMessageBox::information(this,tr("Notice"),QString(RMessage::messageToLogString(message)).replace("NOTICE: ",""));
 }
 
 void CentralTabWidget::onWarningPrinted(const RMessage &message)

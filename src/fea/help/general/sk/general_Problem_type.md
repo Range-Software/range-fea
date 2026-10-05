@@ -1,10 +1,10 @@
-# Typ problému
+# Typ úlohy
 
-**Typ problému** je jedinečný identifikátor fyzikálneho javu, ktorý sa má riešiť.
+**Typ úlohy** je jedinečný identifikátor fyzikálneho javu, ktorý sa má riešiť.
 
-Je možné kombinovať viacero rôznych **typov problémov** (napr. **Prestup tepla** a **Analýza napätia** alebo **Nestlačiteľné viskózne prúdenie** a **Rozptyl kontaminantu**).
+Je možné kombinovať viacero rôznych **typov úloh** (napr. **Prestup tepla** a **Analýza napätia** alebo **Nestlačiteľné viskózne prúdenie** a **Rozptyl kontaminantu**).
 
-Zoznam podporovaných typov problémov:
+Zoznam podporovaných typov úloh:
 
 - Rozptyl kontaminantu
 - Elektrostatika

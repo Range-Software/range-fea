@@ -1,6 +1,6 @@
-#include <QMessageBox>
+#include <rgl_message_box.h>
+#include <rml_problem.h>
 
-#include "application.h"
 #include "problem_selector_tree.h"
 
 typedef enum _ProblemSelectorTreeColumn
@@ -116,13 +116,15 @@ void ProblemSelectorTree::checkCheckedTreeWidgetItem(QTreeWidgetItem *item)
     {
         QString message;
 
-        message += "Problem type <b>" + RProblem::getName(problemType) + "</b> is incompatible with following selected problem types:";
+        message += tr("Problem type")
+                + " <b>" + RProblem::getName(problemType)  + "</b> "
+                + tr("is incompatible with following selected problem types") + ":";
         for (int i=0;i<excludedProblemTypes.size();i++)
         {
             message += "<br/>- <b>" + RProblem::getName(excludedProblemTypes[i]) + "</b>";
         }
 
-        QMessageBox::warning(this,tr("Incompatible problems selected"),message);
+        RMessageBox::warning(this,tr("Incompatible problems selected"),message);
         this->blockSignals(true);
         item->setCheckState(PROBLEM_TREE_COLUMN_NAME,Qt::Unchecked);
         this->blockSignals(false);

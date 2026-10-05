@@ -1,9 +1,9 @@
-# Postup riešenia problémov
+# Postup riešenia úloh
 
-Konfiguruje **Postup riešenia problémov**.
-
-
-**Úloha problému** predstavuje skutočný fyzikálny problém, ako napríklad **Analýza napätia**, **Elektrostatika** atď.
+Konfiguruje **Postup riešenia úloh**.
 
 
-**Postup riešenia problémov** je zoznam alebo strom rôznych **úloh problémov** a definuje poradie a počet vykonaní každej **úlohy problému**. Tu možno nastaviť počet iterácií pre nelineárne problémy.
+**Krok úlohy** predstavuje skutočnú fyzikálnu úlohu, ako napríklad **Analýza napätia**, **Elektrostatika** atď.
+
+
+**Postup riešenia úloh** je zoznam alebo strom rôznych **krokov úloh** a definuje poradie a počet vykonaní každého **kroku úlohy**. Tu možno nastaviť počet iterácií pre nelineárne úlohy.

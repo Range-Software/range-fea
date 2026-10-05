@@ -1,7 +1,8 @@
 #include <QGridLayout>
 #include <QStackedLayout>
 #include <QPushButton>
-#include <QMessageBox>
+
+#include <rgl_message_box.h>
 
 #include "draw_input_widget.h"
 #include "application.h"
@@ -192,23 +193,22 @@ void DrawInputWidget::onOkClicked()
 
     if (modelIDs.size() == 0)
     {
-        QMessageBox::warning(this,tr("No model is selected"),tr("To draw an object at least one model must be selected."),QMessageBox::Ok);
+        RMessageBox::warning(this,
+                             tr("No model is selected"),
+                             tr("To draw an object at least one model must be selected."));
         return;
     }
 
-    QString message = "Prepared objects will be added to following (selected) models:<ul>";
+    QString message = tr("Prepared objects will be added to following (selected) models") + ":";
+    message += "<ul>";
     for (int i=0;i<modelIDs.size();i++)
     {
         message += "<li>" + Application::instance()->getSession()->getModel(modelIDs[i]).getName() + "</li>";
     }
     message += "</ul>";
 
-    int response = QMessageBox::question(this,
-                                         "Draw objects(s)?",
-                                         message,
-                                         QMessageBox::Ok | QMessageBox::Cancel,
-                                         QMessageBox::Cancel);
-    if (response == QMessageBox::Cancel)
+    int response = RMessageBox::question(this,"Draw objects(s)?",message);
+    if (response == RMessageBox::No)
     {
         return;
     }

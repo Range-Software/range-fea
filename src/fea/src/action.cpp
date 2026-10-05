@@ -353,12 +353,10 @@ void Action::regDef(QList<Definition> &actionDefinition, GroupType groupType, Ty
 void Action::onSessionNew()
 {
     R_LOG_TRACE_IN;
-    int response = QMessageBox::question(Application::instance()->getMainWindow(),
+    RMessageBox::StandardButton response = RMessageBox::question(Application::instance()->getMainWindow(),
                                          tr("Close session"),
-                                         tr("Are you sure you want to close the current session?"),
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
-    if (response == QMessageBox::Yes)
+                                         tr("Are you sure you want to close the current session?"));
+    if (response == RMessageBox::Yes)
     {
         Application::instance()->getSession()->clear();
         this->onSessionSaveAs();
@@ -436,12 +434,10 @@ void Action::onSessionSaveAs()
 void Action::onSessionClose()
 {
     R_LOG_TRACE_IN;
-    int response = QMessageBox::question(Application::instance()->getMainWindow(),
+    RMessageBox::StandardButton response = RMessageBox::question(Application::instance()->getMainWindow(),
                                          tr("Close session"),
-                                         tr("Are you sure you want to close the current session?"),
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
-    if (response == QMessageBox::Yes)
+                                         tr("Are you sure you want to close the current session?"));
+    if (response == RMessageBox::Yes)
     {
         Application::instance()->getSession()->clear();
     }
@@ -620,10 +616,10 @@ void Action::onModelExportStlBinary()
 void Action::onModelClose()
 {
     R_LOG_TRACE_IN;
-    int response = QMessageBox::question(Application::instance()->getMainWindow(),
+    int response = RMessageBox::question(Application::instance()->getMainWindow(),
                                          tr("Close model?"),
                                          tr("Are you sure you want to close selected models?"));
-    if (response == QMessageBox::Yes)
+    if (response == RMessageBox::Yes)
     {
         QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
         for (int i=0;i<modelIDs.size();i++)
@@ -784,10 +780,9 @@ void Action::onGeometryCreateElement()
 
     if (pickList.getNItems(PICK_ITEM_NODE) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Create element"),
-                                 tr("No node selected."),
-                                 QMessageBox::Close);
+                                 tr("No node selected."));
         R_LOG_TRACE_OUT;
         return;
     }
@@ -850,10 +845,9 @@ void Action::onGeometryCreateElement()
             }
             default:
             {
-                QMessageBox::information(Application::instance()->getMainWindow(),
+                RMessageBox::information(Application::instance()->getMainWindow(),
                                          tr("Create element"),
-                                         tr("Too many nodes selected."),
-                                         QMessageBox::Close);
+                                         tr("Too many nodes selected."));
                 R_LOG_TRACE_OUT;
                 return;
             }
@@ -948,11 +942,11 @@ void Action::onGeometryBreakIntersectedElements()
 //        const Model &rModel = Application::instance()->getSession()->getModel(modelIDs[i]);
 //        if (rModel.getNVolumes() > 0)
 //        {
-//            if (QMessageBox::question(Application::instance()->getMainWindow(),
+//            if (RMessageBox::question(Application::instance()->getMainWindow(),
 //                                      tr("Volume elements found"),
 //                                      tr("To break intersected elements all volume elements must be removed.<br/>Are you sure you want to continue and remove all volume elements?"),
-//                                      QMessageBox::No,
-//                                      QMessageBox::Yes) == QMessageBox::No)
+//                                      RMessageBox::No,
+//                                      RMessageBox::Yes) == RMessageBox::No)
 //            {
 //                R_LOG_TRACE_OUT;
 //                return;
@@ -985,7 +979,7 @@ void Action::onGeometryBoolUnion()
 
         if (entityIDs.size() < 2)
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Too few surfaces selected"),
                               tr("To perform union boolean operation at least two surfaces must be selected."));
             R_LOG_TRACE_OUT;
@@ -997,7 +991,7 @@ void Action::onGeometryBoolUnion()
             const Model &rModel = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
             if (!rModel.checkIfSurfaceIsClosed(entityIDs[j].getEid()))
             {
-                QMessageBox::warning(Application::instance()->getMainWindow(),
+                RMessageBox::warning(Application::instance()->getMainWindow(),
                                      tr("Surface is not closed"),
                                      tr("Surface") + " <b>" + rModel.getSurface(entityIDs[j].getEid()).getName() + "</b> " + tr("is not closed.") + "<br/>"
                                      + tr("To perform union boolean operation all selected surfaces must be closed."));
@@ -1032,7 +1026,7 @@ void Action::onGeometryBoolDifference()
 
         if (entityIDs.size() < 2)
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Too few surfaces selected"),
                               tr("To perform difference boolean operation at least two surfaces must be selected."));
             R_LOG_TRACE_OUT;
@@ -1044,7 +1038,7 @@ void Action::onGeometryBoolDifference()
             const Model &rModel = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
             if (!rModel.checkIfSurfaceIsClosed(entityIDs[j].getEid()))
             {
-                QMessageBox::warning(Application::instance()->getMainWindow(),
+                RMessageBox::warning(Application::instance()->getMainWindow(),
                                      tr("Surface is not closed"),
                                      tr("Surface") + " <b>" + rModel.getSurface(entityIDs[j].getEid()).getName()  + "</b> " + tr("is not closed.") + "<br/>"
                                      + tr("To perform difference boolean operation all selected surfaces must be closed."));
@@ -1079,7 +1073,7 @@ void Action::onGeometryBoolIntersection()
 
         if (entityIDs.size() < 2)
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Too few surfaces selected"),
                               tr("To perform intersection boolean operation at least two surfaces must be selected."));
             R_LOG_TRACE_OUT;
@@ -1091,7 +1085,7 @@ void Action::onGeometryBoolIntersection()
             const Model &rModel = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
             if (!rModel.checkIfSurfaceIsClosed(entityIDs[j].getEid()))
             {
-                QMessageBox::warning(Application::instance()->getMainWindow(),
+                RMessageBox::warning(Application::instance()->getMainWindow(),
                                      tr("Surface is not closed"),
                                      tr("Surface") + " <b>" + rModel.getSurface(entityIDs[j].getEid()).getName()  + "</b> " + tr("is not closed.") + "<br/>"
                                      + tr("To perform intersection boolean operation all selected surfaces must be closed."));
@@ -1175,10 +1169,9 @@ void Action::onGeometryMergeNodes()
 
     if (nSubmitted == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Merge nodes"),
-                                 tr("At least two nodes of one model must be selected."),
-                                 QMessageBox::Close);
+                                 tr("At least two nodes of one model must be selected."));
     }
     R_LOG_TRACE_OUT;
 }
@@ -1190,10 +1183,9 @@ void Action::onGeometryMoveNode()
 
     if (pickList.getNItems(PICK_ITEM_NODE) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Move node"),
-                                 tr("No node selected."),
-                                 QMessageBox::Close);
+                                 tr("No node selected."));
         R_LOG_TRACE_OUT;
         return;
     }
@@ -1235,18 +1227,15 @@ void Action::onGeometryRemoveNode()
 
     if (pickList.getNItems(PICK_ITEM_NODE) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Remove nodes"),
-                                 tr("No node selected."),
-                                 QMessageBox::Close);
+                                 tr("No node selected."));
         R_LOG_TRACE_OUT;
         return;
     }
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
-                               tr("Remove nodes"),
-                               tr("Are you sure you want to remove picked nodes?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
+                              tr("Remove nodes"),
+                              tr("Are you sure you want to remove picked nodes?")) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -1291,18 +1280,15 @@ void Action::onGeometryRemoveNodeAndCloseHole()
 
     if (pickList.getNItems(PICK_ITEM_NODE) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Remove nodes"),
-                                 tr("No node selected."),
-                                 QMessageBox::Close);
+                                 tr("No node selected."));
         R_LOG_TRACE_OUT;
         return;
     }
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
-                               tr("Remove nodes"),
-                               tr("Are you sure you want to remove picked nodes?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
+                              tr("Remove nodes"),
+                              tr("Are you sure you want to remove picked nodes?")) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -1347,18 +1333,15 @@ void Action::onGeometryRemoveElement()
 
     if (pickList.getNItems(PICK_ITEM_ELEMENT) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Remove elements"),
-                                 tr("No element selected."),
-                                 QMessageBox::Close);
+                                 tr("No element selected."));
         R_LOG_TRACE_OUT;
         return;
     }
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
-                               tr("Remove elements"),
-                               tr("Are you sure you want to remove picked elements?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
+                              tr("Remove elements"),
+                              tr("Are you sure you want to remove picked elements?")) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -1428,10 +1411,9 @@ void Action::onGeometrySurfaceSwapElementNormal()
 
     if (pickList.getNItems(PICK_ITEM_ELEMENT) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Swap element normal"),
-                                 tr("No element selected."),
-                                 QMessageBox::Close);
+                                 tr("No element selected."));
         R_LOG_TRACE_OUT;
         return;
     }
@@ -1519,10 +1501,9 @@ void Action::onGeometrySurfaceCloseHole()
 
     if (pickList.getNItems(PICK_ITEM_HOLE_ELEMENT) == 0)
     {
-        QMessageBox::information(Application::instance()->getMainWindow(),
+        RMessageBox::information(Application::instance()->getMainWindow(),
                                  tr("Close surface hole"),
-                                 tr("No edge selected."),
-                                 QMessageBox::Close);
+                                 tr("No edge selected."));
         R_LOG_TRACE_OUT;
         return;
     }
@@ -1885,7 +1866,7 @@ void Action::onGeometryDevPointInsideSurface()
 
         if (entityIDs.size() == 0)
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Too few surfaces selected"),
                               tr("To perform point inside check at least one surface must be selected."));
             R_LOG_TRACE_OUT;
@@ -1895,7 +1876,7 @@ void Action::onGeometryDevPointInsideSurface()
         const Model &rModel = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
         if (!rModel.checkIfSurfacesAreClosed(surfaceIDs))
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Unclosed surfaces"),
                               tr("Selected surfaces do not form closed surface."));
             R_LOG_TRACE_OUT;
@@ -1930,7 +1911,7 @@ void Action::onGeometryDevTetrahedralizeeSurface()
 
         if (entityIDs.size() == 0)
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Too few surfaces selected"),
                               tr("To perform point inside check at least one surface must be selected."));
             R_LOG_TRACE_OUT;
@@ -1940,7 +1921,7 @@ void Action::onGeometryDevTetrahedralizeeSurface()
         const Model &rModel = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
         if (!rModel.checkIfSurfacesAreClosed(surfaceIDs))
         {
-            QMessageBox::warning(Application::instance()->getMainWindow(),
+            RMessageBox::warning(Application::instance()->getMainWindow(),
                               tr("Unclosed surfaces"),
                               tr("Selected surfaces do not form closed surface."));
             R_LOG_TRACE_OUT;
@@ -2018,11 +1999,10 @@ void Action::onProblemDefineMonitoringPoints()
 void Action::onProblemReset()
 {
     R_LOG_TRACE_IN;
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
                                tr("Reset problem setup"),
-                               tr("Are you sure you want to reset the problem setup including boundary, initial and environment conditions?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+                               tr("Are you sure you want to reset the problem setup including boundary, initial and environment conditions?")
+                              ) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -2065,11 +2045,10 @@ void Action::onSolverStart()
 void Action::onSolverStop()
 {
     R_LOG_TRACE_IN;
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
-                               tr("Stop solver"),
-                               tr("Are you sure you want to stop all running solvers?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
+                              tr("Stop solver"),
+                              tr("Are you sure you want to stop all running solvers?")
+                              ) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -2089,11 +2068,10 @@ void Action::onSolverStop()
 void Action::onSolverKill()
 {
     R_LOG_TRACE_IN;
-    if (QMessageBox::question(Application::instance()->getMainWindow(),
-                               tr("Kill solver"),
-                               tr("Are you sure you want to kill all running solvers?"),
-                               QMessageBox::No,
-                               QMessageBox::Yes) == QMessageBox::No)
+    if (RMessageBox::question(Application::instance()->getMainWindow(),
+                              tr("Kill solver"),
+                              tr("Are you sure you want to kill all running solvers?")
+                              ) == RMessageBox::No)
     {
         R_LOG_TRACE_OUT;
         return;
@@ -2133,7 +2111,7 @@ void Action::onReportSolverLog()
         QString fileName(RFileUtils::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("log",QString("*"))));
         if (fileName.isEmpty())
         {
-            QMessageBox::information(Application::instance()->getMainWindow(),tr("No solver log file"),tr("There is no file containing solver log."));
+            RMessageBox::information(Application::instance()->getMainWindow(),tr("No solver log file"),tr("There is no file containing solver log."));
         }
         else
         {
@@ -2176,7 +2154,7 @@ void Action::onReportConvergenceGraph()
 
         if (fileNames.isEmpty())
         {
-            QMessageBox::information(Application::instance()->getMainWindow(),tr("No convergence file"),tr("There is no file containing convergence values."));
+            RMessageBox::information(Application::instance()->getMainWindow(),tr("No convergence file"),tr("There is no file containing convergence values."));
         }
         else
         {
@@ -2198,7 +2176,7 @@ void Action::onReportMonitoringPointGraph()
         QString fileName(RFileUtils::findLastFile(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("mon",QString("*"))));
         if (fileName.isEmpty())
         {
-            QMessageBox::information(Application::instance()->getMainWindow(),tr("No monitoring file"),tr("There is no file containing monitoring points."));
+            RMessageBox::information(Application::instance()->getMainWindow(),tr("No monitoring file"),tr("There is no file containing monitoring points."));
         }
         else
         {

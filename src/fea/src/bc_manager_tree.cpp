@@ -1,5 +1,6 @@
 #include <QList>
-#include <QMessageBox>
+
+#include <rgl_message_box.h>
 
 #include "bc_manager_tree.h"
 #include "application.h"
@@ -258,12 +259,8 @@ bool BCManagerTree::resolveConflicts(RBoundaryConditionType bcType)
         return true;
     }
 
-    int response = QMessageBox::question(this,
-                                         "Remove boundary condition(s)?",
-                                         message,
-                                         QMessageBox::Ok | QMessageBox::Cancel,
-                                         QMessageBox::Cancel);
-    if (response == QMessageBox::Cancel)
+    RMessageBox::StandardButton response = RMessageBox::question(this,"Remove boundary condition(s)?",message);
+    if (response != RMessageBox::Yes)
     {
         return false;
     }

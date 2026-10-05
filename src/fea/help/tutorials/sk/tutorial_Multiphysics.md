@@ -1,8 +1,8 @@
 # Multifyzika
 
-Tento tutoriál sa zaoberá riešením viacerých problémov na jednom geometrickom modeli. Na tento účel bude použitý **model nosníka**, cez ktorý prechádzajúci elektrický prúd vygeneruje teplo a deformuje model.
+Tento tutoriál sa zaoberá riešením viacerých úloh na jednom geometrickom modeli. Na tento účel bude použitý **model nosníka**, cez ktorý prechádzajúci elektrický prúd vygeneruje teplo a deformuje model.
 
-Takýto inžiniersky problém si bude vyžadovať nastavenie troch typov problémov:
+Takáto inžinierska úloha si bude vyžadovať nastavenie troch typov úloh:
 
 1. **Elektrostatika** – Výpočet elektrického prúdu a generovaného tepla.
 2. **Prestup tepla** – Výpočet rozloženia teploty.
@@ -12,19 +12,19 @@ Takýto inžiniersky problém si bude vyžadovať nastavenie troch typov problé
 
 Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**.
 
-## 2. Postup riešenia problému
+## 2. Postup riešenia úlohy
 
-Jediný rozdiel oproti procesu opísanému v predchádzajúcom tutoriáli spočíva v ukážke, ako vytvoriť **Postup riešenia problému**. Všetko ostatné sa vykonáva rovnakým spôsobom.
+Jediný rozdiel oproti procesu opísanému v predchádzajúcom tutoriáli spočíva v ukážke, ako vytvoriť **Postup riešenia úlohy**. Všetko ostatné sa vykonáva rovnakým spôsobom.
 
-**Menu:** _Problém -> Postup riešenia problémov_
+**Menu:** _Úloha -> Postup riešenia úloh_
 
-Vo **Výbere typu problému** vyberte všetky tri typy problémov a kliknite na **Ok**.
+Vo **Výbere typu úlohy** vyberte všetky tri typy úloh a kliknite na **Ok**.
 
-![Výber typu problému – Multi](image-Problem_type_selector-Multi.png)
+![Výber typu úlohy – Multi](image-Problem_type_selector-Multi.png)
 
-Váš **Postup riešenia problému** by teraz mal vyzerať ako na nasledujúcom obrázku. Ak poradie nie je rovnaké alebo ak sú tam ďalšie záznamy, možno použiť tlačidlá **Hore**, **Dole** a **Odstrániť** na úpravu postupu.
+Váš **Postup riešenia úlohy** by teraz mal vyzerať ako na nasledujúcom obrázku. Ak poradie nie je rovnaké alebo ak sú tam ďalšie záznamy, možno použiť tlačidlá **Hore**, **Dole** a **Odstrániť** na úpravu postupu.
 
-![Postup riešenia problému – Multi](image-Problem_task_flow-Multi.png)
+![Postup riešenia úlohy – Multi](image-Problem_task_flow-Multi.png)
 
 ## 3. Priradiť materiál
 
@@ -32,7 +32,7 @@ Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a defo
 
 ## 4. Priradiť okrajové podmienky
 
-Keďže je vybratých viacero typov problémov, každej entite možno priradiť viacero okrajových podmienok. Priraďte okrajové podmienky k **plošným** entitám podľa nasledujúceho opisu.
+Keďže je vybratých viacero typov úloh, každej entite možno priradiť viacero okrajových podmienok. Priraďte okrajové podmienky k **plošným** entitám podľa nasledujúceho opisu.
 
 1. **Plocha**
     - _Jednoduchá konvekcia_
@@ -64,7 +64,7 @@ Priraďte nasledujúce podmienky prostredia **všetkým** entitám modelu.
 - _Teplota_
     - Teplota = 293,15 `[K]`
 
-## 6. Vyriešiť problém
+## 6. Vyriešiť úlohu
 
 Postupujte rovnako ako v predchádzajúcom tutoriáli **Analýza napätia a deformácie**.
 

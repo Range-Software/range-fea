@@ -3,7 +3,8 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QPushButton>
-#include <QMessageBox>
+
+#include <rgl_message_box.h>
 
 #include "results_variable_tree.h"
 #include "application.h"
@@ -472,11 +473,9 @@ void ResultsVariableTree::onApplyAsDisplacementStateChanged(Qt::CheckState)
 
 void ResultsVariableTree::onApplyOnNodeClicked()
 {
-    if (QMessageBox::question(this,
+    if (RMessageBox::question(this,
                               tr("Display on nodes?"),
-                              tr("Are you sure you want to change display from elements to nodes?"),
-                              QMessageBox::No,
-                              QMessageBox::Yes) == QMessageBox::No)
+                              tr("Are you sure you want to change display from elements to nodes?")) == RMessageBox::No)
     {
         return;
     }
@@ -497,11 +496,9 @@ void ResultsVariableTree::onApplyOnNodeClicked()
 
 void ResultsVariableTree::onRemoveVariableClicked()
 {
-    if (QMessageBox::question(this,
+    if (RMessageBox::question(this,
                               tr("Remove variable?"),
-                              tr("Are you sure you want to remove selected variable?"),
-                              QMessageBox::No,
-                              QMessageBox::Yes) == QMessageBox::No)
+                              tr("Are you sure you want to remove selected variable?")) == RMessageBox::No)
     {
         return;
     }

@@ -3,7 +3,7 @@
 Generuje objemovú (tetraedrálnu) sieť.
 
 
-**Objemová sieť** je potrebná pre väčšinu **typov problémov**.
+**Objemová sieť** je potrebná pre väčšinu **typov úloh**.
 
 
 Generátor 3D siete môže generovať sieť iba ak:

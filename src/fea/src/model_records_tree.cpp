@@ -7,8 +7,9 @@
 #include <QBrush>
 #include <QMenu>
 #include <QAction>
-#include <QMessageBox>
 #include <QFile>
+
+#include <rgl_message_box.h>
 
 #include "model_records_tree.h"
 #include "application.h"
@@ -964,13 +965,11 @@ void ModelRecordsTree::removeSelectedRecords()
         return;
     }
 
-    QMessageBox::StandardButton answer =
-        QMessageBox::question(this,
-                              tr("Remove records"),
-                              tr("Are you sure you want to permanently delete %n selected record file(s)?","",records.size()),
-                              QMessageBox::Yes | QMessageBox::No,
-                              QMessageBox::No);
-    if (answer != QMessageBox::Yes)
+    RMessageBox::StandardButton answer = RMessageBox::question(
+        this,
+        tr("Remove records"),
+        tr("Are you sure you want to permanently delete %n selected record file(s)?","",records.size()));
+    if (answer != RMessageBox::Yes)
     {
         return;
     }
