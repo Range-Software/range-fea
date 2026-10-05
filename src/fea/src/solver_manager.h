@@ -44,6 +44,9 @@ class SolverManager : public RJobManager
         //! Check if solver for given model ID is queued.
         bool isSolverQueued(uint modelID) const;
 
+        //! Check if solver for given model ID is running.
+        bool isSolverRunning(uint modelID) const;
+
         //! Stop current solvers.
         void stopRunningTasks();
 

@@ -197,7 +197,7 @@ void CentralTabWidget::onInfoPrinted(const RMessage &message)
 
 void CentralTabWidget::onNoticePrinted(const RMessage &message)
 {
-    RMessageBox::information(this,tr("Notice"),QString(RMessage::messageToLogString(message)).replace("NOTICE: ",""));
+    RMessageBox::information(this,tr("Notice"),QString(message).replace("NOTICE: ","").trimmed());
 }
 
 void CentralTabWidget::onWarningPrinted(const RMessage &message)

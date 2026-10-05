@@ -136,6 +136,9 @@ MainWindow::MainWindow(Session *session,
 
     // Solver manager signals.
     QObject::connect(&SolverManager::getInstance(),&SolverManager::jobBlocking,this,&MainWindow::onJobBlocking);
+    QObject::connect(&SolverManager::getInstance(),&SolverManager::jobStarted,this,&MainWindow::onSolverJobStateChanged);
+    QObject::connect(&SolverManager::getInstance(),&SolverManager::jobFinished,this,&MainWindow::onSolverJobStateChanged);
+    QObject::connect(&SolverManager::getInstance(),&SolverManager::jobFailed,this,&MainWindow::onSolverJobStateChanged);
 
     // Draw engine signals.
     QObject::connect(this->session->getDrawEngine(),&DrawEngine::objectAdded,this,&MainWindow::onDrawObjectAdded);
@@ -904,7 +907,11 @@ void MainWindow::setEnabled(bool enabled)
     this->ecTab->setEnabled(enabled);
     this->materialTab->setEnabled(enabled);
     this->resultsTab->setEnabled(enabled);
-    this->actionList->setEnabled(enabled);;
+    this->actionList->setEnabled(enabled);
+    if (enabled)
+    {
+        this->actionList->processAvailability();
+    }
 }
 
 void MainWindow::enable()
@@ -973,6 +980,12 @@ void MainWindow::onJobStarted()
 void MainWindow::onJobEnded()
 {
     R_LOG_TRACE;
+}
+
+void MainWindow::onSolverJobStateChanged()
+{
+    R_LOG_TRACE;
+    this->actionList->processAvailability();
 }
 
 void MainWindow::onModelAdded(uint position)

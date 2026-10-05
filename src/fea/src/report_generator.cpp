@@ -41,6 +41,7 @@ void ReportGenerator::generateTitle()
     cursor.insertText(problemTypeList,ReportGenerator::getH3Format());
     cursor.insertBlock(blockFormat);
     cursor.insertBlock(blockFormat);
+    cursor.insertText(tr("Author") + ": ",ReportGenerator::getTextFormat());
     cursor.insertText(Application::instance()->getApplicationSettings()->getUserFullName(),ReportGenerator::getH4Format());
     cursor.insertBlock(blockFormat);
     cursor.insertText(Application::instance()->getApplicationSettings()->getUserEmail(),ReportGenerator::getTextFormat());

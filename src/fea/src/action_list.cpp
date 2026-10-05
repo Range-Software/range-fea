@@ -166,7 +166,16 @@ void ActionList::processAvailability()
         this->getAction(Action::ACTION_PROBLEM_SOLVER_SETUP)->setEnabled(true);
         this->getAction(Action::ACTION_PROBLEM_DEFINE_MONITORING_POINTS)->setEnabled(true);
         this->getAction(Action::ACTION_PROBLEM_RESET)->setEnabled(true);
-        this->getAction(Action::ACTION_SOLVER_START)->setEnabled(true);
+        bool solverActive = false;
+        for (uint modelID : std::as_const(selectedModelIDs))
+        {
+            if (SolverManager::getInstance().isSolverRunning(modelID) || SolverManager::getInstance().isSolverQueued(modelID))
+            {
+                solverActive = true;
+                break;
+            }
+        }
+        this->getAction(Action::ACTION_SOLVER_START)->setEnabled(!solverActive);
         this->getAction(Action::ACTION_REPORT_MODEL_STATISTICS)->setEnabled(true);
         this->getAction(Action::ACTION_REPORT_SOLVER_LOG)->setEnabled(true);
         this->getAction(Action::ACTION_REPORT_CONVERGENCE_GRAPH)->setEnabled(true);

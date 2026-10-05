@@ -210,6 +210,9 @@ class MainWindow : public QMainWindow
         //! Job has ended.
         void onJobEnded();
 
+        //! Solver job has started, finished or failed.
+        void onSolverJobStateChanged();
+
         //! New model has been added.
         void onModelAdded(uint position);
 

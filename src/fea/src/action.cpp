@@ -61,17 +61,6 @@
 Action::Action(RAction::Definition definition, QObject *parent)
     : RAction{definition,parent}
 {
-
-    if (this->name == Action::getName(ACTION_SOLVER_START))
-    {
-        QObject::connect(&SolverManager::getInstance(), &SolverManager::jobStarted, this, &Action::disable);
-        QObject::connect(&SolverManager::getInstance(), &SolverManager::jobFinished, this, &Action::enable);
-    }
-    if (this->name == Action::getName(ACTION_SOLVER_STOP) || this->name == Action::getName(ACTION_SOLVER_KILL))
-    {
-        QObject::connect(&SolverManager::getInstance(), &SolverManager::jobStarted, this, &Action::enable);
-        QObject::connect(&SolverManager::getInstance(), &SolverManager::jobFinished, this, &Action::disable);
-    }
 }
 
 QString Action::getGroupName(GroupType groupType)

@@ -218,6 +218,16 @@
   accepted alternatives. An acoustic entity carrying a density and a speed of
   sound is no longer flagged for missing a modulus of elasticity
 
+#### Solver control
+
+- **Stop solver** and **Kill solver** are enabled only while a solver is
+  running. They used to stay enabled after the solver finished, failed or was
+  killed
+- **Start solver** is enabled only when none of the selected models has a
+  solver running or queued, so a solver can no longer be started twice for the
+  same model. It becomes available again as soon as that model's solver
+  finishes, fails or is killed
+
 #### 3D view and picking
 
 - A picked node is visible. It was marked with a single point whose size the

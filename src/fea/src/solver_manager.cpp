@@ -58,6 +58,20 @@ bool SolverManager::isSolverQueued(uint modelID) const
     return false;
 }
 
+bool SolverManager::isSolverRunning(uint modelID) const
+{
+    QMutexLocker<QRecursiveMutex> locker(&this->jobsMutex);
+    for (int i=0;i<this->runningJobs.size();i++)
+    {
+        SolverTask *solverTask = static_cast<SolverTask*>(this->runningJobs[i]);
+        if (!solverTask->isFinished() && solverTask->getModelID() == modelID)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 void SolverManager::stopRunningTasks()
 {
     if (!this->runningJobs.isEmpty())
