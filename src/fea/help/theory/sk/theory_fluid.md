@@ -570,6 +570,13 @@ Steny a výstupy bez podmienky *Koncentrácia častíc* si ponechávajú prirodz
 podmienku **nulového difúzneho toku**: kontaminant cez stenu nedifunduje a
 výstupom odchádza iba s prúdením.
 
+Tam, kde prúdenie takou hranicou **vstupuje** - typicky spätné prúdenie cez časť
+výstupu s *Tlakom (implicitným)* - sa považuje za čistú tekutinu: riešič na tejto
+časti plochy pridá slabý vstupný člen `max(-v . n, 0) * C`. Bez neho by hranica
+dodávala riešeniu energiu a koncentrácia na výstupe by neobmedzene rástla. Ak
+vracajúca sa tekutina nie je čistá, predĺžte oblasť tak, aby výstupom prúdenie
+iba odchádzalo.
+
 **Maximálne nasýtenie** `C_sat` je najväčšia koncentrácia, ktorú môže kontaminant
 v tekutine dosiahnuť - koncentrácia nasýtených pár alebo rozpustnosť. Ak je
 nastavené, kladná *Rýchlosť tvorby častíc* slabne, keď sa koncentrácia k nemu
@@ -1161,6 +1168,7 @@ Práve reštart robí z konvergovaného ustáleného poľa východiskový bod kr
 | Oblak sa naraz rozšíri po celej oblasti | koeficient difúzie je príliš veľký - porovnajte ho s `U * L` |
 | Log upozorňuje, že predpísaná koncentrácia prekračuje maximálne nasýtenie | okrajová alebo počiatočná podmienka je nad maximálnym nasýtením; obmedzenie pôsobí iba na rýchlosť tvorby častíc, preto skontrolujte obe hodnoty |
 | Ustálené riešenie s difúziou vyzerá nesprávne | maticový riešič sa zastavil na limite iterácií - zvýšte počet vonkajších iterácií GMRES, pozri časť 2.6 |
+| Koncentrácia prekročí hodnotu na vstupe a narastá do zašumeného vzoru | prúdenie nie je konvergované - `Residual ratio` zostáva v každom kroku blízko `1`. Jeho rýchlosť má ďaleko od nulovej divergencie a žiadnemu transportu na nej nemožno dôverovať; najprv nechajte skonvergovať prúdenie (sieť, Reynoldsovo číslo, iterácie na krok) |
 
 ---
 

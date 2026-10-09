@@ -578,6 +578,13 @@ Walls and outlets without a *Particle concentration* condition keep the natural
 condition of **zero diffusive flux**: the contaminant does not diffuse through a
 wall, and leaves through an outlet only with the flow.
 
+Where the flow **enters** through such a boundary - typically backflow at part
+of a *Pressure (implicit)* outlet - it is treated as clean fluid: the solver
+adds the weak inflow term `max(-v . n, 0) * C` on that part of the surface.
+Without it the boundary would feed the solution and the concentration at the
+outlet would grow without bound. If the re-entering fluid is not clean, extend
+the domain so that the outlet sees only outflow.
+
 **Maximum saturation** `C_sat` is the largest concentration the contaminant can
 reach in the fluid - a saturation vapour concentration or a solubility. When it
 is set, a positive *Particle rate* is weakened as the concentration approaches
@@ -1170,6 +1177,7 @@ the march. Without it the run starts from rest and the first steps are wasted.
 | The plume spreads over the whole domain at once | the diffusion coefficient is far too large - compare it with `U * L` |
 | The log warns that prescribed concentration exceeds maximum saturation | a boundary or initial condition is above the maximum saturation; the limit acts only on the particle rate, so check both values |
 | A steady-state solve with diffusion looks wrong | the matrix solver stopped on its iteration limit - raise the GMRES outer iterations, see section 2.6 |
+| The concentration exceeds the inlet value and grows into a noisy pattern | the flow is not converged - `Residual ratio` stays near `1` every step. Its velocity is far from divergence free and no transport on it can be trusted; converge the flow first (mesh, Reynolds number, iterations per step) |
 
 ---
 
