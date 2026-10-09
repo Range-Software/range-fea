@@ -1,5 +1,6 @@
 #include <QString>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 
 #include <rbl_error.h>
@@ -2118,26 +2119,52 @@ void Action::onReportConvergenceGraph()
 
     for (int i=0;i<modelIDs.size();i++)
     {
-        QStringList fileNames;
+        const Model &rModel = Application::instance()->getSession()->getModel(modelIDs[i]);
 
-        QString filePattern(Application::instance()->getSession()->getModel(modelIDs[i]).buildTmpFileName("cvg",QString("*")));
+        QString filePattern(rModel.buildTmpFileName("cvg",QString("*")));
+        // Convergence files are named <model>-<task ID>-<suffix>.cvg
+        QString filePrefix(QFileInfo(rModel.buildTmpFileName("cvg",QString())).completeBaseName() + "-");
 
+        QStringList suffixes;
         std::vector<RProblemType> problemTypes = RProblem::getTypes(R_PROBLEM_ALL);
-        for (uint i=0;i<problemTypes.size();i++)
+        for (uint j=0;j<problemTypes.size();j++)
         {
-            QString fileName(RFileUtils::findLastFile(RFileUtils::getFileNameWithSuffix(filePattern,RProblem::getId(problemTypes[i]))));
-            if (!fileName.isEmpty())
+            suffixes.append(RProblem::getId(problemTypes[j]));
+        }
+        for (RMatrixSolverType type=RMatrixSolverConf::None;type<RMatrixSolverConf::NTypes;type++)
+        {
+            suffixes.append(RMatrixSolverConf::getId(type));
+        }
+
+        // Newest file of each problem and matrix solver type together with its task ID.
+        QStringList lastFileNames;
+        QStringList lastTaskIDs;
+        QString latestTaskID;
+        for (const QString &suffix : std::as_const(suffixes))
+        {
+            QString fileName(RFileUtils::findLastFile(RFileUtils::getFileNameWithSuffix(filePattern,suffix)));
+            if (fileName.isEmpty())
             {
-                fileNames.append(fileName);
+                continue;
+            }
+            QString baseName(QFileInfo(fileName).completeBaseName());
+            QString taskID(baseName.mid(filePrefix.length(),baseName.length() - filePrefix.length() - suffix.length() - 1));
+
+            lastFileNames.append(fileName);
+            lastTaskIDs.append(taskID);
+            if (taskID > latestTaskID)
+            {
+                latestTaskID = taskID;
             }
         }
 
-        for (RMatrixSolverType type=RMatrixSolverConf::None;type<RMatrixSolverConf::NTypes;type++)
+        // Show only files written by the latest solver run - older files belong to tasks which were not solved in it.
+        QStringList fileNames;
+        for (int j=0;j<lastFileNames.size();j++)
         {
-            QString fileName(RFileUtils::findLastFile(RFileUtils::getFileNameWithSuffix(filePattern,RMatrixSolverConf::getId(type))));
-            if (!fileName.isEmpty())
+            if (lastTaskIDs.at(j) == latestTaskID)
             {
-                fileNames.append(fileName);
+                fileNames.append(lastFileNames.at(j));
             }
         }
 

@@ -111,6 +111,11 @@ void ConvergenceGraphObject::readSource()
 
     this->graphData.clear();
 
+    // Matrix solver files hold one block per solve, each counting its iterations from 1.
+    // Blocks are chained so that a new solve is appended instead of overwriting the previous one.
+    double iterationOffset = 0.0;
+    double lastIteration = 0.0;
+
     bool isFirst = true;
     while (!in.atEnd())
     {
@@ -136,7 +141,14 @@ void ConvergenceGraphObject::readSource()
             iteration = query.at(0).toDouble();
             error[0] = query.at(this->dataColumn).toDouble();
 
-            this->graphData[iteration] = error;
+            if (iteration <= lastIteration)
+            {
+                // Iteration number did not grow - next solve has started.
+                iterationOffset += lastIteration;
+            }
+            lastIteration = iteration;
+
+            this->graphData[iterationOffset + iteration] = error;
         }
     }
 

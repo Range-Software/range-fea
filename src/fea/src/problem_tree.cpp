@@ -3,6 +3,7 @@
 #include "application.h"
 #include "mesh_setup_widget.h"
 #include "modal_setup_widget.h"
+#include "particle_setup_widget.h"
 #include "radiation_setup_widget.h"
 #include "time_solver_setup_widget.h"
 
@@ -90,6 +91,14 @@ void ProblemTree::populate()
         QObject::connect(acousticSetupWidget,&AcousticSetupWidget::changed,this,&ProblemTree::onAcousticSetupChanged);
     }
 
+    if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_FLUID_PARTICLE)
+    {
+        QTreeWidgetItem *particleSetup = new QTreeWidgetItem(this);
+        ParticleSetupWidget *particleSetupWidget = new ParticleSetupWidget(rModel.getProblemSetup().getParticleSetup());
+        this->setItemWidget(particleSetup,PROBLEM_TREE_COLUMN_1,particleSetupWidget);
+        QObject::connect(particleSetupWidget,&ParticleSetupWidget::changed,this,&ProblemTree::onParticleSetupChanged);
+    }
+
     if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_RADIATIVE_HEAT)
     {
         QString vfFileName = rModel.buildDataFileName(RViewFactorMatrix::getDefaultFileExtension(true),rModel.getTimeSolver().getEnabled());
@@ -154,6 +163,17 @@ void ProblemTree::onAcousticSetupChanged(const RAcousticSetup &acousticSetup)
     for (int i=0;i<modelIDs.size();i++)
     {
         Application::instance()->getSession()->getModel(modelIDs[i]).getProblemSetup().setAcousticSetup(acousticSetup);
+        Application::instance()->getSession()->setProblemChanged(modelIDs[i]);
+    }
+}
+
+void ProblemTree::onParticleSetupChanged(const RParticleSetup &particleSetup)
+{
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        Application::instance()->getSession()->getModel(modelIDs[i]).getProblemSetup().setParticleSetup(particleSetup);
         Application::instance()->getSession()->setProblemChanged(modelIDs[i]);
     }
 }

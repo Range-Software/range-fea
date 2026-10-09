@@ -126,7 +126,9 @@ tau = h / ( 2 * |v| )           for  Re > 3
 ```
 
 so the upwinding is strong where the element is convection-dominated and fades
-out where it is diffusion-dominated. The LSIC parameter is `|v| * h / 2`.
+out where it is diffusion-dominated. The LSIC parameter is `|v| * h / 2`. These
+parameters belong to the flow solver; the dispersion solver uses its own,
+time-step limited SUPG parameter, see section 1.10.
 
 The SUPG parameter uses the **local** element velocity and element length, so it
 adapts element by element. The PSPG parameter uses a **global stream velocity**
@@ -508,7 +510,10 @@ vector, the conductive flux `-k*grad(T)`.
 concentration on the same flow field,
 
 ```
-dC/dt + v . grad(C) = div( D * grad(C) ) + s
+dC/dt + v . grad(C) = div( D * grad(C) ) + s_eff
+
+s_eff = s * ( 1 - C / C_sat )     for s > 0 and a maximum saturation set
+s_eff = s                         otherwise
 ```
 
 again with SUPG stabilisation and the same time march, and again reading the
@@ -518,15 +523,133 @@ velocity from the flow result.
 |---|---|---|---|
 | `C` | particle concentration | `kg/m^3` | solved for |
 | `v` | velocity | `m/s` | the flow result |
-| `D` | diffusivity | `m^2/s` | **fixed at zero** |
+| `D` | diffusion coefficient | `m^2/s` | *Contaminant dispersion setup*, `0` by default |
+| `C_sat` | maximum saturation | `kg/m^3` | *Contaminant dispersion setup*, `0` (unlimited) by default |
 | `s` | particle source rate | `kg/(m^3*s)` | Particle rate condition |
 
-The diffusion coefficient is **zero** in the current implementation, so the
-transport is purely advective: the contaminant is carried by the flow and
-spreads only through the numerical diffusion the stabilisation introduces. A
-physical diffusivity or a turbulent dispersion cannot be entered. The solver
-answers "where does the flow take it, and how long does it take to get there",
-not "how wide is the plume".
+#### Contaminant dispersion setup
+
+The two parameters of the problem type are set once per model in the
+*Contaminant dispersion setup* group box of the `Problem` tab (section 2.2).
+Both default to zero, which reproduces pure advection with an unlimited source.
+
+**Diffusion coefficient** `D` spreads the contaminant down its concentration
+gradient. With `D = 0` the transport is purely advective: the contaminant is
+carried by the flow and spreads only through the numerical diffusion of the
+stabilisation, so the solver answers "where does the flow take it, and how long
+does it take", not "how wide is the plume". A positive `D` makes the width of
+the plume a physical result.
+
+There is no turbulence model (section 6), so `D` is an **effective**
+diffusivity: the mixing of a real flow is dominated by turbulence, which can be
+estimated as `D ~ nu_t / Sc_t` with the turbulent Schmidt number `Sc_t ~ 0.7`.
+
+| Molecular diffusion (the physical property) | `D [m^2/s]` |
+|---|---|
+| gases and vapours in air (water vapour `2.5e-5`, CO2 `1.6e-5`, solvent vapours about `1e-5`) | `1e-6` - `1e-4` |
+| dissolved species in water (O2 `2e-9`, salts about `1.5e-9`) | `1e-10` - `1e-8` |
+| aerosol particles in air, Brownian motion (10 nm `5e-8`, 0.1 um `7e-10`, 1 um `3e-11`) | `1e-11` - `1e-8` |
+
+At engineering scales molecular diffusion is almost always negligible next to the
+transport by the flow. The value normally entered is an effective one:
+
+| Effective (turbulent) diffusion | `D_eff [m^2/s]` |
+|---|---|
+| ventilated room, indoor air mixing | `1e-3` - `1e-2` |
+| duct or channel flow, about `D ~ 0.01 - 0.05 * U * L` (`U` mean velocity, `L` duct size) | `1e-3` - `1e-1` |
+| rivers, transverse mixing | `1e-2` - `1` |
+| atmosphere, horizontal mixing | `1` - `100` |
+
+Whether a value matters depends on the mesh. With mean velocity `U`, flow length
+`L`, element size `h` and time step `dt`:
+
+- **when `D` has any visible effect** - the contaminant spreads by about
+  `sqrt( 2 * D * L / U )` while it crosses the domain. If that is smaller than
+  `h`, `D` does nothing, so `D` only matters above roughly `U * h^2 / ( 2 * L )`.
+  For a channel with `U ~ 1 m/s`, `L ~ 15 m` and `h ~ 0.1 m` that is about
+  `3e-4 m^2/s`;
+- **when `D` dominates** - above about `U * L` (about `15 m^2/s` for the same
+  channel) diffusion smears out everything and the flow barely matters;
+- **time stepping** - if `D * dt / h^2` exceeds about `1`, switch to *Backward
+  difference (stable)*; the central difference march does not damp the fastest
+  diffusive modes and oscillates.
+
+Walls and outlets without a *Particle concentration* condition keep the natural
+condition of **zero diffusive flux**: the contaminant does not diffuse through a
+wall, and leaves through an outlet only with the flow.
+
+**Maximum saturation** `C_sat` is the largest concentration the contaminant can
+reach in the fluid - a saturation vapour concentration or a solubility. When it
+is set, a positive *Particle rate* is weakened as the concentration approaches
+it and stops at saturation, `s * ( 1 - C / C_sat )`; this models evaporation or
+dissolution, and `s` is then the rate into a clean fluid, about
+`k_m * C_sat * A / V`. Sinks (`s < 0`) are not limited. The limit acts only on
+the source: a concentration prescribed by a boundary or initial condition is not
+limited, and the solver log warns when it exceeds `C_sat`. Concentration is not
+clipped either, so a slight overshoot next to a steep front is still possible.
+
+A saturation limit exists only where there is a thermodynamic one: a vapour
+pressure or a solubility. For a vapour in air the saturation concentration
+follows from the saturation vapour pressure, `C_sat = p_sat * M / ( R * T )`:
+
+| Vapour in air | Temperature | `C_sat [kg/m^3]` |
+|---|---|---|
+| water vapour | 0 degC | `0.0048` |
+| water vapour | 20 degC | `0.017` |
+| water vapour | 40 degC | `0.051` |
+| water vapour | 100 degC | `0.60` |
+| ethanol or toluene | 20 degC | about `0.11` |
+| methanol | 20 degC | about `0.17` |
+| benzene | 20 degC | about `0.32` |
+| acetone | 20 degC | about `0.59` |
+
+For a substance dissolved in water the limit is its solubility:
+
+| Dissolved in water | `C_sat [kg/m^3]` |
+|---|---|
+| oxygen in equilibrium with air, 20 degC | `0.009` |
+| carbon dioxide at 1 atm | `1.7` |
+| gypsum | `2.4` |
+| sodium chloride | about `360` |
+
+Particles, dust and smoke have no saturation; leave the value at `0`
+(unlimited). For scale only, workplace exposure limits are about
+`1e-6` - `1e-5 kg/m^3` (1 - 10 mg/m^3) and dust explosion lower limits about
+`0.02` - `0.06 kg/m^3`.
+Saturation depends strongly on temperature, while the solver uses one constant
+value: for a non-isothermal case take the value at the coldest relevant
+temperature, where condensation would start.
+
+#### Stabilisation
+
+The SUPG parameter of the dispersion solver is limited by the time step and
+includes the diffusion,
+
+```
+tau = [ ( 2 / dt )^2 + ( 2 * |v| / h )^2 + 9 * ( 4 * D / h^2 )^2 ]^(-1/2)
+```
+
+with the `dt` term dropped in a steady-state analysis. It reduces to
+`h / ( 2 * |v| )` where the flow is fast, never exceeds `dt / 2`, and approaches
+`h^2 / ( 12 * D )` - the limit of the nodally exact one-dimensional parameter -
+where diffusion dominates. The time-step limit matters in slow and recirculating
+regions: there the element Courant number `|v| * dt / h` is tiny and an
+unlimited `tau` would turn the stabilisation into noise that creates
+concentration ahead of the front.
+
+The Galerkin advection term is assembled in **skew-symmetric form**,
+`v . grad(C) + 0.5 * div(v) * C`, with the continuous nodal velocity. A
+velocity from the flow solver is never exactly divergence free, and without this
+form the discretisation can create concentration on its own - a checkerboard
+pattern that grows from step to step once the time step is small. In
+skew-symmetric form advection only moves the contaminant; for an exactly
+divergence free velocity the added term is zero.
+
+Unlike the flow solver (section 6), the dispersion solver applies the theta
+weighting consistently, so *Central difference (accurate)* is a genuine
+Crank-Nicolson march here.
+
+#### Boundary conditions
 
 | Boundary condition | Type | Applies to | Components |
 |---|---|---|---|
@@ -545,7 +668,10 @@ It models a source releasing continuously inside the domain.
 
 Only the material **density** is required for this problem type.
 
-Result: **Particle concentration** as a node scalar.
+Results: **Particle concentration** as a node scalar, and **Relative
+saturation** `C / C_sat` as a dimensionless node scalar when a maximum
+saturation is set. Relative saturation is displayed from `0` to `1` by default
+and is removed when the maximum saturation is set back to zero.
 
 ### 1.11 Derived results
 
@@ -556,6 +682,7 @@ Result: **Particle concentration** as a node scalar.
 | Temperature `[K]` | node | fluid heat | the solved temperature field |
 | Heat flux `[W/m^2]` | element | fluid heat | conductive flux `-k*grad(T)` |
 | Particle concentration `[kg/m^3]` | node | contaminant dispersion | the solved concentration field |
+| Relative saturation `[-]` | node | contaminant dispersion | `C / C_sat`, only when a maximum saturation is set |
 
 The velocity is stored as a node **vector**, so the `Results` tab can display
 its magnitude as a colour, its components individually, or arrows. Two display
@@ -649,10 +776,20 @@ time-dependent. Leave it disabled for a steady-state flow run.
 | Number of time-steps | how many steps to compute |
 | Output frequency | write a result file every N steps; `0` writes only the last step |
 
-None of the fluid problem types has a setup group box of its own. Everything
-else is assigned per entity in the condition tabs, and the iteration count -
-which matters more here than anywhere else in Range FEA - lives in the problem
-task flow dialog rather than on this tab.
+**Contaminant dispersion setup** - shown once a *Contaminant dispersion* task is
+in the task flow. It holds the two parameters of section 1.10:
+
+| Field | Meaning |
+|---|---|
+| Maximum saturation `[kg/m^3]` | largest possible concentration; a positive particle rate stops at it and *Relative saturation* is computed. `0` means unlimited |
+| Diffusion coefficient `[m^2/s]` | effective diffusivity of the contaminant in the fluid. `0` means pure advection |
+
+Typical values of both are listed in section 1.10.
+
+The flow and the fluid heat problem types have no setup group box of their own.
+Everything else is assigned per entity in the condition tabs, and the iteration
+count - which matters more here than anywhere else in Range FEA - lives in the
+problem task flow dialog rather than on this tab.
 
 ### 2.3 Material tab
 
@@ -707,9 +844,10 @@ The conditions of sections 1.4, 1.9 and 1.10 are offered. Notes on using them:
   in the task flow; **Particle concentration** and **Particle rate** once a
   *Contaminant dispersion* task is.
 - Every component is a table against time. Click **Edit time dependent values**
-  to open the component editor, where values are entered against time and each
-  value is valid **from** the time given. This is how a release event, a ramped
-  inlet or a duty cycle is modelled.
+  to open the component editor, where values are entered against time; between
+  two given times the value is interpolated linearly, and after the last time
+  the last value is kept. This is how a release event, a ramped inlet or a duty
+  cycle is modelled.
 
 ### 2.5 Initial and environment conditions
 
@@ -735,12 +873,21 @@ group** iterations drive the non-linearity of section 1.6. A flow model that
 does not converge almost always needs more task group iterations, a better mesh
 or a corrected set of boundary conditions - not a higher GMRES iteration count.
 
+The exception is a **steady-state contaminant dispersion with diffusion**. It is
+a single linear solve, so there are no task group iterations to fall back on,
+and a diffusion-dominated system converges slowly under the default GMRES limit
+of 10 inner times 10 outer iterations. The matrix solver does not warn when it
+reaches its limit: read its iteration table in the solver log, and if it runs to
+the last outer iteration with the residual still well above the solver
+convergence value, raise the number of outer iterations. An unconverged solve
+gives a wrong answer without any other sign.
+
 ### 2.7 Monitoring points
 
 `Problem` -> `Define monitoring points` places probes at given coordinates and
-selects the variable to record - *Velocity*, *Pressure*, *Temperature* or
-*Particle concentration*. In a transient run the history is shown by `Report` ->
-`Monitoring points`.
+selects the variable to record - *Velocity*, *Pressure*, *Temperature*,
+*Particle concentration*, *Particle rate* or *Relative saturation*. In a
+transient run the history is shown by `Report` -> `Monitoring points`.
 
 For a dispersion model a monitoring point at the location of interest is the
 answer in the form you usually want it: the concentration against time at a
@@ -750,7 +897,8 @@ given place, read off a graph rather than out of a sequence of pictures.
 
 The `Results` tab lists the computed variables and controls the 3D view.
 Velocity is a node vector, pressure a node scalar, temperature a node scalar,
-heat flux an element vector and particle concentration a node scalar.
+heat flux an element vector, and particle concentration and relative saturation
+node scalars.
 
 The `Records` tab of the `Model` dock lists the result records:
 
@@ -952,6 +1100,12 @@ dt ~ h / |v|
 Then pick the number of steps from how long the plume needs to traverse the
 domain, `L / |v|`, divided by that step.
 
+In the *Contaminant dispersion setup* group box of the same tab, leave both
+values at `0` for pure advection, or enter an effective **Diffusion
+coefficient** from the table in section 1.10 if the width of the plume matters.
+A **Maximum saturation** only makes sense for a vapour or a dissolved substance;
+it must not be below the release concentration of Step 4.
+
 ### Step 4 - release the contaminant
 
 1. Select the inlet surface entity.
@@ -998,9 +1152,10 @@ the march. Without it the run starts from rest and the first steps are wasted.
 - `Report` -> `Monitoring points` plots the concentration history at the probe.
   Read the arrival time off it and compare with `L / |v|`, the travel time the
   mean flow implies - that is the cheapest validation of the whole model.
-- Remember that the plume spreads only by numerical diffusion. The **width** of
-  the computed plume is a property of the mesh and the time step, not of the
-  physics - see section 6.
+- With a zero diffusion coefficient the plume spreads only by numerical
+  diffusion, so its **width** is a property of the mesh and the time step, not
+  of the physics. With an effective diffusion coefficient the width is a
+  result - check it against a finer mesh before trusting it.
 
 ### Troubleshooting
 
@@ -1011,7 +1166,10 @@ the march. Without it the run starts from rest and the first steps are wasted.
 | The concentration goes negative or overshoots | the time step is too large for the mesh, so the stabilised advection is ringing. Slight undershoots next to a steep front are normal; the solution is not clipped at zero, because clipping would add contaminant |
 | Only one record was written | the output frequency is `0`, which writes the last step only |
 | Each step's residual stays high | too few iterations per time step - the flow within each step is not converged |
-| The plume never spreads sideways | that is the model: the diffusivity is zero, so lateral spreading comes only from the flow field |
+| The plume never spreads sideways | the diffusion coefficient is zero, so lateral spreading comes only from the flow field - enter an effective diffusion coefficient, see section 1.10 |
+| The plume spreads over the whole domain at once | the diffusion coefficient is far too large - compare it with `U * L` |
+| The log warns that prescribed concentration exceeds maximum saturation | a boundary or initial condition is above the maximum saturation; the limit acts only on the particle rate, so check both values |
+| A steady-state solve with diffusion looks wrong | the matrix solver stopped on its iteration limit - raise the GMRES outer iterations, see section 2.6 |
 
 ---
 
@@ -1104,10 +1262,15 @@ every check here for the same reason.
   produces hydrostatic pressure and no motion.
 - **The coupling to temperature and concentration is one-way.** The flow drives
   the transport; the transport never changes the flow.
-- **Zero diffusivity in contaminant dispersion.** The diffusion coefficient is
-  fixed at zero, so the transport is purely advective. The width of a computed
-  plume is set by the numerical diffusion of the mesh and the time step, not by
-  any physical diffusivity, and it cannot be entered.
+- **Constant, isotropic diffusion in contaminant dispersion.** The diffusion
+  coefficient is a single value for the whole model; it cannot vary in space or
+  time, follow the direction of the flow, or come from a turbulence model. With
+  no turbulence model it has to be estimated as an effective diffusivity - see
+  section 1.10.
+- **Constant maximum saturation.** The saturation does not follow the
+  temperature of a *Heat transfer in fluids* result, and it limits only a
+  positive particle rate. Concentrations prescribed by conditions are not
+  limited, and the field is not clipped.
 - **`Heat rate` conditions are ignored by the fluid heat solver.** *Heat rate
   (unit area)* and *Heat rate (unit volume)* are offered by the interface for
   *Heat transfer in fluids* but are not read by `RSolverFluidHeat`; only the
@@ -1136,11 +1299,13 @@ every check here for the same reason.
   steady-state run, and set the iteration count of the task group high enough
   that the convergence value, rather than the count, is what ends the run. The
   damping of 1.6 keeps such a run descending, but it cannot make it quadratic.
-- **The central difference march is not Crank-Nicolson.** The theta weighting is
-  applied to the matrix but not to the residual, so *Central difference
-  (accurate)* solves a backward Euler residual with a half-stiffness matrix. The
-  answer is the backward difference answer, reached more slowly. Use *Backward
-  difference (stable)* until this is put right.
+- **The central difference march of the flow solver is not Crank-Nicolson.** The
+  theta weighting is applied to the matrix but not to the residual, so *Central
+  difference (accurate)* solves a backward Euler residual with a half-stiffness
+  matrix. The answer is the backward difference answer, reached more slowly. Use
+  *Backward difference (stable)* for the flow until this is put right. The
+  dispersion solver is not affected - it is linear and its march is a genuine
+  Crank-Nicolson one.
 - **The stabilisation parameters are not differentiated.** `Tsupg`, `Tpspg`,
   `Tlsic` and the element length all depend on the velocity, and all enter the
   matrix as constants evaluated at the current field. This is the usual practice

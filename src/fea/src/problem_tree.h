@@ -40,6 +40,9 @@ class ProblemTree : public QTreeWidget
         //! Acoustic setup has changed.
         void onAcousticSetupChanged(const RAcousticSetup &acousticSetup);
 
+        //! Particle setup has changed.
+        void onParticleSetupChanged(const RParticleSetup &particleSetup);
+
         //! Radiation setup has changed.
         void onRadiationSetupChanged(const RRadiationSetup &radiationSetup);
 

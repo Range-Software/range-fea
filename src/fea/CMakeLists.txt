@@ -134,6 +134,7 @@ qt_add_executable(fea
     src/monitoring_points_dialog.cpp
     src/move_node_dialog.cpp
     src/new_model_dialog.cpp
+    src/particle_setup_widget.cpp
     src/pick_details_tree.cpp
     src/pick_item.cpp
     src/pick_list.cpp
@@ -316,6 +317,7 @@ qt_add_executable(fea
     src/monitoring_points_dialog.h
     src/move_node_dialog.h
     src/new_model_dialog.h
+    src/particle_setup_widget.h
     src/pick_details_tree.h
     src/pick_item.h
     src/pick_list.h

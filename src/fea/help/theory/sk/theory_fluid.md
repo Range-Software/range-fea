@@ -1,58 +1,58 @@
-# Fluid Flow - Theory Manual and User Guide
+# Prúdenie tekutín - Teoretický manuál a používateľská príručka
 
-This document describes the fluid solvers of Range FEA - `RSolverFluid`, which
-serves the **Incompressible viscous flow** problem type, `RSolverFluidHeat`,
-which serves **Heat transfer in fluids**, and `RSolverFluidParticle`, which
-serves **Contaminant dispersion**: the equations they solve, the meaning of
-every input they accept, the parts of the graphical user interface that drive
-them, and two worked tutorials.
+Tento dokument opisuje riešiče prúdenia tekutín v Range FEA - `RSolverFluid`,
+ktorý rieši typ úlohy **Nestlačiteľné viskózne prúdenie** (*Incompressible
+viscous flow*), `RSolverFluidHeat`, ktorý rieši **Prestup tepla v tekutinách**
+(*Heat transfer in fluids*), a `RSolverFluidParticle`, ktorý rieši **Rozptyl
+kontaminantu** (*Contaminant dispersion*): rovnice, ktoré riešia, význam každého
+vstupu, ktorý prijímajú, časti grafického používateľského rozhrania, ktoré ich
+ovládajú, a dva podrobne rozpracované tutoriály.
 
-**Contents**
+**Obsah**
 
-1. [Theoretical background](#1-theoretical-background)
-2. [Graphical user interface](#2-graphical-user-interface)
-3. [Tutorial - steady-state flow through a channel](#3-tutorial---steady-state-flow-through-a-channel)
-4. [Tutorial - transient flow with contaminant dispersion](#4-tutorial---transient-flow-with-contaminant-dispersion)
-5. [Checking a model](#5-checking-a-model)
-6. [Limitations](#6-limitations)
+1. [Teoretický základ](#1-teoretický-základ)
+2. [Grafické používateľské rozhranie](#2-grafické-používateľské-rozhranie)
+3. [Tutoriál - ustálené prúdenie kanálom](#3-tutoriál---ustálené-prúdenie-kanálom)
+4. [Tutoriál - prechodové prúdenie s rozptylom kontaminantu](#4-tutoriál---prechodové-prúdenie-s-rozptylom-kontaminantu)
+5. [Kontrola modelu](#5-kontrola-modelu)
+6. [Obmedzenia](#6-obmedzenia)
 
 ---
 
-## 1. Theoretical background
+## 1. Teoretický základ
 
-### 1.1 Primary unknowns - the velocity and pressure fields
+### 1.1 Primárne neznáme - pole rýchlosti a tlaku
 
-The primary unknowns of **Incompressible viscous flow** are the **velocity**
-vector `v` in `m/s` and the **pressure** `p` in `Pa`, both at every node. Every
-node carries **four** degrees of freedom - `vx`, `vy`, `vz` and `p` - so a mesh
-with `N` nodes gives a system of `4N` equations.
+Primárnymi neznámymi **Nestlačiteľného viskózneho prúdenia** sú vektor
+**rýchlosti** `v` v `m/s` a **tlak** `p` v `Pa`, oboje v každom uzle. Každý uzol
+nesie **štyri** stupne voľnosti - `vx`, `vy`, `vz` a `p` - takže sieť s `N`
+uzlami dáva sústavu `4N` rovníc.
 
-That makes a flow model the most expensive physics type in Range FEA: four
-unknowns per node against three for a structural model and one for a heat model,
-a matrix that is neither symmetric nor positive definite, and the non-linear
-iteration of section 1.6 wrapped around every linear solve.
+Preto je model prúdenia fyzikálne najnáročnejším typom úlohy v Range FEA: štyri
+neznáme na uzol oproti trom pri štrukturálnom modeli a jednej pri tepelnom
+modeli, matica, ktorá nie je ani symetrická, ani pozitívne definitná, a
+nelineárna iterácia z časti 1.6 okolo každého lineárneho riešenia.
 
-The two companion problem types add one scalar each, solved on the flow field
-the fluid solver produced:
+Dva sprievodné typy úloh pridávajú každý jednu skalárnu veličinu, riešenú na
+prúdovom poli, ktoré vypočítal riešič prúdenia:
 
-| Problem type | Solver | Primary unknown | Units | DOF per node |
+| Typ úlohy | Riešič | Primárna neznáma | Jednotky | Stupne voľnosti na uzol |
 |---|---|---|---|---|
-| Incompressible viscous flow | `RSolverFluid` | velocity and pressure | `m/s`, `Pa` | 4 |
-| Heat transfer in fluids | `RSolverFluidHeat` | temperature | `K` | 1 |
-| Contaminant dispersion | `RSolverFluidParticle` | particle concentration | `kg/m^3` | 1 |
+| Nestlačiteľné viskózne prúdenie | `RSolverFluid` | rýchlosť a tlak | `m/s`, `Pa` | 4 |
+| Prestup tepla v tekutinách | `RSolverFluidHeat` | teplota | `K` | 1 |
+| Rozptyl kontaminantu | `RSolverFluidParticle` | koncentrácia častíc | `kg/m^3` | 1 |
 
-Both companions **require** an *Incompressible viscous flow* task in the same
-problem: they read the velocity field from its result and never compute it
-themselves.
+Oba sprievodné typy **vyžadujú** v tej istej úlohe krok *Nestlačiteľné viskózne
+prúdenie*: pole rýchlosti čítajú z jeho výsledku a samy ho nikdy nepočítajú.
 
-The default state of a node that no condition and no previous result touches is
-zero velocity and zero pressure.
+Predvolený stav uzla, ktorého sa nedotýka žiadna podmienka ani predchádzajúci
+výsledok, je nulová rýchlosť a nulový tlak.
 
-### 1.2 Governing equations
+### 1.2 Riadiace rovnice
 
-The solver implements the **incompressible Navier-Stokes equations** for a
-Newtonian fluid of constant density `rho` and constant dynamic viscosity `mu`.
-Momentum and mass balance read
+Riešič implementuje **Navierove-Stokesove rovnice nestlačiteľného prúdenia** pre
+newtonskú tekutinu s konštantnou hustotou `rho` a konštantnou dynamickou
+viskozitou `mu`. Bilancia hybnosti a hmotnosti znie
 
 ```
 rho * ( dv/dt + (v . grad) v ) = -grad(p) + div( mu * ( grad(v) + grad(v)^T ) ) + rho * g
@@ -60,8 +60,8 @@ rho * ( dv/dt + (v . grad) v ) = -grad(p) + div( mu * ( grad(v) + grad(v)^T ) ) 
 div(v) = 0
 ```
 
-and with the time solver disabled the transient term drops out, leaving the
-steady-state balance
+a pri vypnutom časovom riešiči prechodový člen odpadne a zostane ustálená
+bilancia
 
 ```
 rho * (v . grad) v = -grad(p) + div( mu * ( grad(v) + grad(v)^T ) ) + rho * g
@@ -69,53 +69,52 @@ rho * (v . grad) v = -grad(p) + div( mu * ( grad(v) + grad(v)^T ) ) + rho * g
 div(v) = 0
 ```
 
-| Symbol | Meaning | Units | Source |
+| Symbol | Význam | Jednotky | Zdroj |
 |---|---|---|---|
-| `v` | velocity | `m/s` | solved for |
-| `p` | pressure | `Pa` | solved for |
-| `rho` | density | `kg/m^3` | material property |
-| `mu` | dynamic viscosity | `kg/(m*s)`, that is `Pa*s` | material property |
-| `g` | gravitational acceleration | `m/s^2` | Gravitational acceleration environment condition |
+| `v` | rýchlosť | `m/s` | riešená |
+| `p` | tlak | `Pa` | riešený |
+| `rho` | hustota | `kg/m^3` | vlastnosť materiálu |
+| `mu` | dynamická viskozita | `kg/(m*s)`, teda `Pa*s` | vlastnosť materiálu |
+| `g` | gravitačné zrýchlenie | `m/s^2` | environmentálna podmienka Gravitačné zrýchlenie |
 
-The pressure here is not a thermodynamic quantity. Incompressibility leaves it
-as the Lagrange multiplier that enforces `div(v) = 0`, which has two practical
-consequences worth internalising before reading any result:
+Tlak tu nie je termodynamická veličina. Nestlačiteľnosť z neho robí Lagrangeov
+multiplikátor, ktorý vynucuje `div(v) = 0`, čo má dva praktické dôsledky, ktoré
+treba mať na pamäti pred čítaním akéhokoľvek výsledku:
 
-- Only **pressure differences** are meaningful. A model in which no condition
-  fixes a pressure anywhere determines the pressure field only up to an additive
-  constant, and the matrix is singular in that constant - see 1.7.
-- Pressure responds instantly across the whole domain. There is no acoustic wave
-  and no speed of sound in this formulation, so a pressure applied at an outlet
-  is felt at the inlet within the same solve.
+- Zmysel majú iba **rozdiely tlaku**. Model, v ktorom žiadna podmienka nikde
+  nefixuje tlak, určuje tlakové pole iba až na aditívnu konštantu a matica je v
+  tejto konštante singulárna - pozri 1.7.
+- Tlak reaguje okamžite v celej oblasti. V tejto formulácii neexistuje
+  akustická vlna ani rýchlosť zvuku, takže tlak predpísaný na výstupe sa na
+  vstupe prejaví v tom istom riešení.
 
-The **Reynolds number** built from a characteristic length `L` and speed `V`,
+**Reynoldsovo číslo** vytvorené z charakteristickej dĺžky `L` a rýchlosti `V`,
 
 ```
 Re = rho * V * L / mu
 ```
 
-is the one number that decides whether a flow model is going to behave. Below
-roughly `Re = 1` the convective term is negligible and the problem is nearly
-linear; up to a few thousand the flow is laminar and the solver is in its
-element; well beyond that the real flow is turbulent, and this solver does not
-model turbulence - see section 6.
+je jediné číslo, ktoré rozhoduje o tom, či sa model prúdenia bude správať
+rozumne. Približne pod `Re = 1` je konvekčný člen zanedbateľný a úloha je takmer
+lineárna; do niekoľkých tisíc je prúdenie laminárne a riešič je vo svojom živle;
+výrazne nad touto hodnotou je skutočné prúdenie turbulentné a tento riešič
+turbulenciu nemodeluje - pozri časť 6.
 
-### 1.3 Finite element discretisation and stabilisation
+### 1.3 Diskretizácia metódou konečných prvkov a stabilizácia
 
-Velocity and pressure are interpolated with the **same** linear shape functions
-on each element - equal-order `P1/P1` and `Q1/Q1` interpolation. That
-combination does not satisfy the inf-sup (Babuska-Brezzi) condition on its own
-and would produce a checkerboard pressure field, so the formulation is
-**stabilised**. Three stabilisation terms are added, each with its own
-element-level parameter:
+Rýchlosť a tlak sa na každom prvku interpolujú **rovnakými** lineárnymi tvarovými
+funkciami - interpolácia rovnakého rádu `P1/P1` a `Q1/Q1`. Táto kombinácia sama
+osebe nespĺňa podmienku inf-sup (Babuškovu-Brezziho) a viedla by k
+šachovnicovému tlakovému poľu, preto je formulácia **stabilizovaná**. Pridávajú
+sa tri stabilizačné členy, každý s vlastným parametrom na úrovni prvku:
 
-| Term | Purpose |
+| Člen | Účel |
 |---|---|
-| **SUPG** - streamline upwind Petrov-Galerkin | stabilises the convective term, which would otherwise produce node-to-node oscillations in a convection-dominated flow |
-| **PSPG** - pressure stabilising Petrov-Galerkin | makes equal-order velocity and pressure admissible, removing the checkerboard pressure mode |
-| **LSIC** - least-squares on the incompressibility constraint | damps the divergence error, improving mass conservation element by element |
+| **SUPG** - streamline upwind Petrov-Galerkin | stabilizuje konvekčný člen, ktorý by inak pri prúdení s prevládajúcou konvekciou vytváral oscilácie od uzla k uzlu |
+| **PSPG** - pressure stabilising Petrov-Galerkin | umožňuje použiť rýchlosť a tlak rovnakého rádu a odstraňuje šachovnicový tlakový mód |
+| **LSIC** - najmenšie štvorce na podmienke nestlačiteľnosti | tlmí chybu divergencie a zlepšuje zachovanie hmotnosti prvok po prvku |
 
-The SUPG and PSPG parameters are built from an element Reynolds number
+Parametre SUPG a PSPG sú zostavené z Reynoldsovho čísla prvku
 
 ```
 h   = element length along the flow direction
@@ -125,1040 +124,1194 @@ tau = h * Re / ( 6 * |v| )      for  0 < Re <= 3
 tau = h / ( 2 * |v| )           for  Re > 3
 ```
 
-so the upwinding is strong where the element is convection-dominated and fades
-out where it is diffusion-dominated. The LSIC parameter is `|v| * h / 2`.
+(`h` je dĺžka prvku v smere prúdenia, `Re` Reynoldsovo číslo prvku), takže
+proti-prúdová stabilizácia je silná tam, kde v prvku prevláda konvekcia, a
+zaniká tam, kde prevláda difúzia. Parameter LSIC je `|v| * h / 2`. Tieto
+parametre patria riešiču prúdenia; riešič rozptylu kontaminantu používa vlastný
+parameter SUPG obmedzený časovým krokom, pozri časť 1.10.
 
-The SUPG parameter uses the **local** element velocity and element length, so it
-adapts element by element. The PSPG parameter uses a **global stream velocity**
-and a global element length scale instead, which keeps the pressure
-stabilisation uniform across the mesh. The stream velocity is taken from the
-inflow conditions at the first pass of each solve - each time step in a
-transient run - rather than from the field being solved,
+Parameter SUPG používa **lokálnu** rýchlosť a dĺžku prvku, takže sa prispôsobuje
+prvok po prvku. Parameter PSPG namiesto toho používa **globálnu prúdovú
+rýchlosť** a globálnu mierku dĺžky prvku, čo udržuje tlakovú stabilizáciu v celej
+sieti rovnomernú. Prúdová rýchlosť sa berie z podmienok prítoku pri prvom
+prechode každého riešenia - v prechodovom výpočte pri každom časovom kroku - a
+nie z riešeného poľa,
 
 ```
 V_stream = sum( |Q| over inflow surfaces ) / sum( area of inflow surfaces )
 ```
 
-that is the area-weighted mean inflow speed, falling back to `1 m/s` when the
-model has no inflow condition at all. The element length scale is derived from
-the element volume: `cbrt(6*V/pi)` for a tetrahedron, `cbrt(V)` for a hexahedron.
+teda plochou vážená stredná rýchlosť prítoku (súčet `|Q|` cez plochy prítoku
+delený súčtom ich plôch), s náhradnou hodnotou `1 m/s`, ak model nemá žiadnu
+podmienku prítoku. Mierka dĺžky prvku sa odvodzuje z objemu prvku:
+`cbrt(6*V/pi)` pre tetrahedrón, `cbrt(V)` pre hexahedrón.
 
-**Element support.** The flow equations are assembled on **volume elements
-only**, and only on **linear tetrahedra** (`TETRA1`) and **linear hexahedra**
-(`HEXA1`). Any other volume element type stops the run with an error naming the
-type. Surface elements take part only where they carry a *Pressure (implicit)*
-condition, where they contribute a pressure traction and nothing else. Point and
-line entities contribute nothing at all - unlike a heat model, they are not
-lower-dimensional conductors, they are simply absent.
+**Podporované prvky.** Rovnice prúdenia sa zostavujú **iba na objemových
+prvkoch**, a to iba na **lineárnych tetrahedrónoch** (`TETRA1`) a **lineárnych
+hexahedrónoch** (`HEXA1`). Akýkoľvek iný typ objemového prvku zastaví výpočet s
+chybou, ktorá daný typ uvádza. Plošné prvky sa zúčastňujú iba tam, kde nesú
+podmienku *Tlak (implicitný)*, a prispievajú tlakovou silou a ničím iným. Bodové
+a čiarové entity neprispievajú vôbec - na rozdiel od tepelného modelu nie sú
+vodičmi nižšej dimenzie, jednoducho chýbajú.
 
-This is the sharpest practical difference from the other physics in Range FEA:
-a fluid model must be a **meshed volume**. Generate the tetrahedral mesh with
-`Geometry` -> `Volume` -> `Generate tetrahedral mesh` before expecting a flow
-solve to do anything.
+Toto je najvýraznejší praktický rozdiel oproti ostatným fyzikálnym úlohám v
+Range FEA: model tekutiny musí byť **objem so sieťou**. Pred tým, než od riešenia
+prúdenia budete niečo očakávať, vygenerujte tetrahedrónovú sieť pomocou
+`Geometria` -> `Objem` -> `Generovať tetrahedrónovú sieť`.
 
-### 1.4 Boundary conditions
+### 1.4 Okrajové podmienky
 
-| Boundary condition | Type | Applies to | Components |
+| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
 |---|---|---|---|
-| Wall | explicit | point, line, surface | none |
-| Wall (frictionless) | explicit | point, line, surface | none |
-| Velocity (inflow) | explicit | surface | Velocity `[m/s]` |
-| Volumetric flow rate (inflow) | explicit | surface | Volumetric flow rate `[m^3/s]` |
-| Pressure (explicit) | explicit | surface | Pressure `[Pa]` |
-| Pressure (implicit) | natural, traction | surface | Pressure `[Pa]` |
+| Stena (*Wall*) | explicitná | bod, čiara, plocha | žiadne |
+| Stena (bez trenia) (*Wall (frictionless)*) | explicitná | bod, čiara, plocha | žiadne |
+| Rýchlosť (prítok) (*Velocity (inflow)*) | explicitná | plocha | Rýchlosť `[m/s]` |
+| Objemový prietok (prítok) (*Volumetric flow rate (inflow)*) | explicitná | plocha | Objemový prietok `[m^3/s]` |
+| Tlak (explicitný) (*Pressure (explicit)*) | explicitná | plocha | Tlak `[Pa]` |
+| Tlak (implicitný) (*Pressure (implicit)*) | prirodzená, silová | plocha | Tlak `[Pa]` |
 
-**Wall** is the no-slip condition. Every node of the entity has all three
-velocity components removed from the system and held at zero. It takes no
-components - there is nothing to enter, ticking it is the whole of the setup.
-This is the condition for every solid boundary the fluid touches.
+**Stena** je podmienka nulového sklzu (no-slip). Každému uzlu entity sa zo
+sústavy odoberú všetky tri zložky rýchlosti a držia sa na nule. Nemá žiadne
+zložky - nie je čo zadať, zaškrtnutie je celé nastavenie. Je to podmienka pre
+každú pevnú hranicu, ktorej sa tekutina dotýka.
 
-**Wall (frictionless)** is the slip, or symmetry, condition: the fluid may
-travel along the surface but not through it. It is applied by finding the
-**dominant global axis** of each surface element normal and holding only that
-one velocity component at zero, leaving the other two free. Note what that
-means: the condition is exact only for a surface whose normal lies along `x`,
-`y` or `z`. On a surface tilted away from the global axes it constrains the
-wrong direction, and the closer the normal comes to 45 degrees between two axes
-the worse the approximation. Use it for the flat symmetry planes of a model
-aligned with the global axes, and use *Wall* elsewhere.
+**Stena (bez trenia)** je podmienka sklzu, alebo symetrie: tekutina sa môže
+pohybovať pozdĺž plochy, ale nie cez ňu. Aplikuje sa tak, že pre normálu každého
+plošného prvku sa nájde **dominantná globálna os** a na nule sa drží iba táto
+jedna zložka rýchlosti, ostatné dve zostanú voľné. Všimnite si, čo to znamená:
+podmienka je presná iba pre plochu, ktorej normála leží pozdĺž `x`, `y` alebo
+`z`. Na ploche naklonenej voči globálnym osiam obmedzuje nesprávny smer a čím
+bližšie je normála k 45 stupňom medzi dvoma osami, tým horšia je aproximácia.
+Používajte ju pre rovinné roviny symetrie modelu zarovnaného s globálnymi
+osami, inde použite *Stenu*.
 
-**Velocity (inflow)** prescribes a velocity of the given magnitude directed
-along the **average normal** of the surface entity, pointing into the fluid. The
-sign is taken from the orientation of the entity's elements with respect to the
-volume behind them, so a positive value means flow entering the domain and a
-negative value means flow leaving it. You enter a speed, not a vector - the
-direction comes from the geometry.
+**Rýchlosť (prítok)** predpisuje rýchlosť danej veľkosti smerujúcu pozdĺž
+**priemernej normály** plošnej entity, do tekutiny. Znamienko sa určuje z
+orientácie prvkov entity voči objemu za nimi, takže kladná hodnota znamená
+prúdenie vstupujúce do oblasti a záporná prúdenie, ktoré ju opúšťa. Zadáva sa
+rýchlosť, nie vektor - smer vyplýva z geometrie.
 
-**Volumetric flow rate (inflow)** prescribes the same thing from the total flow
-rate instead: the solver divides the rate by the area of the entity and applies
-the resulting mean speed along the same average normal.
+**Objemový prietok (prítok)** predpisuje to isté z celkového prietoku: riešič
+vydelí prietok plochou entity a výslednú strednú rýchlosť aplikuje pozdĺž tej
+istej priemernej normály.
 
 ```
 v = Q / A          A = area of the entity
 ```
 
-Reach for it whenever the quantity you actually know is a throughput - a pump
-rating, a duct in `m^3/s` - and for *Velocity (inflow)* when you know the speed.
-Both hold all three velocity components at every node of the entity, so both
-make the inlet a uniform plug flow; neither can produce a developed profile at
-the inlet face. Give the model an entry length if the profile there matters.
+(`A` je plocha entity.) Siahnite po nej vždy, keď je veličinou, ktorú skutočne
+poznáte, prietok - parameter čerpadla, potrubie v `m^3/s` - a po *Rýchlosti
+(prítok)*, keď poznáte rýchlosť. Obe držia všetky tri zložky rýchlosti v každom
+uzle entity, takže obe vytvárajú na vstupe rovnomerný piestový profil; ani jedna
+nedokáže na vstupnej ploche vytvoriť vyvinutý profil. Ak na profile záleží, dajte
+modelu nábehovú dĺžku.
 
-**Pressure (explicit)** removes the pressure degree of freedom from every node
-of the entity and holds it at the given value. This is the pressure equivalent
-of a prescribed velocity, and one way to pin down the additive constant of
-section 1.2.
+**Tlak (explicitný)** odoberie tlakový stupeň voľnosti každému uzlu entity a drží
+ho na zadanej hodnote. Je to tlakový ekvivalent predpísanej rýchlosti a jeden zo
+spôsobov, ako určiť aditívnu konštantu z časti 1.2.
 
-**Pressure (implicit)** is the natural counterpart: rather than fixing the nodal
-pressure it applies a **pressure traction** on the surface elements and leaves
-the velocity there free, so the fluid decides how much flows out and at what
-profile. The traction includes a hydrostatic head,
+**Tlak (implicitný)** je prirodzený náprotivok: namiesto fixovania uzlového tlaku
+aplikuje na plošné prvky **tlakovú silu** a rýchlosť tam ponechá voľnú, takže o
+tom, koľko a s akým profilom vyteká, rozhodne tekutina. Sila zahŕňa hydrostatický
+člen,
 
 ```
 t = -( p + rho * g * h ) * n
 ```
 
-where `h` is the height of the node measured **along the gravity direction from
-the lowest point** of the model and `n` is the surface normal. The gravity
-direction is the average of the *Gravitational acceleration* environment
-conditions assigned to the surfaces carrying this condition. With no gravity the
-head term vanishes and the traction is the entered pressure alone.
+kde `h` je výška uzla meraná **v smere gravitácie od najnižšieho bodu** modelu a
+`n` je normála plochy. Smer gravitácie je priemer environmentálnych podmienok
+*Gravitačné zrýchlenie* priradených plochám, ktoré nesú túto podmienku. Bez
+gravitácie hydrostatický člen zaniká a sila je iba zadaný tlak.
 
-This is the outlet condition to reach for in nearly every model: it lets the
-outflow profile develop instead of forcing it flat, and entering `0` makes the
-outlet a reference at atmospheric pressure. *Pressure (explicit)* is the
-stiffer, more prescriptive choice.
+Toto je výstupná podmienka, po ktorej treba siahnuť takmer v každom modeli:
+umožňuje vyvinúť sa výstupnému profilu namiesto jeho vynútenia ako rovného a
+zadanie `0` robí z výstupu referenciu pri atmosférickom tlaku. *Tlak
+(explicitný)* je tuhšia, preskriptívnejšia voľba.
 
-Every component of every one of these is a **table against time**, so an inlet
-can be ramped up over the first seconds of a transient run, or a flow rate given
-a duty cycle.
+Každá zložka každej z týchto podmienok je **tabuľkou v čase**, takže vstup možno
+počas prvých sekúnd prechodového výpočtu postupne nábehovať alebo prietoku dať
+pracovný cyklus.
 
-**Precedence.** Velocity conditions and pressure conditions are independent -
-they constrain different degrees of freedom, so an inlet surface can carry a
-velocity condition and an outlet a pressure condition without interfering. Among
-conditions of the same kind on the same entity the last one read prevails, and a
-*Wall* zeroes the velocity of its nodes after every other velocity condition has
-been applied. An entity that is both an inlet and a wall is therefore a wall.
+**Priorita.** Rýchlostné a tlakové podmienky sú nezávislé - obmedzujú rôzne
+stupne voľnosti, takže vstupná plocha môže niesť rýchlostnú podmienku a výstupná
+tlakovú bez vzájomného ovplyvnenia. Medzi podmienkami rovnakého druhu na tej istej
+entite prevládne naposledy načítaná a *Stena* vynuluje rýchlosť svojich uzlov po
+aplikovaní všetkých ostatných rýchlostných podmienok. Entita, ktorá je
+vstupom aj stenou, je preto stenou.
 
-### 1.5 Environment and initial conditions
+### 1.5 Environmentálne a počiatočné podmienky
 
-#### Environment conditions
+#### Environmentálne podmienky
 
-| Environment condition | Components | Effect |
+| Environmentálna podmienka | Zložky | Účinok |
 |---|---|---|
-| Gravitational acceleration | `gx`, `gy`, `gz` `[m/s^2]` | body force `rho*g` on the entity, and the head term of *Pressure (implicit)* |
-| Temperature | Temperature `[K]` | background temperature; selects the row of temperature-dependent material tables |
+| Gravitačné zrýchlenie (*Gravitational acceleration*) | `gx`, `gy`, `gz` `[m/s^2]` | objemová sila `rho*g` na entitu a hydrostatický člen podmienky *Tlak (implicitný)* |
+| Teplota (*Temperature*) | Teplota `[K]` | teplota okolia; vyberá riadok teplotne závislých tabuliek materiálu |
 
-**Gravitational acceleration** defaults to `(0, 0, -9.80665) m/s^2`, that is
-gravity along negative `Z`. Assign it to the volume entity for the body force
-and to the outlet surface so that the *Pressure (implicit)* head is measured
-along the right direction.
+**Gravitačné zrýchlenie** má predvolenú hodnotu `(0, 0, -9.80665) m/s^2`, teda
+gravitáciu v zápornom smere `Z`. Priraďte ho objemovej entite kvôli objemovej
+sile a výstupnej ploche, aby sa hydrostatický člen *Tlaku (implicitného)* meral
+v správnom smere.
 
-Gravity enters the momentum equation as a constant body force `rho*g`. Since the
-density is constant, a uniform gravity field over a closed domain produces a
-hydrostatic pressure gradient and no motion - which is the correct answer.
-Density does **not** depend on temperature in this solver, so there is no
-buoyancy-driven flow: a *Heat transfer in fluids* result never drives the flow
-it was computed on. See section 6.
+Gravitácia vstupuje do rovnice hybnosti ako konštantná objemová sila `rho*g`.
+Keďže hustota je konštantná, rovnomerné gravitačné pole v uzavretej oblasti
+vytvorí hydrostatický gradient tlaku a žiadny pohyb - čo je správna odpoveď.
+Hustota v tomto riešiči **nezávisí** od teploty, takže neexistuje prúdenie
+poháňané vztlakom: výsledok *Prestupu tepla v tekutinách* nikdy nepoháňa
+prúdenie, na ktorom bol vypočítaný. Pozri časť 6.
 
-#### Initial conditions
+#### Počiatočné podmienky
 
-| Initial condition | Effect |
+| Počiatočná podmienka | Účinok |
 |---|---|
-| Velocity | initial velocity field, applied on the first run |
-| Pressure | initial pressure field, applied on the first run |
-| Temperature | initial temperature field for *Heat transfer in fluids* |
-| Particle concentration | initial concentration field for *Contaminant dispersion* |
+| Rýchlosť | počiatočné pole rýchlosti, aplikované pri prvom výpočte |
+| Tlak | počiatočné tlakové pole, aplikované pri prvom výpočte |
+| Teplota | počiatočné teplotné pole pre *Prestup tepla v tekutinách* |
+| Koncentrácia častíc | počiatočné pole koncentrácie pre *Rozptyl kontaminantu* |
 
-Initial conditions are read on the **first run only**; after that the fields
-march from the previous result. That is what makes the restart workflow of
-section 1.7 work: a transient run started with *Restart solver / continue* picks
-up the converged steady-state field rather than starting from rest again.
+Počiatočné podmienky sa čítajú **iba pri prvom výpočte**; potom polia pokračujú
+z predchádzajúceho výsledku. Práve to umožňuje postup s reštartom z časti 1.7:
+prechodový výpočet spustený s voľbou *Reštartovať riešič / pokračovať* prevezme
+konvergované ustálené pole namiesto toho, aby opäť začínal z pokoja.
 
-A boundary condition overrides an initial condition where the two meet.
+Kde sa stretne okrajová a počiatočná podmienka, okrajová má prednosť.
 
-### 1.6 The non-linear iteration
+### 1.6 Nelineárna iterácia
 
-The convective term `(v . grad) v` is quadratic in the unknown, so the flow
-equations are **non-linear** and cannot be solved in one pass. The solver
-linearises them and iterates: each pass assembles the residual of the momentum
-and mass balance at the current field, solves for an **increment**, and adds it,
+Konvekčný člen `(v . grad) v` je v neznámej kvadratický, takže rovnice prúdenia
+sú **nelineárne** a nemožno ich vyriešiť jedným prechodom. Riešič ich linearizuje
+a iteruje: každý prechod zostaví reziduum bilancie hybnosti a hmotnosti pri
+aktuálnom poli, vyrieši **prírastok** a pripočíta ho,
 
 ```
 J * dx = -R(x)
 x <- x + dx
 ```
 
-where `x` holds the nodal velocities and pressures. The left-hand side is an
-approximate Jacobian rather than the exact one, which makes the scheme a
-modified Newton iteration: it converges more slowly than full Newton near the
-answer, but the answer it converges to is set by the **residual** `R`, which is
-the discretised Navier-Stokes equations themselves.
+kde `x` obsahuje uzlové rýchlosti a tlaky. Ľavá strana je približný jakobián, nie
+presný, takže schéma je modifikovanou Newtonovou iteráciou: v blízkosti riešenia
+konverguje pomalšie ako plná Newtonova metóda, ale riešenie, ku ktorému
+konverguje, je určené **reziduom** `R`, teda samotnými diskretizovanými
+Navierovými-Stokesovými rovnicami.
 
-**The step is damped.** Because the matrix is not the exact derivative of the
-residual, a full step `dx` can overshoot and leave the field further from a
-solution than it started - the residual of the next pass then comes out higher
-than the one before it. The solver watches for exactly that and applies only a
-share of the computed step,
+**Krok je tlmený.** Keďže matica nie je presnou deriváciou rezidua, plný krok
+`dx` môže prestreliť a zanechať pole ďalej od riešenia, než bolo na začiatku -
+reziduum nasledujúceho prechodu potom vyjde vyššie ako predchádzajúce. Riešič
+sleduje presne túto situáciu a aplikuje iba časť vypočítaného kroku,
 
 ```
 x <- x + omega * dx
 ```
 
-starting at `omega = 1`. A pass which made the residual worse halves it, down to
-a floor of `0.1`; a pass which improved it lets `omega` grow back by a quarter at
-a time, so the retreat is quick and the recovery deliberate. The value in force
-is printed as `Relaxation` in the log, and it stays at `1` on a run which never
-overshoots - a well behaved flow model never notices the mechanism is there.
-`omega` is reset to `1` at the start of each solve, which in a transient run
-means at each time step.
+so začiatkom pri `omega = 1`. Prechod, ktorý reziduum zhoršil, ho zmenší na
+polovicu, najviac na spodnú hranicu `0.1`; prechod, ktorý ho zlepšil, nechá
+`omega` narásť späť vždy o štvrtinu, takže ústup je rýchly a návrat rozvážny.
+Platná hodnota sa v logu vypisuje ako `Relaxation` a pri výpočte, ktorý nikdy
+neprestrelí, zostáva `1` - dobre sa správajúci model prúdenia o tomto mechanizme
+ani nevie. `omega` sa na začiatku každého riešenia, v prechodovom výpočte teda pri
+každom časovom kroku, nastaví späť na `1`.
 
-Two consequences follow, and they drive the whole workflow of a flow model:
+Z toho vyplývajú dva dôsledky, ktoré určujú celý postup práce s modelom prúdenia:
 
-- **One pass is never enough.** A single iteration of a flow task returns
-  whatever the first increment happened to give, which is not a solution of
-  anything. A flow task must be wrapped in a **problem task group** with a
-  number of iterations - hundreds for a steady-state run, tens per time step for
-  a transient one.
-- **The count is an upper bound, not a target.** The group also carries a
-  **convergence value**, and it ends its iterations as soon as the flow task
-  reports a convergence below it. Set the count high enough for the hardest
-  step and let the convergence value stop each one when it has settled.
+- **Jeden prechod nikdy nestačí.** Jediná iterácia kroku prúdenia vráti to, čo
+  náhodou dal prvý prírastok, a to nie je riešením ničoho. Krok prúdenia musí byť
+  zabalený do **skupiny krokov úlohy** s počtom iterácií - stovky pre ustálený
+  výpočet, desiatky na časový krok pre prechodový.
+- **Počet je horná hranica, nie cieľ.** Skupina nesie aj **hodnotu
+  konvergencie** a ukončí iterácie, len čo krok prúdenia ohlási konvergenciu pod
+  touto hodnotou. Nastavte počet dostatočne vysoko pre najťažší krok a nechajte
+  hodnotu konvergencie zastaviť každý krok, keď sa ustáli.
 
-After every iteration the solver writes four numbers to the convergence file and
-to the log:
+Po každej iterácii riešič zapíše do súboru konvergencie a do logu štyri čísla:
 
-| Quantity | Meaning |
+| Veličina | Význam |
 |---|---|
-| `Residual` | norm of the residual vector, the distance from a solution |
-| `Convergence-R` | change in the residual since the previous iteration |
-| `Convergence-V` | relative size of the velocity increment, `\|\|dv\|\| / \|\|v\|\|` |
-| `Convergence-P` | relative size of the pressure increment, `\|\|dp\|\| / \|\|p\|\|` |
+| `Residual` | norma vektora rezidua, vzdialenosť od riešenia |
+| `Convergence-R` | zmena rezidua od predchádzajúcej iterácie |
+| `Convergence-V` | relatívna veľkosť prírastku rýchlosti, `\|\|dv\|\| / \|\|v\|\|` |
+| `Convergence-P` | relatívna veľkosť prírastku tlaku, `\|\|dp\|\| / \|\|p\|\|` |
 
-`Convergence-V` and `Convergence-P` are the ones the convergence value is
-compared against. Both are dimensionless and both fall as the iteration settles:
-they measure how large a step the field still takes against the size of the
-field itself, so a value of `1e-5` means the solution moved by a hundred
-thousandth of itself in that pass.
+S hodnotou konvergencie sa porovnávajú `Convergence-V` a `Convergence-P`. Obe sú
+bezrozmerné a obe klesajú, ako sa iterácia ustaľuje: merajú, aký veľký krok pole
+ešte robí v pomere k veľkosti samotného poľa, takže hodnota `1e-5` znamená, že
+riešenie sa v danom prechode posunulo o stotisícinu seba samého.
 
-A small step is not on its own a solution, though. A nearly singular system - a
-model with no pressure reference, or a mesh which cannot carry the Reynolds
-number asked of it - takes tiny steps because it **cannot move**, not because it
-has arrived, and its residual sits where it was or climbs. The test therefore
-has two parts, and the group stops only when both hold:
+Malý krok však sám osebe nie je riešením. Takmer singulárna sústava - model bez
+tlakovej referencie alebo sieť, ktorá neunesie požadované Reynoldsovo číslo -
+robí malé kroky, pretože sa **nemôže pohnúť**, nie preto, že dorazila k
+riešeniu, a jej reziduum stojí na mieste alebo rastie. Test má preto dve časti a
+skupina sa zastaví, iba ak platia obe:
 
-| Part | Condition |
+| Časť | Podmienka |
 |---|---|
-| The field has stopped moving | `Convergence-V` and `Convergence-P` are both below the convergence value |
-| The field has actually come down | the residual has fallen to a **tenth** of what it was at the first pass of this solve |
+| Pole sa prestalo pohybovať | `Convergence-V` aj `Convergence-P` sú pod hodnotou konvergencie |
+| Pole skutočne kleslo | reziduum kleslo na **desatinu** hodnoty pri prvom prechode tohto riešenia |
 
-The second part is fixed and not configurable - it is a sanity check on the
-first, not a second knob to tune. The log prints it as `Residual ratio` against
-its target, so it is visible how close a run that did not stop early came to
-stopping. In a transient run each time step is its own solve, so the ratio is
-measured again from the start of each step.
+Druhá časť je pevná a nedá sa nastaviť - je kontrolou zmysluplnosti prvej, nie
+druhým parametrom na ladenie. Log ju vypisuje ako `Residual ratio` spolu s
+cieľovou hodnotou, takže je vidieť, ako blízko sa k zastaveniu dostal výpočet,
+ktorý sa nezastavil skôr. V prechodovom výpočte je každý časový krok samostatným
+riešením, takže pomer sa meria znova od začiatku každého kroku.
 
-`Report` -> `Solver convergence` plots all four numbers. A converged steady-state
-run shows the residual falling by several orders of magnitude and then
-flattening, with `Convergence-V` and `Convergence-P` falling monotonically
-towards zero. A residual that flattens high, oscillates, or climbs means the run
-has not converged - and the group will not stop early on such a run, whatever the
-increments do.
+`Výkaz` -> `Konvergencia riešiča` zobrazí všetky štyri čísla. Konvergovaný
+ustálený výpočet ukazuje reziduum klesajúce o niekoľko rádov a potom sa
+vyrovnávajúce, pričom `Convergence-V` a `Convergence-P` monotónne klesajú k nule.
+Reziduum, ktoré sa vyrovná vysoko, osciluje alebo rastie, znamená, že výpočet
+nekonvergoval - a skupina pri takom výpočte predčasne neskončí, nech robia
+prírastky čokoľvek.
 
-A convergence value of `0` disables the early exit and runs the full count, which
-is how the solver behaved before the value existed. Reach for it when you want a
-fixed amount of work per step regardless of what the residual does.
+Hodnota konvergencie `0` vypne predčasné ukončenie a spustí plný počet iterácií,
+čo zodpovedá správaniu riešiča pred zavedením tejto hodnoty. Použite ju, ak
+chcete pevné množstvo práce na krok bez ohľadu na to, čo robí reziduum.
 
-### 1.7 Steady-state analysis
+### 1.7 Ustálená analýza
 
-With the time solver disabled the solver iterates the steady momentum and mass
-balance to a fixed point. The linear system of each iteration is not symmetric,
-so it is solved with **GMRES** with Jacobi preconditioning rather than with the
-conjugate gradient method the symmetric physics use.
+Pri vypnutom časovom riešiči riešič iteruje ustálenú bilanciu hybnosti a
+hmotnosti k pevnému bodu. Lineárna sústava každej iterácie nie je symetrická,
+preto sa rieši metódou **GMRES** s Jacobiho predpodmienením, a nie metódou
+združených gradientov, ktorú používajú symetrické fyzikálne úlohy.
 
-A steady-state flow model needs, at minimum:
+Ustálený model prúdenia potrebuje minimálne:
 
-- a meshed **volume** with density and dynamic viscosity assigned;
-- **Wall** on every solid boundary;
-- an **inflow** condition, or a pressure difference, to drive the flow;
-- a **pressure reference** - a *Pressure (explicit)* or *Pressure (implicit)*
-  surface. Without one the pressure is determined only up to a constant and the
-  iteration will not settle.
+- **objem** so sieťou s priradenou hustotou a dynamickou viskozitou;
+- **Stenu** na každej pevnej hranici;
+- podmienku **prítoku** alebo rozdiel tlakov, ktorý poháňa prúdenie;
+- **tlakovú referenciu** - plochu s *Tlakom (explicitným)* alebo *Tlakom
+  (implicitným)*. Bez nej je tlak určený iba až na konštantu a iterácia sa
+  neustáli.
 
-A model whose boundaries are entirely walls and prescribed velocities has one
-more trap: the prescribed inflow and outflow must **balance**, since an
-incompressible fluid cannot accumulate. Prescribing 5 m^3/s in and 4 m^3/s out
-asks for the impossible and the solve will not converge. Leaving the outlet as
-*Pressure (implicit)* avoids the question entirely, which is the main reason to
-prefer it.
+Model, ktorého hranice tvoria výlučne steny a predpísané rýchlosti, má ešte jednu
+pascu: predpísaný prítok a odtok musia byť **v rovnováhe**, pretože nestlačiteľná
+tekutina sa nemôže hromadiť. Predpísanie 5 m^3/s na vstupe a 4 m^3/s na výstupe
+žiada nemožné a riešenie nekonverguje. Ponechanie výstupu ako *Tlak
+(implicitný)* túto otázku úplne obíde, čo je hlavný dôvod uprednostniť ho.
 
-The usual workflow is to converge a steady-state run first and use it as the
-starting field of a transient run, because a transient run started from rest
-spends its first time steps resolving the start-up transient rather than the
-physics of interest.
+Obvyklým postupom je najprv nechať skonvergovať ustálený výpočet a použiť ho ako
+počiatočné pole prechodového výpočtu, pretože prechodový výpočet spustený z
+pokoja strávi prvé časové kroky riešením nábehového deja namiesto fyziky, o
+ktorú ide.
 
-### 1.8 Transient analysis
+### 1.8 Prechodová analýza
 
-With the time solver enabled the solver marches the unsteady equations with a
-theta scheme, where `alpha` is the time-march approximation coefficient:
+Pri zapnutom časovom riešiči riešič postupuje v čase nestacionárnymi rovnicami
+pomocou theta schémy, kde `alpha` je koeficient aproximácie časového kroku:
 
-| Approximation | `alpha` | Resulting march | Stability |
+| Aproximácia | `alpha` | Výsledná schéma | Stabilita |
 |---|---|---|---|
-| Backward difference (stable) | `1` | fully implicit step | unconditional |
-| Central difference (accurate) | `0.5` | Crank-Nicolson | unconditional, can oscillate |
-| Forward difference (fast) | `0` | explicit step | conditional |
+| Spätná diferencia (*Backward difference (stable)*) | `1` | plne implicitný krok | bezpodmienečná |
+| Centrálna diferencia (*Central difference (accurate)*) | `0.5` | Crank-Nicolson | bezpodmienečná, môže oscilovať |
+| Dopredná diferencia (*Forward difference (fast)*) | `0` | explicitný krok | podmienečná |
 
-**Backward difference** is the setting to use for a flow model. The non-linear
-iteration within each time step is what costs the time, and an implicit march
-lets the time step be chosen from the physics rather than from the mesh.
+Pre model prúdenia použite **spätnú diferenciu**. Čas stojí nelineárna iterácia v
+rámci každého časového kroku a implicitná schéma umožňuje zvoliť časový krok
+podľa fyziky, a nie podľa siete.
 
-Even with the implicit march the time step of a flow model is bounded by
-accuracy, through the **Courant number**
+Aj pri implicitnej schéme je časový krok modelu prúdenia obmedzený presnosťou,
+prostredníctvom **Courantovho čísla**
 
 ```
 C = |v| * dt / h
 ```
 
-where `h` is the element size along the flow. A Courant number near `1` means
-the fluid crosses about one element per step, which is the right order for
-resolving a transient; much more than that and the solver is smearing the
-transport it is supposed to be resolving, whatever the stability of the march.
-Pick `dt` from the mesh and the expected speed:
+kde `h` je veľkosť prvku v smere prúdenia. Courantovo číslo okolo `1` znamená, že
+tekutina prejde za krok približne jeden prvok, čo je správny rád na zachytenie
+prechodového deja; pri oveľa väčšom čísle riešič rozmazáva transport, ktorý má
+zachytiť, bez ohľadu na stabilitu schémy. Zvoľte `dt` podľa siete a očakávanej
+rýchlosti:
 
 ```
 dt ~ h / |v|
 ```
 
-Each time step runs the full non-linear iteration of section 1.6, so the cost of
-a transient run is the number of time steps times the iterations per step. Ten
-to fifty iterations per step is a typical range once the flow field is already
-converged from a steady-state run. A step whose residual has not fallen by the
-end of its iterations is a step whose answer is not converged, and the error
-carries into every step that follows.
+Každý časový krok spúšťa plnú nelineárnu iteráciu z časti 1.6, takže cena
+prechodového výpočtu je počet časových krokov krát počet iterácií na krok. Desať
+až päťdesiat iterácií na krok je typický rozsah, keď je prúdové pole už
+konvergované z ustáleného výpočtu. Krok, ktorého reziduum na konci iterácií
+neklesne, je krok s nekonvergovanou odpoveďou a chyba sa prenáša do každého
+nasledujúceho kroku.
 
-### 1.9 Heat transfer in fluids
+### 1.9 Prestup tepla v tekutinách
 
-**Heat transfer in fluids** (`RSolverFluidHeat`) solves the advection-diffusion
-of temperature on the flow field,
+**Prestup tepla v tekutinách** (`RSolverFluidHeat`) rieši advekciu a difúziu
+teploty na prúdovom poli,
 
 ```
 rho * c * ( dT/dt + v . grad(T) ) = div( k * grad(T) ) + q
 ```
 
-with the same SUPG stabilisation of the convective term as the flow solver and
-the same theta time march. The velocity `v` is **recovered from the flow
-result**, not solved here - which is why the problem type requires an
-*Incompressible viscous flow* task.
+s rovnakou stabilizáciou SUPG konvekčného člena ako riešič prúdenia a s rovnakou
+theta schémou v čase. Rýchlosť `v` sa **preberá z výsledku prúdenia**, nerieši sa
+tu - preto tento typ úlohy vyžaduje krok *Nestlačiteľné viskózne prúdenie*.
 
-| Symbol | Meaning | Units | Source |
+| Symbol | Význam | Jednotky | Zdroj |
 |---|---|---|---|
-| `T` | temperature | `K` | solved for |
-| `v` | velocity | `m/s` | the flow result |
-| `k` | thermal conductivity | `W/(m*K)` | material property |
-| `c` | heat capacity | `J/(kg*K)` | material property |
-| `rho` | density | `kg/m^3` | material property |
-| `q` | heat source density | `W/m^3` | Heat condition, Joule heat, radiation |
+| `T` | teplota | `K` | riešená |
+| `v` | rýchlosť | `m/s` | výsledok prúdenia |
+| `k` | tepelná vodivosť | `W/(m*K)` | vlastnosť materiálu |
+| `c` | tepelná kapacita | `J/(kg*K)` | vlastnosť materiálu |
+| `rho` | hustota | `kg/m^3` | vlastnosť materiálu |
+| `q` | hustota tepelného zdroja | `W/m^3` | podmienka Teplo, Joulovo teplo, sálanie |
 
-The difference from the plain **Heat transfer** problem type is exactly the
-`v . grad(T)` term: energy is carried along by the moving fluid rather than only
-conducted. That also means this solver has no convection boundary conditions -
-there is nothing to correlate, since the heat leaving a wall into the fluid is
-resolved by the mesh rather than modelled.
+Rozdiel oproti obyčajnému typu úlohy **Prestup tepla** je práve člen
+`v . grad(T)`: energia je unášaná pohybujúcou sa tekutinou, nielen vedená. To
+tiež znamená, že tento riešič nemá konvekčné okrajové podmienky - nie je čo
+korelovať, pretože teplo odchádzajúce zo steny do tekutiny je rozlíšené sieťou, a
+nie modelované.
 
-| Boundary condition | Type | Applies to | Components |
+| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
 |---|---|---|---|
-| Temperature | explicit (Dirichlet) | point, line, surface, volume | Temperature `[K]` |
-| Heat | natural, source | point, line, surface, volume | Heat `[W]` |
+| Teplota (*Temperature*) | explicitná (Dirichletova) | bod, čiara, plocha, objem | Teplota `[K]` |
+| Teplo (*Heat*) | prirodzená, zdroj | bod, čiara, plocha, objem | Teplo `[W]` |
 
-**Temperature** holds the nodes of its entity at the given value. Assign it to
-the inlet surface to set the temperature of the fluid entering the domain, and
-to a wall to model a heated or cooled boundary.
+**Teplota** drží uzly svojej entity na zadanej hodnote. Priraďte ju vstupnej
+ploche na nastavenie teploty tekutiny vstupujúcej do oblasti a stene na
+modelovanie ohrievanej alebo chladenej hranice.
 
-**Heat** is a source and takes the **total power in `W`** delivered into the
-entity, spread over the measure of the entity before assembly - the same
-convention as the heat solver. *Heat rate (unit area)* and *Heat rate (unit
-volume)* are offered by the interface for this problem type but are **not read**
-by the fluid heat solver; use *Heat* for a source here.
+**Teplo** je zdroj a zadáva sa ako **celkový výkon vo `W`** privedený do entity,
+ktorý sa pred zostavením rozloží na mieru entity - rovnaká konvencia ako v
+tepelnom riešiči. *Tepelný výkon (na jednotku plochy)* a *Tepelný výkon (na
+jednotku objemu)* rozhranie pre tento typ úlohy ponúka, ale riešič prestupu tepla
+v tekutinách ich **nečíta**; ako zdroj tu použite *Teplo*.
 
-**Coupling.** A wall between a meshed fluid and a meshed solid carrying the
-**Forced convection** condition of the plain *Heat transfer* solver couples the
-two. Once the heat solver has run, the fluid heat solver holds the wall nodes at
-the temperature of the solid - until then the wall is insulated - and hands back,
-for every wall element, the pair `(h, Tf)` that reproduces the heat flux its
-solution takes through the wall. The heat solver applies that pair as a
-convection condition. The flux is the residual of the fluid equations at the wall
-nodes, consistent with the discretisation, so it stays accurate in a thin thermal
-boundary layer. The wall temperature is relaxed with an Aitken factor from pass
-to pass, which settles the exchange in a handful of passes. The heat transfer
-theory manual describes the scheme under *Conjugate heat transfer*. Radiative
-heat and Joule heat arriving from other solvers are added to the source term the
-same way as in the heat solver.
+**Väzba.** Stena medzi tekutinou so sieťou a pevnou látkou so sieťou, ktorá nesie
+podmienku **Nútená konvekcia** (*Forced convection*) obyčajného riešiča *Prestupu
+tepla*, tieto dve oblasti prepája. Po prebehnutí tepelného riešiča drží riešič
+prestupu tepla v tekutinách uzly steny na teplote pevnej látky - dovtedy je stena
+izolovaná - a pre každý prvok steny vráti dvojicu `(h, Tf)`, ktorá reprodukuje
+tepelný tok, ktorý jeho riešenie cez stenu prenáša. Tepelný riešič túto dvojicu
+aplikuje ako konvekčnú podmienku. Tok je reziduom rovníc tekutiny v uzloch steny,
+konzistentný s diskretizáciou, takže zostáva presný aj v tenkej tepelnej hraničnej
+vrstve. Teplota steny sa z prechodu na prechod relaxuje Aitkenovým faktorom, čo
+výmenu ustáli v niekoľkých prechodoch. Teoretický manuál prestupu tepla opisuje
+túto schému v časti *Conjugate heat transfer*. Sálavé a Joulovo teplo prichádzajúce
+z iných riešičov sa pripočítavajú k zdrojovému členu rovnako ako v tepelnom
+riešiči.
 
-Uncoupled, the fluid heat solver reports itself as converged unconditionally -
-it is linear once the flow field is fixed, so one solve is the final answer. A
-group holding both therefore ends when the flow task converges. With coupled
-walls it reports the relative change of its temperature field instead, so the
-group iterates until the wall temperature has settled.
+Bez väzby riešič prestupu tepla v tekutinách hlási konvergenciu bezpodmienečne -
+po fixovaní prúdového poľa je lineárny, takže jedno riešenie je konečnou
+odpoveďou. Skupina obsahujúca oba kroky preto skončí, keď skonverguje krok
+prúdenia. So spriahnutými stenami namiesto toho hlási relatívnu zmenu svojho
+teplotného poľa, takže skupina iteruje, kým sa teplota steny neustáli.
 
-Results: **Temperature** as a node scalar and **Heat flux** as an element
-vector, the conductive flux `-k*grad(T)`.
+Výsledky: **Teplota** ako uzlový skalár a **Tepelný tok** ako prvkový vektor,
+vodivý tok `-k*grad(T)`.
 
-### 1.10 Contaminant dispersion
+### 1.10 Rozptyl kontaminantu
 
-**Contaminant dispersion** (`RSolverFluidParticle`) transports a scalar
-concentration on the same flow field,
+**Rozptyl kontaminantu** (`RSolverFluidParticle`) prenáša na tom istom prúdovom
+poli skalárnu koncentráciu,
 
 ```
-dC/dt + v . grad(C) = div( D * grad(C) ) + s
+dC/dt + v . grad(C) = div( D * grad(C) ) + s_eff
+
+s_eff = s * ( 1 - C / C_sat )     for s > 0 and a maximum saturation set
+s_eff = s                         otherwise
 ```
 
-again with SUPG stabilisation and the same time march, and again reading the
-velocity from the flow result.
+(obmedzenie `s * ( 1 - C / C_sat )` platí pre `s > 0` pri nastavenom maximálnom
+nasýtení, inak `s_eff = s`), opäť so stabilizáciou SUPG a rovnakou schémou v čase a
+opäť s rýchlosťou prevzatou z výsledku prúdenia.
 
-| Symbol | Meaning | Units | Source |
+| Symbol | Význam | Jednotky | Zdroj |
 |---|---|---|---|
-| `C` | particle concentration | `kg/m^3` | solved for |
-| `v` | velocity | `m/s` | the flow result |
-| `D` | diffusivity | `m^2/s` | **fixed at zero** |
-| `s` | particle source rate | `kg/(m^3*s)` | Particle rate condition |
+| `C` | koncentrácia častíc | `kg/m^3` | riešená |
+| `v` | rýchlosť | `m/s` | výsledok prúdenia |
+| `D` | koeficient difúzie | `m^2/s` | *Nastavenia rozptylu kontaminantu*, predvolene `0` |
+| `C_sat` | maximálne nasýtenie | `kg/m^3` | *Nastavenia rozptylu kontaminantu*, predvolene `0` (bez obmedzenia) |
+| `s` | rýchlosť zdroja častíc | `kg/(m^3*s)` | podmienka Rýchlosť tvorby častíc (*Particle rate*) |
 
-The diffusion coefficient is **zero** in the current implementation, so the
-transport is purely advective: the contaminant is carried by the flow and
-spreads only through the numerical diffusion the stabilisation introduces. A
-physical diffusivity or a turbulent dispersion cannot be entered. The solver
-answers "where does the flow take it, and how long does it take to get there",
-not "how wide is the plume".
+#### Nastavenia rozptylu kontaminantu
 
-| Boundary condition | Type | Applies to | Components |
-|---|---|---|---|
-| Particle concentration | explicit (Dirichlet) | point, line, surface | Particle concentration `[kg/m^3]` |
-| Particle rate | natural, source | point, line, surface, volume | Particle rate `[kg/(m^3*s)]` |
+Oba parametre tohto typu úlohy sa nastavujú raz pre celý model v skupine
+*Nastavenia rozptylu kontaminantu* na záložke `Úloha` (časť 2.2). Obe majú
+predvolenú hodnotu nula, čo zodpovedá čistej advekcii s neobmedzeným zdrojom.
 
-**Particle concentration** holds its nodes at the given concentration. Assigned
-to an inlet surface with a table against time, it is how a release is modelled:
-zero before the event, the release concentration during it, zero afterwards.
-This is the single most useful idiom of the problem type, and the one the
-*Contaminant dispersion in fluids* tutorial builds on.
+**Koeficient difúzie** `D` rozširuje kontaminant v smere klesajúcej koncentrácie.
+Pri `D = 0` je transport čisto advektívny: kontaminant je unášaný prúdením a
+rozširuje sa iba numerickou difúziou stabilizácie, takže riešič odpovedá na
+otázku „kam ho prúdenie zanesie a ako dlho to trvá", nie „aký široký je oblak".
+Kladné `D` robí zo šírky oblaku fyzikálny výsledok.
 
-**Particle rate** is a source and is a **density** in `kg/(m^3*s)` rather than a
-total - unlike the *Heat* condition, it is not spread over the entity measure.
-It models a source releasing continuously inside the domain.
+Model turbulencie neexistuje (časť 6), takže `D` je **efektívny** koeficient
+difúzie: miešanie v skutočnom prúdení je určené turbulenciou, ktorú možno
+odhadnúť ako `D ~ nu_t / Sc_t` s turbulentným Schmidtovým číslom `Sc_t ~ 0.7`.
 
-Only the material **density** is required for this problem type.
+| Molekulová difúzia (fyzikálna vlastnosť) | `D [m^2/s]` |
+|---|---|
+| plyny a pary vo vzduchu (vodná para `2.5e-5`, CO2 `1.6e-5`, pary rozpúšťadiel približne `1e-5`) | `1e-6` - `1e-4` |
+| rozpustené látky vo vode (O2 `2e-9`, soli približne `1.5e-9`) | `1e-10` - `1e-8` |
+| aerosólové častice vo vzduchu, Brownov pohyb (10 nm `5e-8`, 0.1 um `7e-10`, 1 um `3e-11`) | `1e-11` - `1e-8` |
 
-Result: **Particle concentration** as a node scalar.
+V inžinierskych mierkach je molekulová difúzia v porovnaní s transportom prúdením
+takmer vždy zanedbateľná. Zvyčajne sa zadáva efektívna hodnota:
 
-### 1.11 Derived results
+| Efektívna (turbulentná) difúzia | `D_eff [m^2/s]` |
+|---|---|
+| vetraná miestnosť, miešanie vzduchu v interiéri | `1e-3` - `1e-2` |
+| prúdenie v potrubí alebo kanáli, približne `D ~ 0.01 - 0.05 * U * L` (`U` stredná rýchlosť, `L` rozmer potrubia) | `1e-3` - `1e-1` |
+| rieky, priečne miešanie | `1e-2` - `1` |
+| atmosféra, horizontálne miešanie | `1` - `100` |
 
-| Result | Apply to | Produced by | Meaning |
-|---|---|---|---|
-| Velocity `[m/s]` | node | flow | the solved velocity field, three components |
-| Pressure `[Pa]` | node | flow | the solved pressure field |
-| Temperature `[K]` | node | fluid heat | the solved temperature field |
-| Heat flux `[W/m^2]` | element | fluid heat | conductive flux `-k*grad(T)` |
-| Particle concentration `[kg/m^3]` | node | contaminant dispersion | the solved concentration field |
+To, či hodnota na niečom zmení, závisí od siete. So strednou rýchlosťou `U`,
+dĺžkou prúdenia `L`, veľkosťou prvku `h` a časovým krokom `dt`:
 
-The velocity is stored as a node **vector**, so the `Results` tab can display
-its magnitude as a colour, its components individually, or arrows. Two display
-tools are worth knowing for a flow result specifically:
+- **kedy má `D` viditeľný účinok** - kontaminant sa počas prechodu oblasťou
+  rozšíri približne o `sqrt( 2 * D * L / U )`. Ak je to menej ako `h`, `D` nemá
+  žiadny účinok, takže `D` má význam až približne nad `U * h^2 / ( 2 * L )`. Pre
+  kanál s `U ~ 1 m/s`, `L ~ 15 m` a `h ~ 0.1 m` je to približne `3e-4 m^2/s`;
+- **kedy `D` prevláda** - približne nad `U * L` (pre ten istý kanál asi
+  `15 m^2/s`) difúzia všetko rozmaže a na prúdení takmer nezáleží;
+- **časové krokovanie** - ak `D * dt / h^2` prekročí približne `1`, prepnite na
+  *Spätnú diferenciu*; centrálna diferencia netlmí najrýchlejšie difúzne módy a
+  osciluje.
 
-- a **cut plane** through the volume, since the interesting structure of a flow
-  is inside the domain rather than on its surface;
-- **stream lines**, created from `Geometry` -> `Stream line`, which trace the
-  velocity field and are the quickest way to see a recirculation or a dead zone.
+Steny a výstupy bez podmienky *Koncentrácia častíc* si ponechávajú prirodzenú
+podmienku **nulového difúzneho toku**: kontaminant cez stenu nedifunduje a
+výstupom odchádza iba s prúdením.
 
-After each record the solver log prints the statistics of the velocity and the
-pressure, and the values at any monitoring points.
+**Maximálne nasýtenie** `C_sat` je najväčšia koncentrácia, ktorú môže kontaminant
+v tekutine dosiahnuť - koncentrácia nasýtených pár alebo rozpustnosť. Ak je
+nastavené, kladná *Rýchlosť tvorby častíc* slabne, keď sa koncentrácia k nemu
+blíži, a pri nasýtení sa zastaví, `s * ( 1 - C / C_sat )`; takto sa modeluje
+odparovanie alebo rozpúšťanie a `s` je potom rýchlosť do čistej tekutiny,
+približne `k_m * C_sat * A / V`. Záporné zdroje (`s < 0`) sa neobmedzujú.
+Obmedzenie pôsobí iba na zdroj: koncentrácia predpísaná okrajovou alebo
+počiatočnou podmienkou sa neobmedzuje a log riešiča upozorní, ak `C_sat`
+prekračuje. Koncentrácia sa ani neorezáva, takže mierne prestrelenie pri strmom
+čele je stále možné.
 
-### 1.12 Steady-state or transient?
+Hranica nasýtenia existuje iba tam, kde existuje termodynamická hranica: tlak
+nasýtených pár alebo rozpustnosť. Pre paru vo vzduchu vyplýva koncentrácia
+nasýtenia z tlaku nasýtených pár, `C_sat = p_sat * M / ( R * T )`:
 
-| | Steady-state | Transient |
+| Para vo vzduchu | Teplota | `C_sat [kg/m^3]` |
 |---|---|---|
-| Solves | the steady balance, iterated | the unsteady equations, marched in time |
-| Answers | "what does the developed flow look like" | "how does the flow get there, and what does it carry" |
-| Iterations | hundreds, in one task group | tens per time step |
-| Records | one | one per written time step |
-| Needs a pressure reference | yes | yes |
+| vodná para | 0 degC | `0.0048` |
+| vodná para | 20 degC | `0.017` |
+| vodná para | 40 degC | `0.051` |
+| vodná para | 100 degC | `0.60` |
+| etanol alebo toluén | 20 degC | približne `0.11` |
+| metanol | 20 degC | približne `0.17` |
+| benzén | 20 degC | približne `0.32` |
+| acetón | 20 degC | približne `0.59` |
 
-**Use a steady-state analysis for** the developed flow field of a duct, a
-manifold or a heat exchanger passage, the pressure drop across a component, and
-as the starting field for any transient run. This is where nearly every flow
-model begins.
+Pre látku rozpustenú vo vode je hranicou jej rozpustnosť:
 
-**Use a transient analysis for** start-up and shut-down, a pulsating or cyclic
-inlet, vortex shedding, and - above all - for **contaminant dispersion**, which
-is a transport problem in time and has no meaningful steady answer for a release
-event.
-
-The two-step workflow of the *Contaminant dispersion in fluids* tutorial is the
-canonical one: converge the flow steady-state, then restart with the time solver
-and the dispersion task enabled.
-
----
-
-## 2. Graphical user interface
-
-Everything relevant lives in the **Solver** dock (`Problem`,
-`Boundary conditions`, `Initial conditions`, `Environment conditions`,
-`Material`, `Results` tabs), the **Problem** menu and the **Model** dock.
-
-### 2.1 Selecting the problem
-
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Incompressible viscous flow** - "Steady-state and
-transient flow of newtonian fluids".
-
-A flow task belongs inside a **task group**, which carries the two values that
-drive the non-linear iteration of 1.6. Double-click either to edit it:
-
-| Value | Meaning |
+| Rozpustené vo vode | `C_sat [kg/m^3]` |
 |---|---|
-| **# of iterations** | the most passes a single solve - or a single time step - may take |
-| **Convergence** | the group ends its passes once the flow task has settled below this **and** its residual has come down; `0` always runs the full count |
+| kyslík v rovnováhe so vzduchom, 20 degC | `0.009` |
+| oxid uhličitý pri 1 atm | `1.7` |
+| sadrovec | `2.4` |
+| chlorid sodný | približne `360` |
 
-The convergence value defaults to `1e-5`, which is a safe relative step size for
-a flow model. Putting a flow task outside a group, where it runs exactly once,
-is not useful - see 1.6.
+Častice, prach a dym nasýtenie nemajú; ponechajte hodnotu `0` (bez obmedzenia).
+Iba pre predstavu, limity expozície na pracovisku sú približne
+`1e-6` - `1e-5 kg/m^3` (1 - 10 mg/m^3) a dolné medze výbušnosti prachu približne
+`0.02` - `0.06 kg/m^3`.
+Nasýtenie silne závisí od teploty, riešič však používa jednu konštantnú hodnotu:
+v neizotermickom prípade použite hodnotu pri najnižšej relevantnej teplote, kde
+by začala kondenzácia.
 
-The combinations worth knowing:
+#### Stabilizácia
 
-- *Incompressible viscous flow* alone, in a group of several hundred iterations
-  - a steady-state flow field;
-- *Incompressible viscous flow* and *Contaminant dispersion* in one group -
-  dispersion on the flow, the classic transient pairing;
-- *Incompressible viscous flow* and *Heat transfer in fluids* in one group - a
-  heated or cooled flow;
-- *Heat transfer in fluids* and a separate *Heat transfer* task on a meshed
-  solid, the fluid heat task first, in one group of several iterations -
-  conjugate heat transfer through the walls carrying *Forced convection*.
+Parameter SUPG riešiča rozptylu je obmedzený časovým krokom a zahŕňa difúziu,
 
-Flow excludes *Flow through porous media* and *Modal analysis*; the two
-companion problem types each require a flow task to be present.
+```
+tau = [ ( 2 / dt )^2 + ( 2 * |v| / h )^2 + 9 * ( 4 * D / h^2 )^2 ]^(-1/2)
+```
 
-### 2.2 Problem tab
+pričom v ustálenej analýze člen s `dt` odpadá. Tam, kde je prúdenie rýchle, sa
+redukuje na `h / ( 2 * |v| )`, nikdy neprekročí `dt / 2` a tam, kde prevláda
+difúzia, sa blíži k `h^2 / ( 12 * D )` - limite uzlovo presného
+jednorozmerného parametra. Obmedzenie časovým krokom je dôležité v pomalých a
+recirkulačných oblastiach: tam je Courantovo číslo prvku `|v| * dt / h` veľmi
+malé a neobmedzené `tau` by zo stabilizácie urobilo šum, ktorý vytvára
+koncentráciu pred čelom oblaku.
 
-**Time-solver** - shown for all three fluid problem types, since all are
-time-dependent. Leave it disabled for a steady-state flow run.
+Galerkinov advekčný člen sa zostavuje v **šikmo symetrickom tvare**,
+`v . grad(C) + 0.5 * div(v) * C`, so spojitou uzlovou rýchlosťou. Rýchlosť z
+riešiča prúdenia nikdy nie je presne nedivergentná a bez tohto tvaru môže
+diskretizácia sama vytvárať koncentráciu - šachovnicový vzor, ktorý pri malom
+časovom kroku narastá z kroku na krok. V šikmo symetrickom tvare advekcia
+kontaminant iba presúva; pre presne nedivergentnú rýchlosť je pridaný člen
+nulový.
 
-| Field | Meaning |
-|---|---|
-| Enable | switches the transient march on and off |
-| Approximation | theta of the time march: backward, central or forward, see 1.8 |
-| Start time | first time value in seconds; ignored on a solver restart |
-| End time | `start time + time-step size * number of time-steps`, read-only |
-| Time-step size | `dt` in seconds, see the Courant guidance in 1.8 |
-| Number of time-steps | how many steps to compute |
-| Output frequency | write a result file every N steps; `0` writes only the last step |
+Na rozdiel od riešiča prúdenia (časť 6) riešič rozptylu aplikuje theta váhovanie
+konzistentne, takže *Centrálna diferencia* je tu skutočnou Crankovou-Nicolsonovou
+schémou.
 
-None of the fluid problem types has a setup group box of its own. Everything
-else is assigned per entity in the condition tabs, and the iteration count -
-which matters more here than anywhere else in Range FEA - lives in the problem
-task flow dialog rather than on this tab.
+#### Okrajové podmienky
 
-### 2.3 Material tab
-
-The `Material` tab lists the material assigned to the selected entity. What is
-required depends on which fluid problem types are in the task flow:
-
-| Property | Units | Required by | Comment |
+| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
 |---|---|---|---|
-| Density | `kg/m^3` | all three | `rho`, about `1000` for water, `1.2` for air |
-| Dynamic viscosity | `kg/(m*s)` | flow, fluid heat | `mu`, about `1.0e-3` for water, `1.8e-5` for air |
-| Thermal conductivity | `W/(m*K)` | fluid heat | `k`, about `0.6` for water, `0.025` for air |
-| Heat capacity | `J/(kg*K)` | fluid heat | `c`, about `4180` for water, `1005` for air |
+| Koncentrácia častíc (*Particle concentration*) | explicitná (Dirichletova) | bod, čiara, plocha | Koncentrácia častíc `[kg/m^3]` |
+| Rýchlosť tvorby častíc (*Particle rate*) | prirodzená, zdroj | bod, čiara, plocha, objem | Rýchlosť tvorby častíc `[kg/(m^3*s)]` |
 
-An entity missing any property required by a problem type in the task flow is
-not solved, and the setup checker warns before the run starts. The shipped
-material database includes **Water** and **Air**, which is usually the whole of
-this step.
+**Koncentrácia častíc** drží svoje uzly na zadanej koncentrácii. Priradená
+vstupnej ploche s tabuľkou v čase je spôsobom, ako modelovať únik: nula pred
+udalosťou, koncentrácia úniku počas nej, nula potom. Je to najužitočnejší postup
+pri tomto type úlohy a stavia naň aj tutoriál *Rozptyl kontaminantu v
+tekutinách*.
 
-Note that the viscosity wanted is the **dynamic** viscosity `mu` in `Pa*s`, not
-the kinematic viscosity `nu = mu/rho` in `m^2/s`. Entering `1.0e-6` for water
-because that is the familiar number is the most common material mistake in a
-flow model, and it makes the fluid a thousand times less viscous than it should
-be - which usually shows up as a run that will not converge.
+**Rýchlosť tvorby častíc** je zdroj a zadáva sa ako **hustota** v `kg/(m^3*s)`, nie
+ako celková hodnota - na rozdiel od podmienky *Teplo* sa nerozkladá na mieru
+entity. Modeluje zdroj, ktorý vnútri oblasti nepretržite uvoľňuje kontaminant.
 
-Every property is a table against temperature, evaluated at the element
-temperature of the previous run.
+Tento typ úlohy vyžaduje iba **hustotu** materiálu.
 
-### 2.4 Boundary conditions tab
+Výsledky: **Koncentrácia častíc** ako uzlový skalár a pri nastavenom maximálnom
+nasýtení **Relatívne nasýtenie** (*Relative saturation*) `C / C_sat` ako
+bezrozmerný uzlový skalár. Relatívne nasýtenie sa predvolene zobrazuje od `0` do
+`1` a odstráni sa, keď sa maximálne nasýtenie nastaví späť na nulu.
 
-The tab is split into a manager list of available boundary conditions on top and
-an editor for the selected one below. Select an entity in the `Model` tree
-first; the manager then offers the conditions valid for that entity type and for
-the selected problem types. Tick one to assign it, then edit its components in
-the lower tree.
+### 1.11 Odvodené výsledky
 
-The conditions of sections 1.4, 1.9 and 1.10 are offered. Notes on using them:
+| Výsledok | Aplikuje sa na | Vytvára | Význam |
+|---|---|---|---|
+| Rýchlosť `[m/s]` | uzol | prúdenie | vyriešené pole rýchlosti, tri zložky |
+| Tlak `[Pa]` | uzol | prúdenie | vyriešené tlakové pole |
+| Teplota `[K]` | uzol | prestup tepla v tekutinách | vyriešené teplotné pole |
+| Tepelný tok `[W/m^2]` | prvok | prestup tepla v tekutinách | vodivý tok `-k*grad(T)` |
+| Koncentrácia častíc `[kg/m^3]` | uzol | rozptyl kontaminantu | vyriešené pole koncentrácie |
+| Relatívne nasýtenie `[-]` | uzol | rozptyl kontaminantu | `C / C_sat`, iba pri nastavenom maximálnom nasýtení |
 
-- **Wall** goes on every solid boundary and takes no value at all. A surface
-  entity of a meshed volume that carries no condition is *not* a wall - it is an
-  unconstrained boundary, which is rarely what is meant. Walls are the first
-  thing to check in a model that behaves oddly.
-- **Wall (frictionless)** is for symmetry planes aligned with the global axes.
-  On a tilted surface it constrains the wrong direction - see 1.4.
-- **Velocity (inflow)** and **Volumetric flow rate (inflow)** both drive flow in
-  through a surface along its average normal. Pick whichever matches the number
-  you actually have. A negative value drives flow the other way, which is one
-  way to specify an outlet.
-- **Pressure (implicit)** is the outlet condition to prefer: it lets the outflow
-  profile develop and, entered as `0`, makes the outlet the pressure reference.
-  **Pressure (explicit)** pins the nodal pressure instead.
-- **Temperature** and **Heat** appear once a *Heat transfer in fluids* task is
-  in the task flow; **Particle concentration** and **Particle rate** once a
-  *Contaminant dispersion* task is.
-- Every component is a table against time. Click **Edit time dependent values**
-  to open the component editor, where values are entered against time and each
-  value is valid **from** the time given. This is how a release event, a ramped
-  inlet or a duty cycle is modelled.
+Rýchlosť sa ukladá ako uzlový **vektor**, takže záložka `Výsledky` môže zobraziť
+jej veľkosť farebne, jednotlivé zložky alebo šípky. Pre výsledok prúdenia sa
+oplatí poznať dva zobrazovacie nástroje:
 
-### 2.5 Initial and environment conditions
+- **rez** objemom, pretože zaujímavá štruktúra prúdenia je vnútri oblasti, nie na
+  jej povrchu;
+- **prúdnice**, vytvorené cez `Geometria` -> `Prúdnica`, ktoré sledujú pole
+  rýchlosti a sú najrýchlejším spôsobom, ako uvidieť recirkuláciu alebo mŕtvu
+  zónu.
 
-The `Initial conditions` tab offers *Velocity* and *Pressure* for a flow
-problem, *Temperature* for fluid heat and *Particle concentration* for
-dispersion. They set the starting field of the first run and are what make a
-transient run start from something other than rest.
+Po každom zázname vypíše log riešiča štatistiky rýchlosti a tlaku a hodnoty vo
+všetkých monitorovacích bodoch.
 
-The `Environment conditions` tab offers *Gravitational acceleration*, which
-defaults to `(0, 0, -9.80665) m/s^2`. Assign it to the volume for the body
-force, and to any surface carrying *Pressure (implicit)* so that the hydrostatic
-head of that condition is measured along the right direction.
+### 1.12 Ustálená alebo prechodová analýza?
 
-### 2.6 Matrix solver setup
+| | Ustálená | Prechodová |
+|---|---|---|
+| Rieši | ustálenú bilanciu, iteračne | nestacionárne rovnice, krokovaním v čase |
+| Odpovedá na | „ako vyzerá vyvinuté prúdenie" | „ako sa prúdenie vyvinie a čo unáša" |
+| Iterácie | stovky, v jednej skupine krokov | desiatky na časový krok |
+| Záznamy | jeden | jeden na každý zapísaný časový krok |
+| Potrebuje tlakovú referenciu | áno | áno |
 
-`Problem` -> `Setup Problem(s) matrix solver` configures the iterative solvers.
-All three fluid solvers use the **GMRES** entry, since their matrices are not
-symmetric.
+**Ustálenú analýzu použite pre** vyvinuté prúdové pole v potrubí, rozdeľovači
+alebo kanáli výmenníka tepla, tlakovú stratu na komponente a ako počiatočné pole
+pre akýkoľvek prechodový výpočet. Tu začína takmer každý model prúdenia.
 
-Distinguish the two nested iterations before changing anything here: the
-**matrix solver** iterations solve one linearised system, while the **task
-group** iterations drive the non-linearity of section 1.6. A flow model that
-does not converge almost always needs more task group iterations, a better mesh
-or a corrected set of boundary conditions - not a higher GMRES iteration count.
+**Prechodovú analýzu použite pre** nábeh a odstavenie, pulzujúci alebo cyklický
+vstup, odtrhávanie vírov a - predovšetkým - pre **rozptyl kontaminantu**, ktorý je
+úlohou transportu v čase a pre udalosť úniku nemá zmysluplnú ustálenú odpoveď.
 
-### 2.7 Monitoring points
-
-`Problem` -> `Define monitoring points` places probes at given coordinates and
-selects the variable to record - *Velocity*, *Pressure*, *Temperature* or
-*Particle concentration*. In a transient run the history is shown by `Report` ->
-`Monitoring points`.
-
-For a dispersion model a monitoring point at the location of interest is the
-answer in the form you usually want it: the concentration against time at a
-given place, read off a graph rather than out of a sequence of pictures.
-
-### 2.8 Results and records
-
-The `Results` tab lists the computed variables and controls the 3D view.
-Velocity is a node vector, pressure a node scalar, temperature a node scalar,
-heat flux an element vector and particle concentration a node scalar.
-
-The `Records` tab of the `Model` dock lists the result records:
-
-- **steady-state analysis** - a single record;
-- **transient analysis** - one record per written time step. Animating the
-  records plays the flow, and the **Record** button at the bottom of the tree
-  writes the animation to a video file.
-
-`Report` -> `Solver convergence` plots the convergence history described in 1.6,
-and is the report to open first after any flow run. `Report` ->
-`Solver log file` shows the full solver output, including the velocity and
-pressure statistics after each record.
+Dvojkrokový postup z tutoriálu *Rozptyl kontaminantu v tekutinách* je
+štandardný: nechajte skonvergovať ustálené prúdenie a potom reštartujte so
+zapnutým časovým riešičom a krokom rozptylu kontaminantu.
 
 ---
 
-## 3. Tutorial - steady-state flow through a channel
+## 2. Grafické používateľské rozhranie
 
-**Goal.** Compute the developed flow field and the pressure drop of a fluid
-driven through a channel, and confirm that the result is converged.
+Všetko podstatné sa nachádza v paneli **Riešič** (záložky `Úloha`,
+`Okrajové podmienky`, `Počiatočné podmienky`, `Environmentálne podmienky`,
+`Materiál`, `Výsledky`), v menu **Úloha** a v paneli **Model**.
 
-This tutorial assumes a meshed volume model - the shipped **Channel.tmsh** model
-is exactly this case, and the *Contaminant dispersion in fluids* tutorial uses
-it as well. If you build your own, draw a box, tetrahedralise it, and mark the
-inlet face, the outlet face and the remaining faces as three separate surface
-entities so that conditions can be assigned to them.
+### 2.1 Výber úlohy
 
-### Step 1 - select the problem
+`Úloha` -> `Poradie krokov úloh` (`Ctrl+P`) otvorí dialóg poradia krokov úloh.
+Pridajte krok a vyberte **Nestlačiteľné viskózne prúdenie** - „Ustálené a
+prechodové prúdenie newtonských tekutín".
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a **task group** and set its **# of iterations** to `2000` by
-   double-clicking the value.
-3. Leave its **Convergence** at the default `1e-5`.
-4. Add an **Incompressible viscous flow** task inside the group.
-5. Confirm with `OK`.
+Krok prúdenia patrí do **skupiny krokov úlohy**, ktorá nesie dve hodnoty
+riadiace nelineárnu iteráciu z časti 1.6. Každú z nich upravíte dvojitým
+kliknutím:
 
-The two values are the whole point of this step. The run takes up to 2000
-passes and stops as soon as the field settles below `1e-5` - see 1.6. Set the
-count generously: it is a ceiling, and the convergence value is what normally
-ends the run.
+| Hodnota | Význam |
+|---|---|
+| **počet iterácií** | najväčší počet prechodov, ktoré môže urobiť jedno riešenie - alebo jeden časový krok |
+| **Konvergencia** | skupina ukončí prechody, keď sa krok prúdenia ustáli pod touto hodnotou **a** jeho reziduum kleslo; `0` vždy spustí plný počet |
 
-### Step 2 - generate the mesh
+Predvolená hodnota konvergencie je `1e-5`, čo je pre model prúdenia bezpečná
+relatívna veľkosť kroku. Umiestniť krok prúdenia mimo skupiny, kde prebehne
+presne raz, nemá zmysel - pozri 1.6.
 
-`Geometry` -> `Volume` -> `Generate tetrahedral mesh`.
+Kombinácie, ktoré sa oplatí poznať:
 
-A flow model is solved on volume elements only. Without a volume mesh there is
-nothing for the solver to assemble.
+- samotné *Nestlačiteľné viskózne prúdenie* v skupine s niekoľkými stovkami
+  iterácií - ustálené prúdové pole;
+- *Nestlačiteľné viskózne prúdenie* a *Rozptyl kontaminantu* v jednej skupine -
+  rozptyl na prúdení, klasická prechodová dvojica;
+- *Nestlačiteľné viskózne prúdenie* a *Prestup tepla v tekutinách* v jednej
+  skupine - ohrievané alebo chladené prúdenie;
+- *Prestup tepla v tekutinách* a samostatný krok *Prestup tepla* na pevnej látke
+  so sieťou, krok prestupu tepla v tekutinách ako prvý, v jednej skupine s
+  niekoľkými iteráciami - združený prestup tepla cez steny s podmienkou *Nútená
+  konvekcia*.
 
-### Step 3 - assign the material
+Prúdenie vylučuje *Prúdenie cez porézne prostredie* a *Modálnu analýzu*; oba
+sprievodné typy úloh vyžadujú prítomnosť kroku prúdenia.
 
-1. Select the volume entity in the `Model` tree.
-2. Open the `Material` tab and assign **Water**, or enter:
-   - **Density** = `1000` `kg/m^3`
-   - **Dynamic viscosity** = `1.0e-3` `kg/(m*s)`
+### 2.2 Záložka Úloha
 
-Check that the viscosity is the dynamic one in `Pa*s` and not the kinematic one
-- see 2.3.
+**Riešič v čase** - zobrazuje sa pre všetky tri typy úloh prúdenia tekutín,
+pretože všetky sú časovo závislé. Pre ustálený výpočet prúdenia ho nechajte
+vypnutý.
 
-### Step 4 - keep the analysis steady-state
+| Pole | Význam |
+|---|---|
+| Povoliť | zapína a vypína krokovanie v čase |
+| Aproximácia | theta schémy v čase: spätná, centrálna alebo dopredná, pozri 1.8 |
+| Počiatočný čas | prvá hodnota času v sekundách; pri reštarte riešiča sa ignoruje |
+| Konečný čas | `počiatočný čas + veľkosť časového kroku * počet časových krokov`, iba na čítanie |
+| Veľkosť časového kroku | `dt` v sekundách, pozri odporúčanie Courantovho čísla v 1.8 |
+| Počet časových krokov | koľko krokov sa má vypočítať |
+| Frekvencia výstupu | zapíše súbor výsledkov každých N krokov; `0` zapíše iba posledný krok |
 
-Open the `Problem` tab and leave **Enable** unticked in the *Time-solver* group
-box.
+**Nastavenia rozptylu kontaminantu** - zobrazuje sa, keď je v poradí krokov úloh
+krok *Rozptyl kontaminantu*. Obsahuje dva parametre z časti 1.10:
 
-### Step 5 - assign the walls
+| Pole | Význam |
+|---|---|
+| Maximálne nasýtenie `[kg/m^3]` | najväčšia možná koncentrácia; kladná rýchlosť tvorby častíc sa pri nej zastaví a počíta sa *Relatívne nasýtenie*. `0` znamená bez obmedzenia |
+| Koeficient difúzie `[m^2/s]` | efektívny koeficient difúzie kontaminantu v tekutine. `0` znamená čistú advekciu |
 
-1. Select the surface entity covering the solid boundaries of the channel.
-2. Open the `Boundary conditions` tab and tick **Wall**.
+Typické hodnoty oboch sú uvedené v časti 1.10.
 
-There is no value to enter. This is the no-slip condition, and it is what makes
-the flow develop a profile instead of sliding through as a plug.
+Typy úloh prúdenia a prestupu tepla v tekutinách vlastnú skupinu nastavení
+nemajú. Všetko ostatné sa priraďuje entitám na záložkách podmienok a počet
+iterácií - na ktorom tu záleží viac ako kdekoľvek inde v Range FEA - sa nastavuje
+v dialógu poradia krokov úloh, nie na tejto záložke.
 
-### Step 6 - drive the flow
+### 2.3 Záložka Materiál
 
-1. Select the inlet surface entity.
-2. Tick **Volumetric flow rate (inflow)** and enter the throughput in `m^3/s` -
-   or tick **Velocity (inflow)** and enter a speed in `m/s` instead.
+Záložka `Materiál` zobrazuje materiál priradený vybranej entite. Čo je potrebné,
+závisí od toho, ktoré typy úloh prúdenia tekutín sú v poradí krokov úloh:
 
-Before going on, estimate the Reynolds number from the mean speed and the
-channel width:
+| Vlastnosť | Jednotky | Vyžaduje | Poznámka |
+|---|---|---|---|
+| Hustota | `kg/m^3` | všetky tri | `rho`, približne `1000` pre vodu, `1.2` pre vzduch |
+| Dynamická viskozita | `kg/(m*s)` | prúdenie, prestup tepla v tekutinách | `mu`, približne `1.0e-3` pre vodu, `1.8e-5` pre vzduch |
+| Tepelná vodivosť | `W/(m*K)` | prestup tepla v tekutinách | `k`, približne `0.6` pre vodu, `0.025` pre vzduch |
+| Tepelná kapacita | `J/(kg*K)` | prestup tepla v tekutinách | `c`, približne `4180` pre vodu, `1005` pre vzduch |
+
+Entita, ktorej chýba niektorá vlastnosť vyžadovaná typom úlohy v poradí krokov,
+sa nerieši a kontrola nastavení na to pred spustením výpočtu upozorní. Dodaná
+databáza materiálov obsahuje **Vodu** a **Vzduch**, čo zvyčajne tento krok celý
+vybaví.
+
+Všimnite si, že sa požaduje **dynamická** viskozita `mu` v `Pa*s`, nie
+kinematická viskozita `nu = mu/rho` v `m^2/s`. Zadanie `1.0e-6` pre vodu, lebo
+je to známe číslo, je najčastejšou chybou materiálu v modeli prúdenia a urobí
+tekutinu tisíckrát menej viskóznou, než má byť - čo sa zvyčajne prejaví
+výpočtom, ktorý nekonverguje.
+
+Každá vlastnosť je tabuľkou v závislosti od teploty, vyhodnocovanou pri teplote
+prvku z predchádzajúceho výpočtu.
+
+### 2.4 Záložka Okrajové podmienky
+
+Záložka je rozdelená na zoznam dostupných okrajových podmienok hore a editor
+vybranej podmienky dole. Najprv vyberte entitu v strome `Model`; zoznam potom
+ponúkne podmienky platné pre daný typ entity a vybrané typy úloh. Zaškrtnutím
+podmienku priradíte a potom upravíte jej zložky v dolnom strome.
+
+Ponúkajú sa podmienky z častí 1.4, 1.9 a 1.10. Poznámky k ich použitiu:
+
+- **Stena** patrí na každú pevnú hranicu a nemá žiadnu hodnotu. Plošná entita
+  objemu so sieťou, ktorá nenesie žiadnu podmienku, *nie je* stenou - je to
+  neobmedzená hranica, čo je zriedka to, čo bolo zamýšľané. Steny sú prvá vec,
+  ktorú treba skontrolovať pri modeli, ktorý sa správa zvláštne.
+- **Stena (bez trenia)** je určená pre roviny symetrie zarovnané s globálnymi
+  osami. Na naklonenej ploche obmedzuje nesprávny smer - pozri 1.4.
+- **Rýchlosť (prítok)** aj **Objemový prietok (prítok)** poháňajú prúdenie cez
+  plochu pozdĺž jej priemernej normály. Vyberte tú, ktorá zodpovedá číslu, ktoré
+  skutočne máte. Záporná hodnota poháňa prúdenie opačne, čo je jeden zo spôsobov,
+  ako zadať výstup.
+- **Tlak (implicitný)** je uprednostňovaná výstupná podmienka: umožňuje vyvinúť
+  sa výstupnému profilu a so zadanou hodnotou `0` robí z výstupu tlakovú
+  referenciu. **Tlak (explicitný)** namiesto toho fixuje uzlový tlak.
+- **Teplota** a **Teplo** sa objavia, keď je v poradí krokov úloh krok
+  *Prestup tepla v tekutinách*; **Koncentrácia častíc** a **Rýchlosť tvorby
+  častíc**, keď je tam krok *Rozptyl kontaminantu*.
+- Každá zložka je tabuľkou v čase. Kliknutím na **Upraviť časovo závislé
+  hodnoty** otvoríte editor zložiek, kde sa hodnoty zadávajú v závislosti od času;
+  medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom
+  zadanom čase zostáva platná posledná hodnota. Takto sa modeluje udalosť úniku,
+  postupne nabiehajúci vstup alebo pracovný cyklus.
+
+### 2.5 Počiatočné a environmentálne podmienky
+
+Záložka `Počiatočné podmienky` ponúka pre úlohu prúdenia *Rýchlosť* a *Tlak*, pre
+prestup tepla v tekutinách *Teplotu* a pre rozptyl *Koncentráciu častíc*.
+Nastavujú počiatočné pole prvého výpočtu a umožňujú, aby prechodový výpočet
+nezačínal z pokoja.
+
+Záložka `Environmentálne podmienky` ponúka *Gravitačné zrýchlenie* s predvolenou
+hodnotou `(0, 0, -9.80665) m/s^2`. Priraďte ho objemu kvôli objemovej sile a
+každej ploche s podmienkou *Tlak (implicitný)*, aby sa hydrostatický člen tejto
+podmienky meral v správnom smere.
+
+### 2.6 Nastavenie maticového riešiča
+
+`Úloha` -> `Nastaviť maticový riešič úloh` konfiguruje iteračné riešiče. Všetky
+tri riešiče prúdenia tekutín používajú položku **GMRES**, pretože ich matice nie
+sú symetrické.
+
+Pred akoukoľvek zmenou tu rozlišujte dve vnorené iterácie: iterácie **maticového
+riešiča** riešia jednu linearizovanú sústavu, kým iterácie **skupiny krokov
+úlohy** riešia nelinearitu z časti 1.6. Model prúdenia, ktorý nekonverguje,
+takmer vždy potrebuje viac iterácií skupiny, lepšiu sieť alebo opravené okrajové
+podmienky - nie vyšší počet iterácií GMRES.
+
+Výnimkou je **ustálený rozptyl kontaminantu s difúziou**. Ide o jediné lineárne
+riešenie, takže neexistujú iterácie skupiny, na ktoré by sa dalo spoľahnúť, a
+sústava s prevládajúcou difúziou konverguje pri predvolenom limite GMRES 10
+vnútorných krát 10 vonkajších iterácií pomaly. Maticový riešič pri dosiahnutí
+limitu neupozorní: prečítajte si jeho tabuľku iterácií v logu riešiča a ak
+dobehne do poslednej vonkajšej iterácie s reziduom stále výrazne nad hodnotou
+konvergencie riešiča, zvýšte počet vonkajších iterácií. Nekonvergované riešenie
+dá nesprávnu odpoveď bez akéhokoľvek iného náznaku.
+
+### 2.7 Monitorovacie body
+
+`Úloha` -> `Definovať monitorovacie body` umiestni sondy na zadané súradnice a
+vyberie zaznamenávanú veličinu - *Rýchlosť*, *Tlak*, *Teplotu*, *Koncentráciu
+častíc*, *Rýchlosť tvorby častíc* alebo *Relatívne nasýtenie*. V prechodovom
+výpočte zobrazí históriu `Výkaz` -> `Monitorovacie body`.
+
+Pre model rozptylu je monitorovací bod v mieste záujmu odpoveďou vo forme, akú
+zvyčajne chcete: koncentrácia v čase na danom mieste, odčítaná z grafu, a nie z
+postupnosti obrázkov.
+
+### 2.8 Výsledky a záznamy
+
+Záložka `Výsledky` zobrazuje vypočítané veličiny a ovláda 3D zobrazenie.
+Rýchlosť je uzlový vektor, tlak uzlový skalár, teplota uzlový skalár, tepelný tok
+prvkový vektor a koncentrácia častíc a relatívne nasýtenie sú uzlové skaláry.
+
+Záložka `Záznamy` panela `Model` zobrazuje záznamy výsledkov:
+
+- **ustálená analýza** - jediný záznam;
+- **prechodová analýza** - jeden záznam na každý zapísaný časový krok.
+  Animovanie záznamov prehrá prúdenie a tlačidlo **Záznam** v dolnej časti stromu
+  zapíše animáciu do video súboru.
+
+`Výkaz` -> `Konvergencia riešiča` zobrazí históriu konvergencie opísanú v 1.6 a
+po každom výpočte prúdenia je to výkaz, ktorý treba otvoriť ako prvý. `Výkaz` ->
+`Log súbor riešiča` zobrazí úplný výstup riešiča vrátane štatistík rýchlosti a
+tlaku po každom zázname.
+
+---
+
+## 3. Tutoriál - ustálené prúdenie kanálom
+
+**Cieľ.** Vypočítať vyvinuté prúdové pole a tlakovú stratu tekutiny poháňanej
+kanálom a overiť, že výsledok je konvergovaný.
+
+Tento tutoriál predpokladá objemový model so sieťou - dodaný model
+**Channel.tmsh** je presne takýto prípad a používa ho aj tutoriál *Rozptyl
+kontaminantu v tekutinách*. Ak si zostavujete vlastný, nakreslite kváder,
+rozdeľte ho na tetrahedróny a označte vstupnú plochu, výstupnú plochu a ostatné
+plochy ako tri samostatné plošné entity, aby im bolo možné priradiť podmienky.
+
+### Krok 1 - výber úlohy
+
+1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
+2. Pridajte **skupinu krokov úlohy** a dvojitým kliknutím na hodnotu nastavte
+   jej **počet iterácií** na `2000`.
+3. **Konvergenciu** ponechajte na predvolenej hodnote `1e-5`.
+4. Do skupiny pridajte krok **Nestlačiteľné viskózne prúdenie**.
+5. Potvrďte tlačidlom `OK`.
+
+O tieto dve hodnoty v tomto kroku ide predovšetkým. Výpočet urobí najviac 2000
+prechodov a zastaví sa, len čo sa pole ustáli pod `1e-5` - pozri 1.6. Počet
+nastavte veľkoryso: je to strop a výpočet zvyčajne ukončí hodnota konvergencie.
+
+### Krok 2 - generovanie siete
+
+`Geometria` -> `Objem` -> `Generovať tetrahedrónovú sieť`.
+
+Model prúdenia sa rieši iba na objemových prvkoch. Bez objemovej siete riešič
+nemá čo zostaviť.
+
+### Krok 3 - priradenie materiálu
+
+1. V strome `Model` vyberte objemovú entitu.
+2. Otvorte záložku `Materiál` a priraďte **Vodu**, alebo zadajte:
+   - **Hustota** = `1000` `kg/m^3`
+   - **Dynamická viskozita** = `1.0e-3` `kg/(m*s)`
+
+Skontrolujte, že viskozita je dynamická v `Pa*s`, a nie kinematická - pozri 2.3.
+
+### Krok 4 - ponechanie ustálenej analýzy
+
+Otvorte záložku `Úloha` a v skupine *Riešič v čase* ponechajte **Povoliť**
+nezaškrtnuté.
+
+### Krok 5 - priradenie stien
+
+1. Vyberte plošnú entitu pokrývajúcu pevné hranice kanála.
+2. Otvorte záložku `Okrajové podmienky` a zaškrtnite **Stena** (*Wall*).
+
+Nie je čo zadať. Je to podmienka nulového sklzu a práve vďaka nej sa v prúdení
+vyvinie profil, namiesto aby tekutina preklzla ako piest.
+
+### Krok 6 - pohon prúdenia
+
+1. Vyberte vstupnú plošnú entitu.
+2. Zaškrtnite **Objemový prietok (prítok)** (*Volumetric flow rate (inflow)*) a
+   zadajte prietok v `m^3/s` - alebo namiesto toho zaškrtnite **Rýchlosť
+   (prítok)** (*Velocity (inflow)*) a zadajte rýchlosť v `m/s`.
+
+Skôr než budete pokračovať, odhadnite Reynoldsovo číslo zo strednej rýchlosti a
+šírky kanála:
 
 ```
 Re = rho * V * L / mu
 ```
 
-Below a few thousand the model is in the range this solver handles. Far above
-it, expect the run not to converge, and read section 6 before spending time on
-it.
+Do niekoľkých tisíc je model v rozsahu, ktorý tento riešič zvláda. Ďaleko nad
+ním očakávajte, že výpočet nebude konvergovať, a skôr než mu budete venovať čas,
+prečítajte si časť 6.
 
-### Step 7 - open the outlet
+### Krok 7 - otvorenie výstupu
 
-1. Select the outlet surface entity.
-2. Tick **Pressure (implicit)** and set **Pressure** = `0` `Pa`.
+1. Vyberte výstupnú plošnú entitu.
+2. Zaškrtnite **Tlak (implicitný)** (*Pressure (implicit)*) a nastavte
+   **Tlak** = `0` `Pa`.
 
-This is the step that makes the model solvable. It gives the pressure field its
-reference and lets the outflow profile develop rather than forcing it flat. A
-model with an inlet and walls but no pressure condition anywhere has a singular
-pressure and will not converge.
+Toto je krok, ktorý robí model riešiteľným. Dáva tlakovému poľu referenciu a
+umožňuje vyvinúť sa výstupnému profilu namiesto jeho vynútenia ako rovného. Model
+so vstupom a stenami, ale bez tlakovej podmienky kdekoľvek, má singulárny tlak a
+nebude konvergovať.
 
-### Step 8 - solve
+### Krok 8 - riešenie
 
-1. `Solution` -> `Start solver` (`Ctrl+R`).
-2. The setup checker reports missing materials or missing boundary conditions
-   before the run starts.
-3. Follow the progress in `Report` -> `Solver log file`.
+1. `Riešenie` -> `Spustiť riešič` (`Ctrl+R`).
+2. Kontrola nastavení pred spustením výpočtu ohlási chýbajúce materiály alebo
+   chýbajúce okrajové podmienky.
+3. Priebeh sledujte vo `Výkaz` -> `Log súbor riešiča`.
 
-This may take a while - a flow model of any size is real work, and the log
-prints one block per iteration. Watch for `Convergence target` in the log: the
-pass which reaches it is marked, and the group then reports *All sub-tasks have
-converged* and stops.
+Môže to chvíľu trvať - model prúdenia akejkoľvek veľkosti je skutočná práca a
+log vypisuje jeden blok na iteráciu. Sledujte v logu `Convergence target`:
+prechod, ktorý ho dosiahne, je označený a skupina potom ohlási *All sub-tasks
+have converged* a zastaví sa.
 
-### Step 9 - check the convergence
+### Krok 9 - kontrola konvergencie
 
-`Report` -> `Solver convergence`.
+`Výkaz` -> `Konvergencia riešiča`.
 
-Do this before looking at any picture. The residual should fall by several
-orders of magnitude and then flatten, and `Convergence-V` and `Convergence-P`
-should approach zero. If the residual is still falling steeply at the last
-iteration the run was too short - raise the iteration count and restart. If it
-oscillates or climbs, the answer is not a solution and section 6 is the place to
-look.
+Urobte to skôr, než sa pozriete na akýkoľvek obrázok. Reziduum by malo klesnúť o
+niekoľko rádov a potom sa vyrovnať a `Convergence-V` a `Convergence-P` by sa mali
+blížiť k nule. Ak reziduum pri poslednej iterácii stále strmo klesá, výpočet bol
+príliš krátky - zvýšte počet iterácií a reštartujte. Ak osciluje alebo rastie,
+odpoveď nie je riešením a treba sa pozrieť do časti 6.
 
-### Step 10 - inspect the results
+### Krok 10 - prezeranie výsledkov
 
-- `Results` tab: display **Velocity**. The profile across the channel should be
-  smooth, zero at the walls and fastest near the centre.
-- Cut a plane through the volume - the interesting structure of a flow is inside
-  the domain, not on its surface.
-- Display **Pressure**. It should fall monotonically from inlet to outlet, and
-  read `0` at the outlet where you set it.
-- Create **stream lines** with `Geometry` -> `Stream line` to see recirculation
-  or dead zones at once.
-- Check the mass balance: the mean outlet speed times the outlet area should
-  equal the volumetric flow rate prescribed at the inlet. This is the quickest
-  global check that the model is doing what you asked - see section 5.
+- Záložka `Výsledky`: zobrazte **Rýchlosť**. Profil naprieč kanálom by mal byť
+  hladký, na stenách nulový a najrýchlejší pri strede.
+- Vytvorte rez objemom - zaujímavá štruktúra prúdenia je vnútri oblasti, nie na
+  jej povrchu.
+- Zobrazte **Tlak**. Mal by monotónne klesať od vstupu k výstupu a na výstupe,
+  kde ste ho nastavili, mať hodnotu `0`.
+- Vytvorte **prúdnice** cez `Geometria` -> `Prúdnica`, aby ste hneď videli
+  recirkuláciu alebo mŕtve zóny.
+- Skontrolujte bilanciu hmotnosti: stredná výstupná rýchlosť krát plocha výstupu
+  by sa mala rovnať objemovému prietoku predpísanému na vstupe. Je to najrýchlejšia
+  globálna kontrola, že model robí to, čo ste chceli - pozri časť 5.
 
-### Troubleshooting
+### Riešenie problémov
 
-| Symptom | Cause |
+| Príznak | Príčina |
 |---|---|
-| The residual never falls | no pressure condition anywhere, so the pressure is undetermined |
-| The residual oscillates or climbs | the Reynolds number is too high for the mesh, or the viscosity was entered as kinematic |
-| The flow slides through with no profile | no *Wall* condition on the solid boundaries |
-| The result looks like the first iteration | the task was not placed in a task group, so it ran once |
-| The run stopped far short of the iteration count | it converged - both the increments and the residual met the test of 1.6 |
-| The run never stops early, however loose the convergence value | the residual is not coming down - read `Residual ratio` in the log, and treat the flow field as unconverged |
-| *Failed to calculate element scales. Unsupported element type* | the mesh contains volume elements other than linear tetrahedra or hexahedra |
-| Nothing was solved at all | no volume mesh was generated, or the material is missing density or viscosity |
-| The prescribed inflow and outflow do not balance | an incompressible fluid cannot accumulate - use *Pressure (implicit)* at the outlet |
+| Reziduum nikdy neklesne | nikde nie je tlaková podmienka, takže tlak je neurčený |
+| Reziduum osciluje alebo rastie | Reynoldsovo číslo je pre sieť príliš vysoké alebo bola viskozita zadaná ako kinematická |
+| Tekutina preklzne bez profilu | na pevných hraniciach chýba podmienka *Stena* |
+| Výsledok vyzerá ako prvá iterácia | krok nebol umiestnený v skupine krokov úlohy, takže prebehol raz |
+| Výpočet sa zastavil ďaleko pred počtom iterácií | konvergoval - prírastky aj reziduum splnili test z 1.6 |
+| Výpočet sa nikdy nezastaví skôr, nech je hodnota konvergencie akokoľvek voľná | reziduum neklesá - prečítajte si v logu `Residual ratio` a považujte prúdové pole za nekonvergované |
+| *Failed to calculate element scales. Unsupported element type* | sieť obsahuje iné objemové prvky ako lineárne tetrahedróny alebo hexahedróny |
+| Nevyriešilo sa vôbec nič | nebola vygenerovaná objemová sieť alebo materiálu chýba hustota alebo viskozita |
+| Predpísaný prítok a odtok nie sú v rovnováhe | nestlačiteľná tekutina sa nemôže hromadiť - na výstupe použite *Tlak (implicitný)* |
 
 ---
 
-## 4. Tutorial - transient flow with contaminant dispersion
+## 4. Tutoriál - prechodové prúdenie s rozptylom kontaminantu
 
-**Goal.** Release a contaminant into the converged flow of tutorial 3 and follow
-the plume through the channel in time.
+**Cieľ.** Uvoľniť kontaminant do konvergovaného prúdenia z tutoriálu 3 a sledovať
+oblak v čase pri jeho pohybe kanálom.
 
-This is the two-step workflow of section 1.12, and it mirrors the shipped
-*Contaminant dispersion in fluids* tutorial.
+Ide o dvojkrokový postup z časti 1.12, ktorý zodpovedá dodanému tutoriálu
+*Rozptyl kontaminantu v tekutinách*.
 
-### Step 1 - start from a converged flow
+### Krok 1 - začnite z konvergovaného prúdenia
 
-Run tutorial 3 to convergence first. A dispersion run started from rest wastes
-its first time steps developing the flow field rather than transporting
-anything.
+Najprv nechajte tutoriál 3 skonvergovať. Výpočet rozptylu spustený z pokoja
+premrhá prvé časové kroky vývojom prúdového poľa namiesto prenášania čohokoľvek.
 
-### Step 2 - add the dispersion task
+### Krok 2 - pridanie kroku rozptylu
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Keep the task group and the **Incompressible viscous flow** task.
-3. Add a **Contaminant dispersion** task inside the same group.
-4. Reduce the group's **# of iterations** to something like `20` - these are now
-   the non-linear iterations *per time step*, not the iterations of a
-   steady-state solve. Leave the **Convergence** value alone; most steps will
-   settle before the twentieth pass and end early, and the ones that do not are
-   the ones worth the full twenty.
+1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
+2. Ponechajte skupinu krokov úlohy a krok **Nestlačiteľné viskózne prúdenie**.
+3. Do tej istej skupiny pridajte krok **Rozptyl kontaminantu**.
+4. Znížte **počet iterácií** skupiny na približne `20` - teraz sú to nelineárne
+   iterácie *na časový krok*, nie iterácie ustáleného riešenia. Hodnotu
+   **Konvergencia** nemeňte; väčšina krokov sa ustáli pred dvadsiatym prechodom a
+   skončí skôr, a tie, ktoré nie, sú práve tie, ktoré si plných dvadsať
+   zaslúžia.
 
-*Contaminant dispersion* requires the flow task to be present; it reads the
-velocity field and never computes it.
+*Rozptyl kontaminantu* vyžaduje prítomnosť kroku prúdenia; pole rýchlosti číta a
+nikdy ho nepočíta.
 
-### Step 3 - configure the time solver
+### Krok 3 - nastavenie časového riešiča
 
-Open the `Problem` tab and in the *Time-solver* group box set:
+Otvorte záložku `Úloha` a v skupine *Riešič v čase* nastavte:
 
-| Field | Value |
+| Pole | Hodnota |
 |---|---|
-| Enable | ticked |
-| Approximation | `Backward difference (stable)` |
-| Start time | `0` |
-| Time-step size | from the Courant guidance below |
-| Number of time-steps | enough to carry the plume through the domain |
-| Output frequency | `1` for a smooth animation, more to keep the file small |
+| Povoliť | zaškrtnuté |
+| Aproximácia | `Backward difference (stable)` (spätná diferencia) |
+| Počiatočný čas | `0` |
+| Veľkosť časového kroku | podľa odporúčania Courantovho čísla nižšie |
+| Počet časových krokov | dosť na to, aby oblak prešiel oblasťou |
+| Frekvencia výstupu | `1` pre plynulú animáciu, viac pre menší súbor |
 
-Pick the time step from the mesh and the flow speed so that the fluid crosses
-about one element per step:
+Časový krok zvoľte podľa siete a rýchlosti prúdenia tak, aby tekutina prešla za
+krok približne jeden prvok:
 
 ```
 dt ~ h / |v|
 ```
 
-Then pick the number of steps from how long the plume needs to traverse the
-domain, `L / |v|`, divided by that step.
+Potom zvoľte počet krokov podľa toho, ako dlho oblak potrebuje na prechod
+oblasťou, `L / |v|`, delené týmto krokom.
 
-### Step 4 - release the contaminant
+V skupine *Nastavenia rozptylu kontaminantu* na tej istej záložke ponechajte pre
+čistú advekciu obe hodnoty na `0`, alebo zadajte efektívny **Koeficient difúzie**
+podľa tabuľky v časti 1.10, ak záleží na šírke oblaku. **Maximálne nasýtenie** má
+zmysel iba pre paru alebo rozpustenú látku; nesmie byť nižšie ako koncentrácia
+úniku z kroku 4.
 
-1. Select the inlet surface entity.
-2. Open the `Boundary conditions` tab and tick **Particle concentration**.
-3. Rather than entering a single value, click **Edit time dependent values**.
-4. In the component editor enter a release profile - for example `0` at time
-   `0`, the release concentration at the moment the release starts, and `0`
-   again when it ends.
+### Krok 4 - uvoľnenie kontaminantu
 
-Between two given times the value is interpolated linearly, and after the last
-time the last value is kept, so a release that should start abruptly needs two
-entries close together. This time-dependent condition is
-what turns a steady inlet into a release event, and it is the heart of a
-dispersion model.
+1. Vyberte vstupnú plošnú entitu.
+2. Otvorte záložku `Okrajové podmienky` a zaškrtnite **Koncentrácia častíc**
+   (*Particle concentration*).
+3. Namiesto zadania jednej hodnoty kliknite na **Upraviť časovo závislé
+   hodnoty**.
+4. V editore zložiek zadajte profil úniku - napríklad `0` v čase `0`,
+   koncentráciu úniku v okamihu začiatku úniku a opäť `0` na jeho konci.
 
-### Step 5 - keep the flow conditions
+Medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom
+zadanom čase zostáva platná posledná hodnota, takže únik, ktorý má začať náhle,
+potrebuje dve tesne po sebe nasledujúce položky. Práve táto časovo závislá
+podmienka robí z ustáleného vstupu udalosť úniku a je jadrom modelu rozptylu.
 
-The **Wall**, the inflow condition and the **Pressure (implicit)** outlet carry
-over unchanged. The flow is still being solved at every time step - the
-dispersion rides on it.
+### Krok 5 - ponechanie podmienok prúdenia
 
-### Step 6 - add a monitoring point
+**Stena**, podmienka prítoku a výstup s **Tlakom (implicitným)** zostávajú
+nezmenené. Prúdenie sa naďalej rieši v každom časovom kroku - rozptyl sa na ňom
+len veze.
 
-`Problem` -> `Define monitoring points`, place a point downstream and set its
-variable to **Particle concentration**. The arrival time and the peak
-concentration at a given place are far easier to read off a history than out of
-a sequence of coloured pictures.
+### Krok 6 - pridanie monitorovacieho bodu
 
-### Step 7 - solve with restart
+`Úloha` -> `Definovať monitorovacie body`, umiestnite bod po prúde a nastavte jeho
+veličinu na **Koncentrácia častíc**. Čas príchodu a špičkovú koncentráciu na
+danom mieste je oveľa jednoduchšie odčítať z histórie ako z postupnosti farebných
+obrázkov.
 
-1. `Solution` -> `Start solver` (`Ctrl+R`).
-2. Tick **Restart solver / continue**.
+### Krok 7 - riešenie s reštartom
 
-The restart is what makes the converged steady-state field the starting point of
-the march. Without it the run starts from rest and the first steps are wasted.
+1. `Riešenie` -> `Spustiť riešič` (`Ctrl+R`).
+2. Zaškrtnite **Reštartovať riešič / pokračovať**.
 
-### Step 8 - inspect the results
+Práve reštart robí z konvergovaného ustáleného poľa východiskový bod krokovania v
+čase. Bez neho výpočet začne z pokoja a prvé kroky sú premrhané.
 
-- `Model` dock, `Records` tab: one record per written step. Step through them,
-  or animate them, to watch the plume travel.
-- `Results` tab: display **Particle concentration**. Fix the display range
-  across the records so the colours mean the same thing in every frame -
-  otherwise the animation rescales itself and the plume appears not to decay.
-- `Report` -> `Monitoring points` plots the concentration history at the probe.
-  Read the arrival time off it and compare with `L / |v|`, the travel time the
-  mean flow implies - that is the cheapest validation of the whole model.
-- Remember that the plume spreads only by numerical diffusion. The **width** of
-  the computed plume is a property of the mesh and the time step, not of the
-  physics - see section 6.
+### Krok 8 - prezeranie výsledkov
 
-### Troubleshooting
+- Panel `Model`, záložka `Záznamy`: jeden záznam na každý zapísaný krok.
+  Prechádzajte ich alebo ich animujte a sledujte, ako sa oblak pohybuje.
+- Záložka `Výsledky`: zobrazte **Koncentráciu častíc**. Zafixujte rozsah
+  zobrazenia naprieč záznamami, aby farby znamenali v každom snímku to isté -
+  inak sa animácia sama premieruje a oblak sa javí, akoby neslabol.
+- `Výkaz` -> `Monitorovacie body` zobrazí históriu koncentrácie v sonde.
+  Odčítajte z nej čas príchodu a porovnajte ho s `L / |v|`, časom prechodu, ktorý
+  vyplýva zo strednej rýchlosti prúdenia - je to najlacnejšie overenie celého
+  modelu.
+- Pri nulovom koeficiente difúzie sa oblak rozširuje iba numerickou difúziou,
+  takže jeho **šírka** je vlastnosťou siete a časového kroku, nie fyziky. S
+  efektívnym koeficientom difúzie je šírka výsledkom - pred tým, než jej budete
+  dôverovať, ju porovnajte s jemnejšou sieťou.
 
-| Symptom | Cause |
+### Riešenie problémov
+
+| Príznak | Príčina |
 |---|---|
-| The concentration never leaves the inlet | the flow field is zero - the flow task is missing from the group, or the run was not restarted from a converged flow |
-| The plume smears out almost immediately | the Courant number is far above 1, or the mesh is too coarse along the path |
-| The concentration goes negative or overshoots | the time step is too large for the mesh, so the stabilised advection is ringing. Slight undershoots next to a steep front are normal; the solution is not clipped at zero, because clipping would add contaminant |
-| Only one record was written | the output frequency is `0`, which writes the last step only |
-| Each step's residual stays high | too few iterations per time step - the flow within each step is not converged |
-| The plume never spreads sideways | that is the model: the diffusivity is zero, so lateral spreading comes only from the flow field |
+| Koncentrácia nikdy neopustí vstup | prúdové pole je nulové - v skupine chýba krok prúdenia alebo výpočet nebol reštartovaný z konvergovaného prúdenia |
+| Oblak sa takmer okamžite rozmaže | Courantovo číslo je ďaleko nad 1 alebo je sieť pozdĺž dráhy príliš hrubá |
+| Koncentrácia je záporná alebo prestrelí | časový krok je pre sieť príliš veľký, takže stabilizovaná advekcia „zvoní". Mierne podstrelenie pri strmom čele je normálne; riešenie sa neorezáva na nulu, pretože orezanie by pridávalo kontaminant |
+| Zapísal sa iba jeden záznam | frekvencia výstupu je `0`, čo zapíše iba posledný krok |
+| Reziduum každého kroku zostáva vysoké | príliš málo iterácií na časový krok - prúdenie v rámci kroku nie je konvergované |
+| Oblak sa nikdy nerozšíri do strán | koeficient difúzie je nulový, takže bočné rozširovanie pochádza iba z prúdového poľa - zadajte efektívny koeficient difúzie, pozri časť 1.10 |
+| Oblak sa naraz rozšíri po celej oblasti | koeficient difúzie je príliš veľký - porovnajte ho s `U * L` |
+| Log upozorňuje, že predpísaná koncentrácia prekračuje maximálne nasýtenie | okrajová alebo počiatočná podmienka je nad maximálnym nasýtením; obmedzenie pôsobí iba na rýchlosť tvorby častíc, preto skontrolujte obe hodnoty |
+| Ustálené riešenie s difúziou vyzerá nesprávne | maticový riešič sa zastavil na limite iterácií - zvýšte počet vonkajších iterácií GMRES, pozri časť 2.6 |
 
 ---
 
-## 5. Checking a model
+## 5. Kontrola modelu
 
-The solver has no built-in verification suite, so it is worth validating a new
-model against something you can compute by hand before trusting it. Five cheap
-checks, in order of usefulness:
+Riešič nemá zabudovanú sadu overovacích testov, preto sa oplatí nový model pred
+tým, než mu začnete dôverovať, overiť voči niečomu, čo viete vypočítať ručne. Päť
+lacných kontrol v poradí podľa užitočnosti:
 
-**Mass balance.** For any converged incompressible model, what goes in must come
-out:
+**Bilancia hmotnosti.** Pre každý konvergovaný nestlačiteľný model musí to, čo
+vtečie, aj vytiecť:
 
 ```
 sum( v . n * A ) over the inlets  =  sum( v . n * A ) over the outlets
 ```
 
-Read the mean velocity on the outlet from the statistics in the solver log,
-multiply by the outlet area and compare with the prescribed inflow. This one
-global check catches an unconverged run, a missing wall and a boundary condition
-on the wrong entity, and it costs nothing.
+(súčet cez vstupy sa rovná súčtu cez výstupy). Odčítajte strednú rýchlosť na
+výstupe zo štatistík v logu riešiča, vynásobte ju plochou výstupu a porovnajte s
+predpísaným prítokom. Táto jediná globálna kontrola odhalí nekonvergovaný výpočet,
+chýbajúcu stenu aj okrajovú podmienku na nesprávnej entite a nič nestojí.
 
-**Hydrostatics.** Switch every inflow off, leave the domain closed with walls,
-assign a *Gravitational acceleration* environment condition and solve. The fluid
-must come to rest and the pressure must vary linearly with depth:
+**Hydrostatika.** Vypnite všetky prítoky, ponechajte oblasť uzavretú stenami,
+priraďte environmentálnu podmienku *Gravitačné zrýchlenie* a riešte. Tekutina sa
+musí upokojiť a tlak sa musí meniť lineárne s hĺbkou:
 
 ```
 p(h) = p_ref + rho * g * h
 ```
 
-Any residual motion is numerical. This validates the gravity body force, the
-pressure reference and the units of the material in one run, and it is the
-quickest first model to build in a new setup.
+Akýkoľvek zvyškový pohyb je numerický. Táto kontrola v jednom výpočte overí
+gravitačnú objemovú silu, tlakovú referenciu aj jednotky materiálu a je to
+najrýchlejší prvý model, ktorý možno v novom nastavení zostaviť.
 
-**Plane Poiseuille flow.** For a steady laminar flow between two parallel plates
-a distance `H` apart, the profile is parabolic, the centreline speed is `1.5`
-times the mean, and the pressure gradient is
+**Rovinné Poiseuillovo prúdenie.** Pre ustálené laminárne prúdenie medzi dvoma
+rovnobežnými doskami vo vzdialenosti `H` je profil parabolický, rýchlosť v osi je
+`1.5`-násobkom strednej a gradient tlaku je
 
 ```
 dp/dx = 12 * mu * V_mean / H^2
 ```
 
-Model a straight channel with walls top and bottom, a prescribed inflow and a
-*Pressure (implicit)* outlet, and compare the computed centreline speed and
-pressure drop with these. This is the sharpest check available: it validates the
-viscous term, the no-slip wall and the units of the viscosity at once. Give the
-model enough entry length for the profile to develop before measuring, since the
-inlet condition imposes a flat profile.
+Vymodelujte priamy kanál so stenami hore a dole, predpísaným prítokom a výstupom
+s *Tlakom (implicitným)* a porovnajte vypočítanú rýchlosť v osi a tlakovú stratu s
+týmito hodnotami. Je to najostrejšia dostupná kontrola: naraz overí viskózny člen,
+stenu s nulovým sklzom a jednotky viskozity. Pred meraním dajte modelu dostatočnú
+nábehovú dĺžku na vyvinutie profilu, pretože vstupná podmienka predpisuje rovný
+profil.
 
-**Hagen-Poiseuille flow.** The same check in a round pipe of diameter `D` and
-length `L`, where the centreline speed is `2` times the mean and
+**Hagenovo-Poiseuillovo prúdenie.** Tá istá kontrola v kruhovej rúre s priemerom
+`D` a dĺžkou `L`, kde rýchlosť v osi je `2`-násobkom strednej a
 
 ```
 dp = 128 * mu * Q * L / ( pi * D^4 )
 ```
 
-valid while the flow is laminar, that is below about `Re = 2300`.
+platí, kým je prúdenie laminárne, teda približne pod `Re = 2300`.
 
-**Travel time.** For a dispersion model, the time a marker takes to travel a
-distance `L` at mean speed `V` is `L/V`. Read the arrival time off a monitoring
-point history and compare. This validates that the dispersion task is riding on
-the flow field you think it is, and it catches a run that was not restarted from
-a converged flow.
+**Čas prechodu.** Pre model rozptylu je čas, za ktorý značka prejde vzdialenosť
+`L` pri strednej rýchlosti `V`, rovný `L/V`. Odčítajte čas príchodu z histórie
+monitorovacieho bodu a porovnajte. Overí to, že krok rozptylu sa veze na tom
+prúdovom poli, na ktorom si myslíte, a odhalí výpočet, ktorý nebol reštartovaný z
+konvergovaného prúdenia.
 
-For any of these, refine the mesh at least once and confirm the answer is
-converging rather than drifting - and confirm the convergence history has
-flattened before comparing anything at all. An unconverged flow model will fail
-every check here for the same reason.
+Pri každej z týchto kontrol aspoň raz zjemnite sieť a overte, že odpoveď
+konverguje a neodpláva - a skôr než budete čokoľvek porovnávať, overte, že sa
+história konvergencie vyrovnala. Nekonvergovaný model prúdenia z rovnakého dôvodu
+neprejde žiadnou z týchto kontrol.
 
 ---
 
-## 6. Limitations
+## 6. Obmedzenia
 
-### Modelling limitations
+### Obmedzenia modelovania
 
-- **No turbulence model.** The solver integrates the laminar Navier-Stokes
-  equations. The SUPG, PSPG and LSIC terms are numerical stabilisation, not a
-  turbulence closure - they do not represent the mixing or the extra dissipation
-  of a turbulent flow. Above roughly `Re = 2300` in a pipe the real flow is
-  turbulent and this solver does not model it: the run may still converge, but
-  the answer describes a laminar flow that does not exist. There is no `k`-`e`
-  model, no wall function and no large-eddy formulation.
-- **Incompressible and Newtonian only.** The density is a constant of the
-  material and the viscous stress is linear in the strain rate. Compressible
-  flow, Mach number effects, free surfaces, multiple phases and non-Newtonian
-  behaviour are outside the formulation.
-- **No buoyancy.** The density does not depend on temperature, so a *Heat
-  transfer in fluids* result never drives the flow it was computed on. Natural
-  convection, thermal plumes and stratification cannot be modelled. Gravity
-  enters only as a constant body force, which over a constant-density domain
-  produces hydrostatic pressure and no motion.
-- **The coupling to temperature and concentration is one-way.** The flow drives
-  the transport; the transport never changes the flow.
-- **Zero diffusivity in contaminant dispersion.** The diffusion coefficient is
-  fixed at zero, so the transport is purely advective. The width of a computed
-  plume is set by the numerical diffusion of the mesh and the time step, not by
-  any physical diffusivity, and it cannot be entered.
-- **`Heat rate` conditions are ignored by the fluid heat solver.** *Heat rate
-  (unit area)* and *Heat rate (unit volume)* are offered by the interface for
-  *Heat transfer in fluids* but are not read by `RSolverFluidHeat`; only the
-  *Heat* condition reaches it. The plain *Heat transfer* problem type does read
-  all three.
-- **No convection boundary conditions in fluid heat.** Heat leaving a wall into
-  a meshed fluid is resolved rather than correlated, so the *Simple*, *Forced*
-  and *Natural convection* conditions belong to the plain heat solver. Conjugate
-  heat transfer is set up as a *Heat transfer* task on the solid whose *Forced
-  convection* walls read the computed fluid state.
-- **Volume elements only, linear tetrahedra and hexahedra only.** A flow model
-  must be a meshed volume of `TETRA1` or `HEXA1` elements; anything else stops
-  the run. Surfaces take part only to carry a *Pressure (implicit)* traction,
-  and point and line entities contribute nothing.
-- **The frictionless wall is axis-aligned.** It constrains the single dominant
-  global component of each element normal, so it is exact only on a surface
-  whose normal lies along `x`, `y` or `z`.
-- **Inlets are uniform.** *Velocity (inflow)* and *Volumetric flow rate
-  (inflow)* both impose a flat profile along the average surface normal. A
-  developed inlet profile has to be produced by an entry length in the mesh.
+- **Žiadny model turbulencie.** Riešič integruje laminárne Navierove-Stokesove
+  rovnice. Členy SUPG, PSPG a LSIC sú numerickou stabilizáciou, nie uzáverom
+  turbulencie - nepredstavujú miešanie ani dodatočnú disipáciu turbulentného
+  prúdenia. Približne nad `Re = 2300` v rúre je skutočné prúdenie turbulentné a
+  tento riešič ho nemodeluje: výpočet môže aj tak konvergovať, ale odpoveď opisuje
+  laminárne prúdenie, ktoré neexistuje. Neexistuje model `k`-`e`, stenová
+  funkcia ani formulácia simulácie veľkých vírov.
+- **Iba nestlačiteľné a newtonské.** Hustota je konštantou materiálu a viskózne
+  napätie je lineárne v rýchlosti deformácie. Stlačiteľné prúdenie, vplyvy
+  Machovho čísla, voľné hladiny, viac fáz a nenewtonské správanie sú mimo
+  formulácie.
+- **Žiadny vztlak.** Hustota nezávisí od teploty, takže výsledok *Prestupu tepla v
+  tekutinách* nikdy nepoháňa prúdenie, na ktorom bol vypočítaný. Prirodzenú
+  konvekciu, tepelné vlečky ani stratifikáciu nemožno modelovať. Gravitácia
+  vstupuje iba ako konštantná objemová sila, ktorá v oblasti s konštantnou
+  hustotou vytvára hydrostatický tlak a žiadny pohyb.
+- **Väzba na teplotu a koncentráciu je jednosmerná.** Prúdenie poháňa transport;
+  transport nikdy nemení prúdenie.
+- **Konštantná izotropná difúzia pri rozptyle kontaminantu.** Koeficient difúzie
+  je jedna hodnota pre celý model; nemôže sa meniť v priestore ani v čase, riadiť
+  sa smerom prúdenia ani pochádzať z modelu turbulencie. Keďže model turbulencie
+  neexistuje, treba ho odhadnúť ako efektívny koeficient difúzie - pozri časť
+  1.10.
+- **Konštantné maximálne nasýtenie.** Nasýtenie nesleduje teplotu z výsledku
+  *Prestupu tepla v tekutinách* a obmedzuje iba kladnú rýchlosť tvorby častíc.
+  Koncentrácie predpísané podmienkami sa neobmedzujú a pole sa neorezáva.
+- **Podmienky `Heat rate` riešič prestupu tepla v tekutinách ignoruje.** *Tepelný
+  výkon (na jednotku plochy)* a *Tepelný výkon (na jednotku objemu)* rozhranie pre
+  *Prestup tepla v tekutinách* ponúka, ale `RSolverFluidHeat` ich nečíta; dostane
+  sa k nemu iba podmienka *Teplo*. Obyčajný typ úlohy *Prestup tepla* číta všetky
+  tri.
+- **Žiadne konvekčné okrajové podmienky pri prestupe tepla v tekutinách.** Teplo
+  odchádzajúce zo steny do tekutiny so sieťou sa rozlišuje, nie koreluje, takže
+  podmienky *Jednoduchá*, *Nútená* a *Prirodzená konvekcia* patria obyčajnému
+  tepelnému riešiču. Združený prestup tepla sa nastavuje ako krok *Prestup tepla*
+  na pevnej látke, ktorej steny s *Nútenou konvekciou* čítajú vypočítaný stav
+  tekutiny.
+- **Iba objemové prvky, iba lineárne tetrahedróny a hexahedróny.** Model prúdenia
+  musí byť objem so sieťou z prvkov `TETRA1` alebo `HEXA1`; čokoľvek iné výpočet
+  zastaví. Plochy sa zúčastňujú iba ako nositelia tlakovej sily *Tlaku
+  (implicitného)* a bodové a čiarové entity neprispievajú ničím.
+- **Stena bez trenia je zarovnaná s osami.** Obmedzuje jedinú dominantnú globálnu
+  zložku normály každého prvku, takže je presná iba na ploche, ktorej normála
+  leží pozdĺž `x`, `y` alebo `z`.
+- **Vstupy sú rovnomerné.** *Rýchlosť (prítok)* aj *Objemový prietok (prítok)*
+  predpisujú rovný profil pozdĺž priemernej normály plochy. Vyvinutý vstupný
+  profil treba vytvoriť nábehovou dĺžkou v sieti.
 
-### Solver limitations
+### Obmedzenia riešiča
 
-- **The iteration is a modified Newton scheme**, so convergence near the answer
-  is linear rather than quadratic. Expect hundreds of iterations for a
-  steady-state run, and set the iteration count of the task group high enough
-  that the convergence value, rather than the count, is what ends the run. The
-  damping of 1.6 keeps such a run descending, but it cannot make it quadratic.
-- **The central difference march is not Crank-Nicolson.** The theta weighting is
-  applied to the matrix but not to the residual, so *Central difference
-  (accurate)* solves a backward Euler residual with a half-stiffness matrix. The
-  answer is the backward difference answer, reached more slowly. Use *Backward
-  difference (stable)* until this is put right.
-- **The stabilisation parameters are not differentiated.** `Tsupg`, `Tpspg`,
-  `Tlsic` and the element length all depend on the velocity, and all enter the
-  matrix as constants evaluated at the current field. This is the usual practice
-  for a stabilised formulation and is one of the reasons the Jacobian is not the
-  exact one.
-- **The residual part of the convergence test is fixed.** A solve counts as
-  converged only once its residual has fallen to a tenth of what it was when
-  that solve started, and that tenth cannot be changed. It is deliberately
-  conservative: a slowly converging model may never satisfy it and will then run
-  its full iteration count. The
-  `Residual ratio` in the log says how close such a run came.
-- **A pressure reference is required.** With no *Pressure (explicit)* and no
-  *Pressure (implicit)* surface the pressure is determined only up to a constant
-  and the iteration will not settle.
-- **Prescribed flows must balance.** A model whose boundaries are all walls and
-  prescribed velocities must have its inflow equal its outflow exactly; an
-  incompressible fluid cannot absorb the difference.
-- **Cost.** Four unknowns per node, a non-symmetric matrix, and a non-linear
-  iteration around every linear solve make a flow model the most expensive
-  problem type in Range FEA by a wide margin. Size the mesh accordingly, and
-  converge a steady-state field before starting any transient run.
+- **Iterácia je modifikovanou Newtonovou schémou**, takže konvergencia v
+  blízkosti riešenia je lineárna, nie kvadratická. Pri ustálenom výpočte
+  očakávajte stovky iterácií a počet iterácií skupiny krokov nastavte tak vysoko,
+  aby výpočet ukončila hodnota konvergencie, a nie počet. Tlmenie z časti 1.6
+  udržuje taký výpočet klesajúci, ale kvadratickým ho urobiť nedokáže.
+- **Centrálna diferencia riešiča prúdenia nie je Crankova-Nicolsonova schéma.**
+  Theta váhovanie sa aplikuje na maticu, ale nie na reziduum, takže *Centrálna
+  diferencia* rieši reziduum spätného Eulera s maticou s polovičnou tuhosťou.
+  Odpoveďou je odpoveď spätnej diferencie, dosiahnutá pomalšie. Pre prúdenie
+  používajte *Spätnú diferenciu*, kým sa to neopraví. Riešiča rozptylu sa to
+  netýka - je lineárny a jeho schéma je skutočne Crankova-Nicolsonova.
+- **Stabilizačné parametre sa nederivujú.** `Tsupg`, `Tpspg`, `Tlsic` aj dĺžka
+  prvku závisia od rýchlosti a všetky vstupujú do matice ako konštanty
+  vyhodnotené pri aktuálnom poli. Je to bežná prax pri stabilizovanej formulácii
+  a jeden z dôvodov, prečo jakobián nie je presný.
+- **Reziduálna časť testu konvergencie je pevná.** Riešenie sa považuje za
+  konvergované, až keď jeho reziduum klesne na desatinu hodnoty na začiatku tohto
+  riešenia, a túto desatinu nemožno zmeniť. Je zámerne konzervatívna: pomaly
+  konvergujúci model ju nemusí nikdy splniť a potom prebehne plný počet iterácií.
+  `Residual ratio` v logu ukazuje, ako blízko sa taký výpočet dostal.
+- **Je potrebná tlaková referencia.** Bez plochy s *Tlakom (explicitným)* alebo
+  *Tlakom (implicitným)* je tlak určený iba až na konštantu a iterácia sa
+  neustáli.
+- **Predpísané prietoky musia byť v rovnováhe.** Model, ktorého hranice tvoria
+  výlučne steny a predpísané rýchlosti, musí mať prítok presne rovný odtoku;
+  nestlačiteľná tekutina rozdiel nepohltí.
+- **Cena.** Štyri neznáme na uzol, nesymetrická matica a nelineárna iterácia
+  okolo každého lineárneho riešenia robia z modelu prúdenia s veľkým náskokom
+  najnáročnejší typ úlohy v Range FEA. Podľa toho dimenzujte sieť a pred
+  spustením akéhokoľvek prechodového výpočtu nechajte skonvergovať ustálené pole.
