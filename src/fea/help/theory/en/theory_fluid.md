@@ -574,13 +574,16 @@ Whether a value matters depends on the mesh. With mean velocity `U`, flow length
   difference (stable)*; the central difference march does not damp the fastest
   diffusive modes and oscillates.
 
-Walls and outlets without a *Particle concentration* condition keep the natural
-condition of **zero diffusive flux**: the contaminant does not diffuse through a
-wall, and leaves through an outlet only with the flow.
+Walls and outlets without a *Particle concentration*, *Particle flux* or
+*Particle mass transfer* condition keep the natural condition of **zero
+diffusive flux**: the contaminant does not diffuse through a wall, and leaves
+through an outlet only with the flow.
 
 Where the flow **enters** through such a boundary - typically backflow at part
 of a *Pressure (implicit)* outlet - it is treated as clean fluid: the solver
-adds the weak inflow term `max(-v . n, 0) * C` on that part of the surface.
+adds the weak inflow term `max(-v . n, 0) * C` on that part of the surface,
+spread over the face so that it also damps the edge nodes where the outlet meets
+a no-slip wall.
 Without it the boundary would feed the solution and the concentration at the
 outlet would grow without bound. If the re-entering fluid is not clean, extend
 the domain so that the outlet sees only outflow.
@@ -644,13 +647,21 @@ regions: there the element Courant number `|v| * dt / h` is tiny and an
 unlimited `tau` would turn the stabilisation into noise that creates
 concentration ahead of the front.
 
-The Galerkin advection term is assembled in **skew-symmetric form**,
-`v . grad(C) + 0.5 * div(v) * C`, with the continuous nodal velocity. A
-velocity from the flow solver is never exactly divergence free, and without this
-form the discretisation can create concentration on its own - a checkerboard
-pattern that grows from step to step once the time step is small. In
-skew-symmetric form advection only moves the contaminant; for an exactly
-divergence free velocity the added term is zero.
+The Galerkin advection term is assembled in **advective form with a divergence
+sink**, `v . grad(C) + 0.5 * max(div(v), 0) * C`, with the continuous nodal
+velocity. A velocity from the flow solver is never exactly divergence free - on
+a coarse mesh `div(v)` of tens of `1/s` is common next to walls and corners.
+Where the flow expands (`div(v) > 0`) plain advection would create
+concentration on its own, a checkerboard pattern that grows from step to step
+once the time step is small; the sink cancels it. Where the flow converges no
+term is added: a symmetric correction `0.5 * div(v) * C` would act there as a
+source and pile the contaminant up next to walls. For an exactly divergence
+free velocity the sink is zero.
+
+With a negligible diffusion coefficient the transport is almost pure advection,
+which Galerkin with SUPG does not keep monotone: expect over- and undershoots,
+largest at no-slip walls where the velocity is zero. An effective diffusion
+coefficient (see above) removes most of them.
 
 Unlike the flow solver (section 6), the dispersion solver applies the theta
 weighting consistently, so *Central difference (accurate)* is a genuine
@@ -662,6 +673,8 @@ Crank-Nicolson march here.
 |---|---|---|---|
 | Particle concentration | explicit (Dirichlet) | point, line, surface | Particle concentration `[kg/m^3]` |
 | Particle rate | natural, source | point, line, surface, volume | Particle rate `[kg/(m^3*s)]` |
+| Particle flux (unit area) | natural (Neumann) | surface | Particle flux `[kg/(m^2*s)]` |
+| Particle mass transfer | natural (Robin) | surface | Mass transfer coefficient `[m/s]`, Ambient particle concentration `[kg/m^3]` |
 
 **Particle concentration** holds its nodes at the given concentration. Assigned
 to an inlet surface with a table against time, it is how a release is modelled:
@@ -672,6 +685,29 @@ This is the single most useful idiom of the problem type, and the one the
 **Particle rate** is a source and is a **density** in `kg/(m^3*s)` rather than a
 total - unlike the *Heat* condition, it is not spread over the entity measure.
 It models a source releasing continuously inside the domain.
+
+**Particle flux (unit area)** prescribes the mass flux `q` entering the domain
+through a surface, `D * grad(C) . n = q` with `n` the outward normal. Unlike
+*Particle rate* it is a flux per unit area, so the total release is `q * A`.
+Positive `q` is emission - an evaporating film, an off-gassing wall - and is
+limited by the maximum saturation the same way as a positive particle rate,
+`q * ( 1 - C / C_sat )`. Negative `q` is a fixed removal rate regardless of
+the local concentration and can drive it below zero; deposition proportional
+to the concentration is *Particle mass transfer* with `C_inf = 0`. On a wall
+the flux enters by diffusion alone; on a part of the boundary where the flow
+enters, the inflow is treated as clean fluid carrying the flux, so `q` becomes
+the total incoming mass flux and `C ~ q / |v . n|`. Assigned to an internal
+surface between two volumes, it releases `q` per unit area as a sheet source.
+
+**Particle mass transfer** exchanges contaminant with an ambient reservoir,
+`q = k_m * ( C_inf - C )`, where `k_m` is the *Mass transfer coefficient* and
+`C_inf` the *Ambient particle concentration*. It is the contaminant counterpart
+of simple convection in heat transfer. With `C_inf = 0` it models deposition on
+a surface with deposition velocity `k_m`; with `C_inf > 0` an exchange with
+ambient air through an opening, or a dissolving surface held at `C_inf`. Typical
+values of `k_m` are `1e-4` - `1e-2 m/s` for particle deposition in rooms and
+`1e-3` - `1e-1 m/s` for evaporation into a moving gas. A large `k_m` drives the
+surface towards `C_inf` and approaches a *Particle concentration* condition.
 
 Only the material **density** is required for this problem type.
 
@@ -1177,6 +1213,7 @@ the march. Without it the run starts from rest and the first steps are wasted.
 | The plume spreads over the whole domain at once | the diffusion coefficient is far too large - compare it with `U * L` |
 | The log warns that prescribed concentration exceeds maximum saturation | a boundary or initial condition is above the maximum saturation; the limit acts only on the particle rate, so check both values |
 | A steady-state solve with diffusion looks wrong | the matrix solver stopped on its iteration limit - raise the GMRES outer iterations, see section 2.6 |
+| The concentration overshoots the inlet value or goes negative next to walls, but does not keep growing | almost pure advection - the diffusion coefficient is close to zero. Enter an effective diffusion coefficient; on a coarse mesh also check that the flow field is converged |
 | The concentration exceeds the inlet value and grows into a noisy pattern | the flow is not converged - `Residual ratio` stays near `1` every step. Its velocity is far from divergence free and no transport on it can be trusted; converge the flow first (mesh, Reynolds number, iterations per step) |
 
 ---

@@ -566,13 +566,15 @@ dĺžkou prúdenia `L`, veľkosťou prvku `h` a časovým krokom `dt`:
   *Spätnú diferenciu*; centrálna diferencia netlmí najrýchlejšie difúzne módy a
   osciluje.
 
-Steny a výstupy bez podmienky *Koncentrácia častíc* si ponechávajú prirodzenú
-podmienku **nulového difúzneho toku**: kontaminant cez stenu nedifunduje a
-výstupom odchádza iba s prúdením.
+Steny a výstupy bez podmienky *Koncentrácia častíc*, *Tok častíc* alebo
+*Prestup častíc* si ponechávajú prirodzenú podmienku **nulového difúzneho
+toku**: kontaminant cez stenu nedifunduje a výstupom odchádza iba s prúdením.
 
 Tam, kde prúdenie takou hranicou **vstupuje** - typicky spätné prúdenie cez časť
 výstupu s *Tlakom (implicitným)* - sa považuje za čistú tekutinu: riešič na tejto
-časti plochy pridá slabý vstupný člen `max(-v . n, 0) * C`. Bez neho by hranica
+časti plochy pridá slabý vstupný člen `max(-v . n, 0) * C`, rozložený po
+ploche tak, aby tlmil aj uzly na hrane, kde sa výstup stretáva so stenou bez
+sklzu. Bez neho by hranica
 dodávala riešeniu energiu a koncentrácia na výstupe by neobmedzene rástla. Ak
 vracajúca sa tekutina nie je čistá, predĺžte oblasť tak, aby výstupom prúdenie
 iba odchádzalo.
@@ -636,13 +638,20 @@ recirkulačných oblastiach: tam je Courantovo číslo prvku `|v| * dt / h` veľ
 malé a neobmedzené `tau` by zo stabilizácie urobilo šum, ktorý vytvára
 koncentráciu pred čelom oblaku.
 
-Galerkinov advekčný člen sa zostavuje v **šikmo symetrickom tvare**,
-`v . grad(C) + 0.5 * div(v) * C`, so spojitou uzlovou rýchlosťou. Rýchlosť z
-riešiča prúdenia nikdy nie je presne nedivergentná a bez tohto tvaru môže
-diskretizácia sama vytvárať koncentráciu - šachovnicový vzor, ktorý pri malom
-časovom kroku narastá z kroku na krok. V šikmo symetrickom tvare advekcia
-kontaminant iba presúva; pre presne nedivergentnú rýchlosť je pridaný člen
-nulový.
+Galerkinov advekčný člen sa zostavuje v **advektívnom tvare s divergenčným
+záchytom**, `v . grad(C) + 0.5 * max(div(v), 0) * C`, so spojitou uzlovou
+rýchlosťou. Rýchlosť z riešiča prúdenia nikdy nie je presne nedivergentná - na
+hrubej sieti je pri stenách a v rohoch bežná `div(v)` v desiatkach `1/s`. Tam,
+kde sa prúdenie rozpína (`div(v) > 0`), by samotná advekcia vytvárala
+koncentráciu - šachovnicový vzor, ktorý pri malom časovom kroku narastá z kroku
+na krok; záchyt ho ruší. Tam, kde sa prúdenie zbieha, sa nepridáva nič:
+symetrická oprava `0.5 * div(v) * C` by tam pôsobila ako zdroj a hromadila by
+kontaminant pri stenách. Pre presne nedivergentnú rýchlosť je záchyt nulový.
+
+Pri zanedbateľnom koeficiente difúzie je transport takmer čistou advekciou,
+ktorú Galerkinova metóda so SUPG neudrží monotónnu: počítajte s prekmitmi a
+podkmitmi, najväčšími pri stenách bez sklzu, kde je rýchlosť nulová. Efektívny
+koeficient difúzie (pozri vyššie) väčšinu z nich odstráni.
 
 Na rozdiel od riešiča prúdenia (časť 6) riešič rozptylu aplikuje theta váhovanie
 konzistentne, takže *Centrálna diferencia* je tu skutočnou Crankovou-Nicolsonovou
@@ -654,6 +663,8 @@ schémou.
 |---|---|---|---|
 | Koncentrácia častíc (*Particle concentration*) | explicitná (Dirichletova) | bod, čiara, plocha | Koncentrácia častíc `[kg/m^3]` |
 | Rýchlosť tvorby častíc (*Particle rate*) | prirodzená, zdroj | bod, čiara, plocha, objem | Rýchlosť tvorby častíc `[kg/(m^3*s)]` |
+| Tok častíc (*Particle flux (unit area)*) | prirodzená (Neumannova) | plocha | Tok častíc `[kg/(m^2*s)]` |
+| Prestup častíc (*Particle mass transfer*) | prirodzená (Robinova) | plocha | Súčiniteľ prestupu hmoty `[m/s]`, Okolitá koncentrácia častíc `[kg/m^3]` |
 
 **Koncentrácia častíc** drží svoje uzly na zadanej koncentrácii. Priradená
 vstupnej ploche s tabuľkou v čase je spôsobom, ako modelovať únik: nula pred
@@ -664,6 +675,30 @@ tekutinách*.
 **Rýchlosť tvorby častíc** je zdroj a zadáva sa ako **hustota** v `kg/(m^3*s)`, nie
 ako celková hodnota - na rozdiel od podmienky *Teplo* sa nerozkladá na mieru
 entity. Modeluje zdroj, ktorý vnútri oblasti nepretržite uvoľňuje kontaminant.
+
+**Tok častíc** zadáva hmotnostný tok `q`, ktorý cez plochu vstupuje do oblasti,
+`D * grad(C) . n = q`, kde `n` je vonkajšia normála. Na rozdiel od *Rýchlosti
+tvorby častíc* je to tok na jednotku plochy, celkové uvoľnenie je teda `q * A`.
+Kladné `q` je emisia - odparujúci sa film, stena uvoľňujúca plyny - a obmedzuje
+ho maximálne nasýtenie rovnako ako kladnú rýchlosť tvorby,
+`q * ( 1 - C / C_sat )`. Záporné `q` je pevná rýchlosť odberu bez ohľadu na
+miestnu koncentráciu a môže ju stlačiť pod nulu; usadzovanie úmerné
+koncentrácii je *Prestup častíc* s `C_inf = 0`. Na stene
+vstupuje tok iba difúziou; na časti hranice, kadiaľ prúdenie vstupuje, sa
+vstupujúca tekutina považuje za čistú a nesie tok, `q` je potom celkový
+vstupujúci hmotnostný tok a `C ~ q / |v . n|`. Priradený vnútornej ploche medzi
+dvoma objemami uvoľňuje `q` na jednotku plochy ako plošný zdroj.
+
+**Prestup častíc** vymieňa kontaminant s okolitým rezervoárom,
+`q = k_m * ( C_inf - C )`, kde `k_m` je *Súčiniteľ prestupu hmoty* (*Mass
+transfer coefficient*) a `C_inf` *Okolitá koncentrácia častíc* (*Ambient
+particle concentration*). Je obdobou jednoduchej konvekcie pri prenose tepla.
+Pri `C_inf = 0` modeluje usadzovanie na ploche s rýchlosťou usadzovania `k_m`;
+pri `C_inf > 0` výmenu s okolitým vzduchom cez otvor alebo rozpúšťajúcu sa
+plochu udržiavanú na `C_inf`. Typické hodnoty `k_m` sú `1e-4` - `1e-2 m/s` pre
+usadzovanie častíc v miestnostiach a `1e-3` - `1e-1 m/s` pre odparovanie do
+prúdiaceho plynu. Veľké `k_m` ženie plochu k `C_inf` a blíži sa podmienke
+*Koncentrácia častíc*.
 
 Tento typ úlohy vyžaduje iba **hustotu** materiálu.
 
@@ -1168,6 +1203,7 @@ Práve reštart robí z konvergovaného ustáleného poľa východiskový bod kr
 | Oblak sa naraz rozšíri po celej oblasti | koeficient difúzie je príliš veľký - porovnajte ho s `U * L` |
 | Log upozorňuje, že predpísaná koncentrácia prekračuje maximálne nasýtenie | okrajová alebo počiatočná podmienka je nad maximálnym nasýtením; obmedzenie pôsobí iba na rýchlosť tvorby častíc, preto skontrolujte obe hodnoty |
 | Ustálené riešenie s difúziou vyzerá nesprávne | maticový riešič sa zastavil na limite iterácií - zvýšte počet vonkajších iterácií GMRES, pozri časť 2.6 |
+| Koncentrácia pri stenách prekračuje hodnotu na vstupe alebo je záporná, ale ďalej nenarastá | takmer čistá advekcia - koeficient difúzie je blízky nule. Zadajte efektívny koeficient difúzie; na hrubej sieti overte aj konvergenciu prúdenia |
 | Koncentrácia prekročí hodnotu na vstupe a narastá do zašumeného vzoru | prúdenie nie je konvergované - `Residual ratio` zostáva v každom kroku blízko `1`. Jeho rýchlosť má ďaleko od nulovej divergencie a žiadnemu transportu na nej nemožno dôverovať; najprv nechajte skonvergovať prúdenie (sieť, Reynoldsovo číslo, iterácie na krok) |
 
 ---
