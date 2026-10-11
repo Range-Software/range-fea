@@ -16,6 +16,7 @@
 const QString ApplicationSettings::sessionFileNameKey = "session/fileName";
 const QString ApplicationSettings::nThreadsKey = "application/nThreads";
 const QString ApplicationSettings::nHistoryRecordsKey = "application/nHistoryRecords";
+const QString ApplicationSettings::processOutputMaxLinesKey = "application/processOutputMaxLines";
 const QString ApplicationSettings::solverPathKey = "application/solverPath";
 const QString ApplicationSettings::renderBackendKey = "application/renderBackend";
 const QString ApplicationSettings::rhiApiKey = "application/rhiApi";
@@ -87,6 +88,16 @@ void ApplicationSettings::setNHistoryRecords(uint nHistoryRecords)
     {
         emit this->nHistoryRecordsChanged(nHistoryRecords);
     }
+}
+
+uint ApplicationSettings::getProcessOutputMaxLines() const
+{
+    return this->value(ApplicationSettings::processOutputMaxLinesKey,ApplicationSettings::getDefaultProcessOutputMaxLines()).toUInt();
+}
+
+void ApplicationSettings::setProcessOutputMaxLines(uint processOutputMaxLines)
+{
+    this->setValue(ApplicationSettings::processOutputMaxLinesKey, processOutputMaxLines);
 }
 
 RenderBackend::Type ApplicationSettings::getRenderBackend() const
@@ -164,6 +175,11 @@ uint ApplicationSettings::getDefaultNThreads()
 uint ApplicationSettings::getDefaultNHistoryRecords()
 {
     return 3;
+}
+
+uint ApplicationSettings::getDefaultProcessOutputMaxLines()
+{
+    return 10000;
 }
 
 RenderBackend::Type ApplicationSettings::getDefaultRenderBackend()

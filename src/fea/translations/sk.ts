@@ -72,847 +72,847 @@
 <context>
     <name>Action</name>
     <message>
-        <location filename="../src/action.cpp" line="222"/>
-        <location filename="../src/action.cpp" line="346"/>
-        <location filename="../src/action.cpp" line="427"/>
+        <location filename="../src/action.cpp" line="223"/>
+        <location filename="../src/action.cpp" line="347"/>
+        <location filename="../src/action.cpp" line="428"/>
         <source>Close session</source>
         <translation>Zatvoriť reláciu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="347"/>
-        <location filename="../src/action.cpp" line="428"/>
+        <location filename="../src/action.cpp" line="348"/>
+        <location filename="../src/action.cpp" line="429"/>
         <source>Are you sure you want to close the current session?</source>
         <translation>Naozaj zatvorit aktuálnu reláciu?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="219"/>
-        <location filename="../src/action.cpp" line="362"/>
+        <location filename="../src/action.cpp" line="220"/>
+        <location filename="../src/action.cpp" line="363"/>
         <source>Open session</source>
         <translation>Otvoriť reláciu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="220"/>
-        <location filename="../src/action.cpp" line="390"/>
-        <location filename="../src/action.cpp" line="413"/>
+        <location filename="../src/action.cpp" line="221"/>
+        <location filename="../src/action.cpp" line="391"/>
+        <location filename="../src/action.cpp" line="414"/>
         <source>Save session</source>
         <translation>Uložiť reláciu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="224"/>
-        <location filename="../src/action.cpp" line="455"/>
+        <location filename="../src/action.cpp" line="225"/>
+        <location filename="../src/action.cpp" line="456"/>
         <source>Open model</source>
         <translation>Otvoriť model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="531"/>
+        <location filename="../src/action.cpp" line="532"/>
         <source>Export model to MSH file</source>
         <translation>Exportovať model do MSH súboru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="552"/>
+        <location filename="../src/action.cpp" line="553"/>
         <source>Export model to RAW file</source>
         <translation>Exportovať model do RAW súboru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="573"/>
+        <location filename="../src/action.cpp" line="574"/>
         <source>Export model to STL (ASCII) file</source>
         <translation>Exportovať model do STL (ASCII) súboru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="594"/>
+        <location filename="../src/action.cpp" line="595"/>
         <source>Export model to STL (binary) file</source>
         <translation>Exportovať model do STL (binárny) súboru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="609"/>
+        <location filename="../src/action.cpp" line="610"/>
         <source>Close model?</source>
         <translation>Zatvoriť model?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="610"/>
+        <location filename="../src/action.cpp" line="611"/>
         <source>Are you sure you want to close selected models?</source>
         <translation>Naozaj zatvoriť vybrané modely?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="248"/>
-        <location filename="../src/action.cpp" line="773"/>
-        <location filename="../src/action.cpp" line="838"/>
+        <location filename="../src/action.cpp" line="249"/>
+        <location filename="../src/action.cpp" line="774"/>
+        <location filename="../src/action.cpp" line="839"/>
         <source>Create element</source>
         <translation>Vytvoriť prvok</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="218"/>
+        <location filename="../src/action.cpp" line="219"/>
         <source>New session</source>
         <translation>Nová relácia</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="221"/>
+        <location filename="../src/action.cpp" line="222"/>
         <source>Save session as</source>
         <translation>Uložiť reláciu ako</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="223"/>
+        <location filename="../src/action.cpp" line="224"/>
         <source>New model</source>
         <translation>Nový model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="225"/>
+        <location filename="../src/action.cpp" line="226"/>
         <source>Save model</source>
         <translation>Uložiť model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="225"/>
+        <location filename="../src/action.cpp" line="226"/>
         <source>Save selected model.</source>
         <translation>Uložiť vybraný model.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="226"/>
+        <location filename="../src/action.cpp" line="227"/>
         <source>Save model as</source>
         <translation>Uložiť model ako</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="231"/>
+        <location filename="../src/action.cpp" line="232"/>
         <source>Close model</source>
         <translation>Zatvoriť model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="232"/>
+        <location filename="../src/action.cpp" line="233"/>
         <source>Reload results</source>
         <translation>Načítať výsledky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="233"/>
+        <location filename="../src/action.cpp" line="234"/>
         <source>Drop results</source>
         <translation>Zahodiť výsledky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="234"/>
+        <location filename="../src/action.cpp" line="235"/>
         <source>Rename model</source>
         <translation>Premenovať model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="774"/>
-        <location filename="../src/action.cpp" line="1177"/>
-        <location filename="../src/action.cpp" line="1221"/>
-        <location filename="../src/action.cpp" line="1274"/>
+        <location filename="../src/action.cpp" line="775"/>
+        <location filename="../src/action.cpp" line="1178"/>
+        <location filename="../src/action.cpp" line="1222"/>
+        <location filename="../src/action.cpp" line="1275"/>
         <source>No node selected.</source>
         <translation>Nebol vybraný uzol.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="815"/>
+        <location filename="../src/action.cpp" line="816"/>
         <source>Quadrilateral</source>
         <translation>Štvoruholník</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="816"/>
+        <location filename="../src/action.cpp" line="817"/>
         <source>Tetrahedra</source>
         <translation>Tetrahedron</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="818"/>
+        <location filename="../src/action.cpp" line="819"/>
         <source>Choose element type</source>
         <translation>Vyber typ prvku</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="820"/>
+        <location filename="../src/action.cpp" line="821"/>
         <source>Which element type to create?</source>
         <translation>Ktorý typ prvku vytvoriť?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="839"/>
+        <location filename="../src/action.cpp" line="840"/>
         <source>Too many nodes selected.</source>
         <translation>Priveľa vybraných uzlov.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="972"/>
-        <location filename="../src/action.cpp" line="1019"/>
-        <location filename="../src/action.cpp" line="1066"/>
-        <location filename="../src/action.cpp" line="1859"/>
-        <location filename="../src/action.cpp" line="1904"/>
+        <location filename="../src/action.cpp" line="973"/>
+        <location filename="../src/action.cpp" line="1020"/>
+        <location filename="../src/action.cpp" line="1067"/>
+        <location filename="../src/action.cpp" line="1860"/>
+        <location filename="../src/action.cpp" line="1905"/>
         <source>Too few surfaces selected</source>
         <translation>Nedostatočný počet vybraných povrchov</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="973"/>
+        <location filename="../src/action.cpp" line="974"/>
         <source>To perform union boolean operation at least two surfaces must be selected.</source>
         <translation>Aby bolo možné vykonať zjednotenie (booleova operácia) musia byť vybrané aspoň dva povrchy.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="984"/>
-        <location filename="../src/action.cpp" line="1031"/>
-        <location filename="../src/action.cpp" line="1078"/>
+        <location filename="../src/action.cpp" line="985"/>
+        <location filename="../src/action.cpp" line="1032"/>
+        <location filename="../src/action.cpp" line="1079"/>
         <source>Surface is not closed</source>
         <translation>Povrch nie je uzavrený</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="985"/>
-        <location filename="../src/action.cpp" line="1032"/>
-        <location filename="../src/action.cpp" line="1079"/>
+        <location filename="../src/action.cpp" line="986"/>
+        <location filename="../src/action.cpp" line="1033"/>
+        <location filename="../src/action.cpp" line="1080"/>
         <source>Surface</source>
         <translation>Povrch</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="986"/>
+        <location filename="../src/action.cpp" line="987"/>
         <source>To perform union boolean operation all selected surfaces must be closed.</source>
         <translation>Booleova operácia zjednotenia vyžaduje, aby všetky povrchy boli uzavrené.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1020"/>
+        <location filename="../src/action.cpp" line="1021"/>
         <source>To perform difference boolean operation at least two surfaces must be selected.</source>
         <translation>Booleova operácia rozdielu vyžaduje aspoň dva vybrané povrchy.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1033"/>
+        <location filename="../src/action.cpp" line="1034"/>
         <source>To perform difference boolean operation all selected surfaces must be closed.</source>
         <translation>Booleova operácia rozdielu vyžaduje, aby všetky povrchy boli uzavrené.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1067"/>
+        <location filename="../src/action.cpp" line="1068"/>
         <source>To perform intersection boolean operation at least two surfaces must be selected.</source>
         <translation>Booleova operácia prieniku vyžaduje aspoň dva vybrané povrchy.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1080"/>
+        <location filename="../src/action.cpp" line="1081"/>
         <source>To perform intersection boolean operation all selected surfaces must be closed.</source>
         <translation>Booleova operácia prieniku vyžaduje, aby všetky povrchy boli uzavrené.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="258"/>
-        <location filename="../src/action.cpp" line="1176"/>
+        <location filename="../src/action.cpp" line="259"/>
+        <location filename="../src/action.cpp" line="1177"/>
         <source>Move node</source>
         <translation>Posunúť uzol</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1220"/>
-        <location filename="../src/action.cpp" line="1226"/>
-        <location filename="../src/action.cpp" line="1273"/>
-        <location filename="../src/action.cpp" line="1279"/>
+        <location filename="../src/action.cpp" line="1221"/>
+        <location filename="../src/action.cpp" line="1227"/>
+        <location filename="../src/action.cpp" line="1274"/>
+        <location filename="../src/action.cpp" line="1280"/>
         <source>Remove nodes</source>
         <translation>Odstrániť uzly</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1227"/>
-        <location filename="../src/action.cpp" line="1280"/>
+        <location filename="../src/action.cpp" line="1228"/>
+        <location filename="../src/action.cpp" line="1281"/>
         <source>Are you sure you want to remove picked nodes?</source>
         <translation>Naozaj odstrániť vyznačné uzly?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1326"/>
-        <location filename="../src/action.cpp" line="1332"/>
+        <location filename="../src/action.cpp" line="1327"/>
+        <location filename="../src/action.cpp" line="1333"/>
         <source>Remove elements</source>
         <translation>Odstrániť prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1327"/>
-        <location filename="../src/action.cpp" line="1405"/>
+        <location filename="../src/action.cpp" line="1328"/>
+        <location filename="../src/action.cpp" line="1406"/>
         <source>No element selected.</source>
         <translation>Nieje vybraný žiaden prvok.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1333"/>
+        <location filename="../src/action.cpp" line="1334"/>
         <source>Are you sure you want to remove picked elements?</source>
         <translation>Naozaj odstrániť vyznačené prvky?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="264"/>
-        <location filename="../src/action.cpp" line="1404"/>
+        <location filename="../src/action.cpp" line="265"/>
+        <location filename="../src/action.cpp" line="1405"/>
         <source>Swap element normal</source>
         <translation>Otočiť normálu prvku</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="71"/>
+        <location filename="../src/action.cpp" line="72"/>
         <source>Session</source>
         <translation>Relácia</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="73"/>
+        <location filename="../src/action.cpp" line="74"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="75"/>
+        <location filename="../src/action.cpp" line="76"/>
         <source>Material</source>
         <translation>Materiál</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="77"/>
+        <location filename="../src/action.cpp" line="78"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="79"/>
+        <location filename="../src/action.cpp" line="80"/>
         <source>Problem</source>
         <translation>Úloha</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="81"/>
+        <location filename="../src/action.cpp" line="82"/>
         <source>Solver</source>
         <translation>Riešič</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="83"/>
+        <location filename="../src/action.cpp" line="84"/>
         <source>Report</source>
         <translation>Výkaz</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="85"/>
+        <location filename="../src/action.cpp" line="86"/>
         <source>Application</source>
         <translation>Program</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="218"/>
+        <location filename="../src/action.cpp" line="219"/>
         <source>Create a new session.</source>
         <translation>Vytvoriť novú reláciu.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="219"/>
+        <location filename="../src/action.cpp" line="220"/>
         <source>Open previously saved session.</source>
         <translation>Otvoriť uloženú reláciu.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="220"/>
+        <location filename="../src/action.cpp" line="221"/>
         <source>Save current session.</source>
         <translation>Uložiť sučasnú reláciu.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="221"/>
+        <location filename="../src/action.cpp" line="222"/>
         <source>Save current session under different filename.</source>
         <translation>Uložiť sučasnú reláciu pod iným názvom súboru.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="222"/>
+        <location filename="../src/action.cpp" line="223"/>
         <source>Close current session.</source>
         <translation>Zatvoriť súčasnú reláciu.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="223"/>
+        <location filename="../src/action.cpp" line="224"/>
         <source>Create a new empty model.</source>
         <translation>Vytvoriť nový prázdny model.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="224"/>
+        <location filename="../src/action.cpp" line="225"/>
         <source>Open previously saved model.</source>
         <translation>Otvoriť uložený model.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="226"/>
+        <location filename="../src/action.cpp" line="227"/>
         <source>Save selected model under a different filename.</source>
         <translation>Uložiť vybraný model pod iným názvom súboru.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="227"/>
+        <location filename="../src/action.cpp" line="228"/>
         <source>Export MSH model</source>
         <translation>Exportovať MSH model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="228"/>
+        <location filename="../src/action.cpp" line="229"/>
         <source>Export RAW model</source>
         <translation>Exportovať RAW model</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="229"/>
+        <location filename="../src/action.cpp" line="230"/>
         <source>Export STL model (ASCII)</source>
         <translation>Exportovať STL model (ASCII)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="230"/>
+        <location filename="../src/action.cpp" line="231"/>
         <source>Export STL model (binary)</source>
         <translation>Exportovať MSH model (binárne)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="235"/>
+        <location filename="../src/action.cpp" line="236"/>
         <source>Undo</source>
         <translation>Naspäť</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="236"/>
+        <location filename="../src/action.cpp" line="237"/>
         <source>Redo</source>
         <translation>Dopredu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="237"/>
+        <location filename="../src/action.cpp" line="238"/>
         <source>Draw point</source>
         <translation>Nakresliť bod</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="238"/>
+        <location filename="../src/action.cpp" line="239"/>
         <source>Draw line</source>
         <translation>Nakresliť čiaru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="239"/>
+        <location filename="../src/action.cpp" line="240"/>
         <source>Draw triangle</source>
         <translation>Nakresliť trojuholník</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="240"/>
+        <location filename="../src/action.cpp" line="241"/>
         <source>Draw quadrilateral</source>
         <translation>Nakresliť štvorhran</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="241"/>
+        <location filename="../src/action.cpp" line="242"/>
         <source>Draw circle</source>
         <translation>Nakresliť kruh</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="242"/>
+        <location filename="../src/action.cpp" line="243"/>
         <source>Draw ellipse</source>
         <translation>Nakresliť elipsu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="243"/>
+        <location filename="../src/action.cpp" line="244"/>
         <source>Draw tetrahedron</source>
         <translation>Nakresliť tetrahedron</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="244"/>
+        <location filename="../src/action.cpp" line="245"/>
         <source>Draw hexahedron</source>
         <translation>Nakresliť kváder</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="245"/>
+        <location filename="../src/action.cpp" line="246"/>
         <source>Draw cylinder</source>
         <translation>Nakresliť valec</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="246"/>
+        <location filename="../src/action.cpp" line="247"/>
         <source>Draw sphere</source>
         <translation>Nakresliť guľu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="247"/>
+        <location filename="../src/action.cpp" line="248"/>
         <source>Draw RAW object</source>
         <translation>Nakresliť RAW objekt</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="249"/>
+        <location filename="../src/action.cpp" line="250"/>
         <source>Find sliver elements</source>
         <translation>Nájsť trieskové prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="250"/>
+        <location filename="../src/action.cpp" line="251"/>
         <source>Fix sliver elements</source>
         <translation>Opraviť trieskové prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="251"/>
+        <location filename="../src/action.cpp" line="252"/>
         <source>Find intersected elements</source>
         <translation>Nájsť pretínajúce sa prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="252"/>
+        <location filename="../src/action.cpp" line="253"/>
         <source>Break intersected elements</source>
         <translation>Rozbiť pretnuté prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="253"/>
+        <location filename="../src/action.cpp" line="254"/>
         <source>Union</source>
         <translation>Zjednotenie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="254"/>
+        <location filename="../src/action.cpp" line="255"/>
         <source>Difference</source>
         <translation>Rozdiel</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="255"/>
+        <location filename="../src/action.cpp" line="256"/>
         <source>Intersection</source>
         <translation>Prienik</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="256"/>
+        <location filename="../src/action.cpp" line="257"/>
         <source>Merge near nodes</source>
         <translation>Zlúčiť blízke uzly</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="257"/>
-        <location filename="../src/action.cpp" line="1162"/>
+        <location filename="../src/action.cpp" line="258"/>
+        <location filename="../src/action.cpp" line="1163"/>
         <source>Merge nodes</source>
         <translation>Zlúčiť uzly</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="259"/>
+        <location filename="../src/action.cpp" line="260"/>
         <source>Remove node</source>
         <translation>Odstrániť uzol</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="260"/>
+        <location filename="../src/action.cpp" line="261"/>
         <source>Remove node and close hole</source>
         <translation>Odstrániť uzol a zavrieť dieru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="261"/>
+        <location filename="../src/action.cpp" line="262"/>
         <source>Remove element</source>
         <translation>Odstrániť prvok</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="262"/>
+        <location filename="../src/action.cpp" line="263"/>
         <source>Generate line(s) from surface edges</source>
         <translation>Vygenerovať čiaru(y) z hrán povrchu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="263"/>
+        <location filename="../src/action.cpp" line="264"/>
         <source>Mark surface</source>
         <translation>Označiť povrch</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="265"/>
+        <location filename="../src/action.cpp" line="266"/>
         <source>Swap normals</source>
         <translation>Otočiť normály</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="266"/>
+        <location filename="../src/action.cpp" line="267"/>
         <source>Synchronize normals</source>
         <translation>Synchronizovať normály</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="267"/>
+        <location filename="../src/action.cpp" line="268"/>
         <source>Close hole</source>
         <translation>Uzavrieť dieru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="268"/>
+        <location filename="../src/action.cpp" line="269"/>
         <source>Coarsen surface</source>
         <translation>Znížiť jemnosť povrchu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="269"/>
+        <location filename="../src/action.cpp" line="270"/>
         <source>Generate tetrahedral mesh</source>
         <translation>Generovať tetrahedrónovú sieť</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="270"/>
+        <location filename="../src/action.cpp" line="271"/>
         <source>Create vector field</source>
         <translation>Vytvoriť vektorové pole</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="271"/>
+        <location filename="../src/action.cpp" line="272"/>
         <source>Edit vector field</source>
         <translation>Vytvoriť vektorové pole</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="272"/>
+        <location filename="../src/action.cpp" line="273"/>
         <source>Create scalar field</source>
         <translation>Vytvoriť skalárové pole</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="273"/>
+        <location filename="../src/action.cpp" line="274"/>
         <source>Edit scalar field</source>
         <translation>Upraviť skalárové pole</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="274"/>
+        <location filename="../src/action.cpp" line="275"/>
         <source>Create stream line</source>
         <translation>Vytvoriť prúdnicovú čiaru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="275"/>
+        <location filename="../src/action.cpp" line="276"/>
         <source>Edit stream line</source>
         <translation>Upraviť prúdnicovú čiaru</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="276"/>
+        <location filename="../src/action.cpp" line="277"/>
         <source>Create cut</source>
         <translation>Vytvoriť rez</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="277"/>
+        <location filename="../src/action.cpp" line="278"/>
         <source>Edit cut</source>
         <translation>Upraviť rez</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="278"/>
+        <location filename="../src/action.cpp" line="279"/>
         <source>Create iso</source>
         <translation>Vytvoriť iso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="279"/>
+        <location filename="../src/action.cpp" line="280"/>
         <source>Edit iso</source>
         <translation>Upraviť iso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="280"/>
+        <location filename="../src/action.cpp" line="281"/>
         <source>Merge selected entities</source>
         <translation>Zlúčiť vybrané celky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="281"/>
+        <location filename="../src/action.cpp" line="282"/>
         <source>Remove selected entities</source>
         <translation>Odstrániť vybrané celky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="282"/>
+        <location filename="../src/action.cpp" line="283"/>
         <source>Scale, translate, rotate</source>
         <translation>Škálovať, presunúť, otočiť</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="283"/>
+        <location filename="../src/action.cpp" line="284"/>
         <source>Export sliver elements</source>
         <translation>Exportovať trieskové prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="284"/>
+        <location filename="../src/action.cpp" line="285"/>
         <source>Export intersected elements</source>
         <translation>Exportovať pretnuté prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="285"/>
+        <location filename="../src/action.cpp" line="286"/>
         <source>Purge unused nodes</source>
         <translation>Vyčistiť nepoužité uzly</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="286"/>
+        <location filename="../src/action.cpp" line="287"/>
         <source>Purge unused elements</source>
         <translation>Vyčistiť nepoužité prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="287"/>
+        <location filename="../src/action.cpp" line="288"/>
         <source>Remove duplicate nodes</source>
         <translation>Odstrániť duplicitné uzly</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="288"/>
+        <location filename="../src/action.cpp" line="289"/>
         <source>Remove duplicate elements</source>
         <translation>Odstrániť duplicitné prvky</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="289"/>
+        <location filename="../src/action.cpp" line="290"/>
         <source>Check if point is inside surface</source>
         <translation>Overiť či je bod je vnútri povrchu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="290"/>
+        <location filename="../src/action.cpp" line="291"/>
         <source>Tetrahedralize surface</source>
         <translation>Tetraedralizovať povrch</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="291"/>
+        <location filename="../src/action.cpp" line="292"/>
         <source>Consolidate geometry</source>
         <translation>Konsolidovať geometriu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="292"/>
+        <location filename="../src/action.cpp" line="293"/>
         <source>Problem(s) task flow</source>
         <translation>Poradie krokov úloh</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="293"/>
+        <location filename="../src/action.cpp" line="294"/>
         <source>Setup Problem(s) matrix solver</source>
         <translation>Nastaviť maticový riešič úloh</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="294"/>
+        <location filename="../src/action.cpp" line="295"/>
         <source>Define monitoring points</source>
         <translation>Definovať monitorovacie body</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="295"/>
+        <location filename="../src/action.cpp" line="296"/>
         <source>Reset setup</source>
         <translation>Vyčistiť nastavenia</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="296"/>
+        <location filename="../src/action.cpp" line="297"/>
         <source>Start solver</source>
         <translation>Spustiť riešič</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="299"/>
+        <location filename="../src/action.cpp" line="300"/>
         <source>Model statistics</source>
         <translation>Štatistika modelu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="300"/>
+        <location filename="../src/action.cpp" line="301"/>
         <source>Solver log file</source>
         <translation>Log súbor riešiča</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="301"/>
+        <location filename="../src/action.cpp" line="302"/>
         <source>Solver convergence</source>
         <translation>Konvergencia riešiča</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="302"/>
+        <location filename="../src/action.cpp" line="303"/>
         <source>Monitoring points</source>
         <translation>Monitorovacie body</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="303"/>
+        <location filename="../src/action.cpp" line="304"/>
         <source>Create report</source>
         <translation>Vytvoriť správu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="304"/>
+        <location filename="../src/action.cpp" line="305"/>
         <source>Application settings</source>
         <translation>Nastavenia aplikácie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="305"/>
+        <location filename="../src/action.cpp" line="306"/>
         <source>Check for updates</source>
         <translation>Overiť aktualizácie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="310"/>
-        <location filename="../src/action.cpp" line="2203"/>
+        <location filename="../src/action.cpp" line="311"/>
+        <location filename="../src/action.cpp" line="2230"/>
         <source>Help</source>
         <translation>Pomocník</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="311"/>
+        <location filename="../src/action.cpp" line="312"/>
         <source>Quit</source>
         <translation>Skončiť</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="312"/>
+        <location filename="../src/action.cpp" line="313"/>
         <source>Cloud session manager</source>
         <translation>Cloud správca relácií</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="313"/>
+        <location filename="../src/action.cpp" line="314"/>
         <source>Cloud file manager</source>
         <translation>Cloud súborový manažér</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1163"/>
+        <location filename="../src/action.cpp" line="1164"/>
         <source>At least two nodes of one model must be selected.</source>
         <translation>Musia byť vybrané aspoň dva uzly jedného modelu.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1494"/>
+        <location filename="../src/action.cpp" line="1495"/>
         <source>Close surface hole</source>
         <translation>Uzavrieť dieru v povrchu</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1495"/>
+        <location filename="../src/action.cpp" line="1496"/>
         <source>No edge selected.</source>
         <translation>Nie je vybraná žiadna hrana.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1860"/>
-        <location filename="../src/action.cpp" line="1905"/>
+        <location filename="../src/action.cpp" line="1861"/>
+        <location filename="../src/action.cpp" line="1906"/>
         <source>To perform point inside check at least one surface must be selected.</source>
         <translation>K overeniu či je bod vo vnútri, musí byť vybraný aspoň jeden povrch.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1869"/>
-        <location filename="../src/action.cpp" line="1914"/>
+        <location filename="../src/action.cpp" line="1870"/>
+        <location filename="../src/action.cpp" line="1915"/>
         <source>Unclosed surfaces</source>
         <translation>Neuzatvorené povrchy</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1870"/>
-        <location filename="../src/action.cpp" line="1915"/>
+        <location filename="../src/action.cpp" line="1871"/>
+        <location filename="../src/action.cpp" line="1916"/>
         <source>Selected surfaces do not form closed surface.</source>
         <translation>Vybrané povrchy dokopy netvoria uzatvorený povrch.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1992"/>
+        <location filename="../src/action.cpp" line="1993"/>
         <source>Reset problem setup</source>
         <translation>Vymazať nastavenie úlohy</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2003"/>
+        <location filename="../src/action.cpp" line="2004"/>
         <source>Problem reset</source>
         <translation>Reset úlohy</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2198"/>
+        <location filename="../src/action.cpp" line="2225"/>
         <source>General</source>
         <translation>Všeobecné</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2199"/>
+        <location filename="../src/action.cpp" line="2226"/>
         <source>Tutorials</source>
         <translation>Návody</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2200"/>
+        <location filename="../src/action.cpp" line="2227"/>
         <source>Theory</source>
         <translation>Teória</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="297"/>
-        <location filename="../src/action.cpp" line="2038"/>
+        <location filename="../src/action.cpp" line="298"/>
+        <location filename="../src/action.cpp" line="2039"/>
         <source>Stop solver</source>
         <translation>Zastaviť riešič</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2039"/>
+        <location filename="../src/action.cpp" line="2040"/>
         <source>Are you sure you want to stop all running solvers?</source>
         <translation>Naozaj zastaviť všetky bežiace riešiče?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="298"/>
-        <location filename="../src/action.cpp" line="2061"/>
+        <location filename="../src/action.cpp" line="299"/>
+        <location filename="../src/action.cpp" line="2062"/>
         <source>Kill solver</source>
         <translation>Zabiť riešič</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="985"/>
-        <location filename="../src/action.cpp" line="1032"/>
-        <location filename="../src/action.cpp" line="1079"/>
+        <location filename="../src/action.cpp" line="986"/>
+        <location filename="../src/action.cpp" line="1033"/>
+        <location filename="../src/action.cpp" line="1080"/>
         <source>is not closed.</source>
         <translation>nie je uzavretý.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1993"/>
+        <location filename="../src/action.cpp" line="1994"/>
         <source>Are you sure you want to reset the problem setup including boundary, initial and environment conditions?</source>
         <translation>Naozaj chcete obnoviť nastavenie úlohy vrátane okrajových, počiatočných a environmentálnych podmienok?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2062"/>
+        <location filename="../src/action.cpp" line="2063"/>
         <source>Are you sure you want to kill all running solvers?</source>
         <translation>Naozaj zabiť všetky bežiace riešiče?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2103"/>
+        <location filename="../src/action.cpp" line="2104"/>
         <source>No solver log file</source>
         <translation>Žiaden log riešiča</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2103"/>
+        <location filename="../src/action.cpp" line="2104"/>
         <source>There is no file containing solver log.</source>
         <translation>Nenašiel sa žiaden súbor obsahujúci log riešiča.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2146"/>
+        <location filename="../src/action.cpp" line="2173"/>
         <source>No convergence file</source>
         <translation>Žiaden konvergenčný súbor</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2146"/>
+        <location filename="../src/action.cpp" line="2173"/>
         <source>There is no file containing convergence values.</source>
         <translation>Nenašiel sa žiaden súbor obsahujúci konvergenčné hodnoty.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2168"/>
+        <location filename="../src/action.cpp" line="2195"/>
         <source>No monitoring file</source>
         <translation>Žiaden monitorovací súbor</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2168"/>
+        <location filename="../src/action.cpp" line="2195"/>
         <source>There is no file containing monitoring points.</source>
         <translation>Nenašiel sa žiaden súbor obsahujúci monitorovacie body.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="306"/>
-        <location filename="../src/action.cpp" line="2236"/>
+        <location filename="../src/action.cpp" line="307"/>
+        <location filename="../src/action.cpp" line="2263"/>
         <source>About</source>
         <translation>O aplikácii</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="307"/>
-        <location filename="../src/action.cpp" line="2251"/>
+        <location filename="../src/action.cpp" line="308"/>
+        <location filename="../src/action.cpp" line="2278"/>
         <source>About Qt</source>
         <translation>O knižnici Qt</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="308"/>
-        <location filename="../src/action.cpp" line="2270"/>
+        <location filename="../src/action.cpp" line="309"/>
+        <location filename="../src/action.cpp" line="2297"/>
         <source>License</source>
         <translation>Licencia</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="309"/>
+        <location filename="../src/action.cpp" line="310"/>
         <source>Release notes</source>
         <translation>Poznámky k vydaniu</translation>
     </message>
@@ -1159,27 +1159,37 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="75"/>
+        <location filename="../src/central_tab_widget.cpp" line="47"/>
+        <source>Max lines</source>
+        <translation>Max. riadkov</translation>
+    </message>
+    <message>
+        <location filename="../src/central_tab_widget.cpp" line="49"/>
+        <source>Maximum number of lines kept in process output. Oldest lines are removed first.</source>
+        <translation>Maximálny počet riadkov uchovaných vo výstupe procesu. Najstaršie riadky sa odstraňujú ako prvé.</translation>
+    </message>
+    <message>
+        <location filename="../src/central_tab_widget.cpp" line="101"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="80"/>
+        <location filename="../src/central_tab_widget.cpp" line="106"/>
         <source>Application output</source>
         <translation>Výstup aplikácie</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="86"/>
+        <location filename="../src/central_tab_widget.cpp" line="112"/>
         <source>Process output</source>
         <translation>Výstup procesu</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="92"/>
+        <location filename="../src/central_tab_widget.cpp" line="118"/>
         <source>Pick details</source>
         <translation>Detaily vyznačenia</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="200"/>
+        <location filename="../src/central_tab_widget.cpp" line="226"/>
         <source>Notice</source>
         <translation>Upozornenie</translation>
     </message>

@@ -1,5 +1,6 @@
 #include <QGridLayout>
 #include <QVBoxLayout>
+#include <QTreeWidgetItemIterator>
 
 #include "problem_selector_dialog.h"
 #include "problem_task_tree.h"
@@ -488,10 +489,21 @@ void ProblemTaskTree::onAddProblemButtonClicked()
 
     QTreeWidgetItem *item = this->treeWidget->topLevelItem(this->treeWidget->topLevelItemCount()-1);
 
+    // Problem types already present in the task flow, the selector adds required types too.
+    RProblemTypeMask existingTypeMask = R_PROBLEM_NONE;
+    for (QTreeWidgetItemIterator it(this->treeWidget); *it; ++it)
+    {
+        existingTypeMask |= RProblemTypeMask((*it)->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt());
+    }
+
     std::vector<RProblemType> problemTypes = RProblem::getTypes(problemTypeMask);
     RProblem::sortTypesByDependency(problemTypes);
     for (uint i=0;i<problemTypes.size();i++)
     {
+        if (existingTypeMask & problemTypes[i])
+        {
+            continue;
+        }
         RProblemTaskItem taskItem(problemTypes[i]);
         this->addTaskItemToWidget(item,taskItem);
     }

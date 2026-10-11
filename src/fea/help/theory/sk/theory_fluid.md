@@ -1,21 +1,22 @@
 # Prúdenie tekutín - Teoretický manuál a používateľská príručka
 
-Tento dokument opisuje riešiče prúdenia tekutín v Range FEA - `RSolverFluid`,
+Tento dokument opisuje riešič prúdenia tekutín v Range FEA - `RSolverFluid`,
 ktorý rieši typ úlohy **Nestlačiteľné viskózne prúdenie** (*Incompressible
-viscous flow*), `RSolverFluidHeat`, ktorý rieši **Prestup tepla v tekutinách**
-(*Heat transfer in fluids*), a `RSolverFluidParticle`, ktorý rieši **Rozptyl
-kontaminantu** (*Contaminant dispersion*): rovnice, ktoré riešia, význam každého
-vstupu, ktorý prijímajú, časti grafického používateľského rozhrania, ktoré ich
-ovládajú, a dva podrobne rozpracované tutoriály.
+viscous flow*): rovnice, ktoré rieši, význam každého vstupu, ktorý prijíma, časti
+grafického používateľského rozhrania, ktoré ho ovládajú, a podrobne rozpracovaný
+tutoriál.
+
+Dva typy úloh riešené na prúdovom poli majú vlastné manuály:
+[Prestup tepla v tekutinách](theory_fluid_heat.md) (`RSolverFluidHeat`) a
+[Rozptyl kontaminantu](theory_fluid_particle.md) (`RSolverFluidParticle`).
 
 **Obsah**
 
 1. [Teoretický základ](#1-teoretický-základ)
 2. [Grafické používateľské rozhranie](#2-grafické-používateľské-rozhranie)
 3. [Tutoriál - ustálené prúdenie kanálom](#3-tutoriál---ustálené-prúdenie-kanálom)
-4. [Tutoriál - prechodové prúdenie s rozptylom kontaminantu](#4-tutoriál---prechodové-prúdenie-s-rozptylom-kontaminantu)
-5. [Kontrola modelu](#5-kontrola-modelu)
-6. [Obmedzenia](#6-obmedzenia)
+4. [Kontrola modelu](#4-kontrola-modelu)
+5. [Obmedzenia](#5-obmedzenia)
 
 ---
 
@@ -44,6 +45,8 @@ prúdovom poli, ktoré vypočítal riešič prúdenia:
 
 Oba sprievodné typy **vyžadujú** v tej istej úlohe krok *Nestlačiteľné viskózne
 prúdenie*: pole rýchlosti čítajú z jeho výsledku a samy ho nikdy nepočítajú.
+Každý z nich opisuje vlastný manuál - [Prestup tepla v tekutinách](theory_fluid_heat.md) a
+[Rozptyl kontaminantu](theory_fluid_particle.md).
 
 Predvolený stav uzla, ktorého sa nedotýka žiadna podmienka ani predchádzajúci
 výsledok, je nulová rýchlosť a nulový tlak.
@@ -98,7 +101,7 @@ je jediné číslo, ktoré rozhoduje o tom, či sa model prúdenia bude správa�
 rozumne. Približne pod `Re = 1` je konvekčný člen zanedbateľný a úloha je takmer
 lineárna; do niekoľkých tisíc je prúdenie laminárne a riešič je vo svojom živle;
 výrazne nad touto hodnotou je skutočné prúdenie turbulentné a tento riešič
-turbulenciu nemodeluje - pozri časť 6.
+turbulenciu nemodeluje - pozri časť 5.
 
 ### 1.3 Diskretizácia metódou konečných prvkov a stabilizácia
 
@@ -128,7 +131,8 @@ tau = h / ( 2 * |v| )           for  Re > 3
 proti-prúdová stabilizácia je silná tam, kde v prvku prevláda konvekcia, a
 zaniká tam, kde prevláda difúzia. Parameter LSIC je `|v| * h / 2`. Tieto
 parametre patria riešiču prúdenia; riešič rozptylu kontaminantu používa vlastný
-parameter SUPG obmedzený časovým krokom, pozri časť 1.10.
+parameter SUPG obmedzený časovým krokom, pozri manuál
+[Rozptyl kontaminantu](theory_fluid_particle.md).
 
 Parameter SUPG používa **lokálnu** rýchlosť a dĺžku prvku, takže sa prispôsobuje
 prvok po prvku. Parameter PSPG namiesto toho používa **globálnu prúdovú
@@ -259,7 +263,7 @@ Keďže hustota je konštantná, rovnomerné gravitačné pole v uzavretej oblas
 vytvorí hydrostatický gradient tlaku a žiadny pohyb - čo je správna odpoveď.
 Hustota v tomto riešiči **nezávisí** od teploty, takže neexistuje prúdenie
 poháňané vztlakom: výsledok *Prestupu tepla v tekutinách* nikdy nepoháňa
-prúdenie, na ktorom bol vypočítaný. Pozri časť 6.
+prúdenie, na ktorom bol vypočítaný. Pozri časť 5.
 
 #### Počiatočné podmienky
 
@@ -267,8 +271,9 @@ prúdenie, na ktorom bol vypočítaný. Pozri časť 6.
 |---|---|
 | Rýchlosť | počiatočné pole rýchlosti, aplikované pri prvom výpočte |
 | Tlak | počiatočné tlakové pole, aplikované pri prvom výpočte |
-| Teplota | počiatočné teplotné pole pre *Prestup tepla v tekutinách* |
-| Koncentrácia častíc | počiatočné pole koncentrácie pre *Rozptyl kontaminantu* |
+
+Počiatočné pole teploty a koncentrácie sprievodných typov úloh opisujú ich
+vlastné manuály.
 
 Počiatočné podmienky sa čítajú **iba pri prvom výpočte**; potom polia pokračujú
 z predchádzajúceho výsledku. Práve to umožňuje postup s reštartom z časti 1.7:
@@ -431,292 +436,29 @@ konvergované z ustáleného výpočtu. Krok, ktorého reziduum na konci iterác
 neklesne, je krok s nekonvergovanou odpoveďou a chyba sa prenáša do každého
 nasledujúceho kroku.
 
-### 1.9 Prestup tepla v tekutinách
+### 1.9 Prestup tepla a rozptyl kontaminantu
 
-**Prestup tepla v tekutinách** (`RSolverFluidHeat`) rieši advekciu a difúziu
-teploty na prúdovom poli,
+Na prúdovom poli, ktoré vypočíta tento riešič, sa riešia dva typy úloh, každý s
+vlastným manuálom:
 
-```
-rho * c * ( dT/dt + v . grad(T) ) = div( k * grad(T) ) + q
-```
+- **Prestup tepla v tekutinách** (`RSolverFluidHeat`) unáša s prúdením teplotu a
+  spája sa s tepelným riešičom pevnej látky so sieťou - pozri
+  [Prestup tepla v tekutinách](theory_fluid_heat.md);
+- **Rozptyl kontaminantu** (`RSolverFluidParticle`) unáša s prúdením
+  koncentráciu kontaminantu - pozri
+  [Rozptyl kontaminantu](theory_fluid_particle.md).
 
-s rovnakou stabilizáciou SUPG konvekčného člena ako riešič prúdenia a s rovnakou
-theta schémou v čase. Rýchlosť `v` sa **preberá z výsledku prúdenia**, nerieši sa
-tu - preto tento typ úlohy vyžaduje krok *Nestlačiteľné viskózne prúdenie*.
+Oba čítajú rýchlosť z výsledku prúdenia; väzba je jednosmerná, takže ani jeden
+prúdenie nemení.
 
-| Symbol | Význam | Jednotky | Zdroj |
-|---|---|---|---|
-| `T` | teplota | `K` | riešená |
-| `v` | rýchlosť | `m/s` | výsledok prúdenia |
-| `k` | tepelná vodivosť | `W/(m*K)` | vlastnosť materiálu |
-| `c` | tepelná kapacita | `J/(kg*K)` | vlastnosť materiálu |
-| `rho` | hustota | `kg/m^3` | vlastnosť materiálu |
-| `q` | hustota tepelného zdroja | `W/m^3` | podmienka Teplo, Joulovo teplo, sálanie |
-
-Rozdiel oproti obyčajnému typu úlohy **Prestup tepla** je práve člen
-`v . grad(T)`: energia je unášaná pohybujúcou sa tekutinou, nielen vedená. To
-tiež znamená, že tento riešič nemá konvekčné okrajové podmienky - nie je čo
-korelovať, pretože teplo odchádzajúce zo steny do tekutiny je rozlíšené sieťou, a
-nie modelované.
-
-| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
-|---|---|---|---|
-| Teplota (*Temperature*) | explicitná (Dirichletova) | bod, čiara, plocha, objem | Teplota `[K]` |
-| Teplo (*Heat*) | prirodzená, zdroj | bod, čiara, plocha, objem | Teplo `[W]` |
-
-**Teplota** drží uzly svojej entity na zadanej hodnote. Priraďte ju vstupnej
-ploche na nastavenie teploty tekutiny vstupujúcej do oblasti a stene na
-modelovanie ohrievanej alebo chladenej hranice.
-
-**Teplo** je zdroj a zadáva sa ako **celkový výkon vo `W`** privedený do entity,
-ktorý sa pred zostavením rozloží na mieru entity - rovnaká konvencia ako v
-tepelnom riešiči. *Tepelný výkon (na jednotku plochy)* a *Tepelný výkon (na
-jednotku objemu)* rozhranie pre tento typ úlohy ponúka, ale riešič prestupu tepla
-v tekutinách ich **nečíta**; ako zdroj tu použite *Teplo*.
-
-**Väzba.** Stena medzi tekutinou so sieťou a pevnou látkou so sieťou, ktorá nesie
-podmienku **Nútená konvekcia** (*Forced convection*) obyčajného riešiča *Prestupu
-tepla*, tieto dve oblasti prepája. Po prebehnutí tepelného riešiča drží riešič
-prestupu tepla v tekutinách uzly steny na teplote pevnej látky - dovtedy je stena
-izolovaná - a pre každý prvok steny vráti dvojicu `(h, Tf)`, ktorá reprodukuje
-tepelný tok, ktorý jeho riešenie cez stenu prenáša. Tepelný riešič túto dvojicu
-aplikuje ako konvekčnú podmienku. Tok je reziduom rovníc tekutiny v uzloch steny,
-konzistentný s diskretizáciou, takže zostáva presný aj v tenkej tepelnej hraničnej
-vrstve. Teplota steny sa z prechodu na prechod relaxuje Aitkenovým faktorom, čo
-výmenu ustáli v niekoľkých prechodoch. Teoretický manuál prestupu tepla opisuje
-túto schému v časti *Conjugate heat transfer*. Sálavé a Joulovo teplo prichádzajúce
-z iných riešičov sa pripočítavajú k zdrojovému členu rovnako ako v tepelnom
-riešiči.
-
-Bez väzby riešič prestupu tepla v tekutinách hlási konvergenciu bezpodmienečne -
-po fixovaní prúdového poľa je lineárny, takže jedno riešenie je konečnou
-odpoveďou. Skupina obsahujúca oba kroky preto skončí, keď skonverguje krok
-prúdenia. So spriahnutými stenami namiesto toho hlási relatívnu zmenu svojho
-teplotného poľa, takže skupina iteruje, kým sa teplota steny neustáli.
-
-Výsledky: **Teplota** ako uzlový skalár a **Tepelný tok** ako prvkový vektor,
-vodivý tok `-k*grad(T)`.
-
-### 1.10 Rozptyl kontaminantu
-
-**Rozptyl kontaminantu** (`RSolverFluidParticle`) prenáša na tom istom prúdovom
-poli skalárnu koncentráciu,
-
-```
-dC/dt + v . grad(C) = div( D * grad(C) ) + s_eff
-
-s_eff = s * ( 1 - C / C_sat )     for s > 0 and a maximum saturation set
-s_eff = s                         otherwise
-```
-
-(obmedzenie `s * ( 1 - C / C_sat )` platí pre `s > 0` pri nastavenom maximálnom
-nasýtení, inak `s_eff = s`), opäť so stabilizáciou SUPG a rovnakou schémou v čase a
-opäť s rýchlosťou prevzatou z výsledku prúdenia.
-
-| Symbol | Význam | Jednotky | Zdroj |
-|---|---|---|---|
-| `C` | koncentrácia častíc | `kg/m^3` | riešená |
-| `v` | rýchlosť | `m/s` | výsledok prúdenia |
-| `D` | koeficient difúzie | `m^2/s` | *Nastavenia rozptylu kontaminantu*, predvolene `0` |
-| `C_sat` | maximálne nasýtenie | `kg/m^3` | *Nastavenia rozptylu kontaminantu*, predvolene `0` (bez obmedzenia) |
-| `s` | rýchlosť zdroja častíc | `kg/(m^3*s)` | podmienka Rýchlosť tvorby častíc (*Particle rate*) |
-
-#### Nastavenia rozptylu kontaminantu
-
-Oba parametre tohto typu úlohy sa nastavujú raz pre celý model v skupine
-*Nastavenia rozptylu kontaminantu* na záložke `Úloha` (časť 2.2). Obe majú
-predvolenú hodnotu nula, čo zodpovedá čistej advekcii s neobmedzeným zdrojom.
-
-**Koeficient difúzie** `D` rozširuje kontaminant v smere klesajúcej koncentrácie.
-Pri `D = 0` je transport čisto advektívny: kontaminant je unášaný prúdením a
-rozširuje sa iba numerickou difúziou stabilizácie, takže riešič odpovedá na
-otázku „kam ho prúdenie zanesie a ako dlho to trvá", nie „aký široký je oblak".
-Kladné `D` robí zo šírky oblaku fyzikálny výsledok.
-
-Model turbulencie neexistuje (časť 6), takže `D` je **efektívny** koeficient
-difúzie: miešanie v skutočnom prúdení je určené turbulenciou, ktorú možno
-odhadnúť ako `D ~ nu_t / Sc_t` s turbulentným Schmidtovým číslom `Sc_t ~ 0.7`.
-
-| Molekulová difúzia (fyzikálna vlastnosť) | `D [m^2/s]` |
-|---|---|
-| plyny a pary vo vzduchu (vodná para `2.5e-5`, CO2 `1.6e-5`, pary rozpúšťadiel približne `1e-5`) | `1e-6` - `1e-4` |
-| rozpustené látky vo vode (O2 `2e-9`, soli približne `1.5e-9`) | `1e-10` - `1e-8` |
-| aerosólové častice vo vzduchu, Brownov pohyb (10 nm `5e-8`, 0.1 um `7e-10`, 1 um `3e-11`) | `1e-11` - `1e-8` |
-
-V inžinierskych mierkach je molekulová difúzia v porovnaní s transportom prúdením
-takmer vždy zanedbateľná. Zvyčajne sa zadáva efektívna hodnota:
-
-| Efektívna (turbulentná) difúzia | `D_eff [m^2/s]` |
-|---|---|
-| vetraná miestnosť, miešanie vzduchu v interiéri | `1e-3` - `1e-2` |
-| prúdenie v potrubí alebo kanáli, približne `D ~ 0.01 - 0.05 * U * L` (`U` stredná rýchlosť, `L` rozmer potrubia) | `1e-3` - `1e-1` |
-| rieky, priečne miešanie | `1e-2` - `1` |
-| atmosféra, horizontálne miešanie | `1` - `100` |
-
-To, či hodnota na niečom zmení, závisí od siete. So strednou rýchlosťou `U`,
-dĺžkou prúdenia `L`, veľkosťou prvku `h` a časovým krokom `dt`:
-
-- **kedy má `D` viditeľný účinok** - kontaminant sa počas prechodu oblasťou
-  rozšíri približne o `sqrt( 2 * D * L / U )`. Ak je to menej ako `h`, `D` nemá
-  žiadny účinok, takže `D` má význam až približne nad `U * h^2 / ( 2 * L )`. Pre
-  kanál s `U ~ 1 m/s`, `L ~ 15 m` a `h ~ 0.1 m` je to približne `3e-4 m^2/s`;
-- **kedy `D` prevláda** - približne nad `U * L` (pre ten istý kanál asi
-  `15 m^2/s`) difúzia všetko rozmaže a na prúdení takmer nezáleží;
-- **časové krokovanie** - ak `D * dt / h^2` prekročí približne `1`, prepnite na
-  *Spätnú diferenciu*; centrálna diferencia netlmí najrýchlejšie difúzne módy a
-  osciluje.
-
-Steny a výstupy bez podmienky *Koncentrácia častíc*, *Tok častíc* alebo
-*Prestup častíc* si ponechávajú prirodzenú podmienku **nulového difúzneho
-toku**: kontaminant cez stenu nedifunduje a výstupom odchádza iba s prúdením.
-
-Tam, kde prúdenie takou hranicou **vstupuje** - typicky spätné prúdenie cez časť
-výstupu s *Tlakom (implicitným)* - sa považuje za čistú tekutinu: riešič na tejto
-časti plochy pridá slabý vstupný člen `max(-v . n, 0) * C`, rozložený po
-ploche tak, aby tlmil aj uzly na hrane, kde sa výstup stretáva so stenou bez
-sklzu. Bez neho by hranica
-dodávala riešeniu energiu a koncentrácia na výstupe by neobmedzene rástla. Ak
-vracajúca sa tekutina nie je čistá, predĺžte oblasť tak, aby výstupom prúdenie
-iba odchádzalo.
-
-**Maximálne nasýtenie** `C_sat` je najväčšia koncentrácia, ktorú môže kontaminant
-v tekutine dosiahnuť - koncentrácia nasýtených pár alebo rozpustnosť. Ak je
-nastavené, kladná *Rýchlosť tvorby častíc* slabne, keď sa koncentrácia k nemu
-blíži, a pri nasýtení sa zastaví, `s * ( 1 - C / C_sat )`; takto sa modeluje
-odparovanie alebo rozpúšťanie a `s` je potom rýchlosť do čistej tekutiny,
-približne `k_m * C_sat * A / V`. Záporné zdroje (`s < 0`) sa neobmedzujú.
-Obmedzenie pôsobí iba na zdroj: koncentrácia predpísaná okrajovou alebo
-počiatočnou podmienkou sa neobmedzuje a log riešiča upozorní, ak `C_sat`
-prekračuje. Koncentrácia sa ani neorezáva, takže mierne prestrelenie pri strmom
-čele je stále možné.
-
-Hranica nasýtenia existuje iba tam, kde existuje termodynamická hranica: tlak
-nasýtených pár alebo rozpustnosť. Pre paru vo vzduchu vyplýva koncentrácia
-nasýtenia z tlaku nasýtených pár, `C_sat = p_sat * M / ( R * T )`:
-
-| Para vo vzduchu | Teplota | `C_sat [kg/m^3]` |
-|---|---|---|
-| vodná para | 0 degC | `0.0048` |
-| vodná para | 20 degC | `0.017` |
-| vodná para | 40 degC | `0.051` |
-| vodná para | 100 degC | `0.60` |
-| etanol alebo toluén | 20 degC | približne `0.11` |
-| metanol | 20 degC | približne `0.17` |
-| benzén | 20 degC | približne `0.32` |
-| acetón | 20 degC | približne `0.59` |
-
-Pre látku rozpustenú vo vode je hranicou jej rozpustnosť:
-
-| Rozpustené vo vode | `C_sat [kg/m^3]` |
-|---|---|
-| kyslík v rovnováhe so vzduchom, 20 degC | `0.009` |
-| oxid uhličitý pri 1 atm | `1.7` |
-| sadrovec | `2.4` |
-| chlorid sodný | približne `360` |
-
-Častice, prach a dym nasýtenie nemajú; ponechajte hodnotu `0` (bez obmedzenia).
-Iba pre predstavu, limity expozície na pracovisku sú približne
-`1e-6` - `1e-5 kg/m^3` (1 - 10 mg/m^3) a dolné medze výbušnosti prachu približne
-`0.02` - `0.06 kg/m^3`.
-Nasýtenie silne závisí od teploty, riešič však používa jednu konštantnú hodnotu:
-v neizotermickom prípade použite hodnotu pri najnižšej relevantnej teplote, kde
-by začala kondenzácia.
-
-#### Stabilizácia
-
-Parameter SUPG riešiča rozptylu je obmedzený časovým krokom a zahŕňa difúziu,
-
-```
-tau = [ ( 2 / dt )^2 + ( 2 * |v| / h )^2 + 9 * ( 4 * D / h^2 )^2 ]^(-1/2)
-```
-
-pričom v ustálenej analýze člen s `dt` odpadá. Tam, kde je prúdenie rýchle, sa
-redukuje na `h / ( 2 * |v| )`, nikdy neprekročí `dt / 2` a tam, kde prevláda
-difúzia, sa blíži k `h^2 / ( 12 * D )` - limite uzlovo presného
-jednorozmerného parametra. Obmedzenie časovým krokom je dôležité v pomalých a
-recirkulačných oblastiach: tam je Courantovo číslo prvku `|v| * dt / h` veľmi
-malé a neobmedzené `tau` by zo stabilizácie urobilo šum, ktorý vytvára
-koncentráciu pred čelom oblaku.
-
-Galerkinov advekčný člen sa zostavuje v **advektívnom tvare s divergenčným
-záchytom**, `v . grad(C) + 0.5 * max(div(v), 0) * C`, so spojitou uzlovou
-rýchlosťou. Rýchlosť z riešiča prúdenia nikdy nie je presne nedivergentná - na
-hrubej sieti je pri stenách a v rohoch bežná `div(v)` v desiatkach `1/s`. Tam,
-kde sa prúdenie rozpína (`div(v) > 0`), by samotná advekcia vytvárala
-koncentráciu - šachovnicový vzor, ktorý pri malom časovom kroku narastá z kroku
-na krok; záchyt ho ruší. Tam, kde sa prúdenie zbieha, sa nepridáva nič:
-symetrická oprava `0.5 * div(v) * C` by tam pôsobila ako zdroj a hromadila by
-kontaminant pri stenách. Pre presne nedivergentnú rýchlosť je záchyt nulový.
-
-Pri zanedbateľnom koeficiente difúzie je transport takmer čistou advekciou,
-ktorú Galerkinova metóda so SUPG neudrží monotónnu: počítajte s prekmitmi a
-podkmitmi, najväčšími pri stenách bez sklzu, kde je rýchlosť nulová. Efektívny
-koeficient difúzie (pozri vyššie) väčšinu z nich odstráni.
-
-Na rozdiel od riešiča prúdenia (časť 6) riešič rozptylu aplikuje theta váhovanie
-konzistentne, takže *Centrálna diferencia* je tu skutočnou Crankovou-Nicolsonovou
-schémou.
-
-#### Okrajové podmienky
-
-| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
-|---|---|---|---|
-| Koncentrácia častíc (*Particle concentration*) | explicitná (Dirichletova) | bod, čiara, plocha | Koncentrácia častíc `[kg/m^3]` |
-| Rýchlosť tvorby častíc (*Particle rate*) | prirodzená, zdroj | bod, čiara, plocha, objem | Rýchlosť tvorby častíc `[kg/(m^3*s)]` |
-| Tok častíc (*Particle flux (unit area)*) | prirodzená (Neumannova) | plocha | Tok častíc `[kg/(m^2*s)]` |
-| Prestup častíc (*Particle mass transfer*) | prirodzená (Robinova) | plocha | Súčiniteľ prestupu hmoty `[m/s]`, Okolitá koncentrácia častíc `[kg/m^3]` |
-
-**Koncentrácia častíc** drží svoje uzly na zadanej koncentrácii. Priradená
-vstupnej ploche s tabuľkou v čase je spôsobom, ako modelovať únik: nula pred
-udalosťou, koncentrácia úniku počas nej, nula potom. Je to najužitočnejší postup
-pri tomto type úlohy a stavia naň aj tutoriál *Rozptyl kontaminantu v
-tekutinách*.
-
-**Rýchlosť tvorby častíc** je zdroj a zadáva sa ako **hustota** v `kg/(m^3*s)`, nie
-ako celková hodnota - na rozdiel od podmienky *Teplo* sa nerozkladá na mieru
-entity. Modeluje zdroj, ktorý vnútri oblasti nepretržite uvoľňuje kontaminant.
-
-**Tok častíc** zadáva hmotnostný tok `q`, ktorý cez plochu vstupuje do oblasti,
-`D * grad(C) . n = q`, kde `n` je vonkajšia normála. Na rozdiel od *Rýchlosti
-tvorby častíc* je to tok na jednotku plochy, celkové uvoľnenie je teda `q * A`.
-Kladné `q` je emisia - odparujúci sa film, stena uvoľňujúca plyny - a obmedzuje
-ho maximálne nasýtenie rovnako ako kladnú rýchlosť tvorby,
-`q * ( 1 - C / C_sat )`. Záporné `q` je pevná rýchlosť odberu bez ohľadu na
-miestnu koncentráciu a môže ju stlačiť pod nulu; usadzovanie úmerné
-koncentrácii je *Prestup častíc* s `C_inf = 0`. Na stene
-vstupuje tok iba difúziou; na časti hranice, kadiaľ prúdenie vstupuje, sa
-vstupujúca tekutina považuje za čistú a nesie tok, `q` je potom celkový
-vstupujúci hmotnostný tok a `C ~ q / |v . n|`. Priradený vnútornej ploche medzi
-dvoma objemami uvoľňuje `q` na jednotku plochy ako plošný zdroj.
-
-**Prestup častíc** vymieňa kontaminant s okolitým rezervoárom,
-`q = k_m * ( C_inf - C )`, kde `k_m` je *Súčiniteľ prestupu hmoty* (*Mass
-transfer coefficient*) a `C_inf` *Okolitá koncentrácia častíc* (*Ambient
-particle concentration*). Je obdobou jednoduchej konvekcie pri prenose tepla.
-Pri `C_inf = 0` modeluje usadzovanie na ploche s rýchlosťou usadzovania `k_m`;
-pri `C_inf > 0` výmenu s okolitým vzduchom cez otvor alebo rozpúšťajúcu sa
-plochu udržiavanú na `C_inf`. Typické hodnoty `k_m` sú `1e-4` - `1e-2 m/s` pre
-usadzovanie častíc v miestnostiach a `1e-3` - `1e-1 m/s` pre odparovanie do
-prúdiaceho plynu. Veľké `k_m` ženie plochu k `C_inf` a blíži sa podmienke
-*Koncentrácia častíc*.
-
-Tento typ úlohy vyžaduje iba **hustotu** materiálu.
-
-Výsledky: **Koncentrácia častíc** ako uzlový skalár a pri nastavenom maximálnom
-nasýtení **Relatívne nasýtenie** (*Relative saturation*) `C / C_sat` ako
-bezrozmerný uzlový skalár. Relatívne nasýtenie sa predvolene zobrazuje od `0` do
-`1` a odstráni sa, keď sa maximálne nasýtenie nastaví späť na nulu.
-
-### 1.11 Odvodené výsledky
+### 1.10 Odvodené výsledky
 
 | Výsledok | Aplikuje sa na | Vytvára | Význam |
 |---|---|---|---|
 | Rýchlosť `[m/s]` | uzol | prúdenie | vyriešené pole rýchlosti, tri zložky |
 | Tlak `[Pa]` | uzol | prúdenie | vyriešené tlakové pole |
-| Teplota `[K]` | uzol | prestup tepla v tekutinách | vyriešené teplotné pole |
-| Tepelný tok `[W/m^2]` | prvok | prestup tepla v tekutinách | vodivý tok `-k*grad(T)` |
-| Koncentrácia častíc `[kg/m^3]` | uzol | rozptyl kontaminantu | vyriešené pole koncentrácie |
-| Relatívne nasýtenie `[-]` | uzol | rozptyl kontaminantu | `C / C_sat`, iba pri nastavenom maximálnom nasýtení |
+
+Výsledky sprievodných typov úloh uvádzajú ich vlastné manuály.
 
 Rýchlosť sa ukladá ako uzlový **vektor**, takže záložka `Výsledky` môže zobraziť
 jej veľkosť farebne, jednotlivé zložky alebo šípky. Pre výsledok prúdenia sa
@@ -731,7 +473,7 @@ oplatí poznať dva zobrazovacie nástroje:
 Po každom zázname vypíše log riešiča štatistiky rýchlosti a tlaku a hodnoty vo
 všetkých monitorovacích bodoch.
 
-### 1.12 Ustálená alebo prechodová analýza?
+### 1.11 Ustálená alebo prechodová analýza?
 
 | | Ustálená | Prechodová |
 |---|---|---|
@@ -751,7 +493,8 @@ vstup, odtrhávanie vírov a - predovšetkým - pre **rozptyl kontaminantu**, kt
 
 Dvojkrokový postup z tutoriálu *Rozptyl kontaminantu v tekutinách* je
 štandardný: nechajte skonvergovať ustálené prúdenie a potom reštartujte so
-zapnutým časovým riešičom a krokom rozptylu kontaminantu.
+zapnutým časovým riešičom a krokom rozptylu kontaminantu - pozri manuál
+[Rozptyl kontaminantu](theory_fluid_particle.md).
 
 ---
 
@@ -785,13 +528,11 @@ Kombinácie, ktoré sa oplatí poznať:
 - samotné *Nestlačiteľné viskózne prúdenie* v skupine s niekoľkými stovkami
   iterácií - ustálené prúdové pole;
 - *Nestlačiteľné viskózne prúdenie* a *Rozptyl kontaminantu* v jednej skupine -
-  rozptyl na prúdení, klasická prechodová dvojica;
+  rozptyl na prúdení, klasická prechodová dvojica, pozri
+  [Rozptyl kontaminantu](theory_fluid_particle.md);
 - *Nestlačiteľné viskózne prúdenie* a *Prestup tepla v tekutinách* v jednej
-  skupine - ohrievané alebo chladené prúdenie;
-- *Prestup tepla v tekutinách* a samostatný krok *Prestup tepla* na pevnej látke
-  so sieťou, krok prestupu tepla v tekutinách ako prvý, v jednej skupine s
-  niekoľkými iteráciami - združený prestup tepla cez steny s podmienkou *Nútená
-  konvekcia*.
+  skupine - ohrievané alebo chladené prúdenie, pozri
+  [Prestup tepla v tekutinách](theory_fluid_heat.md).
 
 Prúdenie vylučuje *Prúdenie cez porézne prostredie* a *Modálnu analýzu*; oba
 sprievodné typy úloh vyžadujú prítomnosť kroku prúdenia.
@@ -806,40 +547,28 @@ vypnutý.
 |---|---|
 | Povoliť | zapína a vypína krokovanie v čase |
 | Aproximácia | theta schémy v čase: spätná, centrálna alebo dopredná, pozri 1.8 |
-| Počiatočný čas | prvá hodnota času v sekundách; pri reštarte riešiča sa ignoruje |
+| Počiatočný čas | prvá hodnota času v sekundách; reštart z ustáleného výsledku umiestni tento výsledok do počiatočného času, reštart prerušeného prechodového výpočtu pokračuje od jeho posledného kroku |
 | Konečný čas | `počiatočný čas + veľkosť časového kroku * počet časových krokov`, iba na čítanie |
 | Veľkosť časového kroku | `dt` v sekundách, pozri odporúčanie Courantovho čísla v 1.8 |
 | Počet časových krokov | koľko krokov sa má vypočítať |
 | Frekvencia výstupu | zapíše súbor výsledkov každých N krokov; `0` zapíše iba posledný krok |
 
-**Nastavenia rozptylu kontaminantu** - zobrazuje sa, keď je v poradí krokov úloh
-krok *Rozptyl kontaminantu*. Obsahuje dva parametre z časti 1.10:
-
-| Pole | Význam |
-|---|---|
-| Maximálne nasýtenie `[kg/m^3]` | najväčšia možná koncentrácia; kladná rýchlosť tvorby častíc sa pri nej zastaví a počíta sa *Relatívne nasýtenie*. `0` znamená bez obmedzenia |
-| Koeficient difúzie `[m^2/s]` | efektívny koeficient difúzie kontaminantu v tekutine. `0` znamená čistú advekciu |
-
-Typické hodnoty oboch sú uvedené v časti 1.10.
-
-Typy úloh prúdenia a prestupu tepla v tekutinách vlastnú skupinu nastavení
-nemajú. Všetko ostatné sa priraďuje entitám na záložkách podmienok a počet
+Typ úlohy prúdenia vlastnú skupinu nastavení nemá; skupinu *Nastavenia rozptylu
+kontaminantu* opisuje manuál [Rozptyl kontaminantu](theory_fluid_particle.md). Všetko ostatné sa priraďuje entitám na záložkách podmienok a počet
 iterácií - na ktorom tu záleží viac ako kdekoľvek inde v Range FEA - sa nastavuje
 v dialógu poradia krokov úloh, nie na tejto záložke.
 
 ### 2.3 Záložka Materiál
 
-Záložka `Materiál` zobrazuje materiál priradený vybranej entite. Čo je potrebné,
-závisí od toho, ktoré typy úloh prúdenia tekutín sú v poradí krokov úloh:
+Záložka `Materiál` zobrazuje materiál priradený vybranej entite. Typ úlohy
+prúdenia vyžaduje:
 
-| Vlastnosť | Jednotky | Vyžaduje | Poznámka |
-|---|---|---|---|
-| Hustota | `kg/m^3` | všetky tri | `rho`, približne `1000` pre vodu, `1.2` pre vzduch |
-| Dynamická viskozita | `kg/(m*s)` | prúdenie, prestup tepla v tekutinách | `mu`, približne `1.0e-3` pre vodu, `1.8e-5` pre vzduch |
-| Tepelná vodivosť | `W/(m*K)` | prestup tepla v tekutinách | `k`, približne `0.6` pre vodu, `0.025` pre vzduch |
-| Tepelná kapacita | `J/(kg*K)` | prestup tepla v tekutinách | `c`, približne `4180` pre vodu, `1005` pre vzduch |
+| Vlastnosť | Jednotky | Poznámka |
+|---|---|---|
+| Hustota | `kg/m^3` | `rho`, približne `1000` pre vodu, `1.2` pre vzduch |
+| Dynamická viskozita | `kg/(m*s)` | `mu`, približne `1.0e-3` pre vodu, `1.8e-5` pre vzduch |
 
-Entita, ktorej chýba niektorá vlastnosť vyžadovaná typom úlohy v poradí krokov,
+Vlastnosti sprievodných typov úloh uvádzajú ich manuály. Entita, ktorej chýba niektorá vlastnosť vyžadovaná typom úlohy v poradí krokov,
 sa nerieši a kontrola nastavení na to pred spustením výpočtu upozorní. Dodaná
 databáza materiálov obsahuje **Vodu** a **Vzduch**, čo zvyčajne tento krok celý
 vybaví.
@@ -860,7 +589,7 @@ vybranej podmienky dole. Najprv vyberte entitu v strome `Model`; zoznam potom
 ponúkne podmienky platné pre daný typ entity a vybrané typy úloh. Zaškrtnutím
 podmienku priradíte a potom upravíte jej zložky v dolnom strome.
 
-Ponúkajú sa podmienky z častí 1.4, 1.9 a 1.10. Poznámky k ich použitiu:
+Ponúkajú sa podmienky z časti 1.4. Poznámky k ich použitiu:
 
 - **Stena** patrí na každú pevnú hranicu a nemá žiadnu hodnotu. Plošná entita
   objemu so sieťou, ktorá nenesie žiadnu podmienku, *nie je* stenou - je to
@@ -875,9 +604,8 @@ Ponúkajú sa podmienky z častí 1.4, 1.9 a 1.10. Poznámky k ich použitiu:
 - **Tlak (implicitný)** je uprednostňovaná výstupná podmienka: umožňuje vyvinúť
   sa výstupnému profilu a so zadanou hodnotou `0` robí z výstupu tlakovú
   referenciu. **Tlak (explicitný)** namiesto toho fixuje uzlový tlak.
-- **Teplota** a **Teplo** sa objavia, keď je v poradí krokov úloh krok
-  *Prestup tepla v tekutinách*; **Koncentrácia častíc** a **Rýchlosť tvorby
-  častíc**, keď je tam krok *Rozptyl kontaminantu*.
+- Podmienky *Prestupu tepla v tekutinách* a *Rozptylu kontaminantu* sa objavia,
+  keď je ich krok v poradí krokov úloh, a opisujú ich vlastné manuály.
 - Každá zložka je tabuľkou v čase. Kliknutím na **Upraviť časovo závislé
   hodnoty** otvoríte editor zložiek, kde sa hodnoty zadávajú v závislosti od času;
   medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom
@@ -886,8 +614,7 @@ Ponúkajú sa podmienky z častí 1.4, 1.9 a 1.10. Poznámky k ich použitiu:
 
 ### 2.5 Počiatočné a environmentálne podmienky
 
-Záložka `Počiatočné podmienky` ponúka pre úlohu prúdenia *Rýchlosť* a *Tlak*, pre
-prestup tepla v tekutinách *Teplotu* a pre rozptyl *Koncentráciu častíc*.
+Záložka `Počiatočné podmienky` ponúka pre úlohu prúdenia *Rýchlosť* a *Tlak*.
 Nastavujú počiatočné pole prvého výpočtu a umožňujú, aby prechodový výpočet
 nezačínal z pokoja.
 
@@ -898,9 +625,8 @@ podmienky meral v správnom smere.
 
 ### 2.6 Nastavenie maticového riešiča
 
-`Úloha` -> `Nastaviť maticový riešič úloh` konfiguruje iteračné riešiče. Všetky
-tri riešiče prúdenia tekutín používajú položku **GMRES**, pretože ich matice nie
-sú symetrické.
+`Úloha` -> `Nastaviť maticový riešič úloh` konfiguruje iteračné riešiče. Riešič
+prúdenia používa položku **GMRES**, pretože jeho matica nie je symetrická.
 
 Pred akoukoľvek zmenou tu rozlišujte dve vnorené iterácie: iterácie **maticového
 riešiča** riešia jednu linearizovanú sústavu, kým iterácie **skupiny krokov
@@ -908,31 +634,16 @@ riešiča** riešia jednu linearizovanú sústavu, kým iterácie **skupiny krok
 takmer vždy potrebuje viac iterácií skupiny, lepšiu sieť alebo opravené okrajové
 podmienky - nie vyšší počet iterácií GMRES.
 
-Výnimkou je **ustálený rozptyl kontaminantu s difúziou**. Ide o jediné lineárne
-riešenie, takže neexistujú iterácie skupiny, na ktoré by sa dalo spoľahnúť, a
-sústava s prevládajúcou difúziou konverguje pri predvolenom limite GMRES 10
-vnútorných krát 10 vonkajších iterácií pomaly. Maticový riešič pri dosiahnutí
-limitu neupozorní: prečítajte si jeho tabuľku iterácií v logu riešiča a ak
-dobehne do poslednej vonkajšej iterácie s reziduom stále výrazne nad hodnotou
-konvergencie riešiča, zvýšte počet vonkajších iterácií. Nekonvergované riešenie
-dá nesprávnu odpoveď bez akéhokoľvek iného náznaku.
-
 ### 2.7 Monitorovacie body
 
 `Úloha` -> `Definovať monitorovacie body` umiestni sondy na zadané súradnice a
-vyberie zaznamenávanú veličinu - *Rýchlosť*, *Tlak*, *Teplotu*, *Koncentráciu
-častíc*, *Rýchlosť tvorby častíc* alebo *Relatívne nasýtenie*. V prechodovom
-výpočte zobrazí históriu `Výkaz` -> `Monitorovacie body`.
-
-Pre model rozptylu je monitorovací bod v mieste záujmu odpoveďou vo forme, akú
-zvyčajne chcete: koncentrácia v čase na danom mieste, odčítaná z grafu, a nie z
-postupnosti obrázkov.
+vyberie zaznamenávanú veličinu - pre prúdenie *Rýchlosť* alebo *Tlak*. V
+prechodovom výpočte zobrazí históriu `Výkaz` -> `Monitorovacie body`.
 
 ### 2.8 Výsledky a záznamy
 
 Záložka `Výsledky` zobrazuje vypočítané veličiny a ovláda 3D zobrazenie.
-Rýchlosť je uzlový vektor, tlak uzlový skalár, teplota uzlový skalár, tepelný tok
-prvkový vektor a koncentrácia častíc a relatívne nasýtenie sú uzlové skaláry.
+Rýchlosť je uzlový vektor a tlak uzlový skalár.
 
 Záložka `Záznamy` panela `Model` zobrazuje záznamy výsledkov:
 
@@ -1017,7 +728,7 @@ Re = rho * V * L / mu
 
 Do niekoľkých tisíc je model v rozsahu, ktorý tento riešič zvláda. Ďaleko nad
 ním očakávajte, že výpočet nebude konvergovať, a skôr než mu budete venovať čas,
-prečítajte si časť 6.
+prečítajte si časť 5.
 
 ### Krok 7 - otvorenie výstupu
 
@@ -1050,7 +761,7 @@ Urobte to skôr, než sa pozriete na akýkoľvek obrázok. Reziduum by malo kles
 niekoľko rádov a potom sa vyrovnať a `Convergence-V` a `Convergence-P` by sa mali
 blížiť k nule. Ak reziduum pri poslednej iterácii stále strmo klesá, výpočet bol
 príliš krátky - zvýšte počet iterácií a reštartujte. Ak osciluje alebo rastie,
-odpoveď nie je riešením a treba sa pozrieť do časti 6.
+odpoveď nie je riešením a treba sa pozrieť do časti 5.
 
 ### Krok 10 - prezeranie výsledkov
 
@@ -1064,7 +775,7 @@ odpoveď nie je riešením a treba sa pozrieť do časti 6.
   recirkuláciu alebo mŕtve zóny.
 - Skontrolujte bilanciu hmotnosti: stredná výstupná rýchlosť krát plocha výstupu
   by sa mala rovnať objemovému prietoku predpísanému na vstupe. Je to najrýchlejšia
-  globálna kontrola, že model robí to, čo ste chceli - pozri časť 5.
+  globálna kontrola, že model robí to, čo ste chceli - pozri časť 4.
 
 ### Riešenie problémov
 
@@ -1082,137 +793,11 @@ odpoveď nie je riešením a treba sa pozrieť do časti 6.
 
 ---
 
-## 4. Tutoriál - prechodové prúdenie s rozptylom kontaminantu
-
-**Cieľ.** Uvoľniť kontaminant do konvergovaného prúdenia z tutoriálu 3 a sledovať
-oblak v čase pri jeho pohybe kanálom.
-
-Ide o dvojkrokový postup z časti 1.12, ktorý zodpovedá dodanému tutoriálu
-*Rozptyl kontaminantu v tekutinách*.
-
-### Krok 1 - začnite z konvergovaného prúdenia
-
-Najprv nechajte tutoriál 3 skonvergovať. Výpočet rozptylu spustený z pokoja
-premrhá prvé časové kroky vývojom prúdového poľa namiesto prenášania čohokoľvek.
-
-### Krok 2 - pridanie kroku rozptylu
-
-1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
-2. Ponechajte skupinu krokov úlohy a krok **Nestlačiteľné viskózne prúdenie**.
-3. Do tej istej skupiny pridajte krok **Rozptyl kontaminantu**.
-4. Znížte **počet iterácií** skupiny na približne `20` - teraz sú to nelineárne
-   iterácie *na časový krok*, nie iterácie ustáleného riešenia. Hodnotu
-   **Konvergencia** nemeňte; väčšina krokov sa ustáli pred dvadsiatym prechodom a
-   skončí skôr, a tie, ktoré nie, sú práve tie, ktoré si plných dvadsať
-   zaslúžia.
-
-*Rozptyl kontaminantu* vyžaduje prítomnosť kroku prúdenia; pole rýchlosti číta a
-nikdy ho nepočíta.
-
-### Krok 3 - nastavenie časového riešiča
-
-Otvorte záložku `Úloha` a v skupine *Riešič v čase* nastavte:
-
-| Pole | Hodnota |
-|---|---|
-| Povoliť | zaškrtnuté |
-| Aproximácia | `Backward difference (stable)` (spätná diferencia) |
-| Počiatočný čas | `0` |
-| Veľkosť časového kroku | podľa odporúčania Courantovho čísla nižšie |
-| Počet časových krokov | dosť na to, aby oblak prešiel oblasťou |
-| Frekvencia výstupu | `1` pre plynulú animáciu, viac pre menší súbor |
-
-Časový krok zvoľte podľa siete a rýchlosti prúdenia tak, aby tekutina prešla za
-krok približne jeden prvok:
-
-```
-dt ~ h / |v|
-```
-
-Potom zvoľte počet krokov podľa toho, ako dlho oblak potrebuje na prechod
-oblasťou, `L / |v|`, delené týmto krokom.
-
-V skupine *Nastavenia rozptylu kontaminantu* na tej istej záložke ponechajte pre
-čistú advekciu obe hodnoty na `0`, alebo zadajte efektívny **Koeficient difúzie**
-podľa tabuľky v časti 1.10, ak záleží na šírke oblaku. **Maximálne nasýtenie** má
-zmysel iba pre paru alebo rozpustenú látku; nesmie byť nižšie ako koncentrácia
-úniku z kroku 4.
-
-### Krok 4 - uvoľnenie kontaminantu
-
-1. Vyberte vstupnú plošnú entitu.
-2. Otvorte záložku `Okrajové podmienky` a zaškrtnite **Koncentrácia častíc**
-   (*Particle concentration*).
-3. Namiesto zadania jednej hodnoty kliknite na **Upraviť časovo závislé
-   hodnoty**.
-4. V editore zložiek zadajte profil úniku - napríklad `0` v čase `0`,
-   koncentráciu úniku v okamihu začiatku úniku a opäť `0` na jeho konci.
-
-Medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom
-zadanom čase zostáva platná posledná hodnota, takže únik, ktorý má začať náhle,
-potrebuje dve tesne po sebe nasledujúce položky. Práve táto časovo závislá
-podmienka robí z ustáleného vstupu udalosť úniku a je jadrom modelu rozptylu.
-
-### Krok 5 - ponechanie podmienok prúdenia
-
-**Stena**, podmienka prítoku a výstup s **Tlakom (implicitným)** zostávajú
-nezmenené. Prúdenie sa naďalej rieši v každom časovom kroku - rozptyl sa na ňom
-len veze.
-
-### Krok 6 - pridanie monitorovacieho bodu
-
-`Úloha` -> `Definovať monitorovacie body`, umiestnite bod po prúde a nastavte jeho
-veličinu na **Koncentrácia častíc**. Čas príchodu a špičkovú koncentráciu na
-danom mieste je oveľa jednoduchšie odčítať z histórie ako z postupnosti farebných
-obrázkov.
-
-### Krok 7 - riešenie s reštartom
-
-1. `Riešenie` -> `Spustiť riešič` (`Ctrl+R`).
-2. Zaškrtnite **Reštartovať riešič / pokračovať**.
-
-Práve reštart robí z konvergovaného ustáleného poľa východiskový bod krokovania v
-čase. Bez neho výpočet začne z pokoja a prvé kroky sú premrhané.
-
-### Krok 8 - prezeranie výsledkov
-
-- Panel `Model`, záložka `Záznamy`: jeden záznam na každý zapísaný krok.
-  Prechádzajte ich alebo ich animujte a sledujte, ako sa oblak pohybuje.
-- Záložka `Výsledky`: zobrazte **Koncentráciu častíc**. Zafixujte rozsah
-  zobrazenia naprieč záznamami, aby farby znamenali v každom snímku to isté -
-  inak sa animácia sama premieruje a oblak sa javí, akoby neslabol.
-- `Výkaz` -> `Monitorovacie body` zobrazí históriu koncentrácie v sonde.
-  Odčítajte z nej čas príchodu a porovnajte ho s `L / |v|`, časom prechodu, ktorý
-  vyplýva zo strednej rýchlosti prúdenia - je to najlacnejšie overenie celého
-  modelu.
-- Pri nulovom koeficiente difúzie sa oblak rozširuje iba numerickou difúziou,
-  takže jeho **šírka** je vlastnosťou siete a časového kroku, nie fyziky. S
-  efektívnym koeficientom difúzie je šírka výsledkom - pred tým, než jej budete
-  dôverovať, ju porovnajte s jemnejšou sieťou.
-
-### Riešenie problémov
-
-| Príznak | Príčina |
-|---|---|
-| Koncentrácia nikdy neopustí vstup | prúdové pole je nulové - v skupine chýba krok prúdenia alebo výpočet nebol reštartovaný z konvergovaného prúdenia |
-| Oblak sa takmer okamžite rozmaže | Courantovo číslo je ďaleko nad 1 alebo je sieť pozdĺž dráhy príliš hrubá |
-| Koncentrácia je záporná alebo prestrelí | časový krok je pre sieť príliš veľký, takže stabilizovaná advekcia „zvoní". Mierne podstrelenie pri strmom čele je normálne; riešenie sa neorezáva na nulu, pretože orezanie by pridávalo kontaminant |
-| Zapísal sa iba jeden záznam | frekvencia výstupu je `0`, čo zapíše iba posledný krok |
-| Reziduum každého kroku zostáva vysoké | príliš málo iterácií na časový krok - prúdenie v rámci kroku nie je konvergované |
-| Oblak sa nikdy nerozšíri do strán | koeficient difúzie je nulový, takže bočné rozširovanie pochádza iba z prúdového poľa - zadajte efektívny koeficient difúzie, pozri časť 1.10 |
-| Oblak sa naraz rozšíri po celej oblasti | koeficient difúzie je príliš veľký - porovnajte ho s `U * L` |
-| Log upozorňuje, že predpísaná koncentrácia prekračuje maximálne nasýtenie | okrajová alebo počiatočná podmienka je nad maximálnym nasýtením; obmedzenie pôsobí iba na rýchlosť tvorby častíc, preto skontrolujte obe hodnoty |
-| Ustálené riešenie s difúziou vyzerá nesprávne | maticový riešič sa zastavil na limite iterácií - zvýšte počet vonkajších iterácií GMRES, pozri časť 2.6 |
-| Koncentrácia pri stenách prekračuje hodnotu na vstupe alebo je záporná, ale ďalej nenarastá | takmer čistá advekcia - koeficient difúzie je blízky nule. Zadajte efektívny koeficient difúzie; na hrubej sieti overte aj konvergenciu prúdenia |
-| Koncentrácia prekročí hodnotu na vstupe a narastá do zašumeného vzoru | prúdenie nie je konvergované - `Residual ratio` zostáva v každom kroku blízko `1`. Jeho rýchlosť má ďaleko od nulovej divergencie a žiadnemu transportu na nej nemožno dôverovať; najprv nechajte skonvergovať prúdenie (sieť, Reynoldsovo číslo, iterácie na krok) |
-
----
-
-## 5. Kontrola modelu
+## 4. Kontrola modelu
 
 Riešič nemá zabudovanú sadu overovacích testov, preto sa oplatí nový model pred
-tým, než mu začnete dôverovať, overiť voči niečomu, čo viete vypočítať ručne. Päť
-lacných kontrol v poradí podľa užitočnosti:
+tým, než mu začnete dôverovať, overiť voči niečomu, čo viete vypočítať ručne. Štyri
+lacné kontroly v poradí podľa užitočnosti:
 
 **Bilancia hmotnosti.** Pre každý konvergovaný nestlačiteľný model musí to, čo
 vtečie, aj vytiecť:
@@ -1262,12 +847,6 @@ dp = 128 * mu * Q * L / ( pi * D^4 )
 
 platí, kým je prúdenie laminárne, teda približne pod `Re = 2300`.
 
-**Čas prechodu.** Pre model rozptylu je čas, za ktorý značka prejde vzdialenosť
-`L` pri strednej rýchlosti `V`, rovný `L/V`. Odčítajte čas príchodu z histórie
-monitorovacieho bodu a porovnajte. Overí to, že krok rozptylu sa veze na tom
-prúdovom poli, na ktorom si myslíte, a odhalí výpočet, ktorý nebol reštartovaný z
-konvergovaného prúdenia.
-
 Pri každej z týchto kontrol aspoň raz zjemnite sieť a overte, že odpoveď
 konverguje a neodpláva - a skôr než budete čokoľvek porovnávať, overte, že sa
 história konvergencie vyrovnala. Nekonvergovaný model prúdenia z rovnakého dôvodu
@@ -1275,7 +854,7 @@ neprejde žiadnou z týchto kontrol.
 
 ---
 
-## 6. Obmedzenia
+## 5. Obmedzenia
 
 ### Obmedzenia modelovania
 
@@ -1296,26 +875,8 @@ neprejde žiadnou z týchto kontrol.
   vstupuje iba ako konštantná objemová sila, ktorá v oblasti s konštantnou
   hustotou vytvára hydrostatický tlak a žiadny pohyb.
 - **Väzba na teplotu a koncentráciu je jednosmerná.** Prúdenie poháňa transport;
-  transport nikdy nemení prúdenie.
-- **Konštantná izotropná difúzia pri rozptyle kontaminantu.** Koeficient difúzie
-  je jedna hodnota pre celý model; nemôže sa meniť v priestore ani v čase, riadiť
-  sa smerom prúdenia ani pochádzať z modelu turbulencie. Keďže model turbulencie
-  neexistuje, treba ho odhadnúť ako efektívny koeficient difúzie - pozri časť
-  1.10.
-- **Konštantné maximálne nasýtenie.** Nasýtenie nesleduje teplotu z výsledku
-  *Prestupu tepla v tekutinách* a obmedzuje iba kladnú rýchlosť tvorby častíc.
-  Koncentrácie predpísané podmienkami sa neobmedzujú a pole sa neorezáva.
-- **Podmienky `Heat rate` riešič prestupu tepla v tekutinách ignoruje.** *Tepelný
-  výkon (na jednotku plochy)* a *Tepelný výkon (na jednotku objemu)* rozhranie pre
-  *Prestup tepla v tekutinách* ponúka, ale `RSolverFluidHeat` ich nečíta; dostane
-  sa k nemu iba podmienka *Teplo*. Obyčajný typ úlohy *Prestup tepla* číta všetky
-  tri.
-- **Žiadne konvekčné okrajové podmienky pri prestupe tepla v tekutinách.** Teplo
-  odchádzajúce zo steny do tekutiny so sieťou sa rozlišuje, nie koreluje, takže
-  podmienky *Jednoduchá*, *Nútená* a *Prirodzená konvekcia* patria obyčajnému
-  tepelnému riešiču. Združený prestup tepla sa nastavuje ako krok *Prestup tepla*
-  na pevnej látke, ktorej steny s *Nútenou konvekciou* čítajú vypočítaný stav
-  tekutiny.
+  transport nikdy nemení prúdenie. Obmedzenia sprievodných typov úloh uvádzajú
+  ich vlastné manuály.
 - **Iba objemové prvky, iba lineárne tetrahedróny a hexahedróny.** Model prúdenia
   musí byť objem so sieťou z prvkov `TETRA1` alebo `HEXA1`; čokoľvek iné výpočet
   zastaví. Plochy sa zúčastňujú iba ako nositelia tlakovej sily *Tlaku
@@ -1338,8 +899,8 @@ neprejde žiadnou z týchto kontrol.
   Theta váhovanie sa aplikuje na maticu, ale nie na reziduum, takže *Centrálna
   diferencia* rieši reziduum spätného Eulera s maticou s polovičnou tuhosťou.
   Odpoveďou je odpoveď spätnej diferencie, dosiahnutá pomalšie. Pre prúdenie
-  používajte *Spätnú diferenciu*, kým sa to neopraví. Riešiča rozptylu sa to
-  netýka - je lineárny a jeho schéma je skutočne Crankova-Nicolsonova.
+  používajte *Spätnú diferenciu*, kým sa to neopraví. Riešiča rozptylu
+  kontaminantu sa to netýka - je lineárny a jeho schéma je skutočne Crankova-Nicolsonova.
 - **Stabilizačné parametre sa nederivujú.** `Tsupg`, `Tpspg`, `Tlsic` aj dĺžka
   prvku závisia od rýchlosti a všetky vstupujú do matice ako konštanty
   vyhodnotené pri aktuálnom poli. Je to bežná prax pri stabilizovanej formulácii

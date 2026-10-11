@@ -4,339 +4,134 @@
 
 #### Acoustics
 
-- **Acoustics** is offered again in the problem selector. The solver was
-  previously marked as not working and hidden from the application
-- The problem tree carries an **Acoustic analysis setup** group: transient or
-  harmonic analysis, the frequency sweep (first frequency, frequency step,
-  number of frequencies) and the reference pressure used for the sound pressure
-  level. The frequency fields are disabled for a transient analysis, and a
-  read-only label shows the resulting frequency range
-- Acoustic boundary conditions, initial conditions, material properties and
-  result variables are offered by the respective trees. Notable additions are
-  the *Acoustic impedance* boundary condition, the absorption coefficient of the
-  *Absorbing boundary*, the *Velocity potential / s* initial condition, the
-  *Speed of sound* and *Acoustic damping factor* material properties, and the
-  sound pressure level, acoustic intensity and acoustic phase results
-- A harmonic analysis writes one model record per solved frequency, so the
-  records tree steps through the frequency sweep the way it steps through time
-  steps
+- **Acoustics** is available again, with transient or harmonic analysis set up
+  in the new **Acoustic analysis setup** group: frequency sweep and reference
+  pressure for the sound pressure level
+- New *Acoustic impedance* condition, absorption coefficient of the *Absorbing
+  boundary*, *Velocity potential / s* initial condition, *Speed of sound* and
+  *Acoustic damping factor* material properties, and sound pressure level,
+  intensity and phase results
+- A harmonic analysis writes one record per frequency, so the records tree steps
+  through the frequency sweep
 
-#### Solver and task flow
+#### Fluids and contaminant dispersion
 
-- The problem task flow dialog offers a **Convergence** value next to
-  **# of iterations** on every task group. The group ends its iterations as soon
-  as every task in it is below that value instead of always running the full
-  count, which on a flow model is most of the run time. It defaults to `1e-5`;
-  `0` restores the former behaviour of running every iteration
-- **The model file format is raised to 1.3.1** to carry that value. Models
-  written by this version cannot be read by earlier ones; models written by
-  earlier ones load unchanged and take the default
+- Task groups have a **Convergence** value next to **# of iterations** (default
+  `1e-5`). A group stops as soon as all of its tasks have converged, which
+  shortens flow runs considerably; `0` runs every iteration as before
+- New **Contaminant dispersion setup** in the `Problem` tab: *Diffusion
+  coefficient* and *Maximum saturation*. With a saturation set, the source
+  weakens as it is approached and *Relative saturation* is computed
+- New contaminant boundary conditions *Particle flux (unit area)*, for emission
+  or removal through a surface, and *Particle mass transfer*, for deposition or
+  exchange with an ambient concentration
 
 #### Boundary conditions
 
-- Displacement constraints meeting at one node are combined rather than
-  overwriting one another, so a face can be held in a global direction by
-  *Displacement* and roll on a tilted plane by *Roller displacement* at the same
-  time. Two entities asking for different values in the same direction stop the
-  run with an error naming the node
-- Individual components of the *Displacement* condition can be switched off with
-  a check box, so a support can hold one global direction and leave the others
-  free. The value box of an unchecked component is greyed out
+- Displacement constraints meeting at one node are combined, so *Displacement*
+  and *Roller displacement* can act on the same node. Conflicting values stop
+  the run with an error naming the node
+- Individual *Displacement* components can be switched off with a check box
 - The local direction of *Normal displacement* and *Roller displacement* can be
-  entered for a surface or a line, not only for a point. Ticking **Use entered
-  local direction** reveals the direction editor and makes the solver take the
-  local frame from the entered direction instead of from the element normals or
-  the element direction. The direction arrows in the 3D view follow whichever is
-  in effect
+  entered for surfaces and lines with **Use entered local direction**
 
 #### Geometry
 
-- The **Geometry** menu offers a **Merge nodes** action next to *Merge near
-  nodes*. It merges the picked nodes - at least two, per model - into a single
-  node placed in their center and rebuilds every element which contained them,
-  downgrading an element which degenerates in the process. Unlike *Merge near
-  nodes* it takes no tolerance and merges exactly what is picked, however far
-  apart the nodes are
+- **Merge nodes** merges the picked nodes into one, placed at their center,
+  regardless of their distance
 
 #### 3D view
 
-- The view can be rendered through **QRhi**, the Qt rendering hardware
-  interface, next to the legacy **OpenGL** pipeline. Both backends share the
-  whole scene traversal and draw the same geometry; `GLWidget` keeps the view,
-  the picking and the display properties and delegates the drawing to a render
-  surface which is a `QOpenGLWidget` or a `QRhiWidget`. Value ranges, message
-  and info boxes and the projected text labels moved to a transparent overlay
-  widget, because a `QRhiWidget` cannot be painted into with `QPainter`
-- The backend and the graphics API used by QRhi - automatic, Metal, Vulkan,
-  Direct3D 11, Direct3D 12, OpenGL or null, offering only what the platform has
-  - are chosen in the **General** tab of the application settings. Both are
-  stored per user and take effect on the next application start, which is
-  reported next to the option. The `--render-backend` and `--rhi-api` command
-  line options override them for a single run without changing what is stored
-- Two fixed-function features have no QRhi counterpart and are ignored by that
-  backend: line stipple, so dashed grid and axis lines are drawn solid, and line
-  widths greater than one on graphics APIs without wide line support, Metal
-  among them
-- Holding **Shift** while scrolling zooms ten times faster, for crossing a wide
-  range of scales without scrolling repeatedly
-- Applying a result variable as **Scalar** or as **Displacement** clears that
-  role from every other variable of the entity. Only one variable at a time can
-  be displayed, and a variable left over from a previously solved problem type
-  used to win the lookup and leave the entity in its plain colour
-- Entities selected in the model tree are **highlighted** in the 3D view: their
-  colour is drawn a fifth of the way towards white, and so is the colour map of
-  an entity displaying a scalar result or a vector magnitude. The lightening is
-  a shader state applied in both rendering backends, so changing the selection
-  only repaints the view - the recorded geometry of an entity is no longer
-  rebuilt when it is selected or deselected
+- The view can be rendered with **QRhi** (Metal, Vulkan, Direct3D or OpenGL) as
+  well as with the legacy OpenGL pipeline. Choose it in the **General** tab of
+  the application settings or with `--render-backend` and `--rhi-api`. QRhi
+  draws dashed lines solid and, on Metal, lines one pixel wide
+- **Shift** + scroll zooms ten times faster
+- Entities selected in the model tree are highlighted in the 3D view
+- Applying a variable as *Scalar* or *Displacement* clears that role from the
+  other variables of the entity
 
-#### Materials
+#### Application
 
-- Materials are stored in JSON. On each start every material of the database
-  which is not in the default format is converted and the former file removed
-
-#### Application settings
-
-- `--reset-settings` resets all application settings to their defaults before
-  the main window is built, which is the way out of a configuration keeping the
-  application from starting. The stored session is part of the settings, so the
-  application starts with an empty document. The reset re-applies the number of
-  solver threads, which the application reads once while starting and would
-  otherwise keep from the settings being discarded
-- On macOS the **Appearance** tab offers a *do not use native menubar* option,
-  which draws the menubar inside the main window instead of the system menubar
-  at the top of the screen. It takes effect on the next application start
-
-#### Icons
-
-- All application icons are redrawn in one clean, light style: a 24 x 24 grid,
-  1.5 px rounded strokes, pale tinted fills and no gradients or black outlines.
-  Colours carry one meaning each - slate for neutral objects, blue for geometry
-  and navigation, teal for results, violet for problem setup, green for create
-  and confirm, red for remove and errors, amber for edit and warnings
-- Variants of an icon share one set of corner badges, so *new*, *open*, *save*,
-  *save as*, *close*, *create* and *edit* look the same on sessions, models,
-  materials and result entities
-- A few icons show a different picture than before: *Access rights* is a lock,
-  the generic help action a lightning bolt, *Drop results* the results symbol
-  with a remove badge, and the solver start, stop and kill actions a play
-  button, a stop button and a stop sign instead of calculators. The Range and Qt
-  logos are unchanged
-- Every icon has a variant for the dark colour scheme, drawn with brighter
-  strokes and deep tinted fills. The variant in use follows the active palette
-  and switches immediately when the colour scheme is changed, without a restart
-- Both sets are generated by `pixmaps/generate_icons.js` from the same
-  drawings, so the light and the dark icons cannot drift apart. The icon
-  resources, about 590 kB before, are well under 100 kB per set
+- `--reset-settings` resets all settings to defaults, a way out of a
+  configuration that keeps the application from starting
+- On macOS the menubar can be drawn inside the main window (**Appearance** tab,
+  takes effect after restart)
+- The **Process output** tab keeps at most *Max lines* lines (default `10000`),
+  set next to the **Clear** button. The oldest lines are removed first
+- Adding a problem type to the task flow skips types already there, so adding
+  *Contaminant dispersion* no longer adds a second *Incompressible viscous flow*
+- Materials are stored in JSON; existing material files are converted on start
+- All icons are redrawn in a consistent style, with variants for the dark colour
+  scheme that switch immediately
+- Packages for the Apple App Store and the Microsoft Store
 
 #### Documentation
 
-- Theory manuals under `help/theory/en`, each covering the formulation, the
-  boundary conditions and their units, the parts of the user interface which
-  belong to the problem type and worked tutorials: `theory_heat.md`,
-  `theory_stress.md`, `theory_acoustic.md`, `theory_fluid.md` (all three fluid
-  problem types - *Incompressible viscous flow*, *Heat transfer in fluids* and
-  *Contaminant dispersion* - the stabilised Navier-Stokes formulation and the
-  non-linear task group iteration the flow solver depends on),
-  `theory_electrostatics.md` (including what separates an electro-static
-  analysis from a current-flow one and the coupling to heat transfer and
-  magneto-statics) and `theory_magnetostatics.md` (the Biot-Savart evaluation,
-  what an open current path in an electro-static model means for the field, and
-  how to see the field around a conductor)
+- Theory manuals with formulation, boundary conditions, user interface and
+  tutorials for heat transfer, stress, acoustics, fluid flow, heat transfer in
+  fluids, contaminant dispersion, electro-statics and magneto-statics
 
-#### Packaging
+#### File format
 
-- The build can produce packages for the **Apple App Store** and the **Microsoft
-  Store**, enabled with `-DRANGE_STORE_BUILD=ON`. An ordinary release build is
-  unaffected: the store artifacts are built by their own `mac-app-store` and
-  `msix` targets, next to the DMG, the Inno Setup installer and the Linux
-  packages
-- On macOS the bundle is sandboxed and signed with the two *3rd Party Mac
-  Developer* certificates, carries the Mac App Store provisioning profile and is
-  wrapped into an installer package. `Info.plist` is generated from a template
-  rather than patched after the build, so the bundle identifier, the application
-  category, the copyright and the encryption declaration the store requires are
-  all present. The bundled `fea-solver` and `openssl` executables are signed to
-  inherit the sandbox of the application
-- On Windows the installation tree is packed into an MSIX package with
-  `makeappx.exe`, from a generated manifest and with the tile and store logos
-  taken from `pixmaps/msix`
-- A store build defines `STORE_BUILD`, which removes the built-in software
-  update checker. Both stores forbid an application from downloading and
-  installing its own updates
-- A `Store packages` workflow builds both packages on demand and uploads the
-  macOS package to App Store Connect
+- The model file format is raised to **1.3.2**. Models saved by this version
+  cannot be opened by earlier ones; older models open with default values
 
 ### Bug fixes
 
 #### Electro-statics and magneto-statics
 
-- **These corrections change the results of every model using the
-  *Electro-statics* problem type.** A model driven only by prescribed potentials
-  keeps its potential field and gains corrected element results; a model using
-  *Charge density* on a line, surface or volume also changes the sign of its
-  potential
-- **Electric field**, **Current density**, **Electric energy** and **Joule
-  heat** are densities again. The recovered potential gradient was weighted by
-  the Jacobian determinant of the element, and on a surface by its thickness as
-  well, so each of them scaled with the size of the element it was computed in
-  and drifted instead of converging as the mesh was refined. The electric
-  potential and the electrical resistivity, whose two factors cancel, were never
-  affected
-- The **Charge density** boundary condition enters the system with the sign the
-  Poisson equation calls for. It was assembled negatively on line, surface and
-  volume elements and positively on point elements, so a positive space charge
-  lowered the potential around it while a point charge did the opposite
-- **Joule heat** is the dissipation density `sigma*|E|^2` in `W/m^3`, which is
-  what a *Heat transfer* task integrates over the element when it picks the
-  value up as a source. It carried a characteristic element size on top of that,
-  so a resistive heating chain delivered a power which depended on the mesh
-- Units corrected to what the solver reads and writes: **Relative permittivity**
-  `N/A` instead of `C^2`, **Charge density** `C/m^3` instead of `C`, **Electric
-  energy** `J/m^3` and **Joule heat** `W/m^3`
-- **Magneto-statics** computes the magnetic field of the electro-static current
-  with the Biot-Savart law. It used to solve a field equation for it which had no
-  boundary condition of any kind, so every model was singular and the level of
-  the field was arbitrary; the Biot-Savart law needs no boundary and gives the
-  field of the current exactly, the far field included. Every model using the
-  problem type computes a different field
-- Line entities with a cross area and surface entities with a thickness carry
-  current into the magnetic field as well as volume entities, and every node of
-  the model receives a value - a meshed region around the conductor that carries
-  no current shows the field in the space around it
-- The field is that of the modelled current. When the current enters and leaves
-  the body at its electrodes, the field of the supply leads is not included,
-  which matters far from the conductor; the theory manual explains when to model
-  the return path
-- **Magnetic field** is offered by the magneto-statics problem type rather than
-  by electro-statics, which never computes it
-
-#### Solver setup
-
-- The setup checker no longer reports material properties as missing when they
-  are optional for the selected problem, or when they are one of several
-  accepted alternatives. An acoustic entity carrying a density and a speed of
-  sound is no longer flagged for missing a modulus of elasticity
+- **Results of electro-static models change.** *Electric field*, *Current
+  density*, *Electric energy* and *Joule heat* no longer depend on the element
+  size, and *Charge density* enters with the correct sign, which reverses the
+  potential of models using it on lines, surfaces or volumes
+- Units corrected: *Relative permittivity* `N/A`, *Charge density* `C/m^3`,
+  *Electric energy* `J/m^3`, *Joule heat* `W/m^3`
+- **Magneto-statics** computes the magnetic field with the Biot-Savart law. The
+  previous formulation had no boundary condition, so its field level was
+  arbitrary. Lines with a cross area and surfaces with a thickness now carry
+  current too, and every node receives a value
 
 #### Contaminant dispersion
 
-- A transient contaminant dispersion run no longer blows up. The particle
-  concentration used to grow far above the highest inflow value, first where
-  the flow recirculates, because of errors in the stabilisation of the
-  equations and because negative values were clipped to zero after every
-  time step. On the tutorial channel model the maximum now follows the inflow
-  value (`0.618` at time-step 618, where `3326` was reported before).
-  Negative concentrations now appear instead of being hidden by the clipping;
-  they are numerical undershoots, not missing contaminant, and are largest at a
-  few nodes
-- The *Contaminant dispersion in fluids* tutorial states that time-dependent
-  values are interpolated linearly between the given times. It used to say
-  that each value applies from its time onwards
+- Transient runs no longer blow up. Concentration used to grow far above the
+  inflow value where the flow recirculates, and later next to an outlet meeting
+  a wall. Negative values are no longer clipped, so small undershoots are now
+  visible
+- Restarting a transient run from a steady-state result starts at the *Start
+  time*. All times, including those of time-dependent conditions, used to be
+  shifted by `1.001 s`
 
-#### Solver control
+#### Solver
 
-- **Stop solver** and **Kill solver** are enabled only while a solver is
-  running. They used to stay enabled after the solver finished, failed or was
-  killed
-- **Start solver** is enabled only when none of the selected models has a
-  solver running or queued, so a solver can no longer be started twice for the
-  same model. It becomes available again as soon as that model's solver
-  finishes, fails or is killed
+- The setup checker no longer reports optional or alternative material
+  properties as missing
+- **Start solver**, **Stop solver** and **Kill solver** are enabled only when
+  they apply, so a solver can no longer be started twice for the same model
 
 #### 3D view and picking
 
-- A picked node is visible. It was marked with a single point whose size the
-  OpenGL shaders never write, so nothing was drawn to show for the pick, which
-  had always worked. A picked node now carries the mark an unpicked node carries
-  - the same shape, ten percent larger - drawn in white
-- Element nodes were drawn a single pixel wide under the QRhi backend with
-  Direct3D selected, the default on Windows, leaving them all but invisible. A
-  point size greater than one pixel is an OpenGL and Vulkan only feature;
-  Direct3D and Metal rasterise every point one pixel wide whatever size is asked
-  for. Points are now expanded into two triangles apiece and sized in the vertex
-  shader, so a node is the same size on every graphics API
-- Enabling **Draw element nodes** made every surface disappear under the QRhi
-  backend. The vertex buffer of an entity is grown when the geometry no longer
-  fits it, and growing it destroyed the buffer together with the list of
-  primitive batches just recorded for it, leaving the geometry uploaded with
-  nothing left to draw it with. Switching the property off again fitted the
-  geometry back into the buffer already allocated, which is why the surfaces
-  returned. The batch list is now handed to the buffer only once it is ready
-- An entity is drawn again when its display properties change. Its vertex buffer
-  was kept until something invalidated it explicitly, so a property whose
-  invalidation was missed left the entity drawn the way it was when first
-  displayed - *Draw element nodes* taking effect only after another property was
-  switched on and off. The properties a buffer was recorded with are now stored
-  with it and compared before it is reused, so a missed invalidation corrects
-  itself on the next frame
-- An entity keeps one vertex buffer instead of three. The two reserved for
-  picked elements and picked nodes were never recorded into or drawn - picked
-  items are drawn as an overlay straight from the pick list - and only ever
-  invalidated
-- Results could not be displayed on a volume. An entity keeps its results
-  display data for variables which are no longer in the model, and the lookup
-  returned the first of them rather than one the model holds, so a volume left
-  over from a stress analysis kept selecting *Von Mises stress* and rendered in
-  its plain colour while the temperature was shown correctly on surfaces and
-  cuts. Every scalar and displacement lookup of the 3D view now resolves to a
-  variable the model actually holds
-- Swapping element or surface normals left the model edges as they were. Model
-  edges are found from the angle between the normals of neighbouring elements
-  and are cached, and none of *Swap element normal*, *Swap normals* and
-  *Synchronize normals* marked that cache as out of date, so the edges only
-  caught up after some later operation happened to rebuild them
-- The **Pick details** tab lists every picked item. It built the first one and
-  left the loop, so a pick of six nodes showed a single entry - and that entry
-  was left without its heading and its computed results, because the same early
-  exit skipped the code which fills those in
-- A transparent volume showed rows of triangles along its edges and corners. A
-  tetrahedron face was drawn whenever all three of its nodes lay on the model
-  boundary, so a tetrahedron sitting in a corner, with its nodes spread over two
-  neighbouring walls, had its inner faces drawn as well. An opaque volume hid
-  them behind the true boundary, a transparent one layered them over it. A face
-  is now drawn only when no other element of the same volume shares it, which
-  also leaves inner edges out of the wire frame and fewer triangles to draw
+- Picked nodes are visible
+- Changing display properties sometimes took effect only after another change
+- Results could not be displayed on a volume left over from a previously solved
+  problem type
+- Model edges are updated after swapping or synchronizing normals
+- **Pick details** lists every picked item, not only the first
+- Transparent volumes no longer show inner triangles along edges and corners
 
 #### Materials
 
-- The material database is no longer read from disk every time the model
-  selection or the problem changes. A row of the material manager carries only
-  the name and the file path of its material, so matching the database against
-  the problem type read every file of it again - on every entity selection, and
-  on every boundary, initial or environment condition change. Materials are
-  cached as they are read, and the cache is rebuilt by the directory watcher
-- Reading a material is not free of side effects - a file which is not in the
-  default format is converted and the former one removed - so leaving that to
-  the directory watcher also stops an ordinary selection change from writing to
-  the materials directory
-- Converting a material file writes the new file before removing the former one,
-  so the material is not lost when writing fails
-- Editing or renaming a material which has just been converted no longer writes
-  it back to the former file path, recreating a file in the former format
-- A row removed from the material manager is deleted rather than only taken out
-  of the tree, which leaked it
+- Changing the selection or a condition no longer re-reads the whole material
+  database, which made the user interface slow
+- A material is not lost when converting its file fails, and editing a converted
+  material no longer recreates the old file
 
 #### User interface
 
-- Selecting or unselecting a property of the **Displacement** boundary condition
-  crashed the application. The tree rebuilt itself from its own `itemChanged`
-  signal, destroying the item Qt was still working with; the rebuild is now
-  postponed until the current event has been processed. *Displacement* is the
-  only boundary condition whose components carry a check box, which is why it
-  was the only one affected
-- Menus, tool bars and the model tree context menu show all of their separators.
-  They were built from one shared separator action, which a widget can only hold
-  once, so every menu ended up with a single separator at its bottom. Menus and
-  tool bars now use `QMenu::addSeparator()` and `QToolBar::addSeparator()`, and
-  the model tree a separator of its own
-- Buttons asking for the `range-add.svg` icon - adding an AI agent, adding a
-  file tag and the direct and e-mail certificate requests - were shown without
-  an icon, because no such icon existed. It is added to the action icons
-- The remove button of the AI agent settings list was shown without an icon.
-  It asks for `range-remove.svg` among the action icons, where it was not
-  registered; it is now
-- The **Session** menu was shown without an icon because of a mistyped icon
-  file name
+- Checking or unchecking a *Displacement* component no longer crashes the
+  application
+- Menus, tool bars and the model tree context menu show all their separators
+- Missing icons of several buttons and of the **Session** menu are shown
 
 ### Submodules
 

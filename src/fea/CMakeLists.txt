@@ -464,6 +464,8 @@ fea_add_icon_resources(icons-action "/icons/action"
         pixmaps/range-close.svg
         pixmaps/range-ok.svg
         pixmaps/range-remove.svg
+        pixmaps/range-spin_down.svg
+        pixmaps/range-spin_up.svg
         pixmaps/range-undo.svg
 )
 

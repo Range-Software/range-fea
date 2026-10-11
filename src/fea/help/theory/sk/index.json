@@ -6,6 +6,10 @@
             "file":  "theory_acoustic.md"
         },
         {
+            "title": "Contaminant dispersion",
+            "file":  "theory_fluid_particle.md"
+        },
+        {
             "title": "Electro-statics",
             "file":  "theory_electrostatics.md"
         },
@@ -16,6 +20,10 @@
         {
             "title": "Heat transfer",
             "file":  "theory_heat.md"
+        },
+        {
+            "title": "Heat transfer in fluids",
+            "file":  "theory_fluid_heat.md"
         },
         {
             "title": "Magneto-statics",

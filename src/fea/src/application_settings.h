@@ -20,6 +20,7 @@ class ApplicationSettings : public RApplicationSettings
         static const QString sessionFileNameKey;
         static const QString nThreadsKey;
         static const QString nHistoryRecordsKey;
+        static const QString processOutputMaxLinesKey;
         static const QString solverPathKey;
         static const QString renderBackendKey;
         static const QString rhiApiKey;
@@ -56,6 +57,12 @@ class ApplicationSettings : public RApplicationSettings
         //! Set number of history records.
         void setNHistoryRecords(uint nHistoryRecords);
 
+        //! Return maximum number of lines kept in process output.
+        uint getProcessOutputMaxLines() const;
+
+        //! Set maximum number of lines kept in process output.
+        void setProcessOutputMaxLines(uint processOutputMaxLines);
+
         //! Return the rendering backend to be used for the 3D view.
         RenderBackend::Type getRenderBackend() const;
 
@@ -81,6 +88,9 @@ class ApplicationSettings : public RApplicationSettings
 
         //! Return default number of history records.
         static uint getDefaultNHistoryRecords();
+
+        //! Return default maximum number of lines kept in process output.
+        static uint getDefaultProcessOutputMaxLines();
 
         //! Return default rendering backend.
         static RenderBackend::Type getDefaultRenderBackend();

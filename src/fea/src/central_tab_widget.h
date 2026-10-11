@@ -21,6 +21,11 @@ class CentralTabWidget : public QTabWidget
         static const QString importantIconFile;
         static const QString severeIconFile;
 
+        //! Minimum value of maximum number of lines kept in process output.
+        static const int processOutputMinMaxLines;
+        //! Maximum value of maximum number of lines kept in process output.
+        static const int processOutputMaxMaxLines;
+
         //! Model tab position;
         int modelTabPosition;
         //! Application output tab position;

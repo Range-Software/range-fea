@@ -1,5 +1,9 @@
+#include <algorithm>
+
+
 #include <QApplication>
 #include <QScrollBar>
+#include <QSpinBox>
 
 #include <rgl_logger_handler.h>
 #include <rgl_message_box.h>
@@ -12,6 +16,9 @@
 const QString CentralTabWidget::informationIconFile(":/icons/file/pixmaps/range-information.svg");
 const QString CentralTabWidget::importantIconFile(":/icons/file/pixmaps/range-important.svg");
 const QString CentralTabWidget::severeIconFile(":/icons/file/pixmaps/range-severe.svg");
+
+const int CentralTabWidget::processOutputMinMaxLines = 100;
+const int CentralTabWidget::processOutputMaxMaxLines = 10000000;
 
 const bool useTabIcons = false;
 
@@ -27,6 +34,25 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
 
     this->applicationOutputBrowser = new RTextBrowser(true);
     this->processOutputBrowser = new RTextBrowser(true);
+
+    // Oldest lines are removed first once the process output exceeds the maximum number of lines.
+    int processOutputMaxLines = int(Application::instance()->getApplicationSettings()->getProcessOutputMaxLines());
+    processOutputMaxLines = std::clamp(processOutputMaxLines,CentralTabWidget::processOutputMinMaxLines,CentralTabWidget::processOutputMaxMaxLines);
+    this->processOutputBrowser->document()->setMaximumBlockCount(processOutputMaxLines);
+
+    QSpinBox *processOutputMaxLinesSpin = new QSpinBox;
+    processOutputMaxLinesSpin->setRange(CentralTabWidget::processOutputMinMaxLines,CentralTabWidget::processOutputMaxMaxLines);
+    processOutputMaxLinesSpin->setSingleStep(1000);
+    processOutputMaxLinesSpin->setValue(processOutputMaxLines);
+    processOutputMaxLinesSpin->setPrefix(tr("Max lines") + ": ");
+    processOutputMaxLinesSpin->setKeyboardTracking(false);
+    processOutputMaxLinesSpin->setToolTip(tr("Maximum number of lines kept in process output. Oldest lines are removed first."));
+    this->processOutputBrowser->addCornerWidget(processOutputMaxLinesSpin);
+
+    QObject::connect(processOutputMaxLinesSpin,&QSpinBox::valueChanged,this,[this](int value){
+        this->processOutputBrowser->document()->setMaximumBlockCount(value);
+        Application::instance()->getApplicationSettings()->setProcessOutputMaxLines(uint(value));
+    });
     this->pickDetailsTree = new PickDetailsTree;
 
 
