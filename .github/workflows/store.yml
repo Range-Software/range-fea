@@ -1,14 +1,12 @@
 name: Store packages (App Store / Microsoft Store)
 
-# Store packages are built on demand, not on every push: each run consumes a
-# build number in App Store Connect / Partner Center once it is uploaded.
+# Store packages are built only for a release, not on every push: each upload
+# consumes a build number in App Store Connect. The trigger is publishing the
+# release (pre-releases included) - GitHub does not start workflows for a release
+# that is only saved as a draft. The checkout is the release tag.
 on:
-  workflow_dispatch:
-    inputs:
-      upload:
-        description: 'Upload the package to App Store Connect / Partner Center'
-        type: boolean
-        default: false
+  release:
+    types: [published]
 
 permissions:
   contents: read
@@ -37,7 +35,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.11.1'
+          version: '6.12.0'
           host: mac
           target: desktop
           arch: clang_64
@@ -94,16 +92,22 @@ jobs:
           cmake -S src -B build-store -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DRANGE_STORE_BUILD=ON \
+            -DRANGE_BUILD_NUMBER="$RANGE_BUILD_NUMBER" \
             -DOpenMP_INCLUDES="${OMP_PREFIX}/include" \
             -DOpenMP_LIBRARY="${OMP_PREFIX}/lib/libomp.dylib" \
             -DOPENSSL_ROOT_DIR="$OPENSSL_ROOT" \
             -DMACOS_BUNDLE_IDENTIFIER="$MACOS_BUNDLE_IDENTIFIER" \
+            -DMACOS_TEAM_ID="$MACOS_TEAM_ID" \
             -DMACOS_APP_STORE_APP_CERT="$MACOS_APP_STORE_APP_CERT" \
             -DMACOS_APP_STORE_INSTALLER_CERT="$MACOS_APP_STORE_INSTALLER_CERT" \
             -DMACOS_PROVISION_PROFILE="$RUNNER_TEMP/range-fea.provisionprofile"
         env:
           OPENSSL_ROOT: ${{ env.OPENSSL_ROOT }}
+          # Grows with every run of this workflow, so a resubmission of the same
+          # release still carries a build version App Store Connect has not seen.
+          RANGE_BUILD_NUMBER: ${{ github.run_number }}
           MACOS_BUNDLE_IDENTIFIER: ${{ vars.MACOS_BUNDLE_IDENTIFIER || 'com.range-software.fea' }}
+          MACOS_TEAM_ID: ${{ vars.MACOS_TEAM_ID }}
           MACOS_APP_STORE_APP_CERT: ${{ secrets.MACOS_APP_STORE_APP_CERT }}
           MACOS_APP_STORE_INSTALLER_CERT: ${{ secrets.MACOS_APP_STORE_INSTALLER_CERT }}
 
@@ -120,7 +124,8 @@ jobs:
           echo "Package: $PKG"
           APP="$(/usr/bin/find build-store -maxdepth 2 -name '*.app' -print -quit)"
           # The submission is rejected without these, so fail early instead.
-          codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - -
+          codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - - | tee entitlements.plist
+          grep -q 'com.apple.application-identifier' entitlements.plist
           test -f "$APP/Contents/embedded.provisionprofile"
 
       - name: Upload artifact
@@ -130,8 +135,9 @@ jobs:
           path: build-store/*.pkg
           if-no-files-found: error
 
+      # The build goes to App Store Connect (TestFlight and review), not to the
+      # public store - releasing it to customers is still a step taken there.
       - name: Upload to App Store Connect
-        if: inputs.upload
         run: |
           set -euo pipefail
           PKG="$(/usr/bin/find build-store -maxdepth 1 -name '*.pkg' -print -quit)"
@@ -171,7 +177,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.11.1'
+          version: '6.12.0'
           host: windows
           target: desktop
           arch: win64_msvc2022_64
@@ -200,11 +206,14 @@ jobs:
           cmake -S src -B build-store -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
             -DRANGE_STORE_BUILD=ON `
+            -DRANGE_BUILD_NUMBER="$env:RANGE_BUILD_NUMBER" `
             -DOPENSSL_ROOT_DIR="$env:OPENSSL_ROOT" `
             -DMSIX_IDENTITY_NAME="$env:MSIX_IDENTITY_NAME" `
             -DMSIX_PUBLISHER="$env:MSIX_PUBLISHER" `
             -DMSIX_PUBLISHER_DISPLAY_NAME="$env:MSIX_PUBLISHER_DISPLAY_NAME"
         env:
+          # Becomes the third MSIX version component, see CMakeLists.txt.
+          RANGE_BUILD_NUMBER: ${{ github.run_number }}
           MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME || 'RangeSoftware.RangeFEA' }}
           MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER || 'CN=Range Software' }}
           MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME || 'Range Software' }}
@@ -222,13 +231,6 @@ jobs:
           path: build-store/*.msix
           if-no-files-found: error
 
-      # Partner Center has no first-party CLI; the package is submitted through
-      # the Store submission API, which needs an Entra ID application.
-      - name: Upload to Partner Center
-        if: inputs.upload
-        shell: pwsh
-        run: |
-          Write-Host "Uploading to Partner Center is not automated yet."
-          Write-Host "Attach the MSIX artifact of this run to the submission in Partner Center,"
-          Write-Host "or configure the Microsoft Store submission API and extend this step."
-          exit 1
+      # Uploading to Partner Center is not automated: attach the MSIX artifact of
+      # this run to the submission in Partner Center by hand. Automating it needs
+      # an Entra ID application registered with the Partner Center account.

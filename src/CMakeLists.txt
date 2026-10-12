@@ -97,7 +97,19 @@ endif()
 # software updates itself, so STORE_BUILD also removes the built-in updater.
 option(RANGE_STORE_BUILD "Build for Apple App Store / Microsoft Store submission" OFF)
 
+# Both stores reject an upload whose build version they have already seen, which
+# a resubmission of the same release after a rejection would be. A store build
+# therefore takes a build number that grows with every run (the CI run number);
+# 0 means none and leaves the versions derived from PROJECT_VERSION alone.
+set(RANGE_BUILD_NUMBER "0" CACHE STRING
+    "Store build number, increasing with every store upload; 0 for none")
+if(NOT RANGE_BUILD_NUMBER MATCHES "^[0-9]+$" OR RANGE_BUILD_NUMBER GREATER 65535)
+    message(FATAL_ERROR "RANGE_BUILD_NUMBER must be an integer between 0 and 65535, got '${RANGE_BUILD_NUMBER}'")
+endif()
+
 # --- Apple App Store ---------------------------------------------------------
+set(MACOS_TEAM_ID "" CACHE STRING
+    "Apple Developer Team ID; must match the team of the provisioning profile")
 set(MACOS_BUNDLE_IDENTIFIER "com.range-software.fea" CACHE STRING
     "CFBundleIdentifier; must match the application record in App Store Connect")
 set(MACOS_APP_CATEGORY "public.app-category.productivity" CACHE STRING
@@ -650,7 +662,7 @@ if(RANGE_STORE_BUILD AND APPLE)
     configure_file(
         ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/macos/app.entitlements.in
         ${_mac_store_dir}/app.entitlements
-        COPYONLY
+        @ONLY
     )
     configure_file(
         ${CMAKE_SOURCE_DIR}/range-build-tools/packaging/macos/helper.entitlements.in
@@ -674,7 +686,9 @@ if(RANGE_STORE_BUILD AND APPLE)
         )
     endif()
 
-    if(MACOS_APP_STORE_APP_CERT)
+    if(MACOS_APP_STORE_APP_CERT AND NOT MACOS_TEAM_ID)
+        message(WARNING "RANGE_STORE_BUILD is ON but MACOS_TEAM_ID is empty; the 'mac-app-store' target is not available")
+    elseif(MACOS_APP_STORE_APP_CERT)
         # Deliberately not part of ALL: signing needs the store certificates,
         # which a plain developer build does not have.
         add_custom_target(mac-app-store
@@ -701,8 +715,15 @@ if(RANGE_STORE_BUILD AND WIN32)
     )
 
     # MSIX versions are always four components and the Store reserves the last
-    # one, which has to stay zero in an uploaded package.
-    set(MSIX_PACKAGE_VERSION "${PROJECT_VERSION}.0")
+    # one, which has to stay zero in an uploaded package. With a build number
+    # it takes the place of the patch number, so that every upload is higher
+    # than the one before even within one release.
+    if(RANGE_BUILD_NUMBER GREATER 0)
+        string(REGEX MATCH "^[0-9]+\\.[0-9]+" _msix_major_minor "${PROJECT_VERSION}")
+        set(MSIX_PACKAGE_VERSION "${_msix_major_minor}.${RANGE_BUILD_NUMBER}.0")
+    else()
+        set(MSIX_PACKAGE_VERSION "${PROJECT_VERSION}.0")
+    endif()
     set(MSIX_EXECUTABLE_NAME "${PROJECT_TARGET_NAME}${DEBUG_EXT}")
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(ARM64|arm64|aarch64)$")
         set(MSIX_ARCHITECTURE "arm64")

@@ -54,7 +54,9 @@ zero velocity and zero pressure.
 ### 1.2 Governing equations
 
 The solver implements the **incompressible Navier-Stokes equations** for a
-Newtonian fluid of constant density `rho` and constant dynamic viscosity `mu`.
+Newtonian fluid with density `rho` and dynamic viscosity `mu`. Both are
+material properties evaluated per element at its temperature - see 1.9 for
+where that temperature comes from and how it makes the flow buoyant.
 Momentum and mass balance read
 
 ```
@@ -252,19 +254,19 @@ been applied. An entity that is both an inlet and a wall is therefore a wall.
 | Environment condition | Components | Effect |
 |---|---|---|
 | Gravitational acceleration | `gx`, `gy`, `gz` `[m/s^2]` | body force `rho*g` on the entity, and the head term of *Pressure (implicit)* |
-| Temperature | Temperature `[K]` | background temperature; selects the row of temperature-dependent material tables |
+| Temperature | Temperature `[K]` | background temperature of a *Heat transfer in fluids* task; not read by the flow solver itself - see 1.9 |
 
 **Gravitational acceleration** defaults to `(0, 0, -9.80665) m/s^2`, that is
 gravity along negative `Z`. Assign it to the volume entity for the body force
 and to the outlet surface so that the *Pressure (implicit)* head is measured
 along the right direction.
 
-Gravity enters the momentum equation as a constant body force `rho*g`. Since the
-density is constant, a uniform gravity field over a closed domain produces a
-hydrostatic pressure gradient and no motion - which is the correct answer.
-Density does **not** depend on temperature in this solver, so there is no
-buoyancy-driven flow: a *Heat transfer in fluids* result never drives the flow
-it was computed on. See section 5.
+Gravity enters the momentum equation as the body force `rho*g`. In a closed
+domain of uniform density, a uniform gravity field produces a hydrostatic
+pressure gradient and no motion - which is the correct answer. Where the density
+varies with temperature, the body force varies with it and the difference
+drives a **buoyant flow** - natural convection, see 1.9. The pressure result
+always contains the hydrostatic part `rho*(g . x)`; nothing is subtracted.
 
 #### Initial conditions
 
@@ -454,8 +456,53 @@ its own manual:
   concentration with the flow - see
   [Contaminant dispersion](theory_fluid_particle.md).
 
-Both read the velocity from the flow result; the coupling is one-way, so
-neither changes the flow.
+Both read the velocity from the flow result. Contaminant dispersion never
+changes the flow. Heat transfer in fluids does, through the material
+properties.
+
+#### Temperature-dependent properties and buoyancy
+
+On **every pass** the flow solver evaluates density and dynamic viscosity of
+each element from the material tables at the element temperature left by the
+latest heat transfer pass. Without a heat transfer task in the problem that
+temperature is the default `293.15 K` everywhere. The *Temperature* environment
+condition is not read by the flow solver directly; it reaches the flow only
+through a heat transfer task.
+
+The density in the body force `rho(T)*g` is what makes the flow buoyant: warm
+fluid is lighter than the fluid around it and rises, cold fluid sinks. Natural
+convection, thermal plumes and stratification therefore come out of a group of
+an *Incompressible viscous flow* and a *Heat transfer in fluids* task, provided
+the material has a **temperature-dependent density table**. The shipped *Water*
+and *Air* do. A material whose density is a single value gives no buoyancy at
+any temperature difference.
+
+How the two tasks exchange data:
+
+- **Steady state.** Put both tasks in one group, the flow task first, with
+  several iterations and a convergence value. The first flow pass sees the
+  initial temperature - the *Temperature* initial condition, or `293.15 K` - so
+  it has no buoyancy yet. From the second iteration on, every flow pass sees the
+  temperature of the heat pass before it. A model driven by buoyancy alone
+  needs enough iterations for the two to settle together; a group with a single
+  iteration never couples them.
+- **Transient.** Each time step runs the group again, and every flow pass sees
+  the latest temperature. With one iteration per time step the flow uses the
+  temperature of the previous step - a lag of one step, which is acceptable
+  while the time step resolves the thermal transient. Several iterations per
+  step remove it.
+
+The group ends when the flow task converges, since an uncoupled *Heat transfer
+in fluids* task reports itself converged on every pass. A change of the
+temperature moves the flow residual through `rho(T)` and `mu(T)`, so a flow
+that has converged is also one the temperature no longer pushes.
+
+The formulation keeps `rho(T)` in every term of the momentum balance and
+`div(v) = 0` for mass. For the small density differences of natural convection
+in a liquid, or in a gas over a few tens of kelvin, this gives the same answer
+as the Boussinesq approximation. It is not a compressible formulation: the
+thermal expansion of the fluid does not enter the mass balance, so a gas heated
+by hundreds of kelvin is outside its range.
 
 ### 1.10 Derived results
 
@@ -875,18 +922,24 @@ every check here for the same reason.
   turbulent and this solver does not model it: the run may still converge, but
   the answer describes a laminar flow that does not exist. There is no `k`-`e`
   model, no wall function and no large-eddy formulation.
-- **Incompressible and Newtonian only.** The density is a constant of the
-  material and the viscous stress is linear in the strain rate. Compressible
-  flow, Mach number effects, free surfaces, multiple phases and non-Newtonian
-  behaviour are outside the formulation.
-- **No buoyancy.** The density does not depend on temperature, so a *Heat
-  transfer in fluids* result never drives the flow it was computed on. Natural
-  convection, thermal plumes and stratification cannot be modelled. Gravity
-  enters only as a constant body force, which over a constant-density domain
-  produces hydrostatic pressure and no motion.
-- **The coupling to temperature and concentration is one-way.** The flow drives
-  the transport; the transport never changes the flow. The limitations of the
-  companion problem types are listed in their own manuals.
+- **Incompressible and Newtonian only.** The mass balance is `div(v) = 0` and
+  the viscous stress is linear in the strain rate. Density and viscosity may
+  depend on temperature, but not on pressure. Compressible flow, Mach number
+  effects, free surfaces, multiple phases and non-Newtonian behaviour are
+  outside the formulation.
+- **Buoyancy without the expansion of the fluid.** A temperature-dependent
+  density drives natural convection through `rho(T)*g` (see 1.9), but the
+  thermal expansion never enters the mass balance. That is accurate for the
+  small density differences of natural convection, not for a gas heated by
+  hundreds of kelvin. Buoyant flow is laminar like every other flow here - a
+  plume or a cavity above a Rayleigh number of roughly `1e8` to `1e9` is
+  turbulent in reality.
+- **The temperature reaches the flow only from a heat transfer task.** Without
+  one, the material properties are evaluated at `293.15 K`; the *Temperature*
+  environment condition alone does not change them.
+- **Contaminant dispersion is one-way.** The flow carries the contaminant; the
+  concentration never changes the flow. The limitations of the companion
+  problem types are listed in their own manuals.
 - **Volume elements only, linear tetrahedra and hexahedra only.** A flow model
   must be a meshed volume of `TETRA1` or `HEXA1` elements; anything else stops
   the run. Surfaces take part only to carry a *Pressure (implicit)* traction,

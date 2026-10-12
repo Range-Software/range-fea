@@ -415,7 +415,14 @@ elseif (APPLE)
     set(MACOSX_BUNDLE_GUI_IDENTIFIER "${MACOS_BUNDLE_IDENTIFIER}")
     set(MACOSX_BUNDLE_BUNDLE_NAME "${PROJECT_SHORT_REL_NAME}")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}")
-    set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
+    # The App Store requires CFBundleVersion to grow with every upload, across
+    # releases too, so with a build number it is the build number alone, which
+    # grows with every store run independently of the release version.
+    if(RANGE_BUILD_NUMBER GREATER 0)
+        set(MACOSX_BUNDLE_BUNDLE_VERSION "${RANGE_BUILD_NUMBER}")
+    else()
+        set(MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}")
+    endif()
     set(MACOSX_BUNDLE_CATEGORY "${MACOS_APP_CATEGORY}")
     set(MACOSX_BUNDLE_COPYRIGHT "Copyright (C) ${PROJECT_YEAR} ${PROJECT_AUTHOR}")
     configure_file(

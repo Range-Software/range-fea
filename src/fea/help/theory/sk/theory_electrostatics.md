@@ -1,313 +1,309 @@
-# Electro-statics - Theory Manual and User Guide
+# Elektrostatika - Teoretický manuál a používateľská príručka
 
-This document describes the electrostatics solver (`RSolverElectrostatics`) of
-Range FEA, which serves the **Electro-statics** problem type: the equations it
-solves, the meaning of every input it accepts, the parts of the graphical user
-interface that drive it, and two worked tutorials.
+Tento dokument opisuje riešič elektrostatiky (`RSolverElectrostatics`) v Range
+FEA, ktorý rieši typ úlohy **Elektrostatika** (*Electro-statics*): rovnice, ktoré
+rieši, význam každého vstupu, ktorý prijíma, časti grafického používateľského
+rozhrania, ktoré ho ovládajú, a dva podrobne rozpracované tutoriály.
 
-**Contents**
+**Obsah**
 
-1. [Theoretical background](#1-theoretical-background)
-2. [Graphical user interface](#2-graphical-user-interface)
-3. [Tutorial - potential and current in a conductor](#3-tutorial---potential-and-current-in-a-conductor)
-4. [Tutorial - resistive heating](#4-tutorial---resistive-heating)
-5. [Checking a model](#5-checking-a-model)
-6. [Limitations](#6-limitations)
+1. [Teoretický základ](#1-teoretický-základ)
+2. [Grafické používateľské rozhranie](#2-grafické-používateľské-rozhranie)
+3. [Tutoriál - potenciál a prúd vo vodiči](#3-tutoriál---potenciál-a-prúd-vo-vodiči)
+4. [Tutoriál - odporový ohrev](#4-tutoriál---odporový-ohrev)
+5. [Kontrola modelu](#5-kontrola-modelu)
+6. [Obmedzenia](#6-obmedzenia)
 
 ---
 
-## 1. Theoretical background
+## 1. Teoretický základ
 
-### 1.1 Primary unknown - the electric potential field
+### 1.1 Primárna neznáma - pole elektrického potenciálu
 
-The primary unknown is the **electric potential** `V` at every node, in volts.
-Every node carries a single degree of freedom, so a mesh with `N` nodes gives a
-system of `N` equations. The electric field, the current density and everything
-derived from them are recovered from the potential field after the solve.
+Primárnou neznámou je **elektrický potenciál** `V` v každom uzle, vo voltoch.
+Každý uzol nesie jediný stupeň voľnosti, takže sieť s `N` uzlami dáva sústavu `N`
+rovníc. Elektrické pole, prúdová hustota a všetko, čo sa z nich odvodzuje, sa po
+riešení získa z poľa potenciálu.
 
-The potential is a scalar, which makes an electrostatic model as cheap as a heat
-model of the same mesh: one unknown per node instead of three, and a matrix with
-a ninth of the entries of a structural model.
+Potenciál je skalár, vďaka čomu je elektrostatický model rovnako lacný ako
+tepelný model na tej istej sieti: jedna neznáma na uzol namiesto troch a matica
+s deviatinou prvkov štrukturálneho modelu.
 
-The default potential of a node that no condition and no previous result touches
-is `0 V`.
+Predvolený potenciál uzla, ktorého sa nedotýka žiadna podmienka ani
+predchádzajúci výsledok, je `0 V`.
 
-A potential field is only defined **up to an additive constant**. Nothing in the
-equations fixes the zero level, so every model needs at least one *Electric
-potential* boundary condition - see 1.7. This is the electrostatic equivalent of
-an unconstrained structure, or of a heat model with no prescribed temperature.
+Pole potenciálu je definované iba **až na aditívnu konštantu**. Nič v rovniciach
+neurčuje nulovú úroveň, takže každý model potrebuje aspoň jednu okrajovú
+podmienku *Elektrický potenciál* - pozri 1.7. Je to elektrostatický ekvivalent
+neupevnenej konštrukcie alebo tepelného modelu bez predpísanej teploty.
 
-### 1.2 Governing equation
+### 1.2 Riadiaca rovnica
 
-The solver implements the **electrostatic field equation** - Poisson's equation
-for the potential of a linear, isotropic dielectric:
+Riešič implementuje **rovnicu elektrostatického poľa** - Poissonovu rovnicu pre
+potenciál lineárneho izotropného dielektrika:
 
 ```
 div( e0 * er * grad(V) ) = -rho
 ```
 
-and with no charge density anywhere it reduces to Laplace's equation
+a bez hustoty náboja kdekoľvek sa redukuje na Laplaceovu rovnicu
 
 ```
 div( e0 * er * grad(V) ) = 0
 ```
 
-The electric field is the negative gradient of the potential, and the current
-density follows from Ohm's law:
+Elektrické pole je záporný gradient potenciálu a prúdová hustota vyplýva z
+Ohmovho zákona:
 
 ```
 E = -grad(V)
 J = sigma * E
 ```
 
-| Symbol | Meaning | Units | Source |
+| Symbol | Význam | Jednotky | Zdroj |
 |---|---|---|---|
-| `V` | electric potential | `V` | solved for |
-| `rho` | charge density | `C/m^3`, see 1.5 | Charge density condition |
-| `e0` | vacuum permittivity | `F/m` | built in, `8.854187817e-12` |
-| `er` | relative permittivity | `-` | material property |
-| `sigma` | electrical conductivity | `S/m` | material property |
-| `E` | electric field | `V/m` | recovered, see 1.8 |
-| `J` | current density | `A/m^2` | recovered, see 1.8 |
+| `V` | elektrický potenciál | `V` | riešený |
+| `rho` | hustota náboja | `C/m^3`, pozri 1.5 | podmienka Hustota náboja |
+| `e0` | permitivita vákua | `F/m` | zabudovaná, `8.854187817e-12` |
+| `er` | relatívna permitivita | `-` | vlastnosť materiálu |
+| `sigma` | elektrická vodivosť | `S/m` | vlastnosť materiálu |
+| `E` | elektrické pole | `V/m` | odvodené, pozri 1.8 |
+| `J` | prúdová hustota | `A/m^2` | odvodená, pozri 1.8 |
 
-The vacuum permittivity is a constant of the solver, not a material property and
-not a setting - only the **relative** permittivity is entered with the material.
+Permitivita vákua je konštantou riešiča, nie vlastnosťou materiálu ani
+nastavením - s materiálom sa zadáva iba **relatívna** permitivita.
 
-**The field is driven by the permittivity, not by the conductivity.** This is the
-single most important thing to know about this solver. The stiffness matrix is
-built from `e0*er` alone; the conductivity never enters the system of equations.
-It is used afterwards, to turn the computed field into a current density, a
-resistivity and a Joule heat. The consequence is spelled out in 1.9: in a body
-made of one material it makes no difference, but in a body made of **two**, the
-potential divides in proportion to the permittivities and not in proportion to
-the resistances.
+**Pole poháňa permitivita, nie vodivosť.** Toto je najdôležitejšia vec, ktorú
+treba o tomto riešiči vedieť. Matica tuhosti sa zostavuje iba z `e0*er`;
+vodivosť do sústavy rovníc nikdy nevstupuje. Používa sa až potom, na prevod
+vypočítaného poľa na prúdovú hustotu, rezistivitu a Joulovo teplo. Dôsledok
+rozoberá 1.9: v telese z jedného materiálu to nemá žiadny vplyv, ale v telese z
+**dvoch** sa potenciál rozdelí v pomere permitivít, nie v pomere odporov.
 
-**Required material properties.** An electrostatic problem requires **three** of
-them:
+**Požadované vlastnosti materiálu.** Elektrostatická úloha vyžaduje **tri**:
 
-| Property | Units | Used for |
+| Vlastnosť | Jednotky | Používa sa na |
 |---|---|---|
-| Relative permittivity | `-` | the stiffness matrix |
-| Electrical conductivity | `S/m` | current density, resistivity, Joule heat |
-| Density | `kg/m^3` | nothing - required, never read |
+| Relatívna permitivita | `-` | maticu tuhosti |
+| Elektrická vodivosť | `S/m` | prúdovú hustotu, rezistivitu, Joulovo teplo |
+| Hustota | `kg/m^3` | nič - vyžadovaná, nikdy nečítaná |
 
-An entity whose material is missing any of the three is **not solved**, even
-though the density is never read by this solver at all. The setup checker warns
-about it before the run starts. The one exception is an entity that carries an
-electrostatic boundary condition: that entity is included in the system whatever
-its material says, and its permittivity and conductivity are then simply zero.
+Entita, ktorej materiálu niektorá z troch chýba, sa **nerieši**, hoci hustotu
+tento riešič vôbec nečíta. Kontrola nastavenia na to upozorní pred spustením
+výpočtu. Jedinou výnimkou je entita s elektrostatickou okrajovou podmienkou: tá
+sa do sústavy zahrnie bez ohľadu na materiál a jej permitivita a vodivosť sú
+potom jednoducho nulové.
 
-A zero permittivity is not a harmless default - an element with `er = 0` has no
-stiffness, so it contributes nothing to the system and leaves its nodes floating.
-If an entity is meant to be solved, give it a real permittivity: `1` for vacuum
-or, near enough, for air.
+Nulová permitivita nie je neškodná predvolená hodnota - prvok s `er = 0` nemá
+žiadnu tuhosť, takže do sústavy neprispieva ničím a jeho uzly nechá voľne
+plávať. Ak sa má entita riešiť, dajte jej skutočnú permitivitu: `1` pre vákuum
+alebo, dostatočne presne, pre vzduch.
 
-Every property is a table against temperature, but an electrostatics task on its
-own has no temperature field to read it at, so every table is evaluated at
-`293.15 K`. The tables are honoured only when a *Heat transfer* task earlier in
-the same task flow has computed element temperatures, which are shared with the
-tasks that follow it.
+Každá vlastnosť je tabuľkou v závislosti od teploty, ale samotný krok
+elektrostatiky nemá teplotné pole, pri ktorom by ju čítal, takže každá tabuľka sa
+vyhodnotí pri `293.15 K`. Tabuľky sa rešpektujú iba vtedy, keď krok *Prestup
+tepla* skôr v tom istom poradí krokov vypočítal teploty prvkov, ktoré sa zdieľajú
+s krokmi nasledujúcimi po ňom.
 
-The relative permittivity is **dimensionless** - it is shown as `N/A` in the user
-interface, like the emissivity and the Poisson ratio - and the value is used as a
-plain multiplier of `e0`. Enter `1` for vacuum, `1.00059` for air, `2.1` for
-PTFE, about `4` for glass.
+Relatívna permitivita je **bezrozmerná** - v používateľskom rozhraní sa zobrazuje
+ako `N/A`, rovnako ako emisivita a Poissonovo číslo - a jej hodnota sa používa
+ako obyčajný násobiteľ `e0`. Zadajte `1` pre vákuum, `1.00059` pre vzduch, `2.1`
+pre PTFE, asi `4` pre sklo.
 
-### 1.3 Finite element discretisation
+### 1.3 Diskretizácia metódou konečných prvkov
 
-The weak form of the field equation gives, for each element,
+Slabá formulácia rovnice poľa dáva pre každý prvok
 
 ```
 K = INT( B^T * e0 * er * B )        stiffness
 f = INT( N^T * rho )                charge source
 ```
 
-where `B` is built from the shape function derivatives and `N` are the shape
-functions themselves. Every element matrix is `n x n` for an element with `n`
-nodes - one row per node, not three. There is no mass or capacity matrix: the
-problem is static, and 1.10 explains what that means for the task flow.
+(maticu tuhosti a zdroj náboja), kde `B` sa zostavuje z derivácií tvarových
+funkcií a `N` sú samotné tvarové funkcie. Každá matica prvku s `n` uzlami má
+rozmer `n x n` - jeden riadok na uzol, nie tri. Neexistuje matica hmotnosti ani
+kapacity: úloha je statická a 1.10 vysvetľuje, čo to znamená pre poradie krokov.
 
-**Element measures.** As elsewhere in Range FEA, lower-dimensional entities are
-given a geometric measure so that they can represent real bodies:
+**Miery prvkov.** Ako inde v Range FEA, entity nižšej dimenzie dostávajú
+geometrickú mieru, aby mohli reprezentovať skutočné telesá:
 
-| Entity | Measure | Where it is set |
+| Entita | Miera | Kde sa nastavuje |
 |---|---|---|
-| Volume | 1 | - |
-| Surface | surface thickness | entity geometric properties |
-| Line | line cross area | entity geometric properties |
-| Point | point volume | entity geometric properties |
+| Objem | 1 | - |
+| Plocha | hrúbka plochy | geometrické vlastnosti entity |
+| Čiara | prierez čiary | geometrické vlastnosti entity |
+| Bod | objem bodu | geometrické vlastnosti entity |
 
-A **surface** carries the field in its own plane, through a cross section equal
-to its thickness. There is no through-thickness potential gradient: a surface
-element is one node thick, so it is an equipotential across its thickness by
-construction. A surface of **zero thickness** therefore has no stiffness at all
-and connects nothing - unlike the heat solver, where a zero-thickness surface
-still carries convection, a zero-thickness surface is simply inert here. Give a
-surface entity a thickness whenever it is meant to conduct, and remember that a
-zero-thickness face also gets **no derived results** (1.8).
+**Plocha** vedie pole vo vlastnej rovine, cez prierez rovný jej hrúbke.
+Neexistuje gradient potenciálu naprieč hrúbkou: plošný prvok je hrubý jeden
+uzol, takže je z princípu konštrukcie naprieč hrúbkou ekvipotenciálny. Plocha s
+**nulovou hrúbkou** preto nemá vôbec žiadnu tuhosť a nič nespája - na rozdiel od
+tepelného riešiča, kde plocha s nulovou hrúbkou stále nesie konvekciu, je tu
+plocha s nulovou hrúbkou jednoducho inertná. Plošnej entite dajte hrúbku vždy,
+keď má viesť, a pamätajte, že stena s nulovou hrúbkou nedostane ani **žiadne
+odvodené výsledky** (1.8).
 
-A **line** carries the field along its own direction, through its cross area. A
-**point** has no direction to carry it along, so it contributes **no stiffness at
-all**: it holds only a charge source. A point element whose node is not shared
-with any other computable element therefore produces an empty row in the matrix,
-which the conjugate gradient solver cannot handle - a point is a place to inject
-charge or to prescribe a potential, not a conductor.
+**Čiara** vedie pole pozdĺž vlastného smeru, cez svoj prierez. **Bod** nemá smer,
+pozdĺž ktorého by pole viedol, takže neprispieva **vôbec žiadnou tuhosťou**: nesie
+iba zdroj náboja. Bodový prvok, ktorého uzol nezdieľa žiadny iný počítaný prvok,
+preto vytvorí v matici prázdny riadok, s ktorým si metóda združených gradientov
+neporadí - bod je miesto na vloženie náboja alebo na predpísanie potenciálu, nie
+vodič.
 
-### 1.4 Sources and boundary conditions
+### 1.4 Zdroje a okrajové podmienky
 
-| Boundary condition | Type | Applies to | Components |
+| Okrajová podmienka | Typ | Aplikuje sa na | Zložky |
 |---|---|---|---|
-| Electric potential | explicit (Dirichlet) | point, line, surface, volume | Electric potential `[V]` |
-| Charge density | natural, source | point, line, surface, volume | Charge density, see 1.5 |
+| Elektrický potenciál (*Electric potential*) | explicitná (Dirichletova) | bod, čiara, plocha, objem | Elektrický potenciál `[V]` |
+| Hustota náboja (*Charge density*) | prirodzená, zdroj | bod, čiara, plocha, objem | Hustota náboja, pozri 1.5 |
 
-These two are the whole vocabulary of the problem type. There is no prescribed
-flux, no surface charge, no far-field or open-boundary condition and no symmetry
-condition - see section 6.
+Tieto dve tvoria celý slovník tohto typu úlohy. Neexistuje predpísaný tok,
+povrchový náboj, podmienka vzdialeného poľa alebo otvorenej hranice ani
+podmienka symetrie - pozri časť 6.
 
-**Electric potential** is the only explicit condition of the electrostatic
-problem. Every node of the entity it is assigned to is removed from the system of
-equations and held at the given value; its contribution is carried to the
-right-hand side of the neighbouring equations. Every model needs at least one of
-these. A newly assigned condition starts at `1 V`.
+**Elektrický potenciál** je jedinou explicitnou podmienkou elektrostatickej
+úlohy. Každý uzol entity, ku ktorej je priradená, sa odoberie zo sústavy rovníc a
+drží sa na zadanej hodnote; jeho príspevok sa prenesie na pravú stranu
+susedných rovníc. Každý model potrebuje aspoň jednu takú podmienku. Novo
+priradená podmienka začína na `1 V`.
 
-Where entities overlap, the **lower-dimensional entity wins**: a potential
-prescribed on a surface overrides one prescribed on the volume behind it at the
-nodes they share, a line overrides a surface, and a point overrides everything.
-Potentials are not combined - there is only one degree of freedom per node to
-hold, so the last condition read simply prevails.
+Kde sa entity prekrývajú, **vyhráva entita nižšej dimenzie**: potenciál
+predpísaný na ploche prepíše potenciál predpísaný na objeme za ňou v uzloch,
+ktoré zdieľajú, čiara prepíše plochu a bod prepíše všetko. Potenciály sa
+nekombinujú - v uzle je iba jeden stupeň voľnosti, ktorý treba držať, takže
+naposledy načítaná podmienka jednoducho prevládne.
 
-**Charge density** is the source term of the Poisson equation. Unlike the *Heat*
-condition of the heat solver, its value is **not** spread over the measure of the
-entity: the number entered is applied to every element of the entity as it
-stands, as a density. The total charge placed in a volume entity is therefore the
-value multiplied by the volume of that entity, and it grows if the entity is
-enlarged - it does not stay put the way a *Heat* value in watts does.
+**Hustota náboja** je zdrojový člen Poissonovej rovnice. Na rozdiel od podmienky
+*Teplo* tepelného riešiča sa jej hodnota **nerozkladá** na mieru entity: zadané
+číslo sa aplikuje na každý prvok entity tak, ako je, ako hustota. Celkový náboj
+umiestnený v objemovej entite je preto hodnota vynásobená objemom tejto entity a
+pri zväčšení entity rastie - nezostáva na mieste tak ako hodnota *Tepla* vo
+wattoch.
 
-| Entity | What the value means |
+| Entita | Čo hodnota znamená |
 |---|---|
-| Volume | charge per unit volume |
-| Surface | charge per unit volume of the thickness-weighted section |
-| Line | charge per unit volume of the cross-section |
-| Point | a nodal charge source |
+| Objem | náboj na jednotku objemu |
+| Plocha | náboj na jednotku objemu prierezu váženého hrúbkou |
+| Čiara | náboj na jednotku objemu prierezu |
+| Bod | uzlový zdroj náboja |
 
-Both components accept a table against time. Since the problem itself is static,
-a time history only has an effect when another, time-dependent task shares the
-task flow - and, as 1.10 explains, that combination is itself restricted.
+Obe zložky prijímajú tabuľku v čase. Keďže samotná úloha je statická, časový
+priebeh má účinok iba vtedy, keď poradie krokov zdieľa iný, časovo závislý krok
+- a ako vysvetľuje 1.10, aj táto kombinácia je obmedzená.
 
-### 1.5 The charge density value
+### 1.5 Hodnota hustoty náboja
 
-The *Charge density* component is a **volumetric charge density** in `C/m^3`, as
-its label in the user interface says. It is a density rather than a total, which
-is what makes it independent of the mesh - and, as 1.4 notes, what distinguishes
-it from the *Heat* condition of the heat solver, which takes a total in watts and
-spreads it for you.
+Zložka *Hustota náboja* je **objemová hustota náboja** v `C/m^3`, ako hovorí jej
+popis v používateľskom rozhraní. Je to hustota, nie celková hodnota, vďaka čomu
+nezávisí od siete - a ako uvádza 1.4, práve to ju odlišuje od podmienky *Teplo*
+tepelného riešiča, ktorá preberá celkovú hodnotu vo wattoch a rozloží ju za vás.
 
-The sign follows the usual convention. Integrating `div(e0*er*grad(V)) = -rho`
-by parts leaves the charge on the right hand side with a positive sign,
+Znamienko sleduje obvyklú konvenciu. Integrácia `div(e0*er*grad(V)) = -rho` per
+partes ponechá náboj na pravej strane s kladným znamienkom,
 
 ```
 every entity type      f = +INT( N^T * rho )
 ```
 
-so a **positive** charge density raises the potential around it and a negative
-one lowers it, on volume, surface, line and point entities alike.
+(pre každý typ entity), takže **kladná** hustota náboja zvyšuje potenciál okolo
+seba a záporná ho znižuje, rovnako na objemových, plošných, čiarových aj bodových
+entitách.
 
-Remember that a charge source alone does not make a solvable model. The potential
-is still defined only up to a constant until something fixes it, so a
-charge-driven model needs at least one *Electric potential* condition as well -
-on the outer boundary of the meshed region, if nowhere else. See 1.7.
+Pamätajte, že samotný zdroj náboja z modelu riešiteľný model nerobí. Potenciál je
+stále definovaný iba až na konštantu, kým ho niečo neurčí, takže model poháňaný
+nábojom potrebuje aj aspoň jednu podmienku *Elektrický potenciál* - na vonkajšej
+hranici oblasti so sieťou, ak nie inde. Pozri 1.7.
 
-### 1.6 Environment, initial and coupling conditions
+### 1.6 Environmentálne, počiatočné a väzobné podmienky
 
-#### Environment conditions
+#### Environmentálne podmienky
 
-| Environment condition | Components | Effect |
+| Environmentálna podmienka | Zložky | Účinok |
 |---|---|---|
-| Temperature | Temperature `[K]` | offered, but not read - see below |
+| Teplota (*Temperature*) | Teplota `[K]` | ponúkaná, ale nečítaná - pozri nižšie |
 
-The *Temperature* environment condition is offered for an electrostatics problem
-because material properties are tables against temperature. The electrostatics
-solver does **not** read it: it takes element temperatures only from the shared
-data left behind by a *Heat transfer* task, and otherwise evaluates every table at
-`293.15 K`. Assigning it to an electrostatics-only model changes nothing.
+Environmentálna podmienka *Teplota* sa pre elektrostatickú úlohu ponúka, pretože
+vlastnosti materiálu sú tabuľkami v závislosti od teploty. Riešič elektrostatiky
+ju **nečíta**: teploty prvkov preberá iba zo zdieľaných údajov, ktoré zanechal
+krok *Prestup tepla*, a inak vyhodnocuje každú tabuľku pri `293.15 K`. Jej
+priradenie modelu iba s elektrostatikou nič nezmení.
 
-#### Initial conditions
+#### Počiatočné podmienky
 
-| Initial condition | Effect |
+| Počiatočná podmienka | Účinok |
 |---|---|
-| Electric potential | initial potential field, applied on the first run |
+| Elektrický potenciál | počiatočné pole potenciálu, aplikované pri prvom výpočte |
 
-The initial potential is read on the **first run only**. Since the solve is a
-direct one rather than a march, it does not change the converged answer - it only
-sets the starting point of the conjugate gradient iteration and the value of any
-node the solver leaves out of the system.
+Počiatočný potenciál sa číta **iba pri prvom výpočte**. Keďže riešenie je priame,
+nie časový pochod, skonvergovanú odpoveď nemení - určuje iba počiatočný bod
+iterácie metódy združených gradientov a hodnotu každého uzla, ktorý riešič zo
+sústavy vynechá.
 
-Environment conditions, initial conditions and boundary conditions are read in
-that order and each overwrites the previous one, so a **boundary condition wins
-over an initial condition, which wins over an environment condition**.
+Environmentálne podmienky, počiatočné podmienky a okrajové podmienky sa čítajú v
+tomto poradí a každá prepíše predchádzajúcu, takže **okrajová podmienka vyhráva
+nad počiatočnou, ktorá vyhráva nad environmentálnou**.
 
-#### Coupling with other solvers
+#### Väzba s inými riešičmi
 
-The electrostatics solver produces two results that other solvers consume.
+Riešič elektrostatiky vytvára dva výsledky, ktoré spotrebúvajú iné riešiče.
 
-| Direction | Variable | Effect |
+| Smer | Premenná | Účinok |
 |---|---|---|
-| Electro-statics -> heat | Joule heat | added to the source term of every element |
-| Electro-statics -> fluid heat | Joule heat | added to the source term of every element |
-| Electro-statics -> magneto-statics | Current density | source of the magnetic field |
-| Heat -> electro-statics | Temperature | selects the row of every temperature-dependent material table |
+| Elektrostatika -> teplo | Joulovo teplo | pripočíta sa k zdrojovému členu každého prvku |
+| Elektrostatika -> teplo v tekutinách | Joulovo teplo | pripočíta sa k zdrojovému členu každého prvku |
+| Elektrostatika -> magnetostatika | Prúdová hustota | zdroj magnetického poľa |
+| Teplo -> elektrostatika | Teplota | vyberá riadok každej teplotne závislej tabuľky materiálu |
 
-**Joule heat** is picked up by a *Heat transfer* task placed **after** the
-electrostatics task in the problem task flow, where it is added to the element
-source term exactly as a *Heat rate (unit volume)* condition would be. Resistive
-heating therefore needs no setup beyond ordering the two tasks - tutorial 4 walks
-through it.
+**Joulovo teplo** preberie krok *Prestup tepla* zaradený v poradí krokov úloh
+**za** krokom elektrostatiky, kde sa pripočíta k zdrojovému členu prvku presne
+tak, ako by to urobila podmienka *Tepelný výkon (na jednotku objemu)*. Odporový
+ohrev preto nepotrebuje žiadne nastavenie okrem zoradenia oboch krokov -
+prechádza ním tutoriál 4.
 
-**Magneto-statics** is a separate problem type that *requires* an electrostatics
-task: it reads the element current density this solver stores - on volume,
-surface and line entities alike - and evaluates the magnetic field of that
-current with the Biot-Savart law. Add the electrostatics task first.
+**Magnetostatika** je samostatný typ úlohy, ktorý *vyžaduje* krok elektrostatiky:
+číta prvkovú prúdovú hustotu, ktorú tento riešič ukladá - rovnako na objemových,
+plošných aj čiarových entitách - a vyhodnocuje magnetické pole tohto prúdu
+Biotovým-Savartovým zákonom. Krok elektrostatiky pridajte ako prvý.
 
-Because the solver reports itself as converged unconditionally, a task group that
-contains only an electrostatics task always stops after one iteration. Iterating
-is worthwhile only when something the solve depends on is itself lagged - a
-strongly temperature-dependent permittivity fed by a heat task, for instance.
+Keďže riešič hlási konvergenciu bezpodmienečne, skupina krokov obsahujúca iba
+krok elektrostatiky sa vždy zastaví po jednej iterácii. Iterovať sa oplatí iba
+vtedy, keď je niečo, od čoho riešenie závisí, samo oneskorené - napríklad silne
+teplotne závislá permitivita napájaná krokom prestupu tepla.
 
-### 1.7 Solving the system
+### 1.7 Riešenie sústavy
 
-The solver assembles and solves
+Riešič zostaví a vyrieši
 
 ```
 K * V = f
 ```
 
-`K` is symmetric positive definite once at least one potential has been
-prescribed, so it is solved with the **conjugate gradient** method with Jacobi
-preconditioning. The assembly is parallelised over elements with per-thread
-buffers that are merged once at the end, so the result does not depend on the
-number of threads.
+`K` je symetrická pozitívne definitná, len čo je predpísaný aspoň jeden
+potenciál, takže sa rieši **metódou združených gradientov** s Jacobiho
+predpodmienením. Zostavovanie je paralelizované cez prvky s vyrovnávacími
+pamäťami pre každé vlákno, ktoré sa na konci raz zlúčia, takže výsledok nezávisí
+od počtu vlákien.
 
-A model with **no Electric potential boundary condition** is singular: the
-potential is defined only up to a constant, the matrix has a null space, and the
-solve will not converge. Every model needs at least one prescribed potential, and
-a model that is meant to carry a current needs two at different values.
+Model **bez okrajovej podmienky Elektrický potenciál** je singulárny: potenciál
+je definovaný iba až na konštantu, matica má netriviálne jadro a riešenie
+neskonverguje. Každý model potrebuje aspoň jeden predpísaný potenciál a model,
+ktorý má viesť prúd, potrebuje dva s rôznymi hodnotami.
 
-Three further ways to arrive at a singular or empty system are worth knowing,
-because all three are silent:
+Treba poznať ešte tri ďalšie spôsoby, ako dospieť k singulárnej alebo prázdnej
+sústave, pretože všetky tri sú tiché:
 
-- an entity whose material is missing one of the three required properties is not
-  solved, and its nodes drop out of the system;
-- an entity with `er = 0` has no stiffness, so its nodes stay in the system but
-  are connected to nothing;
-- a surface with zero thickness, or a line with zero cross area, has no stiffness
-  either.
+- entita, ktorej materiálu chýba jedna z troch požadovaných vlastností, sa
+  nerieši a jej uzly zo sústavy vypadnú;
+- entita s `er = 0` nemá žiadnu tuhosť, takže jej uzly v sústave zostanú, ale
+  nie sú s ničím spojené;
+- plocha s nulovou hrúbkou alebo čiara s nulovým prierezom tiež nemá žiadnu
+  tuhosť.
 
-### 1.8 Derived results
+### 1.8 Odvodené výsledky
 
-After the solve the element results are recovered from the nodal potential field.
-The electric field is the negative potential gradient averaged over the
-integration points and rotated into global coordinates for line and surface
-elements:
+Po riešení sa prvkové výsledky získajú z uzlového poľa potenciálu. Elektrické
+pole je záporný gradient potenciálu spriemerovaný cez integračné body a pre
+čiarové a plošné prvky otočený do globálnych súradníc:
 
 ```
 E = -grad(V)
@@ -317,294 +313,288 @@ r = |E| / |J|                    electrical resistivity
 q = sigma * |E|^2                Joule heat
 ```
 
-| Result | Apply to | Meaning |
+(`w` je elektrická energia, `r` elektrická rezistivita, `q` Joulovo teplo.)
+
+| Výsledok | Aplikuje sa na | Význam |
 |---|---|---|
-| Electric potential `[V]` | node | the solved potential field |
-| Electric field `[V/m]` | element | field vector |
-| Current density `[A/m^2]` | element | `sigma*E`, zero where the conductivity is zero |
-| Electric energy `[J/m^3]` | element | energy density of the field |
-| Electrical resistivity `[V*m/A]` | element | `1/sigma` wherever a current flows, `0` elsewhere |
-| Joule heat `[W/m^3]` | element | resistive dissipation, handed to the heat solver |
+| Elektrický potenciál `[V]` | uzol | vyriešené pole potenciálu |
+| Elektrické pole `[V/m]` | prvok | vektor poľa |
+| Prúdová hustota `[A/m^2]` | prvok | `sigma*E`, nulová tam, kde je vodivosť nulová |
+| Elektrická energia `[J/m^3]` | prvok | hustota energie poľa |
+| Elektrická rezistivita `[V*m/A]` | prvok | `1/sigma` všade, kde tečie prúd, inde `0` |
+| Joulovo teplo `[W/m^3]` | prvok | odporová disipácia, odovzdávaná tepelnému riešiču |
 
-All of these are **densities**: the shape function derivatives are averaged over
-the integration points of the element and are not weighted by its Jacobian
-determinant, and the surface thickness and the line cross area stay in the
-stiffness where they belong rather than entering the recovered field. The field,
-the current density and the electric energy are therefore independent of the size
-of the element they were computed in, so they can be compared between elements
-and against a hand calculation, and they converge as the mesh is refined.
+Všetky tieto výsledky sú **hustoty**: derivácie tvarových funkcií sa priemerujú
+cez integračné body prvku a nie sú vážené determinantom jeho Jacobiho matice a
+hrúbka plochy a prierez čiary zostávajú v tuhosti, kam patria, namiesto toho,
+aby vstúpili do odvodeného poľa. Pole, prúdová hustota a elektrická energia preto
+nezávisia od veľkosti prvku, v ktorom boli vypočítané, takže ich možno porovnávať
+medzi prvkami aj s ručným výpočtom a so zjemňovaním siete konvergujú.
 
-**Electrical resistivity** is the result to reach for when checking a model,
-because the two factors it is built from cancel: `|E|/|sigma*E|` is exactly
-`1/sigma`, whatever the field does. It is the quickest confirmation that the
-conductivity intended for an entity actually reached its elements. It is stored
-as `0` on any element where the current density falls below the numerical
-tolerance, which includes every element whose conductivity is zero.
+**Elektrická rezistivita** je výsledok, po ktorom treba siahnuť pri kontrole
+modelu, pretože oba činitele, z ktorých sa skladá, sa navzájom vykrátia:
+`|E|/|sigma*E|` je presne `1/sigma`, nech pole robí čokoľvek. Je to najrýchlejšie
+potvrdenie, že vodivosť určená pre entitu sa skutočne dostala do jej prvkov. Na
+každom prvku, kde prúdová hustota klesne pod numerickú toleranciu, čo zahŕňa
+každý prvok s nulovou vodivosťou, sa ukladá ako `0`.
 
-**The Joule heat** is the dissipation density `sigma*|E|^2`, in `W/m^3`. That is
-exactly what a *Heat transfer* task expects when it adds the value to its source
-term and integrates it over the element, so the power crossing into a coupled
-thermal run is the power the model actually dissipates. Like the others it is a
-density, so it is independent of the element size and converges under refinement.
+**Joulovo teplo** je hustota disipácie `sigma*|E|^2` vo `W/m^3`. Presne to
+očakáva krok *Prestup tepla*, keď hodnotu pripočíta k svojmu zdrojovému členu a
+zintegruje ju cez prvok, takže výkon prechádzajúci do spriahnutého tepelného
+výpočtu je výkon, ktorý model skutočne disipuje. Ako ostatné je to hustota, takže
+nezávisí od veľkosti prvku a pri zjemňovaní konverguje.
 
-Two more places where derived results are simply left at zero: **point elements**
-are never post-processed at all, and a **surface with zero thickness** or a
-**line with zero cross area** is skipped, so both keep a zero field however large
-the potential gradient across them.
+Ešte dve miesta, kde odvodené výsledky jednoducho zostanú nulové: **bodové
+prvky** sa nikdy nespracúvajú a **plocha s nulovou hrúbkou** alebo **čiara s
+nulovým prierezom** sa preskočí, takže obe si ponechajú nulové pole bez ohľadu na
+to, aký veľký je gradient potenciálu naprieč nimi.
 
-After the record is written the solver log prints the statistics of all six
-variables, and the values at any monitoring points.
+Po zapísaní záznamu log riešiča vypíše štatistiky všetkých šiestich premenných a
+hodnoty vo všetkých monitorovacích bodoch.
 
-### 1.9 What the solver is, and what it is not
+### 1.9 Čo riešič je a čo nie je
 
-The name is exact: this is an **electro-static** solver. It computes the field of
-a charge and potential distribution in a dielectric. The current density it
-reports is what Ohm's law gives for that field - a derived quantity, computed
-after the fact, which never influences the field itself.
+Názov je presný: je to **elektrostatický** riešič. Počíta pole rozloženia
+nábojov a potenciálov v dielektriku. Prúdová hustota, ktorú uvádza, je to, čo pre
+toto pole dáva Ohmov zákon - odvodená veličina, vypočítaná dodatočne, ktorá samotné
+pole nikdy neovplyvní.
 
-A **steady current-flow** problem, by contrast, is governed by
+Úlohu **ustáleného prúdenia elektrického prúdu** naproti tomu riadi
 
 ```
 div( sigma * grad(V) ) = 0
 ```
 
-with the conductivity in the place this solver puts the permittivity. The two
-give the same potential field in a homogeneous body, because both reduce to
-Laplace's equation and the constant cancels. They part company as soon as the
-body is made of more than one material:
+s vodivosťou na mieste, kam tento riešič dáva permitivitu. Obe dávajú v
+homogénnom telese rovnaké pole potenciálu, pretože obe sa redukujú na Laplaceovu
+rovnicu a konštanta sa vykráti. Rozchádzajú sa, len čo je teleso z viac ako
+jedného materiálu:
 
-| | This solver | A current-flow solver |
+| | Tento riešič | Riešič prúdového poľa |
 |---|---|---|
-| Potential divides in proportion to | `1/er` of each region | `1/sigma` of each region |
-| Right for | a capacitor, a dielectric, an insulator | a resistor network, a busbar, a conductive path |
+| Potenciál sa delí v pomere | `1/er` každej oblasti | `1/sigma` každej oblasti |
+| Vhodný pre | kondenzátor, dielektrikum, izolant | sieť odporov, prípojnicu, vodivú dráhu |
 
-So a single-material conductor with prescribed potentials at its ends is modelled
-correctly: the potential is linear, and dividing by the length gives the field.
-Two conductors of different conductivity in series are not - the split follows
-the permittivities, which is unlikely to be what was intended. Model such a case
-as a single material, or compute the division by hand.
+Vodič z jedného materiálu s predpísanými potenciálmi na koncoch je teda
+modelovaný správne: potenciál je lineárny a vydelením dĺžkou dostanete pole. Dva
+vodiče s rôznou vodivosťou v sérii nie - rozdelenie sleduje permitivity, čo asi
+nie je to, čo ste zamýšľali. Taký prípad modelujte ako jeden materiál alebo
+rozdelenie vypočítajte ručne.
 
-### 1.10 Static analysis and the time solver
+### 1.10 Statická analýza a časový riešič
 
-Electro-statics is declared as a problem type **without** a time solver. That has
-two visible consequences.
+Elektrostatika je deklarovaná ako typ úlohy **bez** časového riešiča. To má dva
+viditeľné dôsledky.
 
-In an electrostatics-only model the *Time-solver* group box does not appear in
-the `Problem` tab at all, the run produces a single record, and there is nothing
-to configure.
+V modeli iba s elektrostatikou sa skupina *Riešič v čase* na záložke `Úloha`
+vôbec nezobrazí, výpočet vytvorí jediný záznam a nie je čo nastavovať.
 
-More surprisingly, adding an electrostatics task to a task flow **disables the
-time solver for the whole flow**. The time solver is offered only when *every*
-problem type in the flow supports one, so a transient heat analysis that is given
-an electrostatics task becomes a steady-state analysis, with no warning beyond
-the group box disappearing. If a transient thermal answer is needed for a
-resistive heater, run the electrostatics task separately and carry its
-dissipation into the transient heat model as a *Heat* condition, rather than
-putting both tasks in one flow.
+Prekvapivejšie je, že pridanie kroku elektrostatiky do poradia krokov **vypne
+časový riešič pre celé poradie**. Časový riešič sa ponúka iba vtedy, keď ho
+podporuje *každý* typ úlohy v poradí, takže prechodová tepelná analýza, ktorej
+pridáte krok elektrostatiky, sa stane ustálenou, bez akéhokoľvek varovania okrem
+zmiznutia skupiny. Ak potrebujete prechodovú tepelnú odpoveď pre odporový
+ohrievač, spustite krok elektrostatiky samostatne a jeho disipáciu prenesite do
+prechodového tepelného modelu ako podmienku *Teplo*, namiesto toho, aby ste oba
+kroky dali do jedného poradia.
 
 ---
 
-## 2. Graphical user interface
+## 2. Grafické používateľské rozhranie
 
-Everything relevant lives in the **Solver** dock (`Problem`,
-`Boundary conditions`, `Initial conditions`, `Environment conditions`,
-`Material`, `Results` tabs), the **Problem** menu and the **Model** dock.
+Všetko podstatné sa nachádza v paneli **Riešič** (záložky `Úloha`,
+`Okrajové podmienky`, `Počiatočné podmienky`, `Environmentálne podmienky`,
+`Materiál`, `Výsledky`), v menu **Úloha** a v paneli **Model**.
 
-### 2.1 Selecting the problem
+### 2.1 Výber úlohy
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Electro-statics** - "Calculate electric field,
-current density and generated Joule's heat".
+`Úloha` -> `Poradie krokov úloh` (`Ctrl+P`) otvorí dialóg poradia krokov úloh.
+Pridajte krok a vyberte **Elektrostatika** - "Výpočet elektrického poľa,
+prúdovej hustoty a vzniknutého Joulovho tepla".
 
-Electro-statics combines freely with every other physics except *Modal analysis*.
-The chains worth knowing are:
+Elektrostatika sa voľne kombinuje s každou inou fyzikou okrem *Modálnej
+analýzy*. Reťazce, ktoré stojí za to poznať:
 
-- *Electro-statics* then *Heat transfer* - resistive heating;
-- *Electro-statics* then *Magneto-statics* - the magnetic field of the computed
-  current, which is the only way to run a magnetostatic analysis at all;
-- *Electro-statics* then *Heat transfer* then *Stress analysis* - thermal stress
-  from resistive heating.
+- *Elektrostatika* a potom *Prestup tepla* - odporový ohrev;
+- *Elektrostatika* a potom *Magnetostatika* - magnetické pole vypočítaného prúdu,
+  čo je vôbec jediný spôsob, ako spustiť magnetostatickú analýzu;
+- *Elektrostatika*, potom *Prestup tepla* a potom *Analýza napätia* - tepelné
+  napätie od odporového ohrevu.
 
-Remember 1.10: any flow that contains an electrostatics task is solved as a
-steady-state one.
+Pamätajte na 1.10: každé poradie krokov, ktoré obsahuje krok elektrostatiky, sa
+rieši ako ustálené.
 
-### 2.2 Problem tab
+### 2.2 Záložka Úloha
 
-For an electrostatics-only model this tab is **empty**. There is no time solver,
-because the problem type does not support one, and electro-statics has no setup
-group box of its own. Everything is assigned per entity in the condition tabs.
+Pre model iba s elektrostatikou je táto záložka **prázdna**. Neexistuje časový
+riešič, pretože ho typ úlohy nepodporuje, a elektrostatika nemá vlastnú skupinu
+nastavení. Všetko sa priraďuje entitám na záložkách podmienok.
 
-If the tab shows a *Time-solver* group box, another task in the flow put it
-there - and, per 1.10, it will disappear again as soon as the electrostatics task
-is added.
+Ak záložka zobrazuje skupinu *Riešič v čase*, umiestnil ju tam iný krok v poradí
+- a podľa 1.10 opäť zmizne, len čo sa pridá krok elektrostatiky.
 
-### 2.3 Material tab
+### 2.3 Záložka Materiál
 
-The `Material` tab lists the material assigned to the selected entity.
-Electro-statics requires **all three** of these:
+Záložka `Materiál` uvádza materiál priradený vybranej entite. Elektrostatika
+vyžaduje **všetky tri** tieto vlastnosti:
 
-| Property | Units | Comment |
+| Vlastnosť | Jednotky | Poznámka |
 |---|---|---|
-| Relative permittivity | `N/A`, dimensionless | `er`, `1` for vacuum, `1.00059` for air, about `4` for glass |
-| Electrical conductivity | `S/m` | `sigma`, `5.882e7` for copper, `5e-15` for air |
-| Density | `kg/m^3` | required for the entity to be solved, never read |
+| Relatívna permitivita | `N/A`, bezrozmerná | `er`, `1` pre vákuum, `1.00059` pre vzduch, asi `4` pre sklo |
+| Elektrická vodivosť | `S/m` | `sigma`, `5.882e7` pre meď, `5e-15` pre vzduch |
+| Hustota | `kg/m^3` | potrebná na to, aby sa entita riešila, nikdy nečítaná |
 
-An entity missing any of them is not solved, and the setup checker warns before
-the run starts with *Entity ... has material assigned which is missing required
-properties*. Since the density is never used by this solver, any positive value
-satisfies the requirement.
+Entita, ktorej niektorá z nich chýba, sa nerieši a kontrola nastavenia pred
+spustením výpočtu upozorní hlásením *Entity ... has material assigned which is
+missing required properties*. Keďže tento riešič hustotu nikdy nepoužíva,
+požiadavku splní akákoľvek kladná hodnota.
 
-The bundled material library already carries all three for the metals, for air
-and for the glasses, so assigning *Copper* or *Air* is enough to get started.
+Dodávaná knižnica materiálov má všetky tri už pre kovy, vzduch a sklá, takže na
+začiatok stačí priradiť *Meď* (*Copper*) alebo *Vzduch* (*Air*).
 
-Every property is a table against temperature, but the temperature dependence is
-only honoured when a heat task earlier in the flow has produced element
-temperatures - see 1.6.
+Každá vlastnosť je tabuľkou v závislosti od teploty, ale teplotná závislosť sa
+rešpektuje iba vtedy, keď krok prestupu tepla skôr v poradí vytvoril teploty
+prvkov - pozri 1.6.
 
-### 2.4 Boundary conditions tab
+### 2.4 Záložka Okrajové podmienky
 
-The tab is split into a manager list of available boundary conditions on top and
-an editor for the selected one below. Select an entity in the `Model` tree first;
-the manager then offers the conditions valid for that entity type and for the
-selected problem. Tick one to assign it, then edit its components in the lower
-tree.
+Záložka je rozdelená na zoznam dostupných okrajových podmienok hore a editor
+vybranej podmienky dole. Najprv vyberte entitu v strome `Model`; zoznam potom
+ponúkne podmienky platné pre daný typ entity a pre vybranú úlohu. Zaškrtnutím
+podmienku priradíte a jej zložky potom upravíte v dolnom strome.
 
-Only the two conditions of section 1.4 are offered. Notes on using them:
+Ponúkajú sa iba dve podmienky z časti 1.4. Poznámky k ich použitiu:
 
-- **Electric potential** is the condition that holds a value rather than driving
-  one, and it is offered on every entity type. Assign it to the face, edge or
-  point whose potential is known. A model with none of these will not solve.
-- **Charge density** is the source term, and a positive value raises the
-  potential around it. Read 1.5 before using it: the value is a density and,
-  unlike the *Heat* condition of the heat solver, it is not spread over the
-  entity.
-- Both components are tables against time, which only matters in a task flow
-  driven by another, time-dependent task.
+- **Elektrický potenciál** je podmienka, ktorá hodnotu drží, nie poháňa, a
+  ponúka sa na každom type entity. Priraďte ju stene, hrane alebo bodu, ktorých
+  potenciál je známy. Model bez žiadnej takej podmienky sa nevyrieši.
+- **Hustota náboja** je zdrojový člen a kladná hodnota zvyšuje potenciál okolo
+  seba. Pred použitím si prečítajte 1.5: hodnota je hustota a na rozdiel od
+  podmienky *Teplo* tepelného riešiča sa na entitu nerozkladá.
+- Obe zložky sú tabuľkami v čase, na čom záleží iba v poradí krokov poháňanom
+  iným, časovo závislým krokom.
 
-### 2.5 Initial and environment conditions
+### 2.5 Počiatočné a environmentálne podmienky
 
-The `Initial conditions` tab offers *Electric potential*, which sets the starting
-field of the iterative solve. It does not change the converged answer.
+Záložka `Počiatočné podmienky` ponúka *Elektrický potenciál*, ktorý nastavuje
+počiatočné pole iteračného riešenia. Skonvergovanú odpoveď nemení.
 
-The `Environment conditions` tab offers *Temperature*, which this solver ignores -
-see 1.6.
+Záložka `Environmentálne podmienky` ponúka *Teplotu*, ktorú tento riešič
+ignoruje - pozri 1.6.
 
-### 2.6 Matrix solver setup
+### 2.6 Nastavenie maticového riešiča
 
-`Problem` -> `Setup Problem(s) matrix solver` configures the iterative solvers.
-The electrostatics solver uses the **CG** entry.
+`Úloha` -> `Nastaviť maticový riešič úloh` nastavuje iteračné riešiče. Riešič
+elektrostatiky používa položku **CG**.
 
-If the solve does not converge, the usual cause is a model with no prescribed
-potential, or an entity with zero permittivity, rather than a solver setting.
-Check the boundary conditions and the material before raising the iteration
-count.
+Ak riešenie nekonverguje, obvyklou príčinou je model bez predpísaného potenciálu
+alebo entita s nulovou permitivitou, nie nastavenie riešiča. Skôr než zvýšite
+počet iterácií, skontrolujte okrajové podmienky a materiál.
 
-### 2.7 Monitoring points
+### 2.7 Monitorovacie body
 
-`Problem` -> `Define monitoring points` places probes at given coordinates and
-selects the variable to record - for an electrostatic problem, *Electric
-potential* is the usual choice, and it is the quickest way to read a value off a
-model as a number rather than a colour. `Report` -> `Monitoring points` shows the
-values.
+`Úloha` -> `Definovať monitorovacie body` umiestni sondy na zadané súradnice a
+vyberie premennú, ktorá sa má zaznamenávať - pre elektrostatickú úlohu je
+obvyklou voľbou *Elektrický potenciál* a je to najrýchlejší spôsob, ako z modelu
+odčítať hodnotu ako číslo, nie ako farbu. `Výkaz` -> `Monitorovacie body` hodnoty
+zobrazí.
 
-### 2.8 Results and records
+### 2.8 Výsledky a záznamy
 
-The `Results` tab lists the computed variables and controls the 3D view. The
-electric potential is a node scalar; the electric field and the current density
-are element vectors; the electric energy, the electrical resistivity and the
-Joule heat are element scalars.
+Záložka `Výsledky` uvádza vypočítané premenné a ovláda 3D pohľad. Elektrický
+potenciál je uzlový skalár; elektrické pole a prúdová hustota sú prvkové vektory;
+elektrická energia, elektrická rezistivita a Joulovo teplo sú prvkové skaláry.
 
-The `Records` tab of the `Model` dock lists the result records. An electrostatic
-analysis is static, so there is exactly **one**.
+Záložka `Záznamy` panela `Model` uvádza záznamy výsledkov. Elektrostatická
+analýza je statická, takže je presne **jeden**.
 
-`Report` -> `Solver log file` shows the full solver output, including the
-statistics of all six variables after the record is written.
+`Výkaz` -> `Log súbor riešiča` zobrazí celý výstup riešiča vrátane štatistík
+všetkých šiestich premenných po zapísaní záznamu.
 
 ---
 
-## 3. Tutorial - potential and current in a conductor
+## 3. Tutoriál - potenciál a prúd vo vodiči
 
-**Goal.** Compute the potential distribution along a copper bar held at two
-different potentials, and read off the field, the current and the resistance.
+**Cieľ.** Vypočítať rozloženie potenciálu pozdĺž medenej tyče držanej na dvoch
+rôznych potenciáloch a odčítať pole, prúd a odpor.
 
-This tutorial assumes a meshed volume model - a long box works well. Use
-`File` -> `New model`, draw a box with `Geometry` -> `Create element` or import a
-geometry, and tetrahedralise it; the *Draw cube* tutorial covers this ground.
-Mark the two end faces as separate surface entities so that conditions can be
-assigned to them.
+Tento tutoriál predpokladá objemový model so sieťou - dobre poslúži dlhý kváder.
+Použite `Súbor` -> `Nový model`, nakreslite kváder pomocou `Geometria` ->
+`Vytvoriť prvok` alebo importujte geometriu a rozdeľte ju na tetrahedróny; tento
+postup pokrýva tutoriál *Kresliť kocku*. Obe koncové steny označte ako samostatné
+plošné entity, aby im bolo možné priradiť podmienky.
 
-Take the bar to be `0.1 m` long with a `0.01 m` by `0.01 m` cross section, which
-makes the hand calculations at the end easy to follow.
+Uvažujte tyč dlhú `0.1 m` s prierezom `0.01 m` krát `0.01 m`, vďaka čomu sa ručné
+výpočty na konci ľahko sledujú.
 
-### Step 1 - select the problem
+### Krok 1 - výber úlohy
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Electro-statics**.
-3. Confirm with `OK`.
+1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
+2. Pridajte krok a vyberte **Elektrostatika**.
+3. Potvrďte tlačidlom `OK`.
 
-The `Problem` tab stays empty - there is nothing to set up.
+Záložka `Úloha` zostane prázdna - nie je čo nastavovať.
 
-### Step 2 - assign the material
+### Krok 2 - priradenie materiálu
 
-1. Select the volume entity in the `Model` tree.
-2. Open the `Material` tab and assign **Copper**, or a material with all three
-   properties:
-   - **Relative permittivity** = `2.8`
-   - **Electrical conductivity** = `5.882e7` `S/m`
-   - **Density** = `8960` `kg/m^3`
+1. Vyberte objemovú entitu v strome `Model`.
+2. Otvorte záložku `Materiál` a priraďte **Meď**, alebo materiál so všetkými
+   tromi vlastnosťami:
+   - **Relatívna permitivita** = `2.8`
+   - **Elektrická vodivosť** = `5.882e7` `S/m`
+   - **Hustota** = `8960` `kg/m^3`
 
-The density is not used by this solver but must be present for the entity to be
-solved at all. The permittivity is what drives the field; the conductivity only
-turns the field into a current afterwards.
+Hustotu tento riešič nepoužíva, ale musí byť prítomná, aby sa entita vôbec
+riešila. Pole poháňa permitivita; vodivosť iba dodatočne prevedie pole na prúd.
 
-### Step 3 - prescribe the two ends
+### Krok 3 - predpísanie oboch koncov
 
-1. Select the surface entity at one end.
-2. Open the `Boundary conditions` tab and tick **Electric potential**.
-3. Set the value to `0` V - this is the ground.
-4. Select the surface entity at the other end, tick **Electric potential** again
-   and set it to `10` V.
+1. Vyberte plošnú entitu na jednom konci.
+2. Otvorte záložku `Okrajové podmienky` a zaškrtnite **Elektrický potenciál**.
+3. Nastavte hodnotu na `0` V - toto je zem.
+4. Vyberte plošnú entitu na druhom konci, znova zaškrtnite **Elektrický
+   potenciál** a nastavte ho na `10` V.
 
-This is the step that makes the model solvable. A single prescribed potential is
-the minimum; two at different values are what makes a field.
+Toto je krok, ktorý robí model riešiteľným. Jeden predpísaný potenciál je
+minimum; dva s rôznymi hodnotami vytvoria pole.
 
-Do not add a *Charge density* condition. A conductor with prescribed end
-potentials carries no space charge, so the source term belongs at zero and the
-potential is a straight line between the two ends - which is what makes the hand
-check of step 6 exact.
+Nepridávajte podmienku *Hustota náboja*. Vodič s predpísanými koncovými
+potenciálmi nenesie žiadny priestorový náboj, takže zdrojový člen patrí na nulu a
+potenciál je priamka medzi oboma koncami - vďaka čomu je ručná kontrola v kroku 6
+presná.
 
-### Step 4 - solve
+### Krok 4 - riešenie
 
-1. `Solution` -> `Start solver` (`Ctrl+R`).
-2. The setup checker reports missing materials before the run starts.
-3. Follow the progress in `Report` -> `Solver log file`.
+1. `Riešenie` -> `Spustiť riešič` (`Ctrl+R`).
+2. Kontrola nastavenia pred spustením výpočtu ohlási chýbajúce materiály.
+3. Priebeh sledujte v `Výkaz` -> `Log súbor riešiča`.
 
-The run is a single conjugate gradient solve and finishes in seconds on a mesh of
-this size.
+Výpočet je jediné riešenie metódou združených gradientov a na sieti tejto
+veľkosti skončí za niekoľko sekúnd.
 
-### Step 5 - inspect the results
+### Krok 5 - kontrola výsledkov
 
-- `Results` tab: display **Electric potential**. It should fall linearly from
-  `10` V to `0` V along the bar, with flat equipotential planes perpendicular to
-  its axis. Any curvature in a uniform bar means the mesh is not connected the
-  way it is assumed to be.
-- **Electrical resistivity** should read `1/5.882e7 = 1.7e-8` `V*m/A` on every
-  element of the bar. This is the best single check that the material reached the
-  elements: it is exact, mesh independent, and wrong the moment the conductivity
-  is.
-- **Electric field** points along the bar and should read `10/0.1 = 100` `V/m`
-  uniformly, and **Current density** `sigma*E = 5.88e9` `A/m^2`. Both are
-  densities, so the numbers hold whatever the element size - step 6 derives them.
-- A monitoring point on *Electric potential* half way along the bar should read
+- Záložka `Výsledky`: zobrazte **Elektrický potenciál**. Mal by lineárne klesať z
+  `10` V na `0` V pozdĺž tyče, s rovinnými ekvipotenciálnymi plochami kolmými na
+  jej os. Akékoľvek zakrivenie v homogénnej tyči znamená, že sieť nie je
+  prepojená tak, ako sa predpokladá.
+- **Elektrická rezistivita** by mala na každom prvku tyče ukazovať
+  `1/5.882e7 = 1.7e-8` `V*m/A`. Je to najlepšia samostatná kontrola, že sa
+  materiál dostal do prvkov: je presná, nezávislá od siete a nesprávna v
+  okamihu, keď je nesprávna vodivosť.
+- **Elektrické pole** smeruje pozdĺž tyče a malo by rovnomerne ukazovať
+  `10/0.1 = 100` `V/m` a **Prúdová hustota** `sigma*E = 5.88e9` `A/m^2`. Obe sú
+  hustoty, takže čísla platia bez ohľadu na veľkosť prvku - odvodzuje ich krok 6.
+- Monitorovací bod na *Elektrickom potenciáli* v polovici tyče by mal ukazovať
   `5` V.
 
-### Step 6 - work out the numbers by hand
+### Krok 6 - ručný výpočet čísel
 
-The first two lines below are what the **Electric field** and **Current density**
-results should already be showing, so they are a direct check on the solve. The
-last three are totals rather than densities, which no element result gives, and
-have to be computed. For a uniform bar of length `L` and cross section `A` held
-at a potential difference `U`:
+Prvé dva riadky nižšie by už mali ukazovať výsledky **Elektrické pole** a
+**Prúdová hustota**, takže sú priamou kontrolou riešenia. Posledné tri sú celkové
+hodnoty, nie hustoty, ktoré nedáva žiadny prvkový výsledok, a treba ich
+vypočítať. Pre homogénnu tyč dĺžky `L` a prierezu `A` držanú na rozdiele
+potenciálov `U`:
 
 ```
 E = U / L                       = 10 / 0.1            = 100      V/m
@@ -614,212 +604,210 @@ R = L / ( sigma * A )           = 0.1 / (5.882e7*1e-4) = 1.7e-5  ohm
 P = U^2 / R                     = 100 / 1.7e-5        = 5.88e6   W
 ```
 
-The current is enormous because a solid copper bar of that section is a very good
-conductor and `10` V across it is a short circuit - a useful reminder that an
-electrostatic model will happily compute a situation that would vaporise the real
-part.
+Prúd je obrovský, pretože masívna medená tyč s takým prierezom je veľmi dobrý
+vodič a `10` V na nej je skrat - užitočná pripomienka, že elektrostatický model
+ochotne vypočíta situáciu, ktorá by skutočnú súčiastku odparila.
 
-### Step 7 - optional, refine the mesh
+### Krok 7 - voliteľne, zjemnenie siete
 
-Refine the mesh once and solve again. Every result - the **potential**, the
-**electric field**, the **current density**, the **electric energy**, the
-**resistivity** and the **Joule heat** - must hold its value. They are all
-densities, so a value that drifts under refinement is the sign of a model problem
-rather than of a finer mesh, and it is worth chasing before going further.
+Sieť raz zjemnite a výpočet zopakujte. Každý výsledok - **potenciál**,
+**elektrické pole**, **prúdová hustota**, **elektrická energia**,
+**rezistivita** a **Joulovo teplo** - si musí udržať svoju hodnotu. Všetky sú
+hustoty, takže hodnota, ktorá sa pri zjemňovaní posúva, je znakom problému modelu,
+nie jemnejšej siete, a oplatí sa ho vypátrať skôr, než budete pokračovať.
 
-### Troubleshooting
+### Riešenie problémov
 
-| Symptom | Cause |
+| Príznak | Príčina |
 |---|---|
-| The solve does not converge | no *Electric potential* condition anywhere, so the potential is defined only up to a constant |
-| *Entity has material assigned which is missing required properties* | one of the three required properties is absent - often the density, which the solver never uses |
-| The whole model sits at one potential | only one potential was prescribed, or the second one carries the same value |
-| The potential is zero everywhere except on the prescribed faces | the entity has `er = 0`, so it has no stiffness and connects nothing |
-| Resistivity is zero everywhere | the electrical conductivity is zero, so no current flows and the resistivity is stored as zero |
-| A surface entity shows no field at all | its thickness is zero, so it is neither assembled nor post-processed |
+| Riešenie nekonverguje | nikde nie je podmienka *Elektrický potenciál*, takže potenciál je definovaný iba až na konštantu |
+| *Entity has material assigned which is missing required properties* | chýba jedna z troch požadovaných vlastností - často hustota, ktorú riešič nikdy nepoužíva |
+| Celý model je na jednom potenciáli | predpísaný bol iba jeden potenciál alebo druhý má rovnakú hodnotu |
+| Potenciál je všade nulový okrem predpísaných stien | entita má `er = 0`, takže nemá žiadnu tuhosť a nič nespája |
+| Rezistivita je všade nulová | elektrická vodivosť je nulová, takže netečie žiadny prúd a rezistivita sa ukladá ako nula |
+| Plošná entita neukazuje vôbec žiadne pole | jej hrúbka je nulová, takže sa nezostavuje ani nespracúva |
 
 ---
 
-## 4. Tutorial - resistive heating
+## 4. Tutoriál - odporový ohrev
 
-**Goal.** Take the Joule heat computed from the electric field and use it to heat
-the bar, by chaining an electrostatics task and a heat task.
+**Cieľ.** Vziať Joulovo teplo vypočítané z elektrického poľa a ohriať ním tyč
+zreťazením kroku elektrostatiky a kroku prestupu tepla.
 
-### Step 1 - build the task flow
+### Krok 1 - zostavenie poradia krokov
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add an **Electro-statics** task.
-3. Add a **Heat transfer** task **after** it.
-4. Confirm with `OK`.
+1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
+2. Pridajte krok **Elektrostatika**.
+3. **Za** neho pridajte krok **Prestup tepla**.
+4. Potvrďte tlačidlom `OK`.
 
-The order matters: the heat solver reads the Joule heat the electrostatics solver
-left behind, so the electrostatics task has to run first. No condition and no
-setting is needed to connect them.
+Na poradí záleží: tepelný riešič číta Joulovo teplo, ktoré zanechal riešič
+elektrostatiky, takže krok elektrostatiky musí prebehnúť ako prvý. Na ich
+prepojenie nie je potrebná žiadna podmienka ani nastavenie.
 
-Note what happens to the `Problem` tab: the *Time-solver* group box that a heat
-task alone would show is now gone, because electro-statics has no time solver and
-the flow takes the most restrictive setting - see 1.10. This chain is
-steady-state only.
+Všimnite si, čo sa stane so záložkou `Úloha`: skupina *Riešič v čase*, ktorú by
+zobrazil samotný krok prestupu tepla, je preč, pretože elektrostatika nemá časový
+riešič a poradie preberá najreštriktívnejšie nastavenie - pozri 1.10. Tento
+reťazec je iba ustálený.
 
-### Step 2 - complete the material
+### Krok 2 - doplnenie materiálu
 
-The heat task needs four properties of its own on top of the three the
-electrostatics task needs, so the entity's material must carry all of:
+Krok prestupu tepla potrebuje okrem troch vlastností kroku elektrostatiky ďalšie
+štyri vlastné, takže materiál entity musí mať všetky z nich:
 
-| Property | Value for copper | Needed by |
+| Vlastnosť | Hodnota pre meď | Potrebuje |
 |---|---|---|
-| Relative permittivity | `2.8` | electro-statics |
-| Electrical conductivity | `5.882e7` `S/m` | electro-statics |
-| Density | `8960` `kg/m^3` | both |
-| Thermal conductivity | `401` `W/(m*K)` | heat |
-| Heat capacity | `385` `J/(kg*K)` | heat |
-| Emissivity | `0` | heat |
+| Relatívna permitivita | `2.8` | elektrostatika |
+| Elektrická vodivosť | `5.882e7` `S/m` | elektrostatika |
+| Hustota | `8960` `kg/m^3` | obe |
+| Tepelná vodivosť | `401` `W/(m*K)` | teplo |
+| Tepelná kapacita | `385` `J/(kg*K)` | teplo |
+| Emisivita | `0` | teplo |
 
-The bundled *Copper* material already carries them. An entity missing any
-property required by **either** task is skipped by that task.
+Dodávaný materiál *Meď* ich už má. Entitu, ktorej chýba vlastnosť požadovaná
+**ktorýmkoľvek** krokom, tento krok preskočí.
 
-### Step 3 - keep the electrical boundary conditions
+### Krok 3 - ponechanie elektrických okrajových podmienok
 
-The two **Electric potential** conditions from tutorial 3 carry over unchanged.
-Lower the driving potential to something less violent - `0.01` V across the bar
-still produces a large current, and keeps the heat source in a range where the
-thermal answer is readable.
+Dve podmienky **Elektrický potenciál** z tutoriálu 3 sa prenesú bez zmeny.
+Znížte budiaci potenciál na niečo menej prudké - `0.01` V na tyči stále vytvorí
+veľký prúd a udrží tepelný zdroj v rozsahu, v ktorom je tepelná odpoveď
+čitateľná.
 
-### Step 4 - add the thermal boundary conditions
+### Krok 4 - pridanie tepelných okrajových podmienok
 
-The heat half of the model needs its own outlet, exactly as it would on its own:
+Tepelná polovica modelu potrebuje vlastný odvod, presne ako by ho potrebovala
+samostatne:
 
-1. Select the surface entity covering the sides of the bar.
-2. Open the `Boundary conditions` tab and tick **Simple convection**.
-3. Set **Convection coefficient** = `10` `W/(m^2*K)` and **Fluid temperature** =
+1. Vyberte plošnú entitu pokrývajúcu boky tyče.
+2. Otvorte záložku `Okrajové podmienky` a zaškrtnite **Jednoduchá konvekcia**
+   (*Simple convection*).
+3. Nastavte **Súčiniteľ konvekcie** = `10` `W/(m^2*K)` a **Teplota tekutiny** =
    `293.15` K.
 
-Without a convecting surface or a prescribed temperature the heat model has a
-source and no outlet, and the steady state does not exist. Note that a face used
-for convection needs no thickness for the heat solver, but a zero-thickness face
-carries no electric field either - keep the electrical conditions on the end
-faces and the convection on the sides, and the two do not interfere.
+Bez plochy s konvekciou alebo predpísanej teploty má tepelný model zdroj, ale
+žiadny odvod, a ustálený stav neexistuje. Všimnite si, že stena použitá na
+konvekciu nepotrebuje pre tepelný riešič žiadnu hrúbku, ale stena s nulovou
+hrúbkou nevedie ani elektrické pole - elektrické podmienky ponechajte na
+koncových stenách a konvekciu na bokoch a navzájom sa neovplyvnia.
 
-### Step 5 - solve
+### Krok 5 - riešenie
 
-`Solution` -> `Start solver` (`Ctrl+R`). The log shows the electrostatics task
-first, with the statistics of its six variables, and then the heat task with the
-temperature, heat flux and heat transfer coefficient statistics.
+`Riešenie` -> `Spustiť riešič` (`Ctrl+R`). Log ukazuje najprv krok
+elektrostatiky so štatistikami jeho šiestich premenných a potom krok prestupu
+tepla so štatistikami teploty, tepelného toku a súčiniteľa prestupu tepla.
 
-### Step 6 - inspect the results
+### Krok 6 - kontrola výsledkov
 
-- `Results` tab: display **Joule heat**. It is the bridge between the two
-  physics - wherever it is non-zero, the heat solver saw a source.
-- Display **Temperature**. The bar should be warmest where the Joule heat is
-  largest, and fall towards the fluid temperature at the convecting faces.
-- Display **Electric potential** to confirm the electrical half of the model is
-  still the linear field of tutorial 3.
+- Záložka `Výsledky`: zobrazte **Joulovo teplo**. Je mostom medzi oboma fyzikami
+  - všade, kde je nenulové, tepelný riešič videl zdroj.
+- Zobrazte **Teplotu**. Tyč by mala byť najteplejšia tam, kde je Joulovo teplo
+  najväčšie, a smerom k plochám s konvekciou klesať k teplote tekutiny.
+- Zobrazte **Elektrický potenciál** a overte, že elektrická polovica modelu je
+  stále lineárnym poľom z tutoriálu 3.
 
-### Step 7 - check the energy balance
+### Krok 7 - kontrola energetickej bilancie
 
-The Joule heat is a dissipation density in `W/m^3`, so the total power the
-electrical half of the model delivers to the thermal half is that density times
-the volume it acts on. For the uniform bar it should come to the `P = U^2/R` of
-tutorial 3, with `R = L/(sigma*A)`.
+Joulovo teplo je hustota disipácie vo `W/m^3`, takže celkový výkon, ktorý
+elektrická polovica modelu dodá tepelnej, je táto hustota krát objem, na ktorý
+pôsobí. Pre homogénnu tyč by mal vyjsť `P = U^2/R` z tutoriálu 3, s
+`R = L/(sigma*A)`.
 
-At the steady state the convecting surface has to shed exactly that power, which
-gives the same global check the heat manual describes:
+V ustálenom stave musí plocha s konvekciou odovzdať presne tento výkon, čo dáva tú
+istú globálnu kontrolu, akú opisuje manuál prestupu tepla:
 
 ```
 P = h * A_s * ( Ts_mean - Tf )
 ```
 
-Read the mean surface temperature from the statistics in the solver log and
-confirm the balance closes. This is the one check that spans both physics at
-once: it catches a wrong conductivity, a wrong convection coefficient, and an
-entity that quietly went unsolved in either half.
+Strednú teplotu povrchu odčítajte zo štatistík v logu riešiča a overte, že
+bilancia sedí. Je to jediná kontrola, ktorá pokrýva obe fyziky naraz: zachytí
+nesprávnu vodivosť, nesprávny súčiniteľ konvekcie aj entitu, ktorá v
+ktorejkoľvek polovici potichu zostala nevyriešená.
 
-### Troubleshooting
+### Riešenie problémov
 
-| Symptom | Cause |
+| Príznak | Príčina |
 |---|---|
-| The temperature is uniform at `293.15` K | the Joule heat is zero - check the electrical conductivity, and that the electrostatics task runs first |
-| The heat solve does not converge | the thermal half has no prescribed temperature and no convecting surface |
-| The *Time-solver* group box vanished | expected - an electrostatics task makes the whole flow steady-state, see 1.10 |
-| The temperature rise changes when the mesh is refined | not expected - every electrostatic result is a density, so check the thermal half of the model and the mesh quality |
-| Only the electrostatics results appear | the heat task is missing one of its four required material properties |
+| Teplota je rovnomerne `293.15` K | Joulovo teplo je nulové - skontrolujte elektrickú vodivosť a to, že krok elektrostatiky beží ako prvý |
+| Tepelné riešenie nekonverguje | tepelná polovica nemá predpísanú teplotu ani plochu s konvekciou |
+| Skupina *Riešič v čase* zmizla | očakávané - krok elektrostatiky robí celé poradie ustáleným, pozri 1.10 |
+| Nárast teploty sa mení so zjemnením siete | neočakávané - každý elektrostatický výsledok je hustota, takže skontrolujte tepelnú polovicu modelu a kvalitu siete |
+| Zobrazujú sa iba výsledky elektrostatiky | kroku prestupu tepla chýba jedna z jeho štyroch požadovaných vlastností materiálu |
 
 ---
 
-## 5. Checking a model
+## 5. Kontrola modelu
 
-The solver has no built-in verification suite, so it is worth validating a new
-model against something that can be computed by hand before trusting it. The
-checks below are written against the **potential**, which is both the primary
-unknown and the quantity every closed-form solution is expressed in; the electric
-field and current density results should agree with the gradients they imply.
+Riešič nemá zabudovanú sadu overovacích testov, takže nový model sa oplatí pred
+tým, než mu začnete dôverovať, overiť voči niečomu, čo sa dá vypočítať ručne.
+Kontroly nižšie sú napísané pre **potenciál**, ktorý je primárnou neznámou aj
+veličinou, v ktorej je vyjadrené každé riešenie v uzavretom tvare; výsledky
+elektrického poľa a prúdovej hustoty by mali súhlasiť s gradientmi, ktoré z neho
+vyplývajú.
 
-**Uniform bar.** For a body of length `L` held at `V1` and `V2` on two opposite
-faces, with one material and no charge, the potential is linear along the bar and
+**Homogénna tyč.** Pre teleso dĺžky `L` držané na `V1` a `V2` na dvoch protiľahlých
+stenách, s jedným materiálom a bez náboja, je potenciál pozdĺž tyče lineárny a
 
 ```
 V(x) = V1 + ( V2 - V1 ) * x / L
 E    = ( V1 - V2 ) / L          [V/m]
 ```
 
-Place a monitoring point at the mid-plane and confirm it reads the mean of the
-two prescribed values, and another at a quarter of the length for the quarter
-value. This catches a disconnected mesh, a condition assigned to the wrong
-entity, and a zero permittivity. Refine the mesh once and confirm the numbers
-stay put.
+Umiestnite monitorovací bod do strednej roviny a overte, že ukazuje priemer
+oboch predpísaných hodnôt, a ďalší do štvrtiny dĺžky pre štvrtinovú hodnotu. To
+zachytí neprepojenú sieť, podmienku priradenú nesprávnej entite aj nulovú
+permitivitu. Sieť raz zjemnite a overte, že čísla zostanú na mieste.
 
-**Uniform space charge.** The bar above exercises only the stiffness. To check
-the source term as well, take the same body, hold **both** end faces at `0` V and
-assign a uniform *Charge density* `rho` to the volume. The potential is then a
-parabola, with `eps = e0*er`:
+**Rovnomerný priestorový náboj.** Tyč vyššie preveruje iba tuhosť. Ak chcete
+skontrolovať aj zdrojový člen, vezmite to isté teleso, držte **obe** koncové
+steny na `0` V a objemu priraďte rovnomernú *Hustotu náboja* `rho`. Potenciál je
+potom parabola, s `eps = e0*er`:
 
 ```
 V(x)  = rho * x * ( L - x ) / ( 2 * eps )
 Vmax  = rho * L^2 / ( 8 * eps )          at the mid-plane
 ```
 
-A monitoring point at the mid-plane gives `Vmax` directly. Two things are being
-checked at once: the magnitude, which confirms the permittivity and the charge
-density are being read as expected, and the **sign** - a positive charge density
-must produce a positive potential hump between two grounded faces. Repeat with
-the charge on a surface or a line entity, and on a point, and confirm the
-polarity does not change with the entity type.
+(`Vmax` v strednej rovine.) Monitorovací bod v strednej rovine dá `Vmax` priamo.
+Kontrolujú sa dve veci naraz: veľkosť, ktorá potvrdzuje, že permitivita a hustota
+náboja sa čítajú podľa očakávania, a **znamienko** - kladná hustota náboja musí
+medzi dvoma uzemnenými stenami vytvoriť kladný hrb potenciálu. Zopakujte to s
+nábojom na plošnej alebo čiarovej entite a na bode a overte, že polarita sa s
+typom entity nemení.
 
-**Resistivity.** Every element that carries a current must store an electrical
-resistivity of exactly `1/sigma`. Read it off the statistics in the solver log
-and compare against the conductivity in the material. It is exact rather than
-approximate, independent of the mesh, and the fastest confirmation that the
-material reached the elements it was meant to.
+**Rezistivita.** Každý prvok, ktorým tečie prúd, musí ukladať elektrickú
+rezistivitu presne `1/sigma`. Odčítajte ju zo štatistík v logu riešiča a
+porovnajte s vodivosťou v materiáli. Je presná, nie približná, nezávislá od siete
+a je najrýchlejším potvrdením, že sa materiál dostal do prvkov, do ktorých mal.
 
-**Coaxial field.** For an annulus between radii `a` and `b` with the inner
-surface at `V1` and the outer at `V2`, the potential is logarithmic:
+**Koaxiálne pole.** Pre medzikružie medzi polomermi `a` a `b` s vnútornou plochou
+na `V1` a vonkajšou na `V2` je potenciál logaritmický:
 
 ```
 V(r) = V2 + ( V1 - V2 ) * ln( b / r ) / ln( b / a )
 ```
 
-Model the annulus, prescribe both surfaces, and compare monitoring points at a
-few radii. This validates the solver on a field that is not uniform, which the
-bar cannot do, and it shows whether the mesh is fine enough near the inner
-conductor.
+Vymodelujte medzikružie, predpíšte obe plochy a porovnajte monitorovacie body na
+niekoľkých polomeroch. Toto overí riešič na poli, ktoré nie je homogénne, čo tyč
+nedokáže, a ukáže, či je sieť pri vnútornom vodiči dostatočne jemná.
 
-**Series dielectrics.** For two layers of thickness `d1`, `d2` and relative
-permittivity `er1`, `er2` stacked between two prescribed potentials, the
-potential at the interface is
+**Dielektriká v sérii.** Pre dve vrstvy hrúbky `d1`, `d2` s relatívnou
+permitivitou `er1`, `er2` uložené medzi dvoma predpísanými potenciálmi je
+potenciál na rozhraní
 
 ```
 Vi = ( V1*er1/d1 + V2*er2/d2 ) / ( er1/d1 + er2/d2 )
 ```
 
-Compare against the computed interface potential. This confirms directly what
-section 1.9 describes: the division follows the **permittivities**. Running the
-same model with two different conductivities and the same permittivity, and
-watching the interface potential not move, is the demonstration that this is an
-electrostatic solver and not a current-flow one.
+Porovnajte s vypočítaným potenciálom na rozhraní. Toto priamo potvrdzuje to, čo
+opisuje časť 1.9: rozdelenie sleduje **permitivity**. Spustenie toho istého
+modelu s dvoma rôznymi vodivosťami a rovnakou permitivitou, pri ktorom sa
+potenciál rozhrania nepohne, je ukážkou, že ide o elektrostatický riešič, nie o
+riešič prúdového poľa.
 
-**Resistance and dissipation.** The element results are densities, so a total -
-a current, a resistance, a power - has to come from the potential. For the
-uniform bar:
+**Odpor a disipácia.** Prvkové výsledky sú hustoty, takže celková hodnota - prúd,
+odpor, výkon - musí vychádzať z potenciálu. Pre homogénnu tyč:
 
 ```
 R = L / ( sigma * A )      [ohm]
@@ -827,57 +815,52 @@ I = U / R                  [A]
 P = U * I = U^2 / R        [W]
 ```
 
-Use these whenever a total has to leave the model - for a conductor sizing, or
-for a sanity check against a measurement. `P` is also what the **Joule heat**
-result must integrate to over the volume of the bar, which is the check that the
-electrical and thermal halves of a coupled run agree.
+Použite ich vždy, keď musí celková hodnota opustiť model - pri dimenzovaní vodiča
+alebo pri kontrole voči meraniu. `P` je tiež hodnota, na ktorú sa musí výsledok
+**Joulovo teplo** zintegrovať cez objem tyče, čo je kontrola, že elektrická a
+tepelná polovica spriahnutého výpočtu súhlasia.
 
-For any of these, refine the mesh at least once and confirm the potential is
-converging rather than drifting.
+Pri ktorejkoľvek z nich sieť aspoň raz zjemnite a overte, že potenciál
+konverguje, a nie sa posúva.
 
 ---
 
-## 6. Limitations
+## 6. Obmedzenia
 
-### Modelling limitations
+### Obmedzenia modelovania
 
-- **Electro-static, not current flow.** The stiffness is built from the
-  permittivity; the conductivity never enters the system of equations. The
-  potential in a body of two materials therefore divides in proportion to the
-  permittivities, not the resistances. A single-material conductor is modelled
-  correctly; a resistor network is not - see 1.9.
-- **Static only.** There is no time solver, no capacitance and no inductance, so
-  charging transients, alternating fields, displacement current, eddy currents
-  and skin effect are all outside the model. Adding an electrostatics task to a
-  task flow also removes the time solver from the flow as a whole, so a heat task
-  chained behind it can only be steady-state - see 1.10.
-- **Linear, isotropic dielectrics only.** The permittivity and the conductivity
-  of an element are scalars and are constant during a solve. Anisotropic,
-  ferroelectric and field-dependent materials are not modelled, and there is no
-  dielectric breakdown.
-- **Only two boundary conditions.** A prescribed potential and a charge density
-  are the whole vocabulary. There is no prescribed surface charge, no prescribed
-  normal flux, no symmetry condition, and no open-boundary or infinite-element
-  treatment - an unbounded field problem has to be truncated by meshing enough
-  surrounding air and prescribing a potential on its outer boundary.
-- **No free charge redistribution.** Charge does not move to the surface of a
-  conductor; the solver has no notion of a conductor at all beyond the material
-  properties given to it. Model a conductor by prescribing its potential, not by
-  giving it a large conductivity.
-- **No feedback from the current.** The current density is post-processed from
-  the field, so a conductivity that varies with the field, or with the
-  temperature the dissipation produces, has no effect within a single solve.
-- **Surfaces are equipotential through their thickness.** A surface entity
-  carries the field in its own plane only. A surface of zero thickness or a line
-  of zero cross area has no stiffness at all and is skipped both in the assembly
-  and in the post-processing.
-- **Point elements do not conduct.** A point carries a charge source and can hold
-  a prescribed potential, nothing more, and it is never post-processed. A point
-  whose node belongs to no other computable element leaves an empty row in the
-  matrix.
-- **The temperature dependence of the material is not read.** Tables are
-  evaluated at `293.15 K` unless a heat task earlier in the flow has produced
-  element temperatures; the *Temperature* environment condition has no effect on
-  this solver.
-- **A model needs a prescribed potential.** With none the matrix has a null space
-  and the solve will not converge.
+- **Elektrostatika, nie prúdové pole.** Tuhosť sa zostavuje z permitivity;
+  vodivosť do sústavy rovníc nikdy nevstupuje. Potenciál v telese z dvoch
+  materiálov sa preto delí v pomere permitivít, nie odporov. Vodič z jedného
+  materiálu je modelovaný správne; sieť odporov nie - pozri 1.9.
+- **Iba statická analýza.** Neexistuje časový riešič, kapacita ani indukčnosť,
+  takže nabíjacie prechodové deje, striedavé polia, posuvný prúd, vírivé prúdy a
+  povrchový jav sú mimo modelu. Pridanie kroku elektrostatiky do poradia krokov
+  tiež odstráni časový riešič z poradia ako celku, takže krok prestupu tepla
+  zaradený za ním môže byť iba ustálený - pozri 1.10.
+- **Iba lineárne izotropné dielektriká.** Permitivita a vodivosť prvku sú skaláry
+  a počas riešenia sú konštantné. Anizotropné, feroelektrické a od poľa závislé
+  materiály sa nemodelujú a neexistuje elektrický prieraz dielektrika.
+- **Iba dve okrajové podmienky.** Predpísaný potenciál a hustota náboja tvoria
+  celý slovník. Neexistuje predpísaný povrchový náboj, predpísaný normálový tok,
+  podmienka symetrie ani spracovanie otvorenej hranice alebo nekonečných prvkov -
+  neohraničenú úlohu poľa treba orezať tak, že sieťou pokryjete dostatok
+  okolitého vzduchu a na jeho vonkajšej hranici predpíšete potenciál.
+- **Žiadne prerozdelenie voľného náboja.** Náboj sa nepresúva na povrch vodiča;
+  riešič nemá vôbec žiadnu predstavu o vodiči nad rámec vlastností materiálu,
+  ktoré dostal. Vodič modelujte predpísaním jeho potenciálu, nie tým, že mu
+  dáte veľkú vodivosť.
+- **Žiadna spätná väzba od prúdu.** Prúdová hustota sa dopočítava z poľa, takže
+  vodivosť, ktorá sa mení s poľom alebo s teplotou, ktorú disipácia vytvára, nemá
+  v rámci jedného riešenia žiadny účinok.
+- **Plochy sú naprieč hrúbkou ekvipotenciálne.** Plošná entita vedie pole iba vo
+  vlastnej rovine. Plocha s nulovou hrúbkou alebo čiara s nulovým prierezom nemá
+  vôbec žiadnu tuhosť a preskočí sa pri zostavovaní aj pri spracovaní výsledkov.
+- **Bodové prvky nevedú.** Bod nesie zdroj náboja a môže držať predpísaný
+  potenciál, nič viac, a nikdy sa nespracúva. Bod, ktorého uzol nepatrí žiadnemu
+  inému počítanému prvku, zanechá v matici prázdny riadok.
+- **Teplotná závislosť materiálu sa nečíta.** Tabuľky sa vyhodnocujú pri
+  `293.15 K`, pokiaľ krok prestupu tepla skôr v poradí nevytvoril teploty prvkov;
+  environmentálna podmienka *Teplota* nemá na tento riešič žiadny účinok.
+- **Model potrebuje predpísaný potenciál.** Bez neho má matica netriviálne jadro
+  a riešenie neskonverguje.

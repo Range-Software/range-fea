@@ -2,36 +2,36 @@
     "main": "theory_index.md",
     "chapters": [
         {
-            "title": "Acoustics",
-            "file":  "theory_acoustic.md"
+            "title": "1. Analýza napätia",
+            "file":  "theory_stress.md"
         },
         {
-            "title": "Contaminant dispersion",
-            "file":  "theory_fluid_particle.md"
-        },
-        {
-            "title": "Electro-statics",
-            "file":  "theory_electrostatics.md"
-        },
-        {
-            "title": "Fluid flow",
-            "file":  "theory_fluid.md"
-        },
-        {
-            "title": "Heat transfer",
+            "title": "2. Prestup tepla",
             "file":  "theory_heat.md"
         },
         {
-            "title": "Heat transfer in fluids",
-            "file":  "theory_fluid_heat.md"
+            "title": "3. Elektrostatika",
+            "file":  "theory_electrostatics.md"
         },
         {
-            "title": "Magneto-statics",
+            "title": "4. Magnetostatika",
             "file":  "theory_magnetostatics.md"
         },
         {
-            "title": "Stress",
-            "file":  "theory_stress.md"
+            "title": "5. Prúdenie tekutín",
+            "file":  "theory_fluid.md"
+        },
+        {
+            "title": "6. Prestup tepla v tekutinách",
+            "file":  "theory_fluid_heat.md"
+        },
+        {
+            "title": "7. Rozptyl kontaminantu v tekutinách",
+            "file":  "theory_fluid_particle.md"
+        },
+        {
+            "title": "8. Akustika",
+            "file":  "theory_acoustic.md"
         }
     ]
 }

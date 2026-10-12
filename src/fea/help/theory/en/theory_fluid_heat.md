@@ -110,7 +110,21 @@ task converges. With coupled walls it reports the relative change of its
 temperature field instead, so the group iterates until the wall temperature has
 settled.
 
-### 1.6 Initial conditions
+### 1.6 Coupling back to the flow - buoyancy
+
+The temperature this solver produces is handed back to the flow. On every pass
+the flow solver evaluates density and dynamic viscosity of each element at the
+latest temperature, so with a material whose density depends on temperature the
+body force `rho(T)*g` drives **natural convection** - warm fluid rises, cold
+fluid sinks. The shipped *Water* and *Air* have temperature-dependent density.
+
+In a steady-state run the first flow pass sees only the initial temperature,
+so buoyancy appears from the second iteration of the group on; give the group
+several iterations and a convergence value. In a transient run with one
+iteration per time step the flow sees the temperature of the previous step. The
+[Fluid flow](theory_fluid.md) manual describes the scheme in section 1.9.
+
+### 1.7 Initial conditions
 
 | Initial condition | Effect |
 |---|---|
@@ -120,7 +134,7 @@ Initial conditions are read on the **first run only**; after that the field
 marches from the previous result. A boundary condition overrides an initial
 condition where the two meet.
 
-### 1.7 Results
+### 1.8 Results
 
 | Result | Apply to | Meaning |
 |---|---|---|
@@ -141,7 +155,9 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 dialog. The combinations worth knowing:
 
 - *Incompressible viscous flow* and *Heat transfer in fluids* in one group - a
-  heated or cooled flow;
+  heated or cooled flow. Give the group several iterations when the flow is
+  driven or noticeably changed by buoyancy, so that flow and temperature settle
+  together - see 1.6;
 - *Heat transfer in fluids* and a separate *Heat transfer* task on a meshed
   solid, the fluid heat task first, in one group of several iterations -
   conjugate heat transfer through the walls carrying *Forced convection*.
@@ -199,11 +215,15 @@ tab shows temperature as a node scalar and heat flux as an element vector.
 
 ## 3. Limitations
 
-- **No buoyancy.** The density does not depend on temperature, so a *Heat
-  transfer in fluids* result never drives the flow it was computed on. Natural
-  convection, thermal plumes and stratification cannot be modelled.
-- **The coupling to the flow is one-way.** The flow drives the heat transport;
-  the temperature never changes the flow.
+- **Buoyancy without the expansion of the fluid.** The temperature changes the
+  flow through `rho(T)` and `mu(T)` (see 1.6), but the thermal expansion of the
+  fluid never enters the mass balance `div(v) = 0`. That is accurate for the
+  small density differences of natural convection, not for a gas heated by
+  hundreds of kelvin. The buoyant flow is laminar, like every flow in Range FEA.
+- **The coupling is staggered, not monolithic.** Flow and temperature are solved
+  one after the other and exchange data between passes. A steady-state
+  buoyant flow needs a group of several iterations; with one iteration per time
+  step a transient flow lags the temperature by one step.
 - **`Heat rate` conditions are ignored.** *Heat rate (unit area)* and *Heat rate
   (unit volume)* are offered by the interface for *Heat transfer in fluids* but
   are not read by `RSolverFluidHeat`; only the *Heat* condition reaches it. The

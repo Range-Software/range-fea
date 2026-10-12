@@ -93,7 +93,7 @@ aplikuje ako konvekčnú podmienku. Tok je reziduom rovníc tekutiny v uzloch st
 konzistentný s diskretizáciou, takže zostáva presný aj v tenkej tepelnej hraničnej
 vrstve. Teplota steny sa z prechodu na prechod relaxuje Aitkenovým faktorom, čo
 výmenu ustáli v niekoľkých prechodoch. Manuál [Prestup tepla](theory_heat.md)
-opisuje túto schému v časti *Conjugate heat transfer*. Sálavé a Joulovo teplo
+opisuje túto schému v časti *Združený prestup tepla*. Sálavé a Joulovo teplo
 prichádzajúce z iných riešičov sa pripočítavajú k zdrojovému členu rovnako ako v
 tepelnom riešiči.
 
@@ -106,7 +106,22 @@ preto skončí, keď skonverguje krok prúdenia. So spriahnutými stenami namies
 toho hlási relatívnu zmenu svojho teplotného poľa, takže skupina iteruje, kým sa
 teplota steny neustáli.
 
-### 1.6 Počiatočné podmienky
+### 1.6 Spätná väzba na prúdenie - vztlak
+
+Teplota, ktorú tento riešič vypočíta, sa odovzdáva späť prúdeniu. Pri každom
+prechode riešič prúdenia vyhodnotí hustotu a dynamickú viskozitu každého prvku
+pri najnovšej teplote, takže pri materiáli s hustotou závislou od teploty poháňa
+objemová sila `rho(T)*g` **prirodzenú konvekciu** - teplá tekutina stúpa,
+studená klesá. Dodávané materiály *Water* a *Air* majú hustotu závislú od
+teploty.
+
+V ustálenom výpočte vidí prvý prechod prúdenia iba počiatočnú teplotu, takže
+vztlak sa objaví až od druhej iterácie skupiny; dajte skupine niekoľko iterácií
+a hodnotu konvergencie. V prechodovom výpočte s jednou iteráciou na časový krok
+vidí prúdenie teplotu z predchádzajúceho kroku. Schému opisuje manuál
+[Prúdenie tekutín](theory_fluid.md) v časti 1.9.
+
+### 1.7 Počiatočné podmienky
 
 | Počiatočná podmienka | Účinok |
 |---|---|
@@ -116,7 +131,7 @@ Počiatočné podmienky sa čítajú **iba pri prvom výpočte**; potom pole pok
 predchádzajúceho výsledku. Kde sa stretne okrajová a počiatočná podmienka,
 okrajová má prednosť.
 
-### 1.7 Výsledky
+### 1.8 Výsledky
 
 | Výsledok | Aplikuje sa na | Význam |
 |---|---|---|
@@ -137,7 +152,9 @@ Všetko podstatné sa nachádza v paneli **Riešič** (záložky `Úloha`,
 Kombinácie, ktoré sa oplatí poznať:
 
 - *Nestlačiteľné viskózne prúdenie* a *Prestup tepla v tekutinách* v jednej
-  skupine - ohrievané alebo chladené prúdenie;
+  skupine - ohrievané alebo chladené prúdenie. Keď prúdenie poháňa alebo
+  citeľne mení vztlak, dajte skupine niekoľko iterácií, aby sa prúdenie a
+  teplota ustálili spolu - pozri 1.6;
 - *Prestup tepla v tekutinách* a samostatný krok *Prestup tepla* na pevnej látke
   so sieťou, krok prestupu tepla v tekutinách ako prvý, v jednej skupine s
   niekoľkými iteráciami - združený prestup tepla cez steny s podmienkou *Nútená
@@ -197,11 +214,15 @@ symetrická.
 
 ## 3. Obmedzenia
 
-- **Žiadny vztlak.** Hustota nezávisí od teploty, takže výsledok *Prestupu tepla v
-  tekutinách* nikdy nepoháňa prúdenie, na ktorom bol vypočítaný. Prirodzenú
-  konvekciu, tepelné vlečky ani stratifikáciu nemožno modelovať.
-- **Väzba na prúdenie je jednosmerná.** Prúdenie poháňa prenos tepla; teplota
-  nikdy nemení prúdenie.
+- **Vztlak bez rozťažnosti tekutiny.** Teplota mení prúdenie cez `rho(T)` a
+  `mu(T)` (pozri 1.6), tepelná rozťažnosť tekutiny však nikdy nevstupuje do
+  bilancie hmotnosti `div(v) = 0`. To je presné pre malé rozdiely hustoty
+  prirodzenej konvekcie, nie pre plyn ohriaty o stovky kelvinov. Vztlakové
+  prúdenie je laminárne ako každé prúdenie v Range FEA.
+- **Väzba je postupná, nie monolitická.** Prúdenie a teplota sa riešia jedno po
+  druhom a údaje si vymieňajú medzi prechodmi. Ustálené vztlakové prúdenie
+  potrebuje skupinu s niekoľkými iteráciami; pri jednej iterácii na časový krok
+  prechodové prúdenie zaostáva za teplotou o jeden krok.
 - **Podmienky `Heat rate` sa ignorujú.** *Tepelný výkon (na jednotku plochy)* a
   *Tepelný výkon (na jednotku objemu)* rozhranie pre *Prestup tepla v tekutinách*
   ponúka, ale `RSolverFluidHeat` ich nečíta; dostane sa k nemu iba podmienka

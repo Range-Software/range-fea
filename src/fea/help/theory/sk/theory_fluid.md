@@ -54,8 +54,10 @@ výsledok, je nulová rýchlosť a nulový tlak.
 ### 1.2 Riadiace rovnice
 
 Riešič implementuje **Navierove-Stokesove rovnice nestlačiteľného prúdenia** pre
-newtonskú tekutinu s konštantnou hustotou `rho` a konštantnou dynamickou
-viskozitou `mu`. Bilancia hybnosti a hmotnosti znie
+newtonskú tekutinu s hustotou `rho` a dynamickou viskozitou `mu`. Obe sú
+vlastnosti materiálu vyhodnotené pre každý prvok pri jeho teplote - odkiaľ táto
+teplota pochádza a ako robí prúdenie vztlakovým, opisuje časť 1.9. Bilancia
+hybnosti a hmotnosti znie
 
 ```
 rho * ( dv/dt + (v . grad) v ) = -grad(p) + div( mu * ( grad(v) + grad(v)^T ) ) + rho * g
@@ -251,19 +253,19 @@ vstupom aj stenou, je preto stenou.
 | Environmentálna podmienka | Zložky | Účinok |
 |---|---|---|
 | Gravitačné zrýchlenie (*Gravitational acceleration*) | `gx`, `gy`, `gz` `[m/s^2]` | objemová sila `rho*g` na entitu a hydrostatický člen podmienky *Tlak (implicitný)* |
-| Teplota (*Temperature*) | Teplota `[K]` | teplota okolia; vyberá riadok teplotne závislých tabuliek materiálu |
+| Teplota (*Temperature*) | Teplota `[K]` | teplota okolia pre krok *Prestup tepla v tekutinách*; samotný riešič prúdenia ju nečíta - pozri 1.9 |
 
 **Gravitačné zrýchlenie** má predvolenú hodnotu `(0, 0, -9.80665) m/s^2`, teda
 gravitáciu v zápornom smere `Z`. Priraďte ho objemovej entite kvôli objemovej
 sile a výstupnej ploche, aby sa hydrostatický člen *Tlaku (implicitného)* meral
 v správnom smere.
 
-Gravitácia vstupuje do rovnice hybnosti ako konštantná objemová sila `rho*g`.
-Keďže hustota je konštantná, rovnomerné gravitačné pole v uzavretej oblasti
-vytvorí hydrostatický gradient tlaku a žiadny pohyb - čo je správna odpoveď.
-Hustota v tomto riešiči **nezávisí** od teploty, takže neexistuje prúdenie
-poháňané vztlakom: výsledok *Prestupu tepla v tekutinách* nikdy nepoháňa
-prúdenie, na ktorom bol vypočítaný. Pozri časť 5.
+Gravitácia vstupuje do rovnice hybnosti ako objemová sila `rho*g`. V uzavretej
+oblasti s rovnomernou hustotou vytvorí rovnomerné gravitačné pole hydrostatický
+gradient tlaku a žiadny pohyb - čo je správna odpoveď. Kde sa hustota mení s
+teplotou, mení sa s ňou aj objemová sila a tento rozdiel poháňa **vztlakové
+prúdenie** - prirodzenú konvekciu, pozri 1.9. Výsledok tlaku vždy obsahuje
+hydrostatickú časť `rho*(g . x)`; nič sa neodčítava.
 
 #### Počiatočné podmienky
 
@@ -448,8 +450,51 @@ vlastným manuálom:
   koncentráciu kontaminantu - pozri
   [Rozptyl kontaminantu](theory_fluid_particle.md).
 
-Oba čítajú rýchlosť z výsledku prúdenia; väzba je jednosmerná, takže ani jeden
-prúdenie nemení.
+Oba čítajú rýchlosť z výsledku prúdenia. Rozptyl kontaminantu prúdenie nikdy
+nemení. Prestup tepla v tekutinách áno, prostredníctvom vlastností materiálu.
+
+#### Teplotne závislé vlastnosti a vztlak
+
+Pri **každom prechode** riešič prúdenia vyhodnotí hustotu a dynamickú viskozitu
+každého prvku z tabuliek materiálu pri teplote prvku, ktorú zanechal posledný
+prechod prestupu tepla. Bez kroku prestupu tepla v úlohe je táto teplota všade
+predvolených `293.15 K`. Environmentálnu podmienku *Teplota* riešič prúdenia
+priamo nečíta; k prúdeniu sa dostane iba cez krok prestupu tepla.
+
+Hustota v objemovej sile `rho(T)*g` robí prúdenie vztlakovým: teplá tekutina je
+ľahšia ako tekutina okolo nej a stúpa, studená klesá. Prirodzená konvekcia,
+tepelné vlečky a stratifikácia preto vychádzajú zo skupiny krokov
+*Nestlačiteľné viskózne prúdenie* a *Prestup tepla v tekutinách*, ak má materiál
+**tabuľku hustoty závislú od teploty**. Dodávané materiály *Water* a *Air* ju
+majú. Materiál, ktorého hustota je jediná hodnota, nedáva vztlak pri žiadnom
+rozdiele teplôt.
+
+Ako si tieto dva kroky vymieňajú údaje:
+
+- **Ustálený stav.** Dajte oba kroky do jednej skupiny, krok prúdenia ako prvý,
+  s niekoľkými iteráciami a hodnotou konvergencie. Prvý prechod prúdenia vidí
+  počiatočnú teplotu - počiatočnú podmienku *Teplota* alebo `293.15 K` - takže
+  ešte nemá vztlak. Od druhej iterácie každý prechod prúdenia vidí teplotu
+  prechodu prestupu tepla pred ním. Model poháňaný iba vztlakom potrebuje dosť
+  iterácií, aby sa oba ustálili spolu; skupina s jedinou iteráciou ich nikdy
+  nespriahne.
+- **Prechodový stav.** Každý časový krok spustí skupinu znova a každý prechod
+  prúdenia vidí najnovšiu teplotu. Pri jednej iterácii na časový krok použije
+  prúdenie teplotu z predchádzajúceho kroku - oneskorenie o jeden krok, ktoré je
+  prijateľné, kým časový krok rozlišuje tepelný prechodový dej. Niekoľko
+  iterácií na krok ho odstráni.
+
+Skupina skončí, keď skonverguje krok prúdenia, pretože nespriahnutý krok
+*Prestup tepla v tekutinách* hlási konvergenciu pri každom prechode. Zmena
+teploty posúva reziduum prúdenia cez `rho(T)` a `mu(T)`, takže skonvergované
+prúdenie je zároveň také, ktoré teplota už neposúva.
+
+Formulácia ponecháva `rho(T)` vo všetkých členoch bilancie hybnosti a
+`div(v) = 0` pre hmotnosť. Pre malé rozdiely hustoty prirodzenej konvekcie v
+kvapaline, alebo v plyne pri rozdieloch niekoľkých desiatok kelvinov, to dáva
+rovnakú odpoveď ako Boussinesqova aproximácia. Nie je to formulácia stlačiteľného
+prúdenia: tepelná rozťažnosť tekutiny nevstupuje do bilancie hmotnosti, takže
+plyn ohriaty o stovky kelvinov je mimo jej rozsahu.
 
 ### 1.10 Odvodené výsledky
 
@@ -865,18 +910,22 @@ neprejde žiadnou z týchto kontrol.
   tento riešič ho nemodeluje: výpočet môže aj tak konvergovať, ale odpoveď opisuje
   laminárne prúdenie, ktoré neexistuje. Neexistuje model `k`-`e`, stenová
   funkcia ani formulácia simulácie veľkých vírov.
-- **Iba nestlačiteľné a newtonské.** Hustota je konštantou materiálu a viskózne
-  napätie je lineárne v rýchlosti deformácie. Stlačiteľné prúdenie, vplyvy
-  Machovho čísla, voľné hladiny, viac fáz a nenewtonské správanie sú mimo
-  formulácie.
-- **Žiadny vztlak.** Hustota nezávisí od teploty, takže výsledok *Prestupu tepla v
-  tekutinách* nikdy nepoháňa prúdenie, na ktorom bol vypočítaný. Prirodzenú
-  konvekciu, tepelné vlečky ani stratifikáciu nemožno modelovať. Gravitácia
-  vstupuje iba ako konštantná objemová sila, ktorá v oblasti s konštantnou
-  hustotou vytvára hydrostatický tlak a žiadny pohyb.
-- **Väzba na teplotu a koncentráciu je jednosmerná.** Prúdenie poháňa transport;
-  transport nikdy nemení prúdenie. Obmedzenia sprievodných typov úloh uvádzajú
-  ich vlastné manuály.
+- **Iba nestlačiteľné a newtonské.** Bilancia hmotnosti je `div(v) = 0` a
+  viskózne napätie je lineárne v rýchlosti deformácie. Hustota a viskozita môžu
+  závisieť od teploty, nie však od tlaku. Stlačiteľné prúdenie, vplyvy Machovho
+  čísla, voľné hladiny, viac fáz a nenewtonské správanie sú mimo formulácie.
+- **Vztlak bez rozťažnosti tekutiny.** Hustota závislá od teploty poháňa
+  prirodzenú konvekciu cez `rho(T)*g` (pozri 1.9), tepelná rozťažnosť však nikdy
+  nevstupuje do bilancie hmotnosti. To je presné pre malé rozdiely hustoty
+  prirodzenej konvekcie, nie pre plyn ohriaty o stovky kelvinov. Vztlakové
+  prúdenie je laminárne ako každé iné prúdenie tu - vlečka alebo dutina nad
+  Rayleighovým číslom približne `1e8` až `1e9` je v skutočnosti turbulentná.
+- **Teplota sa k prúdeniu dostane iba z kroku prestupu tepla.** Bez neho sa
+  vlastnosti materiálu vyhodnotia pri `293.15 K`; samotná environmentálna
+  podmienka *Teplota* ich nezmení.
+- **Rozptyl kontaminantu je jednosmerný.** Prúdenie unáša kontaminant;
+  koncentrácia nikdy nemení prúdenie. Obmedzenia sprievodných typov úloh
+  uvádzajú ich vlastné manuály.
 - **Iba objemové prvky, iba lineárne tetrahedróny a hexahedróny.** Model prúdenia
   musí byť objem so sieťou z prvkov `TETRA1` alebo `HEXA1`; čokoľvek iné výpočet
   zastaví. Plochy sa zúčastňujú iba ako nositelia tlakovej sily *Tlaku

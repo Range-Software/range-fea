@@ -66,6 +66,14 @@
   and every node receives a value. Every magnetostatic result changes. The field
   of supply leads outside the model is not included
 
+#### Fluid flow
+
+- Density and viscosity follow the temperature of a *Heat transfer in fluids*
+  task on every iteration of a task group, not only on the first. A
+  temperature-dependent density now drives natural convection in a steady-state
+  run as well; before, a steady-state flow kept the density of the initial
+  temperature
+
 #### Heat transfer
 
 - The *Heat* boundary condition delivers its total in `W`, spread over the

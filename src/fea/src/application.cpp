@@ -206,6 +206,17 @@ void Application::initialize()
         }
     }
 
+#ifdef STORE_BUILD
+    // A store installs every version into a folder of its own (a versioned
+    // directory under WindowsApps for MSIX), so a path stored by the previous
+    // version points into a folder which no longer exists. These locations all
+    // belong to the package itself, so they are reset to the defaults without
+    // asking instead of being reported as an unusual configuration.
+    this->applicationSettings->setHelpDir(this->applicationSettings->findHelpDir());
+    this->getApplicationSettings()->setSolverPath(this->getApplicationSettings()->getDefaultSolverPath());
+    this->applicationSettings->setOpensslToolPath(RApplicationSettings::getDefaultOpensslToolPath());
+    this->applicationSettings->setOpensslConfPath(this->applicationSettings->findOpensslConfPath());
+#else
     // Check help directory
     if (this->applicationSettings->findHelpDir() != this->applicationSettings->getHelpDir())
     {
@@ -234,6 +245,7 @@ void Application::initialize()
             this->getApplicationSettings()->setSolverPath(this->getApplicationSettings()->getDefaultSolverPath());
         }
     }
+#endif
 
     this->getActionList()->processAvailability();
 }

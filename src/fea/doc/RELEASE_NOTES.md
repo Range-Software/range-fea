@@ -108,6 +108,14 @@
   properties as missing
 - **Start solver**, **Stop solver** and **Kill solver** are enabled only when
   they apply, so a solver can no longer be started twice for the same model
+- On Windows the default **Solver executable** includes the `.exe` extension,
+  so the application settings no longer report an existing solver as
+  `(does not exist)`. A path stored by an older version triggers the
+  *Unusual configuration* question once; answer *Yes* to switch to the default
+- Density and viscosity of a flow follow the temperature of a *Heat transfer in
+  fluids* task on every iteration of a task group. A temperature-dependent
+  density now drives natural convection in steady-state runs too; the fluid
+  flow manuals no longer claim the solver has no buoyancy
 
 #### 3D view and picking
 

@@ -159,6 +159,9 @@ QString ApplicationSettings::getDefaultSolverPath()
 #ifdef DEBUG
     baseName += ("_debug");
 #endif
+#ifdef Q_OS_WIN
+    baseName += (".exe");
+#endif
     return QDir(QApplication::applicationDirPath()).filePath(baseName);
 }
 

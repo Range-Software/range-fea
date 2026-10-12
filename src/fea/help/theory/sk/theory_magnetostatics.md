@@ -1,609 +1,594 @@
-# Magneto-statics - Theory Manual and User Guide
+# Magnetostatika - Teoretický manuál a používateľská príručka
 
-This document describes the magnetostatics solver (`RSolverMagnetostatics`) of
-Range FEA, which serves the **Magneto-statics** problem type: the law it
-evaluates, the inputs it accepts, the parts of the graphical user interface that
-drive it, a worked tutorial and what its result is worth.
+Tento dokument opisuje riešič magnetostatiky (`RSolverMagnetostatics`) v Range
+FEA, ktorý rieši typ úlohy **Magnetostatika** (*Magneto-statics*): zákon, ktorý
+vyhodnocuje, vstupy, ktoré prijíma, časti grafického používateľského rozhrania,
+ktoré ho ovládajú, podrobne rozpracovaný tutoriál a to, akú hodnotu má jeho
+výsledok.
 
-> **Status.** The solver evaluates the magnetic field of the current computed by
-> the electro-statics task directly, with the **Biot-Savart law**. There is no
-> system of equations and no boundary condition: the field is determined by the
-> current alone, and the condition that it vanishes far from the conductor is
-> built into the law. For the current density it is given, the result is exact
-> up to a controlled quadrature error well below `1e-4` of the peak field. The
-> solver works in **free space** - magnetic materials cannot be represented - and
-> it computes the field of the modelled current only, so the current path should
-> be closed within the model. Section 5 lists the limitations.
+> **Stav.** Riešič vyhodnocuje magnetické pole prúdu vypočítaného krokom
+> elektrostatiky priamo, pomocou **Biotovho-Savartovho zákona**. Neexistuje
+> žiadna sústava rovníc ani okrajová podmienka: pole je určené iba prúdom a
+> podmienka, že ďaleko od vodiča zaniká, je zabudovaná priamo v zákone. Pre
+> zadanú prúdovú hustotu je výsledok presný až na kontrolovanú chybu kvadratúry,
+> ktorá je výrazne pod `1e-4` špičkového poľa. Riešič pracuje vo **voľnom
+> priestore** - magnetické materiály nemožno reprezentovať - a počíta iba pole
+> modelovaného prúdu, takže prúdová dráha by mala byť uzavretá v rámci modelu.
+> Obmedzenia uvádza časť 5.
 
-**Contents**
+**Obsah**
 
-1. [Theoretical background](#1-theoretical-background)
-2. [Graphical user interface](#2-graphical-user-interface)
-3. [Tutorial - the field of a current-carrying conductor](#3-tutorial---the-field-of-a-current-carrying-conductor)
-4. [Checking a model](#4-checking-a-model)
-5. [Limitations](#5-limitations)
+1. [Teoretický základ](#1-teoretický-základ)
+2. [Grafické používateľské rozhranie](#2-grafické-používateľské-rozhranie)
+3. [Tutoriál - pole vodiča s prúdom](#3-tutoriál---pole-vodiča-s-prúdom)
+4. [Kontrola modelu](#4-kontrola-modelu)
+5. [Obmedzenia](#5-obmedzenia)
 
 ---
 
-## 1. Theoretical background
+## 1. Teoretický základ
 
-### 1.1 The result - the magnetic field
+### 1.1 Výsledok - magnetické pole
 
-The result is the **magnetic flux density** `B` at every node of the model, in
-tesla, as a vector of three components.
+Výsledkom je **magnetická indukcia** `B` v každom uzle modelu, v teslách, ako
+vektor s tromi zložkami.
 
-It is **evaluated, not solved for**. Once the current density is known, the
-magnetic field in free space follows from it by an integral, so the solver
-assembles no matrix and runs no iteration. Every node of the model receives a
-value, whether it lies in the conductor, on its surface or anywhere else in the
-mesh.
+Pole sa **vyhodnocuje, nerieši**. Keď je prúdová hustota známa, magnetické pole
+vo voľnom priestore z nej vyplýva integrálom, takže riešič nezostavuje žiadnu
+maticu a nespúšťa žiadnu iteráciu. Hodnotu dostane každý uzol modelu, či už leží
+vo vodiči, na jeho povrchu alebo kdekoľvek inde v sieti.
 
-### 1.2 Governing law
+### 1.2 Riadiaci zákon
 
-In free space the static magnetic field satisfies Ampere's law and has no
-sources:
+Vo voľnom priestore statické magnetické pole spĺňa Ampérov zákon a nemá žiadne
+zdroje:
 
 ```
 curl(B) = u0 * J
 div(B)  = 0
 ```
 
-together with the condition that `B` vanishes far from all currents. The unique
-field satisfying all three is given by the **Biot-Savart law**
+spolu s podmienkou, že `B` ďaleko od všetkých prúdov zaniká. Jediné pole, ktoré
+spĺňa všetky tri, dáva **Biotov-Savartov zákon**
 
 ```
 B(x) = u0/(4*pi) * INT_V  J(y) x (x - y) / |x - y|^3  dV(y)
 ```
 
-| Symbol | Meaning | Units | Source |
+| Symbol | Význam | Jednotky | Zdroj |
 |---|---|---|---|
-| `B` | magnetic flux density | `T` | computed |
-| `J` | current density | `A/m^2` | from the electro-statics task, see 1.4 |
-| `u0` | vacuum permeability | `H/m` | built in, `1.25663706212e-6` |
-| `x` | field point - a node of the model | `m` | |
-| `y` | source point - inside a conducting element | `m` | |
+| `B` | magnetická indukcia | `T` | vypočítaná |
+| `J` | prúdová hustota | `A/m^2` | z kroku elektrostatiky, pozri 1.4 |
+| `u0` | permeabilita vákua | `H/m` | zabudovaná, `1.25663706212e-6` |
+| `x` | bod poľa - uzol modelu | `m` | |
+| `y` | bod zdroja - vnútri vodivého prvku | `m` | |
 
-Three properties follow from the law itself rather than from anything the solver
-does:
+Tri vlastnosti vyplývajú zo samotného zákona, nie z niečoho, čo robí riešič:
 
-- **`div(B) = 0` holds exactly**, everywhere, whatever the mesh.
-- **The far field is right without a boundary.** `B` falls off with distance as
-  the law prescribes; there is no outer surface, no air region to mesh and no
-  condition to set there.
-- **`curl(B) = u0 * J` holds wherever the current is closed**, that is where
-  `div(J) = 0` and the current path forms loops. Section 1.4 explains what that
-  means for an electro-static model, whose current enters and leaves the body.
+- **`div(B) = 0` platí presne**, všade, nech je sieť akákoľvek.
+- **Vzdialené pole je správne aj bez hranice.** `B` klesá so vzdialenosťou tak,
+  ako predpisuje zákon; neexistuje vonkajšia plocha, žiadna oblasť vzduchu, ktorú
+  treba pokryť sieťou, a žiadna podmienka, ktorú tam treba zadať.
+- **`curl(B) = u0 * J` platí všade, kde je prúd uzavretý**, teda kde
+  `div(J) = 0` a prúdová dráha tvorí slučky. Časť 1.4 vysvetľuje, čo to znamená
+  pre elektrostatický model, ktorého prúd do telesa vstupuje a z neho vystupuje.
 
-The permeability of the material does not enter anywhere. There is no relative
-permeability material property, no magnetisation, and no distinction between `B`
-and `H` - the solver works in free space whatever the model is made of. Section
-1.9 explains why this cannot be lifted within the same approach.
+Permeabilita materiálu nikde nevstupuje. Neexistuje vlastnosť materiálu
+relatívna permeabilita, žiadna magnetizácia ani rozlíšenie medzi `B` a `H` -
+riešič pracuje vo voľnom priestore bez ohľadu na to, z čoho je model vyrobený.
+Časť 1.9 vysvetľuje, prečo toto obmedzenie nemožno v rámci toho istého prístupu
+odstrániť.
 
-**No material property is required.** The magnetostatics problem type declares
-none at all, and the setup checker has nothing to check on its behalf. The
-electro-statics task the problem type depends on has its own three requirements -
-see the electro-statics manual.
+**Nevyžaduje sa žiadna vlastnosť materiálu.** Typ úlohy magnetostatika
+nedeklaruje vôbec žiadnu a kontrola nastavenia nemá za neho čo kontrolovať. Krok
+elektrostatiky, od ktorého typ úlohy závisí, má vlastné tri požiadavky - pozri
+manuál elektrostatiky.
 
-### 1.3 Discretisation
+### 1.3 Diskretizácia
 
-The electro-statics solver produces a current density that is **constant in each
-element**. The integral of 1.2 therefore splits into one integral per element,
-each with a constant `J_e` that can be taken outside:
+Riešič elektrostatiky vytvára prúdovú hustotu, ktorá je **konštantná v každom
+prvku**. Integrál z 1.2 sa preto rozpadne na jeden integrál na prvok, každý s
+konštantou `J_e`, ktorú možno vybrať pred integrál:
 
 ```
 B(x) = u0/(4*pi) * SUM_e  J_e x G_e(x)
 G_e(x) = INT_e  (x - y) / |x - y|^3  dV(y)
 ```
 
-`G_e` depends only on the geometry of the element and on the field point. Every
-element type the solver accepts is flat-sided, and for those `G_e` has a closed
-form, so the solver integrates each element **exactly** rather than
-approximately:
+`G_e` závisí iba od geometrie prvku a od bodu poľa. Každý typ prvku, ktorý
+riešič prijíma, má rovinné steny a pre tie má `G_e` uzavretý tvar, takže riešič
+integruje každý prvok **presne**, nie približne:
 
-- **Tetrahedron.** The integrand is the gradient of `1/|x - y|` with respect to
-  `y`, so the volume integral becomes a sum over the four faces,
-  `G = SUM_f n_f * INT_f 1/R dA`. The integral of `1/R` over a flat triangle is
-  known in closed form: a logarithm along each edge and the solid angle the
-  triangle subtends from `x`,
+- **Tetrahedrón.** Integrand je gradient `1/|x - y|` vzhľadom na `y`, takže
+  objemový integrál sa zmení na súčet cez štyri steny,
+  `G = SUM_f n_f * INT_f 1/R dA`. Integrál `1/R` cez rovinný trojuholník je známy
+  v uzavretom tvare: logaritmus pozdĺž každej hrany a priestorový uhol, pod ktorým
+  je trojuholník vidieť z bodu `x`,
   `INT 1/R dA = SUM_edges P_e * I_e - |d| * omega`.
-- **Triangle** of a surface entity with a thickness `t`. The current is a sheet
-  current `K = J*t` in `A/m`. The tangential part of `G` is again a sum of edge
-  logarithms, `SUM_e m_e * I_e`, and the normal part is the signed solid angle.
-- **Quadrilateral.** Split into two triangles.
-- **Line segment** of a line entity with a cross area `A`. The current is
-  `I = A * (J . t)` along the segment, and the field of a straight finite wire is
-  classic:
+- **Trojuholník** plošnej entity s hrúbkou `t`. Prúd je plošný prúd `K = J*t` v
+  `A/m`. Tangenciálna časť `G` je opäť súčtom logaritmov hrán, `SUM_e m_e * I_e`,
+  a normálová časť je priestorový uhol so znamienkom.
+- **Štvoruholník.** Rozdelí sa na dva trojuholníky.
+- **Úsečka** čiarovej entity s prierezom `A`. Prúd pozdĺž úsečky je
+  `I = A * (J . t)` a pole priameho konečného drôtu je klasické:
 
   ```
   B = u0*I/(4*pi) * (a x b) * (|a| + |b|) / ( |a|*|b| * (|a|*|b| + a.b) )
   ```
 
-  with `a` and `b` the vectors from the field point to the two ends.
+  kde `a` a `b` sú vektory z bodu poľa do oboch koncov.
 
-Here `I_e` is the integral of `1/R` along edge `e`, `P_e` the in-plane distance of
-the field point from that edge, `m_e` the outward in-plane normal of the edge,
-`d` the height of the field point above the plane of the face and `omega` the
-solid angle of the face seen from the field point.
+Tu `I_e` je integrál `1/R` pozdĺž hrany `e`, `P_e` vzdialenosť bodu poľa od tejto
+hrany v rovine steny, `m_e` vonkajšia normála hrany v rovine steny, `d` výška bodu
+poľa nad rovinou steny a `omega` priestorový uhol steny pri pohľade z bodu poľa.
 
-**Distant elements** do not need the closed form. The integrand is smooth there,
-and a quadrature rule is as good as exact at a fraction of the cost:
+**Vzdialené prvky** uzavretý tvar nepotrebujú. Integrand je tam hladký a
+kvadratúrne pravidlo je takmer presné za zlomok nákladov:
 
-| Distance of the field point from the element centre | Rule |
+| Vzdialenosť bodu poľa od stredu prvku | Pravidlo |
 |---|---|
-| below 2 x the longest element edge | closed form |
-| 2 to 6 x | degree-two rule - 3 points on a triangle, 4 on a tetrahedron |
-| beyond 6 x | midpoint rule - the element as a point current |
+| pod 2-násobkom najdlhšej hrany prvku | uzavretý tvar |
+| 2- až 6-násobok | pravidlo druhého stupňa - 3 body na trojuholníku, 4 na tetrahedróne |
+| nad 6-násobok | pravidlo stredného bodu - prvok ako bodový prúd |
 
-Line segments always use the closed form, which is as cheap as a quadrature
-point. The combined error of the rules is measured by the unit tests against the
-closed form summed over every element of a whole conductor, and stays below
-`1e-4` of the peak field at every node - inside the conductor, on its surface and
-beyond.
+Úsečky vždy používajú uzavretý tvar, ktorý je rovnako lacný ako jeden
+kvadratúrny bod. Celkovú chybu pravidiel merajú jednotkové testy voči uzavretému
+tvaru sčítanému cez všetky prvky celého vodiča a v každom uzle - vnútri vodiča,
+na jeho povrchu aj mimo neho - zostáva pod `1e-4` špičkového poľa.
 
-**The field at the conductor itself.**
+**Pole priamo vo vodiči.**
 
-- For a **volume current** the field is continuous and finite everywhere,
-  including at the nodes, edges and faces of the conducting elements. A node on
-  the surface of a solid conductor gets the true surface field.
-- A **line** or **surface** entity stands for a conductor of zero section, and
-  the field of such a conductor is singular: it grows as `1/r` towards a wire and
-  logarithmically towards the edge of a sheet, and it jumps by `u0 * K x n` across
-  a sheet. At a node on such a conductor the solver returns a finite value: a
-  segment contributes nothing to a point on its own line, a sheet contributes the
-  mean of the fields on its two sides, and the edge logarithm of a sheet is left
-  out at a node lying on that edge. These values are regularised rather than
-  physical. Read the field of a thin conductor a few section sizes away from it,
-  where the thin model is valid.
+- Pre **objemový prúd** je pole spojité a konečné všade, vrátane uzlov, hrán a
+  stien vodivých prvkov. Uzol na povrchu masívneho vodiča dostane skutočné
+  povrchové pole.
+- **Čiarová** alebo **plošná** entita predstavuje vodič s nulovým prierezom a
+  pole takého vodiča je singulárne: k drôtu rastie ako `1/r`, k okraju plošného
+  vodiča logaritmicky a naprieč plošným vodičom skáče o `u0 * K x n`. V uzle na
+  takom vodiči riešič vracia konečnú hodnotu: úsečka neprispieva do bodu na
+  vlastnej priamke, plošný vodič prispieva priemerom polí na svojich dvoch
+  stranách a logaritmus hrany plošného vodiča sa v uzle ležiacom na tejto hrane
+  vynechá. Tieto hodnoty sú regularizované, nie fyzikálne. Pole tenkého vodiča
+  odčítajte niekoľko veľkostí prierezu od neho, kde je model tenkého vodiča
+  platný.
 
-### 1.4 The current density source
+### 1.4 Zdroj - prúdová hustota
 
-The magnetic field is driven by one input only: the **current density** left
-behind by an *Electro-statics* task earlier in the problem task flow. There is
-nothing to enter and nothing to assign.
+Magnetické pole poháňa jediný vstup: **prúdová hustota**, ktorú zanechal krok
+*Elektrostatika* skôr v poradí krokov úloh. Nie je čo zadávať ani priraďovať.
 
-The solver reads the **element** current density the electro-statics task stores
-and uses it as it is - there is no averaging onto nodes. The current carrying
-elements are:
+Riešič číta **prvkovú** prúdovú hustotu, ktorú ukladá krok elektrostatiky, a
+používa ju tak, ako je - nepriemeruje ju do uzlov. Prúd vedú tieto prvky:
 
-| Entity | Condition | Source |
+| Entita | Podmienka | Zdroj |
 |---|---|---|
-| Volume | tetrahedra | `J` |
-| Surface | thickness `> 0` | sheet current `J * thickness` |
-| Line | cross area `> 0` | current `J * cross area` |
+| Objem | tetrahedróny | `J` |
+| Plocha | hrúbka `> 0` | plošný prúd `J * hrúbka` |
+| Čiara | prierez `> 0` | prúd `J * prierez` |
 
-Elements whose current density is zero are skipped, which is every element the
-electro-statics task did not compute. So are elements whose current density is
-below `1e-10` of the largest in the model: a poorly conducting region - air with
-a conductivity of `5e-15 S/m` next to copper - would otherwise add a source per
-element and nothing measurable to the field. If no element carries a current - the
-electro-statics task has not run, the potentials are equal, or no material has an
-electrical conductivity - the log prints a warning and the field is zero
-everywhere.
+Prvky s nulovou prúdovou hustotou sa preskočia, čo sú všetky prvky, ktoré krok
+elektrostatiky nepočítal. Preskočia sa aj prvky, ktorých prúdová hustota je pod
+`1e-10` najväčšej v modeli: zle vodivá oblasť - vzduch s vodivosťou `5e-15 S/m`
+vedľa medi - by inak pridala jeden zdroj na prvok a do poľa nič merateľné. Ak
+žiadny prvok nevedie prúd - krok elektrostatiky neprebehol, potenciály sú rovnaké
+alebo žiadny materiál nemá elektrickú vodivosť - log vypíše varovanie a pole je
+všade nulové.
 
-**The current has to close.** The Biot-Savart law gives the field of the current
-it is given and nothing else. A physical current flows in closed loops, but an
-electro-static model usually holds only part of the loop: a bar between two
-electrodes, with the current entering through one end and leaving through the
-other. The supply leads and the rest of the circuit are not in the model, and
-neither is their field. What the solver computes is then the field of the modelled
-conductor as if the current appeared at one end and vanished at the other:
+**Prúd sa musí uzavrieť.** Biotov-Savartov zákon dáva pole prúdu, ktorý dostane,
+a nič iné. Fyzikálny prúd tečie v uzavretých slučkách, ale elektrostatický model
+zvyčajne obsahuje iba časť slučky: tyč medzi dvoma elektródami, do ktorej prúd
+vstupuje jedným koncom a vystupuje druhým. Prívody a zvyšok obvodu v modeli nie
+sú a nie je v ňom ani ich pole. Riešič potom vypočíta pole modelovaného vodiča
+tak, akoby sa prúd na jednom konci objavil a na druhom zmizol:
 
-- **near the conductor** this is usually an excellent approximation, since the
-  field there is dominated by the nearby current;
-- **far from it**, at distances comparable to the conductor itself, the missing
-  part of the loop matters as much as the modelled one, and the result is not the
-  field of any real circuit.
+- **blízko vodiča** je to zvyčajne výborná aproximácia, pretože pole tam určuje
+  hlavne blízky prúd;
+- **ďaleko od neho**, vo vzdialenostiach porovnateľných so samotným vodičom, má
+  chýbajúca časť slučky rovnakú váhu ako modelovaná a výsledok nie je poľom
+  žiadneho skutočného obvodu.
 
-When the far field matters, include the return path in the electro-static model
-so that the current forms a loop. A thin return conductor can be represented by a
-line entity with a cross area.
+Ak na vzdialenom poli záleží, zahrňte do elektrostatického modelu spätnú cestu,
+aby prúd vytvoril slučku. Tenký spätný vodič možno reprezentovať čiarovou entitou
+s prierezom.
 
-### 1.5 Boundary, initial and environment conditions
+### 1.5 Okrajové, počiatočné a environmentálne podmienky
 
-There are **none**, and none are needed.
+**Žiadne** nie sú a žiadne nie sú potrebné.
 
-| Condition kind | Offered for magneto-statics |
+| Druh podmienky | Ponúkané pre magnetostatiku |
 |---|---|
-| Boundary conditions | none |
-| Initial conditions | none |
-| Environment conditions | none |
-| Material properties | none |
+| Okrajové podmienky | žiadne |
+| Počiatočné podmienky | žiadne |
+| Environmentálne podmienky | žiadne |
+| Vlastnosti materiálu | žiadne |
 
-The field is fixed entirely by the current and by the requirement that it vanishes
-far away, which the Biot-Savart law carries with it. There is no outer boundary
-to close and nothing to prescribe on it.
+Pole je úplne určené prúdom a požiadavkou, že ďaleko zaniká, ktorú Biotov-Savartov
+zákon nesie so sebou. Neexistuje vonkajšia hranica, ktorú treba uzavrieť, ani
+nič, čo by sa na nej predpisovalo.
 
-When an electrostatics task and a magnetostatics task share a task flow - which
-they always do, see 1.6 - the condition tabs still offer the **electro-static**
-conditions, because the tabs are filled from the problem types of the whole flow.
-*Electric potential* and *Charge density* belong to the electrostatics task, and
-they reach the magnetic field through the current density they produce.
+Keď krok elektrostatiky a krok magnetostatiky zdieľajú poradie krokov - čo
+vždy robia, pozri 1.6 - záložky podmienok aj tak ponúkajú **elektrostatické**
+podmienky, pretože záložky sa plnia z typov úloh celého poradia krokov.
+*Elektrický potenciál* (*Electric potential*) a *Hustota náboja* (*Charge
+density*) patria kroku elektrostatiky a k magnetickému poľu sa dostanú cez
+prúdovú hustotu, ktorú vytvoria.
 
-### 1.6 Coupling with other solvers
+### 1.6 Väzba s inými riešičmi
 
-| Direction | Variable | Effect |
+| Smer | Premenná | Účinok |
 |---|---|---|
-| Electro-statics -> magneto-statics | Current density | the only source of the magnetic field |
+| Elektrostatika -> magnetostatika | Prúdová hustota | jediný zdroj magnetického poľa |
 
-**Magneto-statics requires Electro-statics.** The dependency is declared in the
-problem type, and the user interface enforces it: ticking *Magneto-statics* in
-the problem selector ticks *Electro-statics* automatically, and unticking
-*Electro-statics* unticks *Magneto-statics* with it. The default task flow places
-the electrostatics task first, which is the order the coupling needs.
+**Magnetostatika vyžaduje elektrostatiku.** Závislosť je deklarovaná v type úlohy
+a používateľské rozhranie ju vynucuje: zaškrtnutie *Magnetostatiky* vo výbere
+úloh automaticky zaškrtne *Elektrostatiku* a odškrtnutie *Elektrostatiky* s ňou
+odškrtne aj *Magnetostatiku*. Predvolené poradie krokov dáva krok elektrostatiky
+na prvé miesto, čo je poradie, ktoré väzba potrebuje.
 
-Nothing consumes the magnetic field. It is the end of its chain - no solver reads
-it, and there is no Lorentz force, no induced current and no magnetic
-contribution to any other physics.
+Magnetické pole nič nespotrebúva. Je koncom svojho reťazca - žiadny riešič ho
+nečíta a neexistuje Lorentzova sila, indukovaný prúd ani magnetický príspevok k
+inej fyzike.
 
-Because the solver reports itself as converged unconditionally, a task group
-containing a magnetostatics task always stops after one iteration.
+Keďže riešič hlási konvergenciu bezpodmienečne, skupina krokov obsahujúca krok
+magnetostatiky sa vždy zastaví po jednej iterácii.
 
-### 1.7 Evaluating the field
+### 1.7 Vyhodnotenie poľa
 
-Every current carrying element contributes to every node, so the work grows as
-the **number of nodes times the number of current carrying elements**. The
-evaluation runs in parallel over the nodes, which are processed in blocks so
-that each element is fetched from memory once per block rather than once per
-node.
+Každý prvok vedúci prúd prispieva do každého uzla, takže práca rastie ako
+**počet uzlov krát počet prvkov vedúcich prúd**. Vyhodnotenie beží paralelne cez
+uzly, ktoré sa spracúvajú po blokoch, takže každý prvok sa z pamäte načíta raz na
+blok, nie raz na uzol.
 
-As an indication, a bar of `120 000` tetrahedra evaluated at its `24 000` nodes
-takes about five seconds on 14 threads. Doubling the mesh in every direction
-multiplies the number of nodes and of elements by eight each, and the time by
-about sixty-four; a model of a few hundred thousand elements takes minutes rather
-than seconds.
+Pre orientáciu: tyč so `120 000` tetrahedrónmi vyhodnotená v jej `24 000` uzloch
+trvá na 14 vláknach asi päť sekúnd. Zdvojnásobenie siete v každom smere znásobí
+počet uzlov aj prvkov ôsmimi a čas približne šesťdesiatimi štyrmi; model s
+niekoľkými stovkami tisíc prvkov trvá minúty, nie sekundy.
 
-Only elements carrying current count. A large mesh around a small conductor -
-an air region, see 2.8 - adds nodes but no sources.
+Počítajú sa iba prvky vedúce prúd. Veľká sieť okolo malého vodiča - oblasť
+vzduchu, pozri 2.8 - pridá uzly, ale žiadne zdroje.
 
-The matrix solver setup is not used.
+Nastavenie maticového riešiča sa nepoužíva.
 
-### 1.8 Results
+### 1.8 Výsledky
 
-| Result | Apply to | Meaning |
+| Výsledok | Aplikuje sa na | Význam |
 |---|---|---|
-| Magnetic field `[T]` | node | the field vector |
+| Magnetické pole `[T]` | uzol | vektor poľa |
 
-That is the whole output. `process()` does nothing, so there is no derived
-quantity - no field magnitude stored separately, no flux, no energy density. The
-3D view can show the magnitude and the components of the vector variable in the
-usual way, and `Magnetic field in X direction` and the `Y` and `Z` equivalents are
-available for component display.
+To je celý výstup. `process()` nerobí nič, takže neexistuje žiadna odvodená
+veličina - žiadna samostatne uložená veľkosť poľa, žiadny tok ani hustota
+energie. 3D pohľad môže obvyklým spôsobom zobraziť veľkosť a zložky vektorovej
+premennej a pre zobrazenie zložiek sú k dispozícii `Magnetic field in X
+direction` a ekvivalenty pre `Y` a `Z`.
 
-The magnetic field is stored as a **node** variable, unlike the electrostatic
-field results, which are element variables. **Every node** of the model has a
-value, including nodes of entities that carry no current, so a mesh around the
-conductor shows the field in the space around it.
+Magnetické pole sa ukladá ako **uzlová** premenná, na rozdiel od výsledkov
+elektrostatického poľa, ktoré sú prvkovými premennými. Hodnotu má **každý uzol**
+modelu, vrátane uzlov entít, ktoré nevedú prúd, takže sieť okolo vodiča ukazuje
+pole v priestore okolo neho.
 
-After the record is written the solver log prints the statistics of the magnetic
-field and the values at any monitoring points.
+Po zapísaní záznamu log riešiča vypíše štatistiky magnetického poľa a hodnoty vo
+všetkých monitorovacích bodoch.
 
-### 1.9 What the solver is, and what it is not
+### 1.9 Čo riešič je a čo nie je
 
-**It is an integral, not a field equation.** Evaluating Biot-Savart needs no
-boundary and no mesh outside the conductor, and it is exact for the current it is
-given. The price is that it only works in a **uniform** medium. With magnetic
-materials the field of a current depends on where the iron is, and no integral of
-the current alone can express that; that problem is solved with a potential
-formulation - usually a magnetic vector potential on edge elements - which is a
-different solver, not an extension of this one.
+**Je to integrál, nie rovnica poľa.** Vyhodnotenie Biotovho-Savartovho zákona
+nepotrebuje žiadnu hranicu ani sieť mimo vodiča a pre prúd, ktorý dostane, je
+presné. Cenou je, že funguje iba v **homogénnom** prostredí. S magnetickými
+materiálmi pole prúdu závisí od toho, kde je železo, a to nemôže vyjadriť žiadny
+integrál samotného prúdu; takáto úloha sa rieši potenciálovou formuláciou -
+zvyčajne magnetickým vektorovým potenciálom na hranových prvkoch - čo je iný
+riešič, nie rozšírenie tohto.
 
-**It is driven by a computed conduction current.** There is no way to state a
-current directly, no permanent magnet and no imposed field; the current has to be
-produced by an electrostatics solve on a conducting body, and its accuracy sets
-the accuracy of the magnetic result. The electro-statics manual describes what
-that current density is and is not. A current density that is constant per
-element is a first-order approximation of the real one, and it converges as the
-mesh is refined.
+**Poháňa ho vypočítaný vodivý prúd.** Prúd nemožno zadať priamo, neexistuje
+permanentný magnet ani vnútené pole; prúd musí vytvoriť riešenie elektrostatiky
+na vodivom telese a jeho presnosť určuje presnosť magnetického výsledku. Manuál
+elektrostatiky opisuje, čo táto prúdová hustota je a čo nie je. Prúdová hustota
+konštantná na prvok je aproximáciou prvého rádu skutočnej hustoty a so
+zjemňovaním siete konverguje.
 
-**It computes the field of the modelled current.** See 1.4 - the current should
-close within the model when the field far from the conductor matters.
+**Počíta pole modelovaného prúdu.** Pozri 1.4 - ak záleží na poli ďaleko od
+vodiča, prúd by sa mal uzavrieť v rámci modelu.
 
-### 1.10 Static analysis and the time solver
+### 1.10 Statická analýza a časový riešič
 
-Magneto-statics is declared as a problem type **without** a time solver, exactly
-as electro-statics is. The *Time-solver* group box does not appear in the
-`Problem` tab, the run produces a single record, and there is nothing to
-configure.
+Magnetostatika je deklarovaná ako typ úlohy **bez** časového riešiča, presne ako
+elektrostatika. Skupina *Riešič v čase* sa na záložke `Úloha` nezobrazí, výpočet
+vytvorí jediný záznam a nie je čo nastavovať.
 
-Since a magnetostatics flow always contains an electrostatics task as well, and
-neither supports a time solver, adding either to a flow removes the time solver
-from the flow as a whole. A heat task chained behind them can only be
-steady-state. The electro-statics manual covers this in its own section 1.10.
+Keďže poradie krokov s magnetostatikou vždy obsahuje aj krok elektrostatiky a
+ani jeden časový riešič nepodporuje, pridanie ktoréhokoľvek z nich do poradia
+krokov odstráni časový riešič z poradia ako celku. Krok prestupu tepla zaradený
+za ne môže byť iba ustálený. Manuál elektrostatiky to rozoberá vo vlastnej časti
+1.10.
 
 ---
 
-## 2. Graphical user interface
+## 2. Grafické používateľské rozhranie
 
-Everything relevant lives in the **Solver** dock (`Problem`, `Material`,
-`Results` tabs), the **Problem** menu and the **Model** dock. The condition tabs
-hold nothing for this problem type.
+Všetko podstatné sa nachádza v paneli **Riešič** (záložky `Úloha`, `Materiál`,
+`Výsledky`), v menu **Úloha** a v paneli **Model**. Záložky podmienok pre tento
+typ úlohy nič neobsahujú.
 
-### 2.1 Selecting the problem
+### 2.1 Výber úlohy
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Magneto-statics** - "Calculate magnetic field".
+`Úloha` -> `Poradie krokov úloh` (`Ctrl+P`) otvorí dialóg poradia krokov úloh.
+Pridajte krok a vyberte **Magnetostatika** - "Výpočet magnetického poľa".
 
-**Electro-statics is ticked for you.** The selector enforces the dependency of
-1.6 in both directions: ticking *Magneto-statics* ticks *Electro-statics*, and
-unticking *Electro-statics* unticks *Magneto-statics*. The default task flow puts
-the electrostatics task first.
+**Elektrostatika sa zaškrtne za vás.** Výber vynucuje závislosť z 1.6 v oboch
+smeroch: zaškrtnutie *Magnetostatiky* zaškrtne *Elektrostatiku* a odškrtnutie
+*Elektrostatiky* odškrtne *Magnetostatiku*. Predvolené poradie krokov dáva krok
+elektrostatiky na prvé miesto.
 
-Magneto-statics combines with every other physics except *Modal analysis*. In
-practice the only chain that means anything is the one it is built on:
+Magnetostatika sa kombinuje s každou inou fyzikou okrem *Modálnej analýzy*. V
+praxi má zmysel iba reťazec, na ktorom je postavená:
 
-- *Electro-statics* then *Magneto-statics* - the magnetic field of a computed
-  conduction current.
+- *Elektrostatika* a potom *Magnetostatika* - magnetické pole vypočítaného
+  vodivého prúdu.
 
-### 2.2 Problem tab
+### 2.2 Záložka Úloha
 
-This tab is **empty** for an electro-statics plus magneto-statics flow. Neither
-problem type has a time solver and neither has a setup group box of its own.
+Pre poradie krokov elektrostatika plus magnetostatika je táto záložka
+**prázdna**. Ani jeden typ úlohy nemá časový riešič a ani jeden nemá vlastnú
+skupinu nastavení.
 
-### 2.3 Material tab
+### 2.3 Záložka Materiál
 
-Magneto-statics requires **nothing** from the material. The electro-statics task
-it depends on requires three properties - relative permittivity, electrical
-conductivity and density - and an entity whose material is missing any of them is
-skipped by *that* task, which leaves it with no current density and therefore no
-contribution to the magnetic field.
+Magnetostatika od materiálu **nič** nevyžaduje. Krok elektrostatiky, od ktorého
+závisí, vyžaduje tri vlastnosti - relatívnu permitivitu, elektrickú vodivosť a
+hustotu - a entitu, ktorej materiálu niektorá z nich chýba, *tento* krok
+preskočí, takže nemá prúdovú hustotu a teda ani príspevok k magnetickému poľu.
 
-So the material still matters, entirely through the electrostatic half of the
-chain. Assign a material with all three, such as the bundled *Copper*, and see
-the electro-statics manual for what each is used for.
+Materiál teda stále záleží, a to výlučne cez elektrostatickú polovicu reťazca.
+Priraďte materiál so všetkými tromi vlastnosťami, napríklad dodávanú *Meď*
+(*Copper*), a v manuáli elektrostatiky si pozrite, na čo sa každá z nich používa.
 
-There is no relative permeability property to assign. The solver works in free
-space.
+Neexistuje žiadna vlastnosť relatívna permeabilita, ktorú by bolo treba
+priradiť. Riešič pracuje vo voľnom priestore.
 
-### 2.4 Boundary conditions tab
+### 2.4 Záložka Okrajové podmienky
 
-Nothing in this tab belongs to the magnetostatic task. The conditions it offers -
-*Electric potential* and *Charge density* - are the electro-static ones, and they
-drive the current density which in turn produces the magnetic field. Assign them
-as the electro-statics manual describes.
+Nič na tejto záložke nepatrí kroku magnetostatiky. Podmienky, ktoré ponúka -
+*Elektrický potenciál* a *Hustota náboja* - sú elektrostatické a poháňajú
+prúdovú hustotu, ktorá zase vytvára magnetické pole. Priraďte ich tak, ako
+opisuje manuál elektrostatiky.
 
-No magnetostatic boundary condition exists or is needed - see 1.5.
+Žiadna magnetostatická okrajová podmienka neexistuje ani nie je potrebná - pozri
+1.5.
 
-### 2.5 Initial and environment conditions
+### 2.5 Počiatočné a environmentálne podmienky
 
-Neither tab offers anything for magneto-statics. The *Electric potential* initial
-condition and the *Temperature* environment condition shown belong to the
-electro-statics task.
+Ani jedna záložka pre magnetostatiku nič neponúka. Zobrazená počiatočná podmienka
+*Elektrický potenciál* a environmentálna podmienka *Teplota* patria kroku
+elektrostatiky.
 
-### 2.6 Matrix solver setup
+### 2.6 Nastavenie maticového riešiča
 
-The magnetostatics solver solves no system of equations and does not use the
-matrix solver setup. The **CG** entry configures the electrostatics solver only.
+Riešič magnetostatiky nerieši žiadnu sústavu rovníc a nastavenie maticového
+riešiča nepoužíva. Položka **CG** nastavuje iba riešič elektrostatiky.
 
-### 2.7 Monitoring points
+### 2.7 Monitorovacie body
 
-`Problem` -> `Define monitoring points` places probes at given coordinates and
-selects the variable to record. *Magnetic field* is available in the list, along
-with the electro-static variables, and reads the nodal field at the probe.
+`Úloha` -> `Definovať monitorovacie body` umiestni sondy na zadané súradnice a
+vyberie premennú, ktorá sa má zaznamenávať. *Magnetické pole* je v zozname k
+dispozícii spolu s elektrostatickými premennými a odčítava uzlové pole v mieste
+sondy.
 
-### 2.8 Results and records
+### 2.8 Výsledky a záznamy
 
-The `Results` tab lists **Magnetic field** as a node vector, alongside the
-electro-static results the first task produced. The `Records` tab of the `Model`
-dock holds exactly one record: both problem types are static.
+Záložka `Výsledky` uvádza **Magnetické pole** ako uzlový vektor, vedľa
+elektrostatických výsledkov, ktoré vytvoril prvý krok. Záložka `Záznamy` panela
+`Model` obsahuje presne jeden záznam: oba typy úloh sú statické.
 
-`Report` -> `Solver log file` shows the full output: the electrostatics
-statistics first, then the number of current carrying elements and nodes the
-Biot-Savart integral was evaluated for, then the magnetic field statistics.
+`Výkaz` -> `Log súbor riešiča` zobrazí celý výstup: najprv štatistiky
+elektrostatiky, potom počet prvkov vedúcich prúd a uzlov, pre ktoré sa
+Biotov-Savartov integrál vyhodnotil, a potom štatistiky magnetického poľa.
 
-**Seeing the field around a conductor.** The field is computed at every node, so
-anything meshed around the conductor shows it. Mesh the surrounding space as a
-separate volume entity - an air region - and give it a material without an
-electrical conductivity: the electro-statics task skips it, so it carries no
-current, but its nodes receive the magnetic field. The region costs nodes but no
-sources (1.7) and needs no particular size or boundary, since nothing is solved
-on it.
+**Zobrazenie poľa okolo vodiča.** Pole sa počíta v každom uzle, takže ho ukazuje
+čokoľvek, čo je okolo vodiča pokryté sieťou. Okolitý priestor pokryte sieťou ako
+samostatnú objemovú entitu - oblasť vzduchu - a dajte jej materiál bez
+elektrickej vodivosti: krok elektrostatiky ju preskočí, takže nevedie prúd, ale
+jej uzly dostanú magnetické pole. Oblasť stojí uzly, ale nie zdroje (1.7), a
+nepotrebuje žiadnu konkrétnu veľkosť ani hranicu, pretože sa na nej nič nerieši.
 
-The bundled *Air* material does carry an electrical conductivity, a tiny one, so
-the electro-statics task would include the region in its own solve. Use a copy of
-it with the electrical conductivity property removed. The setup check then warns
-that the entity's material is missing required properties; for the air region
-that is expected, and the run goes ahead.
+Dodávaný materiál *Vzduch* (*Air*) elektrickú vodivosť má, aj keď nepatrnú, takže
+krok elektrostatiky by oblasť zahrnul do vlastného riešenia. Použite jeho kópiu s
+odstránenou vlastnosťou elektrická vodivosť. Kontrola nastavenia potom upozorní,
+že materiálu entity chýbajú požadované vlastnosti; pre oblasť vzduchu je to
+očakávané a výpočet pokračuje.
 
 ---
 
-## 3. Tutorial - the field of a current-carrying conductor
+## 3. Tutoriál - pole vodiča s prúdom
 
-**Goal.** Run the electro-statics and magneto-statics chain end to end on a
-copper bar carrying a current, check the magnetic field against a hand
-calculation, and see where the approximations of 1.4 show.
+**Cieľ.** Spustiť reťazec elektrostatika a magnetostatika od začiatku do konca na
+medenej tyči, ktorou tečie prúd, overiť magnetické pole ručným výpočtom a ukázať,
+kde sa prejavia aproximácie z 1.4.
 
-This tutorial assumes the meshed bar of the electro-statics manual - a box
-`0.1 m` long with a `0.01 m` square section, tetrahedralised, with the two end
-faces marked as separate surface entities. If that model is still set up, only
-the task flow changes.
+Tento tutoriál predpokladá tyč so sieťou z manuálu elektrostatiky - kváder dlhý
+`0.1 m` so štvorcovým prierezom `0.01 m`, rozdelený na tetrahedróny, s dvoma
+koncovými stenami označenými ako samostatné plošné entity. Ak je tento model
+stále nastavený, zmení sa iba poradie krokov.
 
-### Step 1 - select the problems
+### Krok 1 - výber úloh
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Tick **Magneto-statics**. Watch **Electro-statics** tick itself.
-3. Confirm with `OK`.
+1. `Úloha` -> `Poradie krokov úloh` (`Ctrl+P`).
+2. Zaškrtnite **Magnetostatika**. Sledujte, ako sa **Elektrostatika** zaškrtne
+   sama.
+3. Potvrďte tlačidlom `OK`.
 
-The task flow now holds two tasks, electro-statics first. The `Problem` tab stays
-empty.
+Poradie krokov teraz obsahuje dva kroky, elektrostatiku ako prvú. Záložka `Úloha`
+zostane prázdna.
 
-### Step 2 - assign the material
+### Krok 2 - priradenie materiálu
 
-Select the volume entity and assign **Copper** in the `Material` tab, or a
-material carrying the three properties the electro-statics task needs:
+Vyberte objemovú entitu a na záložke `Materiál` priraďte **Meď**, alebo materiál
+s tromi vlastnosťami, ktoré potrebuje krok elektrostatiky:
 
-- **Relative permittivity** = `2.8`
-- **Electrical conductivity** = `5.882e7` `S/m`
-- **Density** = `8960` `kg/m^3`
+- **Relatívna permitivita** = `2.8`
+- **Elektrická vodivosť** = `5.882e7` `S/m`
+- **Hustota** = `8960` `kg/m^3`
 
-Nothing here is read by the magnetostatic task. It is the electrostatic task
-which needs them, and without a current density there is no magnetic field.
+Nič z toho krok magnetostatiky nečíta. Potrebuje ich krok elektrostatiky a bez
+prúdovej hustoty nie je žiadne magnetické pole.
 
-### Step 3 - drive a current
+### Krok 3 - vytvorenie prúdu
 
-1. Select the surface entity at one end, open the `Boundary conditions` tab and
-   tick **Electric potential**. Set it to `0` V.
-2. Select the surface entity at the other end, tick **Electric potential** and
-   set it to `0.01` V.
+1. Vyberte plošnú entitu na jednom konci, otvorte záložku `Okrajové podmienky` a
+   zaškrtnite **Elektrický potenciál**. Nastavte ho na `0` V.
+2. Vyberte plošnú entitu na druhom konci, zaškrtnite **Elektrický potenciál** a
+   nastavte ho na `0.01` V.
 
-The current through the bar is
+Prúd tyčou je
 
 ```
 I = sigma * dV * A / L = 5.882e7 * 0.01 * 1e-4 / 0.1 = 588 A
 ```
 
-A bar with no potential difference carries no current and gives a magnetic field
-of exactly zero - which is the first thing to check if the result comes out
-empty.
+Tyč bez rozdielu potenciálov nevedie prúd a dáva magnetické pole presne nulové -
+čo je prvá vec, ktorú treba skontrolovať, ak výsledok vyjde prázdny.
 
-### Step 4 - solve
+### Krok 4 - riešenie
 
-1. `Solution` -> `Start solver` (`Ctrl+R`).
-2. Follow the progress in `Report` -> `Solver log file`.
+1. `Riešenie` -> `Spustiť riešič` (`Ctrl+R`).
+2. Priebeh sledujte v `Výkaz` -> `Log súbor riešiča`.
 
-The log shows the electrostatics task with its variables, then the
-magnetostatics task: the number of current carrying elements, the number of
-nodes, and the magnetic field statistics. Both run once.
+Log ukazuje krok elektrostatiky s jeho premennými a potom krok magnetostatiky:
+počet prvkov vedúcich prúd, počet uzlov a štatistiky magnetického poľa. Oba
+prebehnú raz.
 
-### Step 5 - inspect the result
+### Krok 5 - kontrola výsledku
 
-- `Results` tab: display **Magnetic field**. It is a node vector, so the 3D view
-  offers its magnitude and its three components.
-- The field **circulates around the bar**, perpendicular to the current, in the
-  sense of the right-hand rule.
-- It is **zero on the axis** of the bar and grows towards the surface, where it
-  is largest - at the middle of each long face rather than at the corners.
-- It is **weaker near the ends** of the bar than in the middle. That is the
-  open current path of 1.4: near an end, half of what would be a longer
-  conductor is missing.
+- Záložka `Výsledky`: zobrazte **Magnetické pole**. Je to uzlový vektor, takže 3D
+  pohľad ponúka jeho veľkosť a tri zložky.
+- Pole **obieha okolo tyče**, kolmo na prúd, v zmysle pravidla pravej ruky.
+- Na **osi** tyče je **nulové** a rastie smerom k povrchu, kde je najväčšie - v
+  strede každej dlhej steny, nie v rohoch.
+- **Pri koncoch** tyče je **slabšie** ako v strede. To je otvorená prúdová dráha
+  z 1.4: pri konci chýba polovica toho, čo by bolo dlhším vodičom.
 
-### Step 6 - check the magnitude
+### Krok 6 - kontrola veľkosti
 
-For a round conductor of radius `R` the surface field is `u0*I/(2*pi*R)`. A
-square bar of side `a` is not round, but the middle of a face at distance `a/2`
-from the axis is close to it: with `a/2 = 0.005 m`,
+Pre kruhový vodič s polomerom `R` je povrchové pole `u0*I/(2*pi*R)`. Štvorcová
+tyč so stranou `a` nie je kruhová, ale stred steny vo vzdialenosti `a/2` od osi
+je tomu blízko: s `a/2 = 0.005 m`,
 
 ```
 u0*I/(2*pi*r) = 1.2566e-6 * 588 / (2*pi*0.005) = 0.0235 T
 ```
 
-The computed field at the middle of a long face, halfway along the bar, is about
-`0.020 T`, some 15 % below that - the square section puts much of the current
-further from the point than a round one would. At a corner, `a/sqrt(2)` from the
-axis, it is lower again, about `0.019 T`.
+Vypočítané pole v strede dlhej steny, v polovici dĺžky tyče, je asi `0.020 T`,
+teda o nejakých 15 % menej - štvorcový prierez umiestňuje veľkú časť prúdu
+ďalej od bodu, než by to urobil kruhový. V rohu, `a/sqrt(2)` od osi, je ešte
+nižšie, asi `0.019 T`.
 
-A sharper check needs a field point away from the bar, where the section no
-longer matters. Add an air region as described in 2.8 and read the field at
-`r = 0.02 m` from the axis, halfway along. For a straight finite conductor of
-length `L`,
+Ostrejšia kontrola potrebuje bod poľa mimo tyče, kde už na priereze nezáleží.
+Pridajte oblasť vzduchu podľa 2.8 a odčítajte pole vo vzdialenosti `r = 0.02 m`
+od osi, v polovici dĺžky. Pre priamy konečný vodič dĺžky `L`,
 
 ```
 B = u0*I/(4*pi*r) * 2 * (L/2) / sqrt( (L/2)^2 + r^2 )
   = 1e-7 * 588 / 0.02 * 2 * 0.05 / sqrt(0.0025 + 0.0004) = 5.46e-3 T
 ```
 
-and the computed value should match to about `0.1 %`, the difference being the
-square section of the bar. This value is the field of the bar alone,
-as 1.4 explains - a real circuit would add the field of its leads.
+a vypočítaná hodnota by sa mala zhodovať asi na `0.1 %`, pričom rozdiel spôsobuje
+štvorcový prierez tyče. Táto hodnota je pole samotnej tyče, ako vysvetľuje 1.4 -
+skutočný obvod by pridal pole svojich prívodov.
 
-### Troubleshooting
+### Riešenie problémov
 
-| Symptom | Cause |
+| Príznak | Príčina |
 |---|---|
-| The magnetic field is zero everywhere and the log warns that no element carries a current | no current density - check that the electro-statics task ran first, that the potentials differ, and that the material carries an electrical conductivity |
-| **Magneto-statics** cannot be unticked on its own | expected - it requires *Electro-statics*, and unticking that unticks both |
-| The *Time-solver* group box is missing | expected - neither problem type has a time solver, see 1.10 |
-| The field is weaker at the ends of a conductor | expected - the current path is open, see 1.4 |
-| The field far from the conductor does not match the circuit | the leads and the rest of the circuit are not in the model, see 1.4 |
-| The field at a line or thin surface conductor is erratic | expected - the field of a conductor of zero section is singular there, see 1.3 |
-| The run takes long | the cost is nodes times current carrying elements, see 1.7 |
+| Magnetické pole je všade nulové a log upozorňuje, že žiadny prvok nevedie prúd | chýba prúdová hustota - skontrolujte, že krok elektrostatiky prebehol ako prvý, že sa potenciály líšia a že materiál má elektrickú vodivosť |
+| **Magnetostatiku** nemožno odškrtnúť samostatne | očakávané - vyžaduje *Elektrostatiku* a jej odškrtnutie odškrtne obe |
+| Chýba skupina *Riešič v čase* | očakávané - ani jeden typ úlohy nemá časový riešič, pozri 1.10 |
+| Pole je na koncoch vodiča slabšie | očakávané - prúdová dráha je otvorená, pozri 1.4 |
+| Pole ďaleko od vodiča nezodpovedá obvodu | prívody a zvyšok obvodu nie sú v modeli, pozri 1.4 |
+| Pole na čiarovom alebo tenkom plošnom vodiči je nevyspytateľné | očakávané - pole vodiča s nulovým prierezom je tam singulárne, pozri 1.3 |
+| Výpočet trvá dlho | náklady sú uzly krát prvky vedúce prúd, pozri 1.7 |
 
 ---
 
-## 4. Checking a model
+## 4. Kontrola modelu
 
-**Straight conductor.** For a long conductor of radius `R` carrying a total
-current `I` uniformly, the field is circumferential and
+**Priamy vodič.** Pre dlhý vodič s polomerom `R`, ktorým rovnomerne tečie celkový
+prúd `I`, je pole obvodové a
 
 ```
 outside, r > R    B = u0 * I / ( 2 * pi * r )
 inside,  r < R    B = u0 * I * r / ( 2 * pi * R^2 )
 ```
 
-with `u0 = 1.2566e-6`. The field is largest at the surface of the conductor,
-`B = u0*I/(2*pi*R)`, and falls off as `1/r` beyond it. For a `1 A` current in a
-`5 mm` radius conductor that peak is `4e-5 T`, about the size of the earth's
-field.
+(mimo vodiča a vnútri vodiča) s `u0 = 1.2566e-6`. Pole je najväčšie na povrchu
+vodiča, `B = u0*I/(2*pi*R)`, a za ním klesá ako `1/r`. Pre prúd `1 A` vo vodiči s
+polomerom `5 mm` je táto špička `4e-5 T`, približne veľkosť magnetického poľa
+Zeme.
 
-**Finite conductor.** For a straight conductor of length `L`, at distance `r`
-from its axis and halfway along,
+**Konečný vodič.** Pre priamy vodič dĺžky `L`, vo vzdialenosti `r` od jeho osi a
+v polovici dĺžky,
 
 ```
 B = u0 * I / ( 4 * pi * r ) * L / sqrt( (L/2)^2 + r^2 )
 ```
 
-which tends to the long conductor formula as `L` grows. Away from the conductor
-the shape of the section stops mattering, so any section can be checked against
-this.
+čo s rastúcim `L` prechádza na vzorec pre dlhý vodič. Mimo vodiča tvar prierezu
+prestáva záležať, takže podľa toho možno overiť akýkoľvek prierez.
 
-**Wire.** A line entity with a cross area carries its current along the segments,
-and the solver uses the closed form of a straight wire for each of them. A
-straight line entity therefore reproduces the finite conductor formula exactly,
-to rounding, at any distance.
+**Drôt.** Čiarová entita s prierezom vedie svoj prúd pozdĺž úsečiek a riešič pre
+každú z nich používa uzavretý tvar priameho drôtu. Priama čiarová entita preto
+reprodukuje vzorec pre konečný vodič presne, až na zaokrúhlenie, v akejkoľvek
+vzdialenosti.
 
-**Solenoid.** For a long solenoid of `n` turns per metre carrying `I`, the field
-inside is uniform and along the axis,
+**Solenoid.** Pre dlhý solenoid s `n` závitmi na meter, ktorým tečie `I`, je pole
+vnútri homogénne a smeruje pozdĺž osi,
 
 ```
 B = u0 * n * I
 ```
 
-and close to zero outside. A winding can be modelled as a line entity following
-the turns, with the cross area of the wire, and the electro-statics task drives
-the current through it from potentials at its two ends.
+a mimo neho je takmer nulové. Vinutie možno modelovať ako čiarovú entitu
+sledujúcu závity, s prierezom drôtu, a krok elektrostatiky ním poháňa prúd z
+potenciálov na jeho dvoch koncoch.
 
-**Divergence.** For any magnetic field `div(B) = 0` everywhere. The Biot-Savart
-law satisfies it exactly, so it does not test this solver; it would test only the
-interpolation between the nodes.
+**Divergencia.** Pre akékoľvek magnetické pole platí všade `div(B) = 0`.
+Biotov-Savartov zákon ju spĺňa presne, takže tento riešič netestuje; testovala by
+iba interpoláciu medzi uzlami.
 
-**Convergence with the mesh.** The integration itself is exact (1.3); what
-depends on the mesh is the current density, which the electro-statics task
-computes as constant per element. Refining the mesh in the conductor and
-comparing the field at the same point is the check of that part.
+**Konvergencia so sieťou.** Samotná integrácia je presná (1.3); od siete závisí
+prúdová hustota, ktorú krok elektrostatiky počíta ako konštantnú na prvok.
+Zjemnenie siete vo vodiči a porovnanie poľa v tom istom bode je kontrolou tejto
+časti.
 
 ---
 
-## 5. Limitations
+## 5. Obmedzenia
 
-### Modelling limitations
+### Obmedzenia modelovania
 
-- **Free space only.** No permeability enters the formulation. There is no
-  relative permeability material property, no distinction between `B` and `H`,
-  no magnetisation and no saturation, so iron, ferrites and shielding cannot be
-  represented at all. See 1.9 for why this needs a different solver.
-- **The field of the modelled current only.** The field of the supply leads and
-  of the rest of the circuit is not included. When the current path in the model
-  is open, the field far from the conductor is not that of a real circuit - see
-  1.4.
-- **No permanent magnets and no imposed field.** The only source is a conduction
-  current computed by an electro-statics task. A magnet, a background field and
-  an external excitation have no representation.
-- **No current can be stated directly.** A current is produced by an
-  electrostatic solve on a conducting body. A coil can be modelled as a line
-  entity following the winding, but its current is still set through potentials.
-- **Thin conductors are singular.** The field at a node on a line entity or on
-  the edge of a surface entity is a regularised value, not a physical one - see
-  1.3.
-- **Element types.** Tetrahedra, triangles, quadrilaterals and two-node line
-  segments carry current; other element types contribute nothing.
-- **Cost.** The work grows as the number of nodes times the number of current
-  carrying elements - see 1.7.
-- **No derived results.** `process()` computes nothing, so the magnetic field
-  vector is the entire output. There is no flux, no energy, no force and no
-  field magnitude stored as a variable of its own.
-- **Nothing consumes the result.** No other solver reads the magnetic field.
-  There is no Lorentz force on the conductor, no induced current and no coupling
-  back into the electro-static, thermal or structural physics.
-- **Static only.** There is no time solver, and adding a magnetostatics task -
-  which brings an electrostatics task with it - removes the time solver from the
-  whole task flow, so any other physics chained behind it is steady-state as
-  well.
+- **Iba voľný priestor.** Do formulácie nevstupuje žiadna permeabilita.
+  Neexistuje vlastnosť materiálu relatívna permeabilita, rozlíšenie medzi `B` a
+  `H`, magnetizácia ani nasýtenie, takže železo, ferity a tienenie nemožno
+  reprezentovať vôbec. Prečo to potrebuje iný riešič, vysvetľuje 1.9.
+- **Iba pole modelovaného prúdu.** Pole prívodov a zvyšku obvodu nie je
+  zahrnuté. Keď je prúdová dráha v modeli otvorená, pole ďaleko od vodiča nie je
+  poľom skutočného obvodu - pozri 1.4.
+- **Žiadne permanentné magnety ani vnútené pole.** Jediným zdrojom je vodivý
+  prúd vypočítaný krokom elektrostatiky. Magnet, pole pozadia ani vonkajšie
+  budenie nemajú žiadnu reprezentáciu.
+- **Prúd nemožno zadať priamo.** Prúd vzniká riešením elektrostatiky na vodivom
+  telese. Cievku možno modelovať ako čiarovú entitu sledujúcu vinutie, ale jej
+  prúd sa aj tak nastavuje cez potenciály.
+- **Tenké vodiče sú singulárne.** Pole v uzle na čiarovej entite alebo na okraji
+  plošnej entity je regularizovaná hodnota, nie fyzikálna - pozri 1.3.
+- **Typy prvkov.** Prúd vedú tetrahedróny, trojuholníky, štvoruholníky a
+  dvojuzlové úsečky; ostatné typy prvkov neprispievajú ničím.
+- **Náklady.** Práca rastie ako počet uzlov krát počet prvkov vedúcich prúd -
+  pozri 1.7.
+- **Žiadne odvodené výsledky.** `process()` nič nepočíta, takže vektor
+  magnetického poľa je celým výstupom. Neexistuje tok, energia, sila ani veľkosť
+  poľa uložená ako samostatná premenná.
+- **Výsledok nič nespotrebúva.** Žiadny iný riešič magnetické pole nečíta.
+  Neexistuje Lorentzova sila na vodič, indukovaný prúd ani spätná väzba do
+  elektrostatickej, tepelnej alebo štrukturálnej fyziky.
+- **Iba statická analýza.** Neexistuje časový riešič a pridanie kroku
+  magnetostatiky - ktorý so sebou prinesie krok elektrostatiky - odstráni časový
+  riešič z celého poradia krokov, takže každá iná fyzika zaradená za ním je tiež
+  ustálená.
