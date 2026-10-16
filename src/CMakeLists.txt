@@ -261,6 +261,8 @@ if(WIN32)
         $<TARGET_FILE:${PROJECT_TARGET_NAME}>
         --dir ${_qt_deploy_dir}
         --force-openssl
+        # Rendering is OpenGL - the Direct3D 12 shader compiler is not needed.
+        --no-system-dxc-compiler
     )
 
     add_custom_target(deploy-qt ALL

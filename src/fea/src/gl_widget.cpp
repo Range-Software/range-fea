@@ -580,11 +580,16 @@ void GLWidget::drawModel()
         int lineColorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
         this->qglColor(QColor(lineColorValue,lineColorValue,lineColorValue,255));
 
+        // Positions are in model units (model scale is applied), so the arrow length is a fraction of the model size
+        // divided by zoom - constant on screen. Head is sized like the model dimension arrow heads.
+        double arrowLength = 2.0*GLDimension::arrowScale/double(this->mscale*this->scale);
+
         foreach (const RLocalDirection &localDirection, this->localDirections)
         {
             RR3Vector direction(localDirection.getDirection());
-            direction *= 1.0/double(this->scale);
-            GLArrow localRotationArrow(this,localDirection.getPosition(),direction,true,false,GLDimension::arrowScale/double(this->mscale));
+            direction.normalize();
+            direction *= arrowLength;
+            GLArrow localRotationArrow(this,localDirection.getPosition(),direction,true,false,0.25);
             localRotationArrow.paint();
         }
     }

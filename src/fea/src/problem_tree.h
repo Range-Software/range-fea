@@ -1,16 +1,24 @@
 #ifndef PROBLEM_TREE_H
 #define PROBLEM_TREE_H
 
+#include <QPointer>
 #include <QTreeWidget>
 
 #include <rml_problem.h>
 
 #include <rgl_file_chooser_button.h>
 
+class StressSetupWidget;
+
 class ProblemTree : public QTreeWidget
 {
 
     Q_OBJECT
+
+    protected:
+
+        //! Stress setup widget (enabled only if time solver is enabled).
+        QPointer<StressSetupWidget> stressSetupWidget;
 
     public:
 
@@ -42,6 +50,9 @@ class ProblemTree : public QTreeWidget
 
         //! Particle setup has changed.
         void onParticleSetupChanged(const RParticleSetup &particleSetup);
+
+        //! Stress setup has changed.
+        void onStressSetupChanged(const RStressSetup &stressSetup);
 
         //! Radiation setup has changed.
         void onRadiationSetupChanged(const RRadiationSetup &radiationSetup);

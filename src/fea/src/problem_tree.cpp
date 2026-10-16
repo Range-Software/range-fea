@@ -5,6 +5,7 @@
 #include "modal_setup_widget.h"
 #include "particle_setup_widget.h"
 #include "radiation_setup_widget.h"
+#include "stress_setup_widget.h"
 #include "time_solver_setup_widget.h"
 
 typedef enum _ProblemTreeColumn
@@ -75,6 +76,16 @@ void ProblemTree::populate()
         QObject::connect(timeSolverWidget,&TimeSolverSetupWidget::changed,this,&ProblemTree::onTimeSolverChanged);
     }
 
+    if ((rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS) &&
+        RProblem::getTimeSolverEnabled(rModel.getProblemTaskTree().getProblemTypeMask()))
+    {
+        QTreeWidgetItem *stressSetup = new QTreeWidgetItem(this);
+        this->stressSetupWidget = new StressSetupWidget(rModel.getProblemSetup().getStressSetup());
+        this->stressSetupWidget->setEnabled(rModel.getTimeSolver().getEnabled());
+        this->setItemWidget(stressSetup,PROBLEM_TREE_COLUMN_1,this->stressSetupWidget);
+        QObject::connect(this->stressSetupWidget,&StressSetupWidget::changed,this,&ProblemTree::onStressSetupChanged);
+    }
+
     if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
     {
         QTreeWidgetItem *modalSetup = new QTreeWidgetItem(this);
@@ -136,6 +147,11 @@ void ProblemTree::onModelSelectionChanged(uint)
 
 void ProblemTree::onTimeSolverChanged(const RTimeSolver &timeSolver)
 {
+    if (this->stressSetupWidget)
+    {
+        this->stressSetupWidget->setEnabled(timeSolver.getEnabled());
+    }
+
     QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
 
     for (int i=0;i<modelIDs.size();i++)
@@ -174,6 +190,17 @@ void ProblemTree::onParticleSetupChanged(const RParticleSetup &particleSetup)
     for (int i=0;i<modelIDs.size();i++)
     {
         Application::instance()->getSession()->getModel(modelIDs[i]).getProblemSetup().setParticleSetup(particleSetup);
+        Application::instance()->getSession()->setProblemChanged(modelIDs[i]);
+    }
+}
+
+void ProblemTree::onStressSetupChanged(const RStressSetup &stressSetup)
+{
+    QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    for (int i=0;i<modelIDs.size();i++)
+    {
+        Application::instance()->getSession()->getModel(modelIDs[i]).getProblemSetup().setStressSetup(stressSetup);
         Application::instance()->getSession()->setProblemChanged(modelIDs[i]);
     }
 }

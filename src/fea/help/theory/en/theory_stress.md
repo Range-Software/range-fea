@@ -62,7 +62,8 @@ sigma = D * ( eps - alpha * dT )
 | `dT` | temperature rise above the stress-free state | `K` | see 1.5 |
 
 All four material properties are **required** - an entity that is missing any of
-them is not solved.
+them is not solved. The two Rayleigh damping coefficients of a dynamic analysis
+(see 1.7) are optional.
 
 ### 1.3 Elasticity matrix
 
@@ -126,8 +127,8 @@ A surface with zero thickness or a line with zero cross area contributes no
 stiffness and no mass - it can still carry loads, which is exactly what is
 wanted for a load-carrying face of a meshed solid.
 
-The mass matrix is assembled only when it is needed, that is for a transient
-analysis or for a modal analysis.
+The mass matrix is assembled only when it is needed, that is for a dynamic
+transient analysis or for a modal analysis.
 
 ### 1.5 Loads, boundary and environment conditions
 
@@ -248,9 +249,13 @@ condition alone.
 
 | Initial condition | Effect |
 |---|---|
-| Displacement | initial displacement field, applied on the first run |
+| Displacement | initial displacement field of a dynamic transient analysis |
+| Structural velocity | initial velocity field of a dynamic transient analysis |
 | Pressure | initial surface pressure load |
-| Velocity | offered, but not read by the stress solver - see 6 |
+
+Initial conditions are read on the first run of a transient analysis only. A
+dynamic analysis without them starts from rest. Constrained directions keep no
+initial velocity of their own, they follow the prescribed displacement.
 
 #### Coupling with a fluid solver
 
@@ -282,24 +287,117 @@ body modes - three translations and three rotations.
 
 ### 1.7 Transient analysis
 
-With the time solver enabled, the solver marches
+With the time solver enabled, the *Transient stress analysis setup* selects one
+of two analysis types.
+
+#### Dynamic analysis
+
+The default. The solver integrates the equations of linear elastodynamics
 
 ```
-M * du/dt + K * u = f
+M * d2u/dt2 + C * du/dt + K * u = f(t)
 ```
 
-with a theta scheme, where `alpha` is the time-march approximation coefficient
-(`1` backward, `0.5` central, `0` forward):
+so inertia, stress waves, vibration, dynamic amplification and resonance are
+all reproduced.
+
+**Damping.** `C` is Rayleigh damping, built element by element from two
+optional material properties,
 
 ```
-( M + alpha*dt*K ) * u_n+1 = dt*f + ( M - (1-alpha)*dt*K ) * u_n
+C = alpha_M * M + beta_K * K
 ```
 
-Note that this is a **first-order** march. There is no second time derivative of
-the displacement in the assembled system, so this is a relaxation-type transient
-rather than true elastodynamics: it does not reproduce inertia waves, ringing or
-resonance. Use it for a load history applied slowly compared with the structural
-periods, and use *Modal analysis* to learn where the structural periods are.
+*Rayleigh mass damping coefficient* `alpha_M` `[1/s]` damps the low
+frequencies, *Rayleigh stiffness damping coefficient* `beta_K` `[s]` the high
+ones. The damping ratio of a mode with circular frequency `omega` is
+
+```
+zeta(omega) = alpha_M / (2*omega) + beta_K * omega / 2
+```
+
+so a target ratio `zeta` at two frequencies `omega_1` and `omega_2` is reached
+with
+
+```
+alpha_M = 2*zeta * omega_1*omega_2 / (omega_1 + omega_2)
+beta_K  = 2*zeta / (omega_1 + omega_2)
+```
+
+Take the two frequencies from a modal analysis, around the band you care about.
+Typical structural damping ratios are 0.01 to 0.05. Without the two properties
+there is no physical damping at all.
+
+**Time integration.** The Newmark method with the Hilber-Hughes-Taylor (HHT)
+modification. With the displacement `u`, velocity `v` and acceleration `a` at
+the start of the step, each step solves
+
+```
+( a0*M + (1+alpha)*(K + a1*C) ) * u_n+1 =
+      (1+alpha)*f_n+1 - alpha*f_n
+    + M * ( a0*u_n + a2*v_n + a3*a_n )
+    + (1+alpha) * C * ( a1*u_n + a4*v_n + a5*a_n )
+    + alpha * ( C*v_n + K*u_n )
+```
+
+```
+a0 = 1/(beta*dt^2)   a1 = gamma/(beta*dt)   a2 = 1/(beta*dt)
+a3 = 1/(2*beta) - 1  a4 = gamma/beta - 1    a5 = dt/2 * (gamma/beta - 2)
+```
+
+and then updates
+
+```
+a_n+1 = a0*(u_n+1 - u_n) - a2*v_n - a3*a_n
+v_n+1 = v_n + dt*( (1-gamma)*a_n + gamma*a_n+1 )
+```
+
+The effective matrix is symmetric positive definite, so it is solved with the
+same CG method as a static analysis.
+
+- With **HHT alpha = 0** (default) the scheme is plain Newmark with
+  `gamma = 1/2` and `beta = max(theta/2, 1/4)`, where `theta` is the time-march
+  approximation coefficient (`1` backward, `0.5` central, `0` forward). Central
+  and forward both give the average acceleration scheme - unconditionally
+  stable, second order accurate and free of numerical damping. Backward gives
+  `beta = 1/2`, which is also unconditionally stable but lengthens the periods.
+- With **HHT alpha** between `-1/3` and `0`, `gamma = 1/2 - alpha` and
+  `beta = (1 - alpha)^2 / 4`. The scheme stays unconditionally stable and second
+  order accurate, and damps the high frequencies a coarse mesh resolves badly
+  while leaving the low modes almost untouched. `-0.05` to `-0.1` is a common
+  choice when the response is polluted by high frequency noise.
+
+**Initial acceleration.** On the first step the acceleration is solved from
+equilibrium, `M*a = f - K*u - C*v`, so a load applied at the start produces the
+right initial acceleration. Directions without mass get zero.
+
+**Lumped mass.** The *Lumped mass matrix* option replaces the consistent mass
+with a diagonal one of the same total mass, scaling the diagonal of the
+consistent matrix (HRZ lumping, which stays positive for quadratic elements as
+well). It lowers the natural frequencies slightly and gives a smoother response
+behind sharp wave fronts.
+
+**Choosing the time step.** The scheme is stable for any `dt`, but accuracy
+needs roughly 20 steps or more per period of the highest mode you want to
+resolve. For a wave travelling through the mesh, a step close to the time the
+wave needs to cross one element (`dt ~ h/c`, `c = sqrt(E/rho)`) is a good
+start.
+
+**Results.** Besides displacement and stress, a dynamic analysis stores the
+*Structural velocity* and *Structural acceleration* node vectors. They also
+carry the state into the next time step and over a solver restart.
+
+#### Quasi-static analysis
+
+Each time step is an independent static solution
+
+```
+K * u(t) = f(t)
+```
+
+with inertia and damping neglected. Use it for a load history applied slowly
+compared with the structural periods, where only the sequence of equilibrium
+states matters. It needs no density and no time step limit.
 
 ### 1.8 Modal analysis
 
@@ -382,8 +480,15 @@ After the solve the element stresses are recovered from the displacement field
 as the average over the integration points of
 
 ```
-sigma = D * B * u  -  D * alpha * dT
+sigma = D * ( B * u  -  eps_th )
 ```
+
+with the thermal strain `eps_th = alpha * dT * [1, 1, 1, 0, 0, 0]` for volume
+elements. Surface elements are plane strain: the expansion out of their plane
+is suppressed, which raises the in-plane thermal strain to
+`eps_th = (1+v) * alpha * dT * [1, 1, 0]`. The same thermal strain enters the
+thermal load `f_th = INT( B^T * D * eps_th )`. Line elements report
+`E * (eps - alpha * dT)`.
 
 From the six components the solver forms two invariants and combines them in
 quadrature into the von Mises stress:
@@ -407,12 +512,13 @@ the axial value is reported and the shear part is zero.
 **Nodal forces** are recovered element by element as the internal elastic force
 
 ```
-f = K * u
+f = K * u - f_th
 ```
 
 and accumulated at the nodes. At a constrained node this is the reaction force;
-at a free node it should come out near zero for a converged static solve, which
-makes the Force result a useful residual check.
+at an unloaded free node it should come out near zero for a converged static
+solve, which makes the Force result a useful residual check. A body that is
+free to expand thermally therefore shows neither forces nor stress.
 
 | Result | Apply to | Meaning |
 |---|---|---|
@@ -432,20 +538,24 @@ the in-plane `sigma_xx`, `sigma_yy` and `tau_xy`, and a line fills the axial
 
 ### 1.10 Static, transient or modal?
 
-| | Static | Transient | Modal |
-|---|---|---|---|
-| Solves | `K*u = f` | `M*u' + K*u = f` in time | `K*phi = omega^2*M*phi` |
-| Answers | "how much does it deflect and how highly is it stressed" | "how does it settle as the load changes" | "at which frequencies does it want to vibrate, and in what shape" |
-| Needs mass | no | yes | yes |
-| Needs constraints against rigid body motion | yes | yes | yes |
-| Records | one | one per time step | one per extracted mode |
+| | Static | Dynamic transient | Quasi-static transient | Modal |
+|---|---|---|---|---|
+| Solves | `K*u = f` | `M*u'' + C*u' + K*u = f(t)` in time | `K*u = f(t)` at each time | `K*phi = omega^2*M*phi` |
+| Answers | "how much does it deflect and how highly is it stressed" | "how does it respond to a load that changes quickly" | "how does it follow a slowly changing load" | "at which frequencies does it want to vibrate, and in what shape" |
+| Needs mass | no | yes | no | yes |
+| Needs constraints against rigid body motion | yes | yes | yes | yes |
+| Records | one | one per time step | one per time step | one per extracted mode |
 
 **Use a static analysis for** strength and stiffness checks, deflection limits,
 reaction forces, self weight, pressure vessels, thermal stress. This is the
 default and covers most work.
 
-**Use a transient analysis for** a load that changes over time and where the
-structure follows it quasi-statically. Do not expect dynamic amplification.
+**Use a dynamic transient analysis for** impacts, suddenly applied or released
+loads, shock and vibration histories, wave propagation and the response to a
+harmonic excitation near a resonance - wherever inertia matters.
+
+**Use a quasi-static transient analysis for** a load that changes over time
+slowly enough for the structure to follow it in equilibrium.
 
 **Use a modal analysis for** natural frequencies and mode shapes, avoiding
 resonance with a known excitation, judging whether a structure is stiff enough
@@ -484,12 +594,23 @@ problem type. Leave it disabled for a static analysis.
 | Field | Meaning |
 |---|---|
 | Enable | switches the transient march on and off |
-| Approximation | theta of the time march: backward, central or forward |
+| Approximation | sets Newmark beta of a dynamic analysis, see 1.7; central is the recommended choice |
 | Start time | first time value in seconds; ignored on a solver restart |
 | End time | `start time + time-step size * number of time-steps`, read-only |
 | Time-step size | `dt` in seconds |
 | Number of time-steps | how many steps to compute |
 | Output frequency | write a result file every N steps; `0` writes only the last step |
+
+**Transient stress analysis setup** - shown for stress analysis and active only while the time
+solver is enabled.
+
+| Field | Meaning | Default |
+|---|---|---|
+| Analysis type | *Dynamic* (with inertia) or *Quasi-static* (a static solve per time step) | Dynamic |
+| Numerical damping (HHT alpha) | from `-1/3` to `0`; negative values damp high frequency noise | 0 |
+| Lumped mass matrix | use a diagonal mass matrix instead of the consistent one | off |
+
+The last two apply to the dynamic analysis only and are greyed out otherwise.
 
 **Modal analysis setup** - shown when the problem type is *Modal analysis*.
 
@@ -524,11 +645,19 @@ analysis requires **all four** of these:
 |---|---|---|
 | Modulus of elasticity | `Pa` | `E`, about `2.1e11` for steel |
 | Poisson ratio | `-` | `v`, about `0.3` for steel; must stay below `0.5` |
-| Density | `kg/m^3` | needed for self weight, transient and modal analysis |
+| Density | `kg/m^3` | needed for self weight, dynamic and modal analysis |
 | Thermal expansion coefficient | `1/K` | set to `0` if there is no thermal load |
 
 An entity missing any of them is not solved, and the setup checker warns before
-the run starts. Every property is a table against temperature, so a
+the run starts.
+
+Two further properties are optional and are read by a dynamic transient
+analysis only:
+
+| Property | Units | Comment |
+|---|---|---|
+| Rayleigh mass damping coefficient | `1/s` | `alpha_M`, see 1.7; zero when absent |
+| Rayleigh stiffness damping coefficient | `s` | `beta_K`, see 1.7; zero when absent | Every property is a table against temperature, so a
 temperature-dependent modulus is honoured when a heat solver runs first.
 
 ### 2.4 Boundary conditions tab
@@ -570,8 +699,8 @@ usually the whole model - and set the vector; the default is `-9.80665` in Z.
 Assign *Temperature* to set the stress-free reference temperature for a thermal
 stress analysis.
 
-The `Initial conditions` tab offers *Displacement* and *Pressure*, applied on
-the first run of a transient analysis.
+The `Initial conditions` tab offers *Displacement*, *Structural velocity* and
+*Pressure*, applied on the first run of a transient analysis.
 
 ### 2.6 Matrix solver setup
 
@@ -593,6 +722,8 @@ In a transient run the history is shown by `Report` -> `Monitoring points`.
 
 The `Results` tab lists the computed variables and controls the 3D view.
 Displacement is a node vector; the three stress measures are element scalars.
+A dynamic transient analysis adds the *Structural velocity* and *Structural
+acceleration* node vectors.
 
 For a deformed-shape plot, display *Displacement* and enable the deformation
 scaling in the view settings - real displacements are usually far too small to
@@ -875,6 +1006,15 @@ Compare against `sqrt(lambda_0) / (2*pi)` from the modal analysis. This
 simultaneously validates the mass matrix, the stiffness matrix and your
 eigenvalue conversion.
 
+**Suddenly loaded bar.** A bar fixed at one end and loaded at the other by an
+axial force `F` switched on at `t = 0` is a check of a dynamic analysis. The
+stress wave runs to the fixed end and back with the speed `c = sqrt(E/rho)`, so
+the free end moves linearly to twice the static deflection,
+`2 * F * L / (E * A)`, at `t = 2*L/c` and back to zero at `t = 4*L/c`. Without
+damping the cycle repeats. With Rayleigh damping it dies out and the bar comes to
+rest at the static deflection. Use a zero Poisson ratio so that the bar is truly
+one dimensional.
+
 For any of these, refine the mesh at least once and confirm the answer is
 converging rather than drifting.
 
@@ -887,11 +1027,13 @@ converging rather than drifting.
 - **Linear elasticity only.** Small strains, small displacements, isotropic
   material, no plasticity, no contact, no large deformation and no buckling.
   Results are meaningful only while the structure stays in its linear range.
-- **Transient analysis is first order.** The assembled system is
-  `M*u' + K*u = f`, not `M*u'' + C*u' + K*u = f`. There is no second time
-  derivative and no damping matrix, so inertia waves, dynamic amplification and
-  resonant response are not reproduced. Treat it as a relaxation-type march for
-  slowly changing loads, and use modal analysis for dynamic properties.
+- **Damping is Rayleigh damping only.** The damping matrix is
+  `alpha_M*M + beta_K*K` per material, so the damping ratio follows the curve of
+  1.7 and cannot be set mode by mode. There are no discrete dampers, no
+  frequency-independent (hysteretic) damping and no damping boundary condition.
+- **Implicit time integration only.** Every step is a linear solve. There is no
+  explicit central difference scheme, so very short events such as a ballistic
+  impact need many expensive steps.
 - **Surface elements are plane strain.** A thin plate loaded in its own plane
   will be stiffer than a plane stress idealisation. Model thin structures with
   volume elements when the difference matters.

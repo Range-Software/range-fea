@@ -4873,6 +4873,44 @@
     </message>
 </context>
 <context>
+    <name>StressSetupWidget</name>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="16"/>
+        <source>Transient stress analysis setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="25"/>
+        <source>Analysis type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="34"/>
+        <source>Dynamic analysis solves M*u&apos;&apos; + C*u&apos; + K*u = f(t) and captures inertia, vibrations and damping. Quasi-static analysis solves K*u = f(t) at every time step and neglects inertia.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="41"/>
+        <source>Numerical damping (HHT alpha)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="46"/>
+        <source>Hilber-Hughes-Taylor alpha from -1/3 to 0. Zero is the Newmark average acceleration scheme without numerical damping. Negative values damp spurious high frequency oscillations while keeping the low modes accurate; -0.05 to -0.1 is a common choice.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="55"/>
+        <source>Lumped mass matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="57"/>
+        <source>Replace the consistent mass matrix with a diagonal one of the same total mass. Lumped mass underestimates natural frequencies slightly and reduces oscillations behind sharp wave fronts.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SubWindow</name>
     <message>
         <location filename="../src/sub_window.cpp" line="40"/>

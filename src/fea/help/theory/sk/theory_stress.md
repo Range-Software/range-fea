@@ -63,7 +63,8 @@ sigma = D * ( eps - alpha * dT )
 | `dT` | nárast teploty nad stav bez napätia | `K` | pozri 1.5 |
 
 Všetky štyri vlastnosti materiálu sú **povinné** - entita, ktorej niektorá z
-nich chýba, sa nerieši.
+nich chýba, sa nerieši. Dva Rayleighove koeficienty tlmenia dynamickej analýzy
+(pozri 1.7) sú voliteľné.
 
 ### 1.3 Matica pružnosti
 
@@ -128,8 +129,8 @@ Plocha s nulovou hrúbkou alebo čiara s nulovým prierezom neprispieva žiadnou
 tuhosťou ani hmotnosťou - stále však môže niesť zaťaženia, čo je presne to, čo
 chceme pre zaťaženú stenu telesa so sieťou.
 
-Matica hmotnosti sa zostavuje iba vtedy, keď je potrebná, teda pre prechodovú
-alebo modálnu analýzu.
+Matica hmotnosti sa zostavuje iba vtedy, keď je potrebná, teda pre dynamickú
+prechodovú alebo modálnu analýzu.
 
 ### 1.5 Zaťaženia, okrajové a environmentálne podmienky
 
@@ -244,9 +245,13 @@ environmentálnej podmienke.
 
 | Počiatočná podmienka | Účinok |
 |---|---|
-| Posunutie | počiatočné pole posunutí, aplikované pri prvom výpočte |
+| Posunutie | počiatočné pole posunutí dynamickej prechodovej analýzy |
+| Rýchlosť konštrukcie | počiatočné pole rýchlostí dynamickej prechodovej analýzy |
 | Tlak | počiatočné plošné tlakové zaťaženie |
-| Rýchlosť | ponúkaná, ale riešič napätia ju nečíta - pozri 6 |
+
+Počiatočné podmienky sa čítajú iba pri prvom výpočte prechodovej analýzy.
+Dynamická analýza bez nich začína z pokoja. Viazané smery nedostávajú vlastnú
+počiatočnú rýchlosť, sledujú predpísané posunutie.
 
 #### Väzba s riešičom prúdenia
 
@@ -278,24 +283,118 @@ pohybu tuhého telesa - troch posunutí a troch natočení.
 
 ### 1.7 Prechodová analýza
 
-Pri zapnutom časovom riešiči riešič krokuje
+Pri zapnutom časovom riešiči vyberá *Nastavenie prechodovej analýzy napätia*
+jeden z dvoch typov analýzy.
+
+#### Dynamická analýza
+
+Predvolená. Riešič integruje rovnice lineárnej elastodynamiky
 
 ```
-M * du/dt + K * u = f
+M * d2u/dt2 + C * du/dt + K * u = f(t)
 ```
 
-theta schémou, kde `alpha` je koeficient aproximácie časového pochodu (`1`
-spätná, `0.5` centrálna, `0` dopredná):
+takže sa reprodukuje zotrvačnosť, napäťové vlny, kmitanie, dynamické zosilnenie
+aj rezonancia.
+
+**Tlmenie.** `C` je Rayleighovo tlmenie, zostavené prvok po prvku z dvoch
+voliteľných vlastností materiálu,
 
 ```
-( M + alpha*dt*K ) * u_n+1 = dt*f + ( M - (1-alpha)*dt*K ) * u_n
+C = alpha_M * M + beta_K * K
 ```
 
-Všimnite si, že ide o pochod **prvého rádu**. V zostavenej sústave nie je druhá
-časová derivácia posunutia, takže ide o prechodový dej relaxačného typu, nie o
-skutočnú elastodynamiku: nereprodukuje zotrvačné vlny, dokmity ani rezonanciu.
-Použite ho pre priebeh zaťaženia aplikovaný pomaly v porovnaní s periódami
-konštrukcie a na zistenie, kde tieto periódy sú, použite *Modálnu analýzu*.
+*Rayleighov koeficient hmotnostného tlmenia* `alpha_M` `[1/s]` tlmí nízke
+frekvencie, *Rayleighov koeficient tuhostného tlmenia* `beta_K` `[s]` vysoké.
+Pomerné tlmenie módu s kruhovou frekvenciou `omega` je
+
+```
+zeta(omega) = alpha_M / (2*omega) + beta_K * omega / 2
+```
+
+takže cieľové pomerné tlmenie `zeta` pri dvoch frekvenciách `omega_1` a
+`omega_2` sa dosiahne s
+
+```
+alpha_M = 2*zeta * omega_1*omega_2 / (omega_1 + omega_2)
+beta_K  = 2*zeta / (omega_1 + omega_2)
+```
+
+Obe frekvencie vezmite z modálnej analýzy, okolo pásma, ktoré vás zaujíma.
+Typické pomerné tlmenie konštrukcií je 0.01 až 0.05. Bez týchto dvoch
+vlastností nie je žiadne fyzikálne tlmenie.
+
+**Časová integrácia.** Newmarkova metóda s úpravou Hilber-Hughes-Taylor (HHT).
+S posunutím `u`, rýchlosťou `v` a zrýchlením `a` na začiatku kroku každý krok
+rieši
+
+```
+( a0*M + (1+alpha)*(K + a1*C) ) * u_n+1 =
+      (1+alpha)*f_n+1 - alpha*f_n
+    + M * ( a0*u_n + a2*v_n + a3*a_n )
+    + (1+alpha) * C * ( a1*u_n + a4*v_n + a5*a_n )
+    + alpha * ( C*v_n + K*u_n )
+```
+
+```
+a0 = 1/(beta*dt^2)   a1 = gamma/(beta*dt)   a2 = 1/(beta*dt)
+a3 = 1/(2*beta) - 1  a4 = gamma/beta - 1    a5 = dt/2 * (gamma/beta - 2)
+```
+
+a potom aktualizuje
+
+```
+a_n+1 = a0*(u_n+1 - u_n) - a2*v_n - a3*a_n
+v_n+1 = v_n + dt*( (1-gamma)*a_n + gamma*a_n+1 )
+```
+
+Efektívna matica je symetrická pozitívne definitná, takže sa rieši tou istou
+metódou CG ako statická analýza.
+
+- S **HHT alpha = 0** (predvolené) je schéma čistý Newmark s `gamma = 1/2` a
+  `beta = max(theta/2, 1/4)`, kde `theta` je koeficient aproximácie časového
+  pochodu (`1` spätná, `0.5` centrálna, `0` dopredná). Centrálna aj dopredná
+  dávajú schému priemerného zrýchlenia - bezpodmienečne stabilnú, druhého rádu
+  presnosti a bez numerického tlmenia. Spätná dáva `beta = 1/2`, ktorá je tiež
+  bezpodmienečne stabilná, ale predlžuje periódy.
+- S **HHT alpha** medzi `-1/3` a `0` je `gamma = 1/2 - alpha` a
+  `beta = (1 - alpha)^2 / 4`. Schéma zostáva bezpodmienečne stabilná a druhého
+  rádu presnosti a tlmí vysoké frekvencie, ktoré hrubá sieť zachytáva zle,
+  pričom nízke módy takmer nemení. `-0.05` až `-0.1` je bežná voľba, keď je
+  odozva znečistená vysokofrekvenčným šumom.
+
+**Počiatočné zrýchlenie.** V prvom kroku sa zrýchlenie rieši z rovnováhy,
+`M*a = f - K*u - C*v`, takže zaťaženie aplikované na začiatku vyvolá správne
+počiatočné zrýchlenie. Smery bez hmotnosti dostanú nulu.
+
+**Sústredená hmotnosť.** Voľba *Sústredená matica hmotnosti* nahradí
+konzistentnú hmotnosť diagonálnou s rovnakou celkovou hmotnosťou, škálovaním
+diagonály konzistentnej matice (HRZ sústredenie, ktoré zostáva kladné aj pre
+kvadratické prvky). Mierne znižuje vlastné frekvencie a dáva hladšiu odozvu za
+ostrými čelami vĺn.
+
+**Voľba časového kroku.** Schéma je stabilná pre ľubovoľné `dt`, ale presnosť
+vyžaduje približne 20 alebo viac krokov na periódu najvyššieho módu, ktorý
+chcete zachytiť. Pre vlnu prechádzajúcu sieťou je dobrým začiatkom krok blízky
+času, ktorý vlna potrebuje na prechod jedným prvkom (`dt ~ h/c`,
+`c = sqrt(E/rho)`).
+
+**Výsledky.** Okrem posunutia a napätia ukladá dynamická analýza uzlové vektory
+*Rýchlosť konštrukcie* a *Zrýchlenie konštrukcie*. Tie zároveň prenášajú stav do
+ďalšieho časového kroku a cez reštart riešiča.
+
+#### Kvázistatická analýza
+
+Každý časový krok je samostatné statické riešenie
+
+```
+K * u(t) = f(t)
+```
+
+so zanedbanou zotrvačnosťou a tlmením. Použite ju pre priebeh zaťaženia
+aplikovaný pomaly v porovnaní s periódami konštrukcie, kde záleží iba na
+postupnosti rovnovážnych stavov. Nepotrebuje hustotu ani obmedzenie časového
+kroku.
 
 ### 1.8 Modálna analýza
 
@@ -376,8 +475,15 @@ Po riešení sa napätia prvkov získajú z poľa posunutí ako priemer cez inte
 body výrazu
 
 ```
-sigma = D * B * u  -  D * alpha * dT
+sigma = D * ( B * u  -  eps_th )
 ```
+
+s teplotným pretvorením `eps_th = alpha * dT * [1, 1, 1, 0, 0, 0]` pre objemové
+prvky. Plošné prvky sú v rovinnom pretvorení: rozťažnosť kolmo na ich rovinu je
+potlačená, čo zvyšuje teplotné pretvorenie v rovine na
+`eps_th = (1+v) * alpha * dT * [1, 1, 0]`. To isté teplotné pretvorenie vstupuje
+do tepelného zaťaženia `f_th = INT( B^T * D * eps_th )`. Čiarové prvky uvádzajú
+`E * (eps - alpha * dT)`.
 
 Zo šiestich zložiek riešič vytvorí dva invarianty a kvadraticky ich spojí do
 napätia podľa von Misesa:
@@ -402,12 +508,13 @@ osová hodnota a šmyková časť je nulová.
 **Uzlové sily** sa získavajú prvok po prvku ako vnútorná pružná sila
 
 ```
-f = K * u
+f = K * u - f_th
 ```
 
-a sčítavajú sa v uzloch. V obmedzenom uzle je to reakčná sila; vo voľnom uzle by
-mala pri skonvergovanom statickom riešení vyjsť takmer nulová, vďaka čomu je
-výsledok Sila užitočnou kontrolou rezidua.
+a sčítavajú sa v uzloch. V obmedzenom uzle je to reakčná sila; v nezaťaženom
+voľnom uzle by mala pri skonvergovanom statickom riešení vyjsť takmer nulová,
+vďaka čomu je výsledok Sila užitočnou kontrolou rezidua. Teleso, ktoré sa môže
+voľne tepelne rozťahovať, preto nevykazuje sily ani napätie.
 
 | Výsledok | Aplikuje sa na | Význam |
 |---|---|---|
@@ -426,20 +533,24 @@ rovine `sigma_xx`, `sigma_yy` a `tau_xy` a čiara iba osovú `sigma_xx`.
 
 ### 1.10 Statická, prechodová alebo modálna?
 
-| | Statická | Prechodová | Modálna |
-|---|---|---|---|
-| Rieši | `K*u = f` | `M*u' + K*u = f` v čase | `K*phi = omega^2*M*phi` |
-| Odpovedá na | "o koľko sa prehne a ako vysoko je namáhaná" | "ako sa ustáli pri zmene zaťaženia" | "pri akých frekvenciách chce kmitať a v akom tvare" |
-| Potrebuje hmotnosť | nie | áno | áno |
-| Potrebuje väzby proti pohybu tuhého telesa | áno | áno | áno |
-| Záznamy | jeden | jeden na časový krok | jeden na extrahovaný mód |
+| | Statická | Dynamická prechodová | Kvázistatická prechodová | Modálna |
+|---|---|---|---|---|
+| Rieši | `K*u = f` | `M*u'' + C*u' + K*u = f(t)` v čase | `K*u = f(t)` v každom čase | `K*phi = omega^2*M*phi` |
+| Odpovedá na | "o koľko sa prehne a ako vysoko je namáhaná" | "ako reaguje na rýchlo sa meniace zaťaženie" | "ako sleduje pomaly sa meniace zaťaženie" | "pri akých frekvenciách chce kmitať a v akom tvare" |
+| Potrebuje hmotnosť | nie | áno | nie | áno |
+| Potrebuje väzby proti pohybu tuhého telesa | áno | áno | áno | áno |
+| Záznamy | jeden | jeden na časový krok | jeden na časový krok | jeden na extrahovaný mód |
 
 **Statickú analýzu použite na** kontroly pevnosti a tuhosti, limity priehybu,
 reakčné sily, vlastnú tiaž, tlakové nádoby, tepelné napätie. Je predvolená a
 pokrýva väčšinu práce.
 
-**Prechodovú analýzu použite na** zaťaženie, ktoré sa mení v čase a ktoré
-konštrukcia sleduje kvázistaticky. Neočakávajte dynamické zosilnenie.
+**Dynamickú prechodovú analýzu použite na** nárazy, náhle aplikované alebo
+uvoľnené zaťaženia, priebehy rázov a vibrácií, šírenie vĺn a odozvu na
+harmonické budenie v blízkosti rezonancie - všade, kde záleží na zotrvačnosti.
+
+**Kvázistatickú prechodovú analýzu použite na** zaťaženie, ktoré sa mení v čase
+dostatočne pomaly na to, aby ho konštrukcia sledovala v rovnováhe.
 
 **Modálnu analýzu použite na** vlastné frekvencie a vlastné tvary, vyhnutie sa
 rezonancii so známym budením, posúdenie, či je konštrukcia dynamicky dostatočne
@@ -478,12 +589,23 @@ závislý typ úlohy. Pre statickú analýzu ho nechajte vypnutý.
 | Pole | Význam |
 |---|---|
 | Povoliť | zapína a vypína prechodový pochod |
-| Aproximácia | theta časového pochodu: spätná, centrálna alebo dopredná |
+| Aproximácia | nastavuje Newmarkovo beta dynamickej analýzy, pozri 1.7; odporúčaná je centrálna |
 | Počiatočný čas | prvá hodnota času v sekundách; pri reštarte riešiča sa ignoruje |
 | Konečný čas | `počiatočný čas + veľkosť časového kroku * počet časových krokov`, iba na čítanie |
 | Veľkosť časového kroku | `dt` v sekundách |
 | Počet časových krokov | koľko krokov sa má vypočítať |
 | Frekvencia výstupu | zapíše súbor výsledkov každých N krokov; `0` zapíše iba posledný krok |
+
+**Nastavenie prechodovej analýzy napätia** - zobrazuje sa pre analýzu napätia a je aktívne iba vtedy,
+keď je časový riešič zapnutý.
+
+| Pole | Význam | Predvolené |
+|---|---|---|
+| Typ analýzy | *Dynamická* (so zotrvačnosťou) alebo *Kvázistatická* (statické riešenie v každom časovom kroku) | Dynamická |
+| Numerické tlmenie (HHT alpha) | od `-1/3` do `0`; záporné hodnoty tlmia vysokofrekvenčný šum | 0 |
+| Sústredená matica hmotnosti | použije diagonálnu maticu hmotnosti namiesto konzistentnej | vypnuté |
+
+Posledné dve platia iba pre dynamickú analýzu, inak sú neaktívne.
 
 **Nastavenia modálnej analýzy** - zobrazuje sa, keď je typ úlohy *Modálna
 analýza*.
@@ -518,11 +640,18 @@ vyžaduje **všetky štyri** tieto vlastnosti:
 |---|---|---|
 | Modul pružnosti | `Pa` | `E`, asi `2.1e11` pre oceľ |
 | Poissonovo číslo | `-` | `v`, asi `0.3` pre oceľ; musí zostať pod `0.5` |
-| Hustota | `kg/m^3` | potrebná pre vlastnú tiaž, prechodovú a modálnu analýzu |
+| Hustota | `kg/m^3` | potrebná pre vlastnú tiaž, dynamickú a modálnu analýzu |
 | Súčiniteľ teplotnej rozťažnosti | `1/K` | ak nie je tepelné zaťaženie, nastavte `0` |
 
 Entita, ktorej niektorá z nich chýba, sa nerieši a kontrola nastavenia na to
-upozorní pred spustením výpočtu. Každá vlastnosť je tabuľkou v závislosti od
+upozorní pred spustením výpočtu.
+
+Ďalšie dve vlastnosti sú voliteľné a číta ich iba dynamická prechodová analýza:
+
+| Vlastnosť | Jednotky | Poznámka |
+|---|---|---|
+| Rayleighov koeficient hmotnostného tlmenia | `1/s` | `alpha_M`, pozri 1.7; ak chýba, nula |
+| Rayleighov koeficient tuhostného tlmenia | `s` | `beta_K`, pozri 1.7; ak chýba, nula | Každá vlastnosť je tabuľkou v závislosti od
 teploty, takže teplotne závislý modul sa rešpektuje, keď ako prvý beží tepelný
 riešič.
 
@@ -564,8 +693,8 @@ celému modelu - a nastavte vektor; predvolená hodnota je `-9.80665` v Z. Prira
 *Teplotu*, aby ste nastavili referenčnú teplotu stavu bez napätia pre analýzu
 tepelného napätia.
 
-Záložka `Počiatočné podmienky` ponúka *Posunutie* a *Tlak*, aplikované pri prvom
-výpočte prechodovej analýzy.
+Záložka `Počiatočné podmienky` ponúka *Posunutie*, *Rýchlosť konštrukcie* a
+*Tlak*, aplikované pri prvom výpočte prechodovej analýzy.
 
 ### 2.6 Nastavenie maticového riešiča
 
@@ -587,7 +716,9 @@ podľa von Misesa*. V prechodovom výpočte priebeh zobrazí `Výkaz` ->
 ### 2.8 Výsledky a záznamy
 
 Záložka `Výsledky` uvádza vypočítané premenné a ovláda 3D pohľad. Posunutie je
-uzlový vektor; tri miery napätia sú prvkové skaláry.
+uzlový vektor; tri miery napätia sú prvkové skaláry. Dynamická prechodová
+analýza pridáva uzlové vektory *Rýchlosť konštrukcie* a *Zrýchlenie
+konštrukcie*.
 
 Pre zobrazenie deformovaného tvaru zobrazte *Posunutie* a v nastaveniach pohľadu
 zapnite škálovanie deformácie - skutočné posunutia sú zvyčajne v skutočnej
@@ -865,6 +996,15 @@ f1 = (1.875^2 / (2*pi)) * sqrt( E*I / (rho * A * L^4) )
 Porovnajte so `sqrt(lambda_0) / (2*pi)` z modálnej analýzy. Tým sa súčasne overí
 matica hmotnosti, matica tuhosti aj váš prepočet vlastných hodnôt.
 
+**Náhle zaťažená tyč.** Tyč votknutá na jednom konci a na druhom zaťažená
+osovou silou `F` zapnutou v čase `t = 0` je kontrolou dynamickej analýzy.
+Napäťová vlna beží k votknutému koncu a späť rýchlosťou `c = sqrt(E/rho)`, takže
+voľný koniec sa lineárne posunie na dvojnásobok statického posunutia,
+`2 * F * L / (E * A)`, v čase `t = 2*L/c` a späť na nulu v čase `t = 4*L/c`. Bez
+tlmenia sa cyklus opakuje. S Rayleighovým tlmením zanikne a tyč sa ustáli na
+statickom posunutí. Použite nulové Poissonovo číslo, aby bola tyč skutočne
+jednorozmerná.
+
 Pri ktorejkoľvek z nich sieť aspoň raz zjemnite a overte, že odpoveď konverguje,
 a nie sa posúva.
 
@@ -878,11 +1018,13 @@ a nie sa posúva.
   materiál, žiadna plasticita, žiadny kontakt, žiadne veľké deformácie a žiadne
   vybočenie. Výsledky majú zmysel iba dovtedy, kým konštrukcia zostáva vo svojom
   lineárnom rozsahu.
-- **Prechodová analýza je prvého rádu.** Zostavená sústava je
-  `M*u' + K*u = f`, nie `M*u'' + C*u' + K*u = f`. Neexistuje druhá časová
-  derivácia ani matica tlmenia, takže zotrvačné vlny, dynamické zosilnenie a
-  rezonančná odozva sa nereprodukujú. Považujte ju za pochod relaxačného typu pre
-  pomaly sa meniace zaťaženia a na dynamické vlastnosti použite modálnu analýzu.
+- **Tlmenie je iba Rayleighovo.** Matica tlmenia je `alpha_M*M + beta_K*K` pre
+  každý materiál, takže pomerné tlmenie sleduje krivku z 1.7 a nedá sa nastaviť
+  mód po móde. Nie sú k dispozícii diskrétne tlmiče, frekvenčne nezávislé
+  (hysterézne) tlmenie ani okrajová podmienka tlmenia.
+- **Iba implicitná časová integrácia.** Každý krok je lineárne riešenie. Nie je
+  k dispozícii explicitná schéma centrálnych diferencií, takže veľmi krátke deje,
+  ako balistický náraz, potrebujú veľa nákladných krokov.
 - **Plošné prvky sú v rovinnom pretvorení.** Tenká doska zaťažená vo vlastnej
   rovine bude tuhšia ako idealizácia rovinnej napätosti. Ak na rozdiele záleží,
   tenké konštrukcie modelujte objemovými prvkami.

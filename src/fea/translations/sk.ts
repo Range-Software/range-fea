@@ -4874,6 +4874,44 @@
     </message>
 </context>
 <context>
+    <name>StressSetupWidget</name>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="16"/>
+        <source>Transient stress analysis setup</source>
+        <translation>Nastavenie prechodovej analýzy napätia</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="25"/>
+        <source>Analysis type</source>
+        <translation>Typ analýzy</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="34"/>
+        <source>Dynamic analysis solves M*u&apos;&apos; + C*u&apos; + K*u = f(t) and captures inertia, vibrations and damping. Quasi-static analysis solves K*u = f(t) at every time step and neglects inertia.</source>
+        <translation>Dynamická analýza rieši M*u&apos;&apos; + C*u&apos; + K*u = f(t) a zachytáva zotrvačnosť, kmitanie a tlmenie. Kvázistatická analýza rieši K*u = f(t) v každom časovom kroku a zotrvačnosť zanedbáva.</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="41"/>
+        <source>Numerical damping (HHT alpha)</source>
+        <translation>Numerické tlmenie (HHT alpha)</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="46"/>
+        <source>Hilber-Hughes-Taylor alpha from -1/3 to 0. Zero is the Newmark average acceleration scheme without numerical damping. Negative values damp spurious high frequency oscillations while keeping the low modes accurate; -0.05 to -0.1 is a common choice.</source>
+        <translation>Hilber-Hughes-Taylor alpha od -1/3 do 0. Nula je Newmarkova schéma priemerného zrýchlenia bez numerického tlmenia. Záporné hodnoty tlmia nežiaduce vysokofrekvenčné oscilácie a nízke módy pritom zostávajú presné; -0,05 až -0,1 je bežná voľba.</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="55"/>
+        <source>Lumped mass matrix</source>
+        <translation>Sústredená matica hmotnosti</translation>
+    </message>
+    <message>
+        <location filename="../src/stress_setup_widget.cpp" line="57"/>
+        <source>Replace the consistent mass matrix with a diagonal one of the same total mass. Lumped mass underestimates natural frequencies slightly and reduces oscillations behind sharp wave fronts.</source>
+        <translation>Nahradí konzistentnú maticu hmotnosti diagonálnou s rovnakou celkovou hmotnosťou. Sústredená hmotnosť mierne podhodnocuje vlastné frekvencie a znižuje oscilácie za ostrými čelami vĺn.</translation>
+    </message>
+</context>
+<context>
     <name>SubWindow</name>
     <message>
         <location filename="../src/sub_window.cpp" line="40"/>

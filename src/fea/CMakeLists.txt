@@ -169,6 +169,7 @@ qt_add_executable(fea
     src/solver_task.cpp
     src/solver_task_id.cpp
     src/stream_line_dialog.cpp
+    src/stress_setup_widget.cpp
     src/sub_window.cpp
     src/sub_window_manager.cpp
     src/text_edit_widget.cpp
@@ -353,6 +354,7 @@ qt_add_executable(fea
     src/solver_task.h
     src/solver_task_id.h
     src/stream_line_dialog.h
+    src/stress_setup_widget.h
     src/sub_window.h
     src/sub_window_manager.h
     src/text_edit_widget.h

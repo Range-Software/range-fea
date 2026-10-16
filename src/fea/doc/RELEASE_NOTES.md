@@ -14,6 +14,26 @@
 - A harmonic analysis writes one record per frequency, so the records tree steps
   through the frequency sweep
 
+#### Stress analysis
+
+- **Transient stress analysis is now dynamic.** It solves
+  `M*u'' + C*u' + K*u = f(t)` with Newmark / Hilber-Hughes-Taylor time
+  integration, so inertia, stress waves, vibration and dynamic amplification are
+  reproduced. Before, it was a first order march that only relaxed towards the
+  static answer. **Transient stress models from earlier versions give different,
+  dynamic results**; select *Quasi-static* to solve a static problem at every
+  time step instead
+- New **Transient stress analysis setup** group, active only while the time solver is
+  enabled: analysis type (*Dynamic* or *Quasi-static*), numerical damping (HHT
+  alpha) and lumped mass matrix
+- New optional *Rayleigh mass damping coefficient* and *Rayleigh stiffness
+  damping coefficient* material properties, a *Structural velocity* initial
+  condition, and *Structural velocity* and *Structural acceleration* results.
+  The *Displacement* initial condition is now applied as well
+- A material missing an optional property (Rayleigh damping, acoustic damping
+  factor, the alternative of speed of sound or modulus of elasticity) is no
+  longer marked invalid, and its entities are solved
+
 #### Fluids and contaminant dispersion
 
 - Task groups have a **Convergence** value next to **# of iterations** (default
@@ -74,7 +94,7 @@
 
 #### File format
 
-- The model file format is raised to **1.3.2**. Models saved by this version
+- The model file format is raised to **1.3.3**. Models saved by this version
   cannot be opened by earlier ones; older models open with default values
 
 ### Bug fixes
@@ -117,6 +137,20 @@
   density now drives natural convection in steady-state runs too; the fluid
   flow manuals no longer claim the solver has no buoyancy
 
+#### Stress analysis
+
+- Surface elements with a thickness were assembled wrongly. Their stiffness and
+  mass coupled every pair of element nodes, only the last integration point of
+  a quadrilateral counted, and the stiffness ignored the thickness. **Stress
+  results of models with thick surfaces change**; volume and line elements are
+  not affected
+- The *Force* result got the colour range of the displacement on first display
+- **Thermal stress was missing from the stress results** of volume and surface
+  elements: a body free to expand showed stress and a clamped one showed none.
+  The *Force* result now also balances under a thermal load. Surface elements
+  get the plane strain thermal strain `(1+v)*alpha*dT`, so their thermal
+  deflection changes. **Results of thermal stress models change**
+
 #### 3D view and picking
 
 - Picked nodes are visible
@@ -126,6 +160,8 @@
 - Model edges are updated after swapping or synchronizing normals
 - **Pick details** lists every picked item, not only the first
 - Transparent volumes no longer show inner triangles along edges and corners
+- Local direction arrows (e.g. roller displacement on a surface) are sized
+  relative to the model and zoom instead of extending far beyond small models
 
 #### Materials
 
