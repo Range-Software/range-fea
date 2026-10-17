@@ -4658,7 +4658,7 @@
     </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="285"/>
-        <source>Value range &amp; color scale</source>
+        <source>Value range and color scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

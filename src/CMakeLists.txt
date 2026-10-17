@@ -395,6 +395,10 @@ elseif(APPLE)
         add_custom_target(codesign ALL
             COMMAND /bin/echo "Signing with: ${CODESIGN_ID}"
             COMMAND /bin/chmod -R u+w "${APP_DIR_NEW}"
+            # Files copied from Finder or taken as screenshots carry extended
+            # attributes (e.g. com.apple.FinderInfo) that codesign rejects as
+            # "detritus"; strip them from the whole bundle before signing.
+            COMMAND /usr/bin/xattr -cr "${APP_DIR_NEW}"
             COMMAND /usr/bin/codesign -vvv --deep --strict --force --options runtime --timestamp --sign "${CODESIGN_ID}" "${APP_DIR_NEW}"
             DEPENDS gen-dsstore
             COMMENT "Codesign"
@@ -694,6 +698,8 @@ if(RANGE_STORE_BUILD AND APPLE)
         # Deliberately not part of ALL: signing needs the store certificates,
         # which a plain developer build does not have.
         add_custom_target(mac-app-store
+            # See the 'codesign' target: extended attributes break signing.
+            COMMAND /usr/bin/xattr -cr "${APP_DIR_NEW}"
             COMMAND ${CMAKE_SOURCE_DIR}/range-build-tools/mac_app_store.sh ${_mac_store_args}
             DEPENDS gen-dsstore
             COMMENT "Signing the bundle for the Apple App Store"

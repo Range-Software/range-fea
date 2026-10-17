@@ -1,107 +1,223 @@
 # Rozptyl kontaminantu v tekutinách
 
-Tento tutoriál demonštruje, ako nastaviť pokročilú multifyzikálnu simuláciu vrátane nelineárnej iteratívnej úlohy, ako je **CFD (výpočtová dynamika tekutín)**.
+Tento návod ukáže, ako nastaviť a vyriešiť multifyzikálnu simuláciu, ktorá spája nelineárnu iteratívnu úlohu – **CFD (výpočtovú dynamiku tekutín)** – s prenosom kontaminantu unášaného prúdením.
 
-Na vyriešenie **rozptylu kontaminantu v tekutine** je potrebné nakonfigurovať nasledujúce typy úloh:
+Potrebné sú dva typy úloh:
 
-1. **Rozptyl kontaminantu** – Výpočet rozloženia kontaminantu v prúdovom poli.
-2. **Nestlačiteľné viskózne prúdenie** – Ustálené a prechodové prúdenie newtonských tekutín.
+1. **Incompressible viscous flow** (nestlačiteľné viskózne prúdenie) – počíta rýchlosť a tlak tekutiny (ustálené alebo prechodové prúdenie newtonovských tekutín).
+2. **Contaminant dispersion** (rozptyl kontaminantu) – počíta, ako sa kontaminant v tomto prúdovom poli šíri.
 
-Keďže **CFD** je nelineárna úloha, vyžaduje iteratívne riešenie. Táto úloha bude vyriešená v dvoch krokoch:
+Keďže úloha prúdenia je nelineárna, rieši sa iteratívne. Simulácia preto prebieha v dvoch etapách:
 
-1. **Ustálený stav** – Najprv je potrebné získať „počiatočné" prúdové pole a rozloženie tlaku.
-2. **Prechodový stav** – V druhom kroku sa použije **časové krokovanie** na získanie prechodového riešenia.
+1. **Ustálené prúdenie** – najprv sa vypočíta skonvergované „počiatočné" prúdové pole a rozloženie tlaku, zatiaľ bez kontaminantu.
+2. **Prechodová simulácia** – potom sa z tohto prúdového poľa pomocou **časového krokovania** sleduje, ako je impulz kontaminantu vstupujúci do kanála unášaný prúdením.
 
 ## 1. Načítať model
 
-Načítajte model **Channel.tmsh**.
+**Menu:** _Súbor -> Otvoriť model_
 
-## 2. Postup riešenia úlohy (krok 1)
+V dialógu **Otvoriť model** vyberte **Channel.tmsh** a kliknite na **Otvoriť**.
 
-Najprv je potrebné konvergované počiatočné prúdenie. Z tohto dôvodu je potrebné ustálené riešenie nestlačiteľného viskózneho prúdenia. V dialógu **Postup riešenia úlohy** vyberte príslušný typ úlohy a nastavte **Počet iterácií:** na **2000**. Na to dvakrát kliknite na počiatočnú hodnotu.
+Model pozostáva z troch celkov povrchu – **Walls** (steny), **Inflow** (prítok) a **Outflow** (odtok). Keďže modelu zatiaľ nie je priradený žiadny typ úlohy, po dokončení načítania sa automaticky otvorí dialóg **Poradie krokov úlohy**.
 
-![CFD – Postup riešenia úlohy – ustálený stav](image-CFD-Problem_task_flow_steady.png)
+## 2. Poradie krokov úlohy (etapa 1 – ustálené prúdenie)
 
-## 3. Vygenerovať 3D sieť
+V prvej etape sa rieši iba prúdenie, a to s veľkým počtom nelineárnych iterácií, aby riešenie mohlo skonvergovať.
 
-Na vyriešenie tejto úlohy musí byť vygenerovaná objemová sieť.
+1. V dialógu **Poradie krokov úlohy** kliknite na **Pridať typ úlohy**.
+2. V dialógu **Výber typu úlohy** zaškrtnite **Incompressible viscous flow** a kliknite na **OK**.
+3. Dvakrát kliknite na hodnotu **1** vedľa **počet iterácií:**, napíšte **2000** a stlačte _Enter_.
+4. Kliknutím na **OK** dialóg zatvorte.
 
-**Menu:** _Geometria -> Objem -> Generovať tetraedrálnu sieť_
+Dialóg možno kedykoľvek znova otvoriť tlačidlom **Poradie krokov úloh** na paneli nástrojov. Teraz by mal vyzerať takto:
+
+![CFD – Poradie krokov úlohy – ustálené prúdenie](image-CFD-Problem_task_flow_steady.png)
+
+## 3. Vygenerovať objemovú sieť
+
+Model je definovaný iba svojimi povrchmi. Aby bolo možné riešiť prúdenie v jeho vnútri, treba najprv vygenerovať objemovú (tetrahedrónovú) sieť.
+
+**Menu:** _Geometria -> Objem -> Generovať tetrahedrónovú sieť_
+
+Predvyplnené hodnoty v dialógu **Vygenerovať 3D sieť** sú postačujúce. Kliknite na **OK**. Po dokončení generovania sa v strome **Model** v skupine **Objemy** objaví nový celok **Volume 1**.
 
 ## 4. Priradiť materiál
 
-Priraďte **Vodu** všetkým entitám modelu.
+Všetky celky modelu musia mať priradený materiál.
 
-## 5. Okrajové podmienky
+1. V strome **Model** kliknite na **Walls** a potom so stlačeným klávesom _Shift_ kliknite na **Volume 1**, čím vyberiete všetky celky.
+2. Otvorte záložku **Materiál** na pravej strane hlavného okna.
+3. Zaškrtnite **Water** (voda).
 
-Priraďte nasledujúce okrajové podmienky k **plošným** entitám podľa nasledujúceho opisu.
+## 5. Okrajové podmienky (etapa 1)
 
-1. **Steny**
-    - _Stena_
-        - N/A
-2. **Prítok**
-    - _Objemový prietok (prítok)_
-        - Objemový prietok = 50 `[m^3/sN/A]`
-3. **Odtok**
-    - _Tlak (implicitný)_
-        - Tlak = 0 `[Pa]`
+Okrajové podmienky sa priraďujú v záložke **Okrajové podmienky** celku vybranému v strome **Model**. **Celkom povrchu** priraďte tieto podmienky:
 
-## 6. Vyriešiť úlohu
+1. **Walls**
+    - _Wall_ (stena; hodnota nie je potrebná)
+2. **Inflow**
+    - _Volumetric flow rate (inflow)_ (objemový prietok – prítok)
+        - Volumetric flow rate = 50 `[m^3/s]`
+3. **Outflow**
+    - _Pressure (implicit)_ (tlak – implicitný)
+        - Pressure = 0 `[Pa]` (predvolená hodnota je 1000 `[Pa]`)
 
-Postupujte rovnako ako v predchádzajúcich tutoriáloch.
+Pre každý celok: vyberte ho v strome **Model**, v záložke **Okrajové podmienky** zaškrtnite podmienku, vyberte ju, aby sa pod zoznamom zobrazili jej vlastnosti, potom dvakrát kliknite na hodnotu, napíšte novú a stlačte _Enter_.
 
-Riešič bude chvíľu počítať všetky iterácie, kým nenájde konvergované riešenie. Konvergenciu riešiča možno skontrolovať pomocou nasledujúcej akcie:
+## 6. Vyriešiť ustálené prúdenie
 
-**Menu:** _Správa -> Konvergencia riešiča_
+**Menu:** _Riešenie -> Spustiť riešič_
 
-## 7. Postup riešenia úlohy (krok 2)
+Ak model ešte nebol uložený, najprv sa zobrazí dialóg **Uložiť model**. Kliknutím na **Uložiť** prijmite navrhnutý názov súboru (**Channel.rbm**) a potom v dialógu **Spustiť riešič pre model** kliknite na **OK**.
 
-Po konvergencii riešiča možno nakonfigurovať **prechodovú** úlohu vrátane **Rozptylu kontaminantu**.
+Riešič beží na pozadí a jeho výstup sa zobrazuje v záložke **Výstup procesu**. Výpočet všetkých 2000 iterácií trvá niekoľko minút; výpočet je dokončený, keď výstup skončí riadkom **SOLVER - END**. Konvergenciu riešenia možno kedykoľvek skontrolovať pomocou:
 
-Keďže **Nestlačiteľné viskózne prúdenie** je nelineárna úloha, vždy bude potrebovať určitý počet nelineárnych iterácií na nájdenie konvergovaného riešenia pre každý časový krok. **Postup riešenia** by mal vyzerať tak, ako je zobrazené na nasledujúcej snímke obrazovky.
+**Menu:** _Výkaz -> Konvergencia riešiča_
 
-![CFD – Postup riešenia úlohy](image-CFD-Problem_task_flow.png)
+## 7. Vytvoriť rez
 
-## 8. Nastavenie časového riešiča
+Prúdenie možno dobre preskúmať zobrazením rýchlosti ako **vektorového poľa**, v ktorom každá šípka ukazuje smer a veľkosť prúdenia v jednom bode. Vektorové pole vykreslené v celom objeme sa však rýchlo zmení na hustý mrak prekrývajúcich sa šípok, ktorý sa ťažko číta. Zvyčajne je prehľadnejšie najprv model rozrezať **rezom** – rovinou prechádzajúcou objemom – a vektorové pole potom zobraziť iba na tejto rovine.
 
-Kliknite na záložku **Nastavenie úlohy**. Povoľte **Časový riešič** a zadajte hodnoty podľa nasledujúcej snímky obrazovky.
+_Tip: pred začatím zaškrtnite v strome **Model** skupinu **Objemy**, aby bol objem počas umiestňovania rezu viditeľný._
 
-![CFD – Časový riešič úlohy](image-CFD-Problem_time_solver.png)
+**Menu:** _Geometria -> Rez -> Vytvoriť rez_
 
-## 9. Okrajové podmienky
+V dialógu **Editor rezu**:
 
-Aplikujte okrajovú podmienku **Koncentrácia častíc** na entitu modelu **Prítok**.
+1. V zozname **Model** vyberte **Volume 1**. Rez sa vytvorí cez tento objem.
+2. **Poloha roviny** určuje bod, ktorým rovina rezu prechádza. Predvolené hodnoty ju umiestňujú do stredu modelu (**X** = 7.5, **Y** = 2.5, **Z** = 1.5 `[m]`); ponechajte ich.
+3. **Normála roviny** určuje orientáciu roviny. Predvolená normála (**X** = 1) dáva zvislú rovinu; zmeňte ju na **X** = 0, **Y** = 0, **Z** = 1, čím získate vodorovnú rovinu prechádzajúcu kanálom v polovici jeho výšky.
+
+Počas zmeny hodnôt sa rovina rezu priebežne zobrazuje v **3D oblasti modelu**. Kliknutím na **OK** rez vytvoríte. V strome **Model** sa v skupine **Rezy** objaví nový celok **Cut 1**.
+
+![CFD – Vytvoriť rez](image-CFD-Create_cut.png)
+
+## 8. Vytvoriť vektorové pole
+
+Teraz zobrazte vypočítanú rýchlosť ako šípky na rovine rezu.
+
+**Menu:** _Geometria -> Vektorové pole -> Vytvoriť vektorové pole_
+
+V dialógu **Editor vektorového poľa**:
+
+1. V zozname **Model** vyberte **Cut 1**. Šípky sa vykreslia na rovine rezu vytvorenej v predchádzajúcom kroku.
+2. V zozname **Premenné** vyberte **Velocity** (rýchlosť).
+3. Ponechajte zaškrtnuté **3D vektorové pole**. Šípky potom ukazujú celý vektor rýchlosti. Ak políčko nie je zaškrtnuté, každá šípka sa premietne do roviny rezu a zobrazí sa iba zložka prúdenia ležiaca v rovine.
+
+Kliknutím na **OK** vektorové pole vytvoríte. Objaví sa v strome **Model** v skupine **Vektorové polia**. Zrušte zaškrtnutie skupiny **Objemy**, aby plný objem nezakrýval šípky.
+
+![CFD – Vytvoriť vektorové pole](image-CFD-Create_vector.png)
+
+Šípky môžu byť príliš krátke na to, aby boli dobre viditeľné, pretože ich dĺžka je úmerná rýchlosti prúdenia. Ak ich chcete predĺžiť, vyberte vektorové pole v strome **Model**, otvorte záložku **Výsledky** a zvýšte hodnotu v časti **Mierka**. Mierka je súčinom hodnoty **Mierka** a mocniny desiatich nastavenej v poli **Faktor**; v príklade nižšie dávajú **Mierka** 1 a **Faktor** 2 mierku `1 × 10^2 = 100`.
+
+![CFD – Mierka vektorového poľa](image-CFD-Scale_vector.png)
+
+## 9. Poradie krokov úlohy (etapa 2 – prechodová simulácia)
+
+Keď je k dispozícii skonvergované prúdové pole, možno nastaviť **prechodovú** simuláciu vrátane úlohy **Contaminant dispersion**.
+
+V prechodovej simulácii sa úlohy riešia raz v každom časovom kroku. **Incompressible viscous flow** je stále nelineárna úloha, preto v každom časovom kroku potrebuje vlastné nelineárne iterácie, zatiaľ čo **Contaminant dispersion** sa rieši raz za časový krok po vyriešení prúdenia. Znova otvorte dialóg **Poradie krokov úlohy** (tlačidlo **Poradie krokov úloh** na paneli nástrojov) a nastavte ho takto:
+
+1. Vyberte **Incompressible viscous flow** a kliknite na tlačidlo **>**. Úloha sa tým presunie do novej, vnorenej skupiny iterácií.
+2. Dvakrát kliknite na hodnotu vonkajšieho **počet iterácií:** a zmeňte ju z **2000** na **1**. Potom zmeňte vnútorný (vnorený) **počet iterácií:** z **1** na **10**.
+3. Kliknite na **Pridať typ úlohy**, zaškrtnite **Contaminant dispersion** a kliknite na **OK**. Automaticky sa zaškrtne aj **Incompressible viscous flow**, pretože rozptyl kontaminantu potrebuje prúdové pole. Ak sa na vonkajšej úrovni pridá druhá položka **Incompressible viscous flow**, vyberte ju a kliknite na **Odstrániť**.
+
+Poradie krokov by malo vyzerať ako na snímke obrazovky nižšie. Potvrďte kliknutím na **OK**.
+
+![CFD – Poradie krokov úlohy](image-CFD-Problem_task_flow.png)
+
+## 10. Nastavenie riešiča v čase
+
+Otvorte záložku **Úloha** na pravej strane hlavného okna a nastavte:
+
+1. Zaškrtnite **Riešič v čase**.
+2. **Aproximácia**: **Backward difference (stable)** (spätná diferencia – stabilná).
+3. **Veľkosť časového kroku**: **0.01** `[s]`.
+4. **Počet časových krokov**: **2000**.
+5. **Frekvencia výstupu**: **10** – záznam s výsledkami sa zapíše každý 10. časový krok.
+
+**Konečný čas** sa vypočíta automaticky (2000 × 0.01 s = 20 s).
+
+V časti **Nastavenia rozptylu kontaminantu** nastavte **Maximálne nasýtenie** na **2.4** `[kg/m^3]` a **Koeficient difúzie** na **0.01** `[m^2/s]`. Viac informácií nájdete v teoretickej príručke.
+
+![CFD – Riešič v čase](image-CFD-Problem_time_solver.png)
+
+## 11. Okrajové podmienky (etapa 2)
+
+Kontaminant vstupuje do kanála cez prítok. V strome **Model** vyberte **Inflow** a v záložke **Okrajové podmienky** zaškrtnite **Particle concentration** (koncentrácia častíc); **Volumetric flow rate (inflow)** ponechajte zaškrtnuté.
+
+Namiesto konštantnej hodnoty sa použije hodnota závislá od času. Rozbaľte vlastnosť **Particle concentration** (šípka pred jej názvom) a kliknite na **Upraviť časovo závislé hodnoty**.
 
 ![CFD – Okrajové podmienky](image-CFD-Boundary_conditions.png)
 
-Nezadávajte hodnotu, ale kliknite na tlačidlo **Upraviť časovo závislé hodnoty** na zadanie časovo spustenej (časový profil) okrajovej podmienky.
+V dialógu **Editor zložiek** nastavte **Počet hodnôt** na **3**, zadajte hodnoty uvedené nižšie (bunku upravíte dvojitým kliknutím) a kliknite na **Ok**.
 
-V dialógu **Editor komponentov** možno zadávať časovo závislé hodnoty. Medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom zadanom čase zostáva platná posledná hodnota. Pri hodnotách uvedených nižšie preto koncentrácia na vstupe počas prvých 10 sekúnd stúpa z 0 na 1 `[kg/m^3]` a medzi 10. a 15. sekundou klesne späť na 0.
+| Čas `[s]` | Koncentrácia častíc `[kg/m^3]` |
+| --------- | ------------------------------ |
+| 0         | 0                              |
+| 5         | 1                              |
+| 10        | 0                              |
+
+Medzi dvoma zadanými časmi sa hodnota lineárne interpoluje a po poslednom zadanom čase zostáva posledná hodnota. Pri týchto hodnotách koncentrácia na prítoku počas prvých 5 sekúnd stúpne z 0 na 1 `[kg/m^3]` a medzi 5. a 10. sekundou klesne späť na 0.
 
 ![CFD – Podmienka koncentrácie častíc](image-CFD-Particle_concentration_condition.png)
 
-## 10. Vyriešiť úlohu (reštart)
+## 12. Vyriešiť prechodovú úlohu (reštart)
 
-Po úplnej konfigurácii úlohy reštartujte riešič. Postup je rovnaký ako pri spustení riešiča, ale musí byť vybraté políčko **Reštartovať riešič / pokračovať**. Tým riešič použije už vypočítané výsledky ako východiskový bod a bude pokračovať v simulácii s časovým krokovaním.
+**Menu:** _Riešenie -> Spustiť riešič_
+
+V dialógu **Spustiť riešič pre model** zaškrtnite **Reštartovať riešič / pokračovať** a kliknite na **OK**. Riešič potom ako východiskový bod použije už vypočítané ustálené prúdenie a pokračuje simuláciou s časovým krokovaním.
+
+Upozornenie **Contaminant dispersion: No implicit boundary condition assigned.** (nie je priradená žiadna implicitná okrajová podmienka) je očakávané a možno ho ignorovať.
 
 ![CFD – Reštart riešiča](image-CFD-Solver_restart.png)
 
-## 11. Záznamy modelu (výsledky v čase)
+## 13. Zobraziť výsledky počas behu riešiča
 
-Keď riešič nachádza riešenia pre každý časový krok, zapisujú sa záznamy modelu. Každý záznam obsahuje riešenie pre daný časový krok. Zoznam týchto záznamov je zobrazený v strome **Záznamy modelu**. Dvojitým kliknutím na záznam sa načítajú výsledky pre daný časový krok.
+Prechodový riešič beží na pozadí, takže výsledky možno prezerať ešte počas výpočtu. Ďalšie zobrazovacie celky, napríklad rezy, izoplochy, prúdnice, vektorové alebo skalárne polia, možno vytvoriť kedykoľvek a zobraziť na nich vypočítané výsledky. Tu sa opäť použijú rez a vektorové pole z krokov 7 a 8.
 
-## 12. Nahrať video
+### 13.1 Koncentrácia kontaminantu na reze
 
-Na nahranie videa z vypočítaných výsledkov prejdite do stromu **Záznamy modelu** a kliknite na tlačidlo **Nahrať** (červená bodka v dolnej časti).
+1. V strome **Model** rozbaľte skupinu **Rezy**, zaškrtnite **Cut 1**, aby bol viditeľný, a vyberte ho.
+2. Otvorte záložku **Výsledky** a v rozbaľovacom zozname hore vyberte **Particle concentration - Scalar**.
+3. V časti **Použiť ako ...** zaškrtnite **Scalar**. Rez je teraz zafarbený podľa koncentrácie kontaminantu.
+4. V časti **Rozsah hodnôt a farebná škála** nastavte **Maximum** na **1** a **Minimum** na **0** (napíšte hodnotu a stlačte _Enter_). Zodpovedá to rozsahu koncentrácie na prítoku, takže rovnaká farba znamená rovnakú koncentráciu v každom časovom kroku.
+5. Zaškrtnite **Zobraziť rozsah hodnôt**, aby sa v **3D oblasti modelu** zobrazila farebná škála.
+
+![Výsledky koncentrácie častíc](image-CFD-Particle_concentration_results.png)
+
+### 13.2 Šípky vektorového poľa
+
+Aby bol smer prúdenia nad zafarbeným rezom lepšie čitateľný, vykreslite šípky s hrotmi a bielou farbou:
+
+1. V strome **Model** vyberte vektorové pole (**Velocity** v skupine **Vektorové polia**).
+2. V časti **Možnosti zobrazenia** pod stromom zaškrtnite **Vykresliť hroty šípiek**.
+3. Kliknite na výber farby pod zaškrtávacími políčkami a zvoľte bielu (**#ffffffff**).
+
+Ďalšie možnosti zobrazenia určujú, či majú všetky šípky rovnakú dĺžku (**Vykresliť šípky rovnako dlhé**) a či šípky začínajú v bode, v ktorom sa rýchlosť vyhodnocuje (**Vykresliť šípky smerujúce von**).
+
+![CFD – Vykresliť hroty šípiek](image-CFD-Draw_arrow_heads.png)
+
+## 14. Záznamy modelu (výsledky v čase)
+
+Každý 10. časový krok (podľa **Frekvencie výstupu**) zapíše riešič záznam modelu s riešením pre daný čas. Záznamy sú uvedené v záložke **Záznamy** na ľavej strane hlavného okna; stĺpec **Záznam** udáva číslo časového kroku (záznam **500** obsahuje riešenie v čase 500 × 0.01 s = 5 s). Dvojitým kliknutím na záznam sa načítajú výsledky pre jeho časový krok; výsledky použité v záložke **Výsledky** zostanú zachované a vykreslia sa pre načítaný záznam.
+
+Výpočet všetkých 2000 časových krokov chvíľu trvá (na súčasnom počítači asi 20 minút). Riešič možno kedykoľvek zastaviť a doteraz zapísané záznamy zostanú zachované:
+
+**Menu:** _Riešenie -> Zastaviť riešič_ (potvrďte kliknutím na **Áno**)
+
+## 15. Nahrať video
+
+Video sa vytvára z toho, čo je práve zobrazené v **3D oblasti modelu**, preto najprv nastavte pohľad a zobrazené výsledky (pozri krok 13). Nastavenia zobrazenia sa s modelom neukladajú, takže po jeho opätovnom otvorení ich treba nastaviť znova. Potom otvorte záložku **Záznamy**, poľami **Od** a **Do** v dolnej časti zvoľte rozsah záznamov a kliknite na červené tlačidlo **Záznam**.
 
 ![CFD – Záznamy modelu](image-CFD-Model_records.png)
 
-Po kliknutí na tlačidlo **Nahrať** sa zobrazí dialóg **Nastavenia videa**. Kliknite na **Ok** na spustenie procesu nahrávania videa.
+Zobrazí sa dialóg **Nastavenia videa**, v ktorom možno nastaviť kodek videa, formát súboru, počet snímok za sekundu a počet snímok za záznam; pod nimi sa zobrazuje odhadovaná dĺžka videa. Pri 202 záznamoch, 24 snímkach za sekundu a 1 snímke za záznam má video približne 8,4 sekundy. Kliknutím na **OK** spustíte nahrávanie.
 
 ![CFD – Nastavenia videa](image-CFD-Video_settings.png)
 
-Vytvorenie videa môže chvíľu trvať, pretože snímky videa sa vytvárajú zo snímok obrazovky **oblasti 3D modelu** a pre každý záznam modelu musí byť načítaný.
+Nahrávanie môže chvíľu trvať, pretože sa postupne načíta každý záznam modelu a ako snímka videa sa urobí snímka obrazovky **3D oblasti modelu**.
 
-Všetky vytvorené snímky obrazovky aj samotné video možno nájsť v strome **Dokumenty**. Na prehranie videa naň dvojito kliknite na jeho názov **Channel.avi**.
+Video a všetky snímky (jeden obrázok PNG na záznam) nájdete v záložke **Dokumenty** v skupine **Channel**; video **Channel.mp4** je na konci zoznamu. Dvojitým kliknutím ho prehráte.
 
 ![CFD – Dokumenty](image-CFD-Documents.png)

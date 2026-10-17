@@ -282,7 +282,7 @@ void ResultsVariableTree::populate()
     // Value range & color scale
 
     item = new QTreeWidgetItem(this);
-    QGroupBox *rangeGroupBox= new QGroupBox(tr("Value range & color scale"));
+    QGroupBox *rangeGroupBox= new QGroupBox(tr("Value range and color scale"));
     QGridLayout *rangeLayout = new QGridLayout;
 
     crow = 0;

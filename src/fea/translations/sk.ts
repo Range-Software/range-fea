@@ -82,7 +82,7 @@
         <location filename="../src/action.cpp" line="348"/>
         <location filename="../src/action.cpp" line="429"/>
         <source>Are you sure you want to close the current session?</source>
-        <translation>Naozaj zatvorit aktuálnu reláciu?</translation>
+        <translation>Naozaj zatvoriť aktuálnu reláciu?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="220"/>
@@ -294,7 +294,7 @@
         <location filename="../src/action.cpp" line="1228"/>
         <location filename="../src/action.cpp" line="1281"/>
         <source>Are you sure you want to remove picked nodes?</source>
-        <translation>Naozaj odstrániť vyznačné uzly?</translation>
+        <translation>Naozaj odstrániť vyznačené uzly?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="1327"/>
@@ -588,7 +588,7 @@
     <message>
         <location filename="../src/action.cpp" line="272"/>
         <source>Edit vector field</source>
-        <translation>Vytvoriť vektorové pole</translation>
+        <translation>Upraviť vektorové pole</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="273"/>
@@ -922,7 +922,7 @@
     <message>
         <location filename="../src/application.cpp" line="212"/>
         <source>Default and configured help directories differ</source>
-        <translation>Predvolené a configurované cesty k nápovede sa líšia</translation>
+        <translation>Predvolené a konfigurované cesty k nápovede sa líšia</translation>
     </message>
     <message>
         <location filename="../src/application.cpp" line="217"/>
@@ -939,7 +939,7 @@
     <message>
         <location filename="../src/application.cpp" line="226"/>
         <source>Default and configured paths to solver executable differ</source>
-        <translation>Predvolená a configurovaná cesta k riešiču sa líši</translation>
+        <translation>Predvolená a konfigurovaná cesta k riešiču sa líši</translation>
     </message>
 </context>
 <context>
@@ -2302,7 +2302,7 @@
     <message>
         <location filename="../src/geometry_rotate_widget.cpp" line="18"/>
         <source>Rotation angles</source>
-        <translation>Uhlky rotácie</translation>
+        <translation>Uhly rotácie</translation>
     </message>
     <message>
         <location filename="../src/geometry_rotate_widget.cpp" line="62"/>
@@ -2320,7 +2320,7 @@
     <message>
         <location filename="../src/geometry_scale_widget.cpp" line="17"/>
         <source>Same scale in all directions</source>
-        <translation>Rovnaká mierka vo v%setkých smeroch</translation>
+        <translation>Rovnaká mierka vo všetkých smeroch</translation>
     </message>
     <message>
         <location filename="../src/geometry_scale_widget.cpp" line="25"/>
@@ -2777,7 +2777,7 @@
     <message>
         <location filename="../src/main_window.cpp" line="548"/>
         <source>Surface toolbar</source>
-        <translation>Panel nástrojov puvrchu</translation>
+        <translation>Panel nástrojov povrchu</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="829"/>
@@ -2795,7 +2795,7 @@
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="31"/>
         <source>Auto-mark all entities</source>
-        <translation>Automaticky sznačiť všetky celky</translation>
+        <translation>Automaticky označiť všetky celky</translation>
     </message>
     <message>
         <location filename="../src/mark_entity_dialog.cpp" line="35"/>
@@ -2900,7 +2900,7 @@
     <message>
         <location filename="../src/material_property_add_dialog.cpp" line="22"/>
         <source>Select one or more material properties from the list below.</source>
-        <translation>Vybrať jeden, alebo viac materiiálových vlastností zo zoznamu nižšie.</translation>
+        <translation>Vybrať jeden, alebo viac materiálových vlastností zo zoznamu nižšie.</translation>
     </message>
     <message>
         <location filename="../src/material_property_add_dialog.cpp" line="40"/>
@@ -3426,42 +3426,42 @@
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="237"/>
         <source>Draw as wireframe</source>
-        <translation>Vykreslť ako drôtený model</translation>
+        <translation>Vykresliť ako drôtený model</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="245"/>
         <source>Draw element edges</source>
-        <translation>Vykreslť hrany prvkov</translation>
+        <translation>Vykresliť hrany prvkov</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="253"/>
         <source>Draw element nodes</source>
-        <translation>Vykreslť uzly prvkov</translation>
+        <translation>Vykresliť uzly prvkov</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="261"/>
         <source>Draw element numbers</source>
-        <translation>Vykreslť čísla prvkov</translation>
+        <translation>Vykresliť čísla prvkov</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="269"/>
         <source>Draw node numbers</source>
-        <translation>Vykreslť čísla uzlov</translation>
+        <translation>Vykresliť čísla uzlov</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
-        <translation>Vykreslť hroty šípiek</translation>
+        <translation>Vykresliť hroty šípiek</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="285"/>
         <source>Draw arrows with same length</source>
-        <translation>Vykreslť šípky rovnako dlhé</translation>
+        <translation>Vykresliť šípky rovnako dlhé</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="293"/>
         <source>Draw arrows pointing from</source>
-        <translation>Vykreslť šípky smerujúce von</translation>
+        <translation>Vykresliť šípky smerujúce von</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="301"/>
@@ -4556,7 +4556,7 @@
     <message>
         <location filename="../src/report_generator.cpp" line="349"/>
         <source>Current computational time</source>
-        <translation>Súčasný výpočový čas</translation>
+        <translation>Súčasný výpočtový čas</translation>
     </message>
     <message>
         <location filename="../src/report_generator.cpp" line="356"/>
@@ -4659,7 +4659,7 @@
     </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="285"/>
-        <source>Value range &amp; color scale</source>
+        <source>Value range and color scale</source>
         <translation>Rozsah hodnôt a farebná škála</translation>
     </message>
     <message>
@@ -5024,7 +5024,7 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     <message>
         <location filename="../src/time_solver_setup_widget.cpp" line="74"/>
         <source>End time = Start time + Time-step size * Number of time-steps</source>
-        <translation>Konečný čas = Počíatočný čas + Veľkosť časového kroku * Počet časových krokov</translation>
+        <translation>Konečný čas = Počiatočný čas + Veľkosť časového kroku * Počet časových krokov</translation>
     </message>
     <message>
         <location filename="../src/time_solver_setup_widget.cpp" line="76"/>
@@ -5093,7 +5093,7 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="108"/>
         <source>Value set generator</source>
-        <translation>Genrátor sady hodnôt</translation>
+        <translation>Generátor sady hodnôt</translation>
     </message>
     <message>
         <location filename="../src/value_set_generator_dialog.cpp" line="151"/>
