@@ -1,0 +1,115 @@
+{
+    "id": "8100242d-c85b-42f0-bfd7-9b48542ffbb7",
+    "name": "Aluminium 6061-T6",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 2700
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 24940000
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.1
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 896
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 68900000000
+                }
+            ],
+            "type": "prop-modulus_of_elasticity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.33
+                }
+            ],
+            "type": "prop-poisson_ratio"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 5050
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 167
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 373.15,
+                    "value": 2.36e-05
+                },
+                {
+                    "key": 473.15,
+                    "value": 2.46e-05
+                },
+                {
+                    "key": 573.15,
+                    "value": 2.56e-05
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "3"
+}

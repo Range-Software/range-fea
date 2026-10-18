@@ -7,7 +7,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 2242
+                    "value": 2400
                 }
             ],
             "type": "prop-density"
@@ -17,7 +17,17 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 3.661
+                    "value": 0.92
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 880
                 }
             ],
             "type": "prop-heat_capacity"
@@ -27,7 +37,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 23000000
+                    "value": 30000000000
                 }
             ],
             "type": "prop-modulus_of_elasticity"
@@ -47,7 +57,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 3500
+                    "value": 3540
                 }
             ],
             "type": "prop-soubd_speed"
@@ -57,7 +67,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 0.0065898
+                    "value": 1.4
                 }
             ],
             "type": "prop-thermal_conductivity"
@@ -67,11 +77,11 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 1.2e-06
+                    "value": 1.2e-05
                 }
             ],
             "type": "prop-thermal_expansion_coefficient"
         }
     ],
-    "state": "0"
+    "state": "3"
 }

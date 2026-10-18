@@ -1,0 +1,87 @@
+{
+    "id": "2e75c6ed-1f36-4f9a-93f3-52454745b4ed",
+    "name": "Sand",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1515
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.9
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 800
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 50000000
+                }
+            ],
+            "type": "prop-modulus_of_elasticity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1e-11
+                }
+            ],
+            "type": "prop-permeability_to_fluids"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.3
+                }
+            ],
+            "type": "prop-poisson_ratio"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.27
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1.2e-05
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "3"
+}

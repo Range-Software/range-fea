@@ -1,0 +1,87 @@
+{
+    "id": "9d8a8ace-848c-42f2-8378-6e178b78148c",
+    "name": "Brick",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1920
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.93
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 835
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 14000000000
+                }
+            ],
+            "type": "prop-modulus_of_elasticity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.15
+                }
+            ],
+            "type": "prop-poisson_ratio"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 2700
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.72
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 5.5e-06
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "3"
+}

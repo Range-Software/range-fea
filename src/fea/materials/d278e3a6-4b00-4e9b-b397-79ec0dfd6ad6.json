@@ -17,7 +17,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 10000
+                    "value": 0.000435
                 }
             ],
             "type": "prop-electrical_conductivity"
@@ -27,7 +27,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 0.3
+                    "value": 0.67
                 }
             ],
             "type": "prop-emissivity"
@@ -36,8 +36,40 @@
             "keyType": "var-temperature",
             "table": [
                 {
-                    "key": 293.15,
-                    "value": 702
+                    "key": 100,
+                    "value": 259
+                },
+                {
+                    "key": 200,
+                    "value": 556
+                },
+                {
+                    "key": 300,
+                    "value": 712
+                },
+                {
+                    "key": 400,
+                    "value": 790
+                },
+                {
+                    "key": 600,
+                    "value": 867
+                },
+                {
+                    "key": 800,
+                    "value": 913
+                },
+                {
+                    "key": 1000,
+                    "value": 946
+                },
+                {
+                    "key": 1200,
+                    "value": 967
+                },
+                {
+                    "key": 1500,
+                    "value": 992
                 }
             ],
             "type": "prop-heat_capacity"
@@ -47,7 +79,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 112400000000
+                    "value": 130000000000
                 }
             ],
             "type": "prop-modulus_of_elasticity"
@@ -67,7 +99,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 11
+                    "value": 11.7
                 }
             ],
             "type": "prop-relative_permittivity"
@@ -77,7 +109,7 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 2200
+                    "value": 7470
                 }
             ],
             "type": "prop-soubd_speed"
@@ -86,8 +118,44 @@
             "keyType": "var-temperature",
             "table": [
                 {
+                    "key": 100,
+                    "value": 884
+                },
+                {
+                    "key": 200,
+                    "value": 264
+                },
+                {
                     "key": 293.15,
-                    "value": 124
+                    "value": 152.5
+                },
+                {
+                    "key": 300,
+                    "value": 148
+                },
+                {
+                    "key": 400,
+                    "value": 98.9
+                },
+                {
+                    "key": 600,
+                    "value": 61.9
+                },
+                {
+                    "key": 800,
+                    "value": 42.2
+                },
+                {
+                    "key": 1000,
+                    "value": 31.2
+                },
+                {
+                    "key": 1200,
+                    "value": 25.7
+                },
+                {
+                    "key": 1500,
+                    "value": 22.7
                 }
             ],
             "type": "prop-thermal_conductivity"
@@ -96,12 +164,24 @@
             "keyType": "var-temperature",
             "table": [
                 {
+                    "key": 100,
+                    "value": -4e-07
+                },
+                {
                     "key": 293.15,
-                    "value": 3e-06
+                    "value": 2.6e-06
+                },
+                {
+                    "key": 500,
+                    "value": 3.5e-06
+                },
+                {
+                    "key": 800,
+                    "value": 4.1e-06
                 }
             ],
             "type": "prop-thermal_expansion_coefficient"
         }
     ],
-    "state": "0"
+    "state": "3"
 }

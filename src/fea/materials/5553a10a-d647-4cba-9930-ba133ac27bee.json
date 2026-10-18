@@ -51,6 +51,26 @@
             "table": [
                 {
                     "key": 293.15,
+                    "value": 1.35e-07
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.9
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
                     "value": 2440
                 }
             ],
@@ -61,7 +81,27 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 0.15
+                    "value": 25.3
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1162
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.167
                 }
             ],
             "type": "prop-thermal_conductivity"
@@ -71,11 +111,11 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 0.00025
+                    "value": 0.00109
                 }
             ],
             "type": "prop-thermal_expansion_coefficient"
         }
     ],
-    "state": "0"
+    "state": "2"
 }

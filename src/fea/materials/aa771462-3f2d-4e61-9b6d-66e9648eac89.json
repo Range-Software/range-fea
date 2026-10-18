@@ -1,0 +1,127 @@
+{
+    "id": "aa771462-3f2d-4e61-9b6d-66e9648eac89",
+    "name": "Cast Iron",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 7200
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1369860.0
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.7
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 460
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 110000000000
+                }
+            ],
+            "type": "prop-modulus_of_elasticity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.26
+                }
+            ],
+            "type": "prop-poisson_ratio"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 3910
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 373.15,
+                    "value": 48.5
+                },
+                {
+                    "key": 473.15,
+                    "value": 47.5
+                },
+                {
+                    "key": 573.15,
+                    "value": 46
+                },
+                {
+                    "key": 673.15,
+                    "value": 44.5
+                },
+                {
+                    "key": 773.15,
+                    "value": 43
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 473.15,
+                    "value": 1.17e-05
+                },
+                {
+                    "key": 673.15,
+                    "value": 1.25e-05
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "3"
+}

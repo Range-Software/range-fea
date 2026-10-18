@@ -1,0 +1,189 @@
+{
+    "id": "a1748f61-1200-4d7c-8c9f-c0876b1d1642",
+    "name": "Engine Oil (SAE 30)",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 894.292
+                },
+                {
+                    "key": 293.15,
+                    "value": 881.903
+                },
+                {
+                    "key": 313.15,
+                    "value": 869.513
+                },
+                {
+                    "key": 333.15,
+                    "value": 857.123
+                },
+                {
+                    "key": 353.15,
+                    "value": 844.732
+                },
+                {
+                    "key": 373.15,
+                    "value": 832.342
+                },
+                {
+                    "key": 393.15,
+                    "value": 819.952
+                },
+                {
+                    "key": 413.15,
+                    "value": 807.562
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 1.66463
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.303735
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.0869512
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.0338538
+                },
+                {
+                    "key": 353.15,
+                    "value": 0.0163223
+                },
+                {
+                    "key": 373.15,
+                    "value": 0.00915577
+                },
+                {
+                    "key": 393.15,
+                    "value": 0.0057293
+                },
+                {
+                    "key": 413.15,
+                    "value": 0.00388667
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.9
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 1796
+                },
+                {
+                    "key": 300,
+                    "value": 1909
+                },
+                {
+                    "key": 320,
+                    "value": 1993
+                },
+                {
+                    "key": 340,
+                    "value": 2076
+                },
+                {
+                    "key": 360,
+                    "value": 2161
+                },
+                {
+                    "key": 380,
+                    "value": 2250
+                },
+                {
+                    "key": 400,
+                    "value": 2337
+                },
+                {
+                    "key": 420,
+                    "value": 2427
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1460
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.147
+                },
+                {
+                    "key": 300,
+                    "value": 0.145
+                },
+                {
+                    "key": 320,
+                    "value": 0.143
+                },
+                {
+                    "key": 340,
+                    "value": 0.139
+                },
+                {
+                    "key": 360,
+                    "value": 0.138
+                },
+                {
+                    "key": 380,
+                    "value": 0.136
+                },
+                {
+                    "key": 400,
+                    "value": 0.134
+                },
+                {
+                    "key": 420,
+                    "value": 0.133
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.0007
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "2"
+}

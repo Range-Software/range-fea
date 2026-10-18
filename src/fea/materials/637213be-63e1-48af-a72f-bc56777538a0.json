@@ -1,0 +1,179 @@
+{
+    "id": "637213be-63e1-48af-a72f-bc56777538a0",
+    "name": "Ethylene Glycol / Water 50/50",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 243.15,
+                    "value": 1102
+                },
+                {
+                    "key": 253.15,
+                    "value": 1098
+                },
+                {
+                    "key": 273.15,
+                    "value": 1090
+                },
+                {
+                    "key": 293.15,
+                    "value": 1079
+                },
+                {
+                    "key": 313.15,
+                    "value": 1067
+                },
+                {
+                    "key": 333.15,
+                    "value": 1055
+                },
+                {
+                    "key": 353.15,
+                    "value": 1042
+                },
+                {
+                    "key": 373.15,
+                    "value": 1030
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 277.55,
+                    "value": 0.0065
+                },
+                {
+                    "key": 299.85,
+                    "value": 0.0028
+                },
+                {
+                    "key": 322.05,
+                    "value": 0.0015
+                },
+                {
+                    "key": 344.25,
+                    "value": 0.00095
+                },
+                {
+                    "key": 366.45,
+                    "value": 0.0007
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.95
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 243.15,
+                    "value": 3127
+                },
+                {
+                    "key": 273.15,
+                    "value": 3218.8
+                },
+                {
+                    "key": 293.15,
+                    "value": 3280
+                },
+                {
+                    "key": 313.15,
+                    "value": 3341.2
+                },
+                {
+                    "key": 333.15,
+                    "value": 3402.4
+                },
+                {
+                    "key": 353.15,
+                    "value": 3463.6
+                },
+                {
+                    "key": 373.15,
+                    "value": 3524.8
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.385
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.4
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.412
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.421
+                },
+                {
+                    "key": 353.15,
+                    "value": 0.428
+                },
+                {
+                    "key": 373.15,
+                    "value": 0.432
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 248.15,
+                    "value": 0.000363636
+                },
+                {
+                    "key": 263.15,
+                    "value": 0.000365631
+                },
+                {
+                    "key": 283.15,
+                    "value": 0.000507146
+                },
+                {
+                    "key": 303.15,
+                    "value": 0.00055918
+                },
+                {
+                    "key": 323.15,
+                    "value": 0.000565504
+                },
+                {
+                    "key": 343.15,
+                    "value": 0.000619933
+                },
+                {
+                    "key": 363.15,
+                    "value": 0.000579151
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "2"
+}

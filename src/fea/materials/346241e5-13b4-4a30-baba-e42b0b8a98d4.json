@@ -1,0 +1,187 @@
+{
+    "id": "346241e5-13b4-4a30-baba-e42b0b8a98d4",
+    "name": "Stainless Steel",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 7900
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1388890.0
+                },
+                {
+                    "key": 922.15,
+                    "value": 862069.0
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.3
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 272
+                },
+                {
+                    "key": 200,
+                    "value": 402
+                },
+                {
+                    "key": 300,
+                    "value": 477
+                },
+                {
+                    "key": 400,
+                    "value": 515
+                },
+                {
+                    "key": 600,
+                    "value": 557
+                },
+                {
+                    "key": 800,
+                    "value": 582
+                },
+                {
+                    "key": 1000,
+                    "value": 611
+                },
+                {
+                    "key": 1200,
+                    "value": 640
+                },
+                {
+                    "key": 1500,
+                    "value": 682
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 193000000000
+                }
+            ],
+            "type": "prop-modulus_of_elasticity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.29
+                }
+            ],
+            "type": "prop-poisson_ratio"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 4940
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 9.2
+                },
+                {
+                    "key": 200,
+                    "value": 12.6
+                },
+                {
+                    "key": 300,
+                    "value": 14.9
+                },
+                {
+                    "key": 400,
+                    "value": 16.6
+                },
+                {
+                    "key": 600,
+                    "value": 19.8
+                },
+                {
+                    "key": 800,
+                    "value": 22.6
+                },
+                {
+                    "key": 1000,
+                    "value": 25.4
+                },
+                {
+                    "key": 1200,
+                    "value": 28
+                },
+                {
+                    "key": 1500,
+                    "value": 31.7
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 373.15,
+                    "value": 1.73e-05
+                },
+                {
+                    "key": 588.15,
+                    "value": 1.78e-05
+                },
+                {
+                    "key": 811.15,
+                    "value": 1.84e-05
+                },
+                {
+                    "key": 922.15,
+                    "value": 1.87e-05
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "3"
+}

@@ -1,0 +1,313 @@
+{
+    "id": "f439c9ea-3d01-4d72-816c-29209a17d00e",
+    "name": "Hydrogen",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 0.245667
+                },
+                {
+                    "key": 200,
+                    "value": 0.122834
+                },
+                {
+                    "key": 300,
+                    "value": 0.0818891
+                },
+                {
+                    "key": 400,
+                    "value": 0.0614168
+                },
+                {
+                    "key": 500,
+                    "value": 0.0491334
+                },
+                {
+                    "key": 600,
+                    "value": 0.0409445
+                },
+                {
+                    "key": 700,
+                    "value": 0.0350953
+                },
+                {
+                    "key": 800,
+                    "value": 0.0307084
+                },
+                {
+                    "key": 900,
+                    "value": 0.0272964
+                },
+                {
+                    "key": 1000,
+                    "value": 0.0245667
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 4.21e-06
+                },
+                {
+                    "key": 200,
+                    "value": 6.81e-06
+                },
+                {
+                    "key": 300,
+                    "value": 8.96e-06
+                },
+                {
+                    "key": 400,
+                    "value": 1.082e-05
+                },
+                {
+                    "key": 500,
+                    "value": 1.264e-05
+                },
+                {
+                    "key": 600,
+                    "value": 1.424e-05
+                },
+                {
+                    "key": 700,
+                    "value": 1.578e-05
+                },
+                {
+                    "key": 800,
+                    "value": 1.724e-05
+                },
+                {
+                    "key": 900,
+                    "value": 1.865e-05
+                },
+                {
+                    "key": 1000,
+                    "value": 2.013e-05
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 5e-15
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 11230
+                },
+                {
+                    "key": 200,
+                    "value": 13540
+                },
+                {
+                    "key": 300,
+                    "value": 14310
+                },
+                {
+                    "key": 400,
+                    "value": 14480
+                },
+                {
+                    "key": 500,
+                    "value": 14520
+                },
+                {
+                    "key": 600,
+                    "value": 14540
+                },
+                {
+                    "key": 700,
+                    "value": 14610
+                },
+                {
+                    "key": 800,
+                    "value": 14700
+                },
+                {
+                    "key": 900,
+                    "value": 14830
+                },
+                {
+                    "key": 1000,
+                    "value": 14990
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1.00025
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 807.378
+                },
+                {
+                    "key": 200,
+                    "value": 1089.15
+                },
+                {
+                    "key": 300,
+                    "value": 1318.48
+                },
+                {
+                    "key": 400,
+                    "value": 1518.84
+                },
+                {
+                    "key": 500,
+                    "value": 1697.19
+                },
+                {
+                    "key": 600,
+                    "value": 1858.67
+                },
+                {
+                    "key": 700,
+                    "value": 2005.69
+                },
+                {
+                    "key": 800,
+                    "value": 2141.6
+                },
+                {
+                    "key": 900,
+                    "value": 2267.63
+                },
+                {
+                    "key": 1000,
+                    "value": 2385.4
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 0.067
+                },
+                {
+                    "key": 200,
+                    "value": 0.131
+                },
+                {
+                    "key": 300,
+                    "value": 0.183
+                },
+                {
+                    "key": 400,
+                    "value": 0.226
+                },
+                {
+                    "key": 500,
+                    "value": 0.266
+                },
+                {
+                    "key": 600,
+                    "value": 0.305
+                },
+                {
+                    "key": 700,
+                    "value": 0.342
+                },
+                {
+                    "key": 800,
+                    "value": 0.378
+                },
+                {
+                    "key": 900,
+                    "value": 0.412
+                },
+                {
+                    "key": 1000,
+                    "value": 0.448
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 100,
+                    "value": 0.01
+                },
+                {
+                    "key": 200,
+                    "value": 0.005
+                },
+                {
+                    "key": 300,
+                    "value": 0.00333333
+                },
+                {
+                    "key": 400,
+                    "value": 0.0025
+                },
+                {
+                    "key": 500,
+                    "value": 0.002
+                },
+                {
+                    "key": 600,
+                    "value": 0.00166667
+                },
+                {
+                    "key": 700,
+                    "value": 0.00142857
+                },
+                {
+                    "key": 800,
+                    "value": 0.00125
+                },
+                {
+                    "key": 900,
+                    "value": 0.00111111
+                },
+                {
+                    "key": 1000,
+                    "value": 0.001
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "1"
+}

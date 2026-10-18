@@ -17,7 +17,17 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 0.8
+                    "value": 1e-12
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.92
                 }
             ],
             "type": "prop-emissivity"
@@ -27,7 +37,17 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 59300000
+                    "value": 670
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 59300000000
                 }
             ],
             "type": "prop-modulus_of_elasticity"
@@ -47,11 +67,41 @@
             "table": [
                 {
                     "key": 293.15,
-                    "value": 3.2693e-08
+                    "value": 6.7
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 4410
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.8
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 9e-06
                 }
             ],
             "type": "prop-thermal_expansion_coefficient"
         }
     ],
-    "state": "0"
+    "state": "3"
 }

@@ -1,0 +1,177 @@
+{
+    "id": "79c3ce9f-821f-4682-9c1d-1853b63b67a8",
+    "name": "Glycerol",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 1276
+                },
+                {
+                    "key": 280,
+                    "value": 1271.9
+                },
+                {
+                    "key": 290,
+                    "value": 1265.8
+                },
+                {
+                    "key": 300,
+                    "value": 1259.9
+                },
+                {
+                    "key": 310,
+                    "value": 1253.9
+                },
+                {
+                    "key": 320,
+                    "value": 1247.2
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 10.6
+                },
+                {
+                    "key": 280,
+                    "value": 5.34
+                },
+                {
+                    "key": 290,
+                    "value": 1.85
+                },
+                {
+                    "key": 300,
+                    "value": 0.799
+                },
+                {
+                    "key": 310,
+                    "value": 0.352
+                },
+                {
+                    "key": 320,
+                    "value": 0.21
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 6.4e-06
+                }
+            ],
+            "type": "prop-electrical_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.9
+                }
+            ],
+            "type": "prop-emissivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 2262
+                },
+                {
+                    "key": 280,
+                    "value": 2288
+                },
+                {
+                    "key": 290,
+                    "value": 2320
+                },
+                {
+                    "key": 300,
+                    "value": 2366
+                },
+                {
+                    "key": 310,
+                    "value": 2410
+                },
+                {
+                    "key": 320,
+                    "value": 2448
+                }
+            ],
+            "type": "prop-heat_capacity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 42.5
+                }
+            ],
+            "type": "prop-relative_permittivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1904
+                }
+            ],
+            "type": "prop-soubd_speed"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.282
+                },
+                {
+                    "key": 280,
+                    "value": 0.284
+                },
+                {
+                    "key": 290,
+                    "value": 0.286
+                },
+                {
+                    "key": 300,
+                    "value": 0.286
+                },
+                {
+                    "key": 310,
+                    "value": 0.286
+                },
+                {
+                    "key": 320,
+                    "value": 0.287
+                }
+            ],
+            "type": "prop-thermal_conductivity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 0.00048
+                }
+            ],
+            "type": "prop-thermal_expansion_coefficient"
+        }
+    ],
+    "state": "2"
+}
