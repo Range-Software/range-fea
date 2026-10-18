@@ -1,0 +1,3 @@
+# Nápověda
+
+Spustí tuto nápovědu.

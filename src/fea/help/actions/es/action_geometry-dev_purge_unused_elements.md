@@ -1,0 +1,1 @@
+# Purgar elementos no utilizados

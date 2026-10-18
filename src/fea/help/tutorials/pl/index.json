@@ -1,0 +1,25 @@
+{
+    "main": "tutorial_index.md",
+    "chapters": [
+        {
+            "title": "1. Rysowanie sześcianu",
+            "file":  "tutorial_Draw_cube.md"
+        },
+        {
+            "title": "2. Przekształcanie geometrii",
+            "file":  "tutorial_Transform_geometry.md"
+        },
+        {
+            "title": "3. Analiza naprężeń i odkształceń",
+            "file":  "tutorial_Stress_and_deformation_analysis.md"
+        },
+        {
+            "title": "4. Dyspersja zanieczyszczeń w płynach",
+            "file":  "tutorial_Contaminant_dispersion_in_fluids.md"
+        },
+        {
+            "title": "5. Multifizyka",
+            "file":  "tutorial_Multiphysics.md"
+        }
+    ]
+}

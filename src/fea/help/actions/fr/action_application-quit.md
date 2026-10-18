@@ -1,0 +1,3 @@
+# Quitter
+
+Quitte le programme.

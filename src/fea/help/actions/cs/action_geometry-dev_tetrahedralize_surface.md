@@ -1,0 +1,1 @@
+# Tetraedrizovat povrch

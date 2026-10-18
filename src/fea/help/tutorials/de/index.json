@@ -1,0 +1,25 @@
+{
+    "main": "tutorial_index.md",
+    "chapters": [
+        {
+            "title": "1. Würfel zeichnen",
+            "file":  "tutorial_Draw_cube.md"
+        },
+        {
+            "title": "2. Geometrie transformieren",
+            "file":  "tutorial_Transform_geometry.md"
+        },
+        {
+            "title": "3. Spannungs- und Verformungsanalyse",
+            "file":  "tutorial_Stress_and_deformation_analysis.md"
+        },
+        {
+            "title": "4. Schadstoffausbreitung in Fluiden",
+            "file":  "tutorial_Contaminant_dispersion_in_fluids.md"
+        },
+        {
+            "title": "5. Multiphysik",
+            "file":  "tutorial_Multiphysics.md"
+        }
+    ]
+}

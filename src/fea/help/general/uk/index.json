@@ -1,0 +1,41 @@
+{
+    "main": "general_index.md",
+    "chapters": [
+        {
+            "title": "1. Модель",
+            "file": "general_Model.md"
+        },
+        {
+            "title": "2. Задача",
+            "file": "general_Problem.md"
+        },
+        {
+            "title": "3. Тип задачі",
+            "file": "general_Problem_type.md"
+        },
+        {
+            "title": "4. Гранична умова",
+            "file": "general_Boundary_condition.md"
+        },
+        {
+            "title": "5. Стан середовища",
+            "file": "general_Environment_condition.md"
+        },
+        {
+            "title": "6. Початкова умова",
+            "file": "general_Initial_condition.md"
+        },
+        {
+            "title": "7. Матеріал",
+            "file": "general_Material.md"
+        },
+        {
+            "title": "8. Розв’язувач",
+            "file": "general_Solver.md"
+        },
+        {
+            "title": "9. Підсумки",
+            "file": "general_Results.md"
+        }
+    ]
+}

@@ -204,7 +204,7 @@ Každý 10. časový krok (podľa **Frekvencie výstupu**) zapíše riešič zá
 
 Výpočet všetkých 2000 časových krokov chvíľu trvá (na súčasnom počítači asi 20 minút). Riešič možno kedykoľvek zastaviť a doteraz zapísané záznamy zostanú zachované:
 
-**Menu:** _Riešenie -> Zastaviť riešič_ (potvrďte kliknutím na **Áno**)
+**Menu:** _Riešenie -> Zastaviť riešič_ (potvrďte kliknutím na **Yes**)
 
 ## 15. Nahrať video
 

@@ -1,0 +1,1 @@
+# Podziel powierzchnię na czworościany

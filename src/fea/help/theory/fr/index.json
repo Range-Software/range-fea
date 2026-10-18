@@ -1,0 +1,37 @@
+{
+    "main": "theory_index.md",
+    "chapters": [
+        {
+            "title": "1. Contraintes",
+            "file":  "theory_stress.md"
+        },
+        {
+            "title": "2. Transfert de chaleur",
+            "file":  "theory_heat.md"
+        },
+        {
+            "title": "3. Électrostatique",
+            "file":  "theory_electrostatics.md"
+        },
+        {
+            "title": "4. Magnétostatique",
+            "file":  "theory_magnetostatics.md"
+        },
+        {
+            "title": "5. Écoulement des fluides",
+            "file":  "theory_fluid.md"
+        },
+        {
+            "title": "6. Transfert de chaleur dans les fluides",
+            "file":  "theory_fluid_heat.md"
+        },
+        {
+            "title": "7. Dispersion de contaminants",
+            "file":  "theory_fluid_particle.md"
+        },
+        {
+            "title": "8. Acoustique",
+            "file":  "theory_acoustic.md"
+        }
+    ]
+}

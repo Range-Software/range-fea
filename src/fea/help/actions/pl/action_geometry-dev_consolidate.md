@@ -1,0 +1,1 @@
+# Konsoliduj geometrię

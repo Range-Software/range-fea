@@ -1,0 +1,1 @@
+# Elimina elementi inutilizzati

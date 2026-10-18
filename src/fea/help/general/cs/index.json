@@ -1,0 +1,41 @@
+{
+    "main": "general_index.md",
+    "chapters": [
+        {
+            "title": "1. Model",
+            "file":  "general_Model.md"
+        },
+        {
+            "title": "2. Úloha",
+            "file":  "general_Problem.md"
+        },
+        {
+            "title": "3. Typ úlohy",
+            "file":  "general_Problem_type.md"
+        },
+        {
+            "title": "4. Okrajová podmínka",
+            "file":  "general_Boundary_condition.md"
+        },
+        {
+            "title": "5. Environmentální podmínka",
+            "file":  "general_Environment_condition.md"
+        },
+        {
+            "title": "6. Počáteční podmínka",
+            "file":  "general_Initial_condition.md"
+        },
+        {
+            "title": "7. Materiál",
+            "file":  "general_Material.md"
+        },
+        {
+            "title": "8. Řešič",
+            "file":  "general_Solver.md"
+        },
+        {
+            "title": "9. Výsledky",
+            "file":  "general_Results.md"
+        }
+    ]
+}

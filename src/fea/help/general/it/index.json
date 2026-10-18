@@ -1,0 +1,41 @@
+{
+    "main": "general_index.md",
+    "chapters": [
+        {
+            "title": "1. Modello",
+            "file":  "general_Model.md"
+        },
+        {
+            "title": "2. Problema",
+            "file":  "general_Problem.md"
+        },
+        {
+            "title": "3. Tipo di problema",
+            "file":  "general_Problem_type.md"
+        },
+        {
+            "title": "4. Condizione al contorno",
+            "file":  "general_Boundary_condition.md"
+        },
+        {
+            "title": "5. Condizione ambientale",
+            "file":  "general_Environment_condition.md"
+        },
+        {
+            "title": "6. Condizione iniziale",
+            "file":  "general_Initial_condition.md"
+        },
+        {
+            "title": "7. Materiale",
+            "file":  "general_Material.md"
+        },
+        {
+            "title": "8. Solutore",
+            "file":  "general_Solver.md"
+        },
+        {
+            "title": "9. Risultati",
+            "file":  "general_Results.md"
+        }
+    ]
+}

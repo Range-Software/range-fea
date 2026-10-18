@@ -1,0 +1,37 @@
+{
+    "main": "theory_index.md",
+    "chapters": [
+        {
+            "title": "1. Стрес",
+            "file": "theory_stress.md"
+        },
+        {
+            "title": "2. Теплообмін",
+            "file": "theory_heat.md"
+        },
+        {
+            "title": "3. Електростатика",
+            "file": "theory_electrostatics.md"
+        },
+        {
+            "title": "4. Магнітостатика",
+            "file": "theory_magnetostatics.md"
+        },
+        {
+            "title": "5. Потік рідини",
+            "file": "theory_fluid.md"
+        },
+        {
+            "title": "6. Теплообмін у рідинах",
+            "file": "theory_fluid_heat.md"
+        },
+        {
+            "title": "7. Дисперсія забруднень",
+            "file": "theory_fluid_particle.md"
+        },
+        {
+            "title": "8. Акустика",
+            "file": "theory_acoustic.md"
+        }
+    ]
+}

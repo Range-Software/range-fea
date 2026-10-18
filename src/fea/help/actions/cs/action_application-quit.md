@@ -1,0 +1,3 @@
+# Ukončit
+
+Ukončí program.

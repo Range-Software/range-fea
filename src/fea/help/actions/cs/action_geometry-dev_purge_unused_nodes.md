@@ -1,0 +1,1 @@
+# Vyčistit nepoužité uzly

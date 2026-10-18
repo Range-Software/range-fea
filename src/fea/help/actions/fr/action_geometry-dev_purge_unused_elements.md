@@ -1,0 +1,1 @@
+# Purger les éléments inutilisés

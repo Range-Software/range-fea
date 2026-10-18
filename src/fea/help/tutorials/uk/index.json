@@ -1,0 +1,25 @@
+{
+    "main": "tutorial_index.md",
+    "chapters": [
+        {
+            "title": "1. Намалюй куб",
+            "file": "tutorial_Draw_cube.md"
+        },
+        {
+            "title": "2. Перетворення геометрії",
+            "file": "tutorial_Transform_geometry.md"
+        },
+        {
+            "title": "3. Аналіз напружень і деформацій",
+            "file": "tutorial_Stress_and_deformation_analysis.md"
+        },
+        {
+            "title": "4. Дисперсія забруднень у рідинах",
+            "file": "tutorial_Contaminant_dispersion_in_fluids.md"
+        },
+        {
+            "title": "5. Мультифізика",
+            "file": "tutorial_Multiphysics.md"
+        }
+    ]
+}

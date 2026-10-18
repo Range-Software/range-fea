@@ -1,0 +1,3 @@
+# Salir
+
+Cierra el programa.

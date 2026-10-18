@@ -1,0 +1,37 @@
+{
+    "main": "theory_index.md",
+    "chapters": [
+        {
+            "title": "1. Naprężenia",
+            "file":  "theory_stress.md"
+        },
+        {
+            "title": "2. Wymiana ciepła",
+            "file":  "theory_heat.md"
+        },
+        {
+            "title": "3. Elektrostatyka",
+            "file":  "theory_electrostatics.md"
+        },
+        {
+            "title": "4. Magnetostatyka",
+            "file":  "theory_magnetostatics.md"
+        },
+        {
+            "title": "5. Przepływ płynów",
+            "file":  "theory_fluid.md"
+        },
+        {
+            "title": "6. Wymiana ciepła w płynach",
+            "file":  "theory_fluid_heat.md"
+        },
+        {
+            "title": "7. Dyspersja zanieczyszczeń",
+            "file":  "theory_fluid_particle.md"
+        },
+        {
+            "title": "8. Akustyka",
+            "file":  "theory_acoustic.md"
+        }
+    ]
+}

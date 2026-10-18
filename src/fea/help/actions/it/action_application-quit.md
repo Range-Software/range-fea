@@ -1,0 +1,3 @@
+# Esci
+
+Chiude il programma.

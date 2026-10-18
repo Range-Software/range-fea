@@ -1,0 +1,1 @@
+# Purgar nodos no utilizados

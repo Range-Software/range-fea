@@ -306,7 +306,7 @@
         <location filename="../src/action.cpp" line="1328"/>
         <location filename="../src/action.cpp" line="1406"/>
         <source>No element selected.</source>
-        <translation>Nieje vybraný žiaden prvok.</translation>
+        <translation>Nie je vybraný žiaden prvok.</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="1334"/>
@@ -372,12 +372,12 @@
     <message>
         <location filename="../src/action.cpp" line="221"/>
         <source>Save current session.</source>
-        <translation>Uložiť sučasnú reláciu.</translation>
+        <translation>Uložiť súčasnú reláciu.</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="222"/>
         <source>Save current session under different filename.</source>
-        <translation>Uložiť sučasnú reláciu pod iným názvom súboru.</translation>
+        <translation>Uložiť súčasnú reláciu pod iným názvom súboru.</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="223"/>
@@ -417,7 +417,7 @@
     <message>
         <location filename="../src/action.cpp" line="231"/>
         <source>Export STL model (binary)</source>
-        <translation>Exportovať MSH model (binárne)</translation>
+        <translation>Exportovať STL model (binárne)</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="236"/>
@@ -447,7 +447,7 @@
     <message>
         <location filename="../src/action.cpp" line="241"/>
         <source>Draw quadrilateral</source>
-        <translation>Nakresliť štvorhran</translation>
+        <translation>Nakresliť štvoruholník</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="242"/>
@@ -678,7 +678,7 @@
     <message>
         <location filename="../src/action.cpp" line="290"/>
         <source>Check if point is inside surface</source>
-        <translation>Overiť či je bod je vnútri povrchu</translation>
+        <translation>Overiť, či je bod vnútri povrchu</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="291"/>
@@ -1633,7 +1633,7 @@
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="12"/>
         <source>X size</source>
-        <translation>X veľkost</translation>
+        <translation>X veľkosť</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="12"/>
@@ -1643,7 +1643,7 @@
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="13"/>
         <source>Y size</source>
-        <translation>Y veľkost</translation>
+        <translation>Y veľkosť</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="13"/>
@@ -1653,7 +1653,7 @@
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="14"/>
         <source>Z size</source>
-        <translation>Z veľkost</translation>
+        <translation>Z veľkosť</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_hexahedron.cpp" line="14"/>
@@ -1707,7 +1707,7 @@
         <location filename="../src/draw_engine_line.cpp" line="10"/>
         <location filename="../src/draw_engine_line.cpp" line="14"/>
         <source>Node position in X,Y,Z coordinate system.</source>
-        <translation>Poloha uzlu c X,Y,Z súradnicovej sústave.</translation>
+        <translation>Poloha uzlu v X,Y,Z súradnicovej sústave.</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_line.cpp" line="13"/>
@@ -1738,7 +1738,7 @@
     <message>
         <location filename="../src/draw_engine_point.cpp" line="10"/>
         <source>Node position in X,Y,Z coordinate system.</source>
-        <translation>Poloha uzlu c X,Y,Z súradnicovej sústave.</translation>
+        <translation>Poloha uzlu v X,Y,Z súradnicovej sústave.</translation>
     </message>
 </context>
 <context>
@@ -1759,7 +1759,7 @@
         <location filename="../src/draw_engine_quadrilateral.cpp" line="18"/>
         <location filename="../src/draw_engine_quadrilateral.cpp" line="22"/>
         <source>Node position in X,Y,Z coordinate system.</source>
-        <translation>Poloha uzlu c X,Y,Z súradnicovej sústave.</translation>
+        <translation>Poloha uzlu v X,Y,Z súradnicovej sústave.</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_quadrilateral.cpp" line="13"/>
@@ -1851,7 +1851,7 @@
         <location filename="../src/draw_engine_tetrahedron.cpp" line="18"/>
         <location filename="../src/draw_engine_tetrahedron.cpp" line="22"/>
         <source>Node position in X,Y,Z coordinate system.</source>
-        <translation>Poloha uzlu c X,Y,Z súradnicovej sústave.</translation>
+        <translation>Poloha uzlu v X,Y,Z súradnicovej sústave.</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_tetrahedron.cpp" line="13"/>
@@ -1886,7 +1886,7 @@
         <location filename="../src/draw_engine_triangle.cpp" line="14"/>
         <location filename="../src/draw_engine_triangle.cpp" line="18"/>
         <source>Node position in X,Y,Z coordinate system.</source>
-        <translation>Poloha uzlu c X,Y,Z súradnicovej sústave.</translation>
+        <translation>Poloha uzlu v X,Y,Z súradnicovej sústave.</translation>
     </message>
     <message>
         <location filename="../src/draw_engine_triangle.cpp" line="13"/>
@@ -2966,7 +2966,7 @@
     <message>
         <location filename="../src/material_tree.cpp" line="42"/>
         <source>Add new material property</source>
-        <translation>Pridať novú materálovú vlastnosť</translation>
+        <translation>Pridať novú materiálovú vlastnosť</translation>
     </message>
     <message>
         <location filename="../src/material_tree.cpp" line="45"/>
@@ -2981,7 +2981,7 @@
     <message>
         <location filename="../src/material_tree.cpp" line="81"/>
         <source>Edit temperature dependent values</source>
-        <translation>Epraviť teplotne závislé hodnoty</translation>
+        <translation>Upraviť teplotne závislé hodnoty</translation>
     </message>
 </context>
 <context>
@@ -3039,7 +3039,7 @@
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="27"/>
         <source>Following entities will be merged</source>
-        <translation>Nasledujúce</translation>
+        <translation>Nasledujúce celky budú zlúčené</translation>
     </message>
     <message>
         <location filename="../src/merge_entity_dialog.cpp" line="53"/>
@@ -3343,17 +3343,17 @@
     <message>
         <location filename="../src/model_action.cpp" line="123"/>
         <source>Boolean difference</source>
-        <translation>Booleanov rozdiel</translation>
+        <translation>Booleovský rozdiel</translation>
     </message>
     <message>
         <location filename="../src/model_action.cpp" line="127"/>
         <source>Boolean intersection</source>
-        <translation>Booleanov prienik</translation>
+        <translation>Booleovský prienik</translation>
     </message>
     <message>
         <location filename="../src/model_action.cpp" line="131"/>
         <source>Boolean union</source>
-        <translation>Booleanov zjednotenie</translation>
+        <translation>Booleovské zjednotenie</translation>
     </message>
     <message>
         <location filename="../src/model_action.cpp" line="135"/>
@@ -3641,7 +3641,7 @@
     <message>
         <location filename="../src/model_statistics_dialog.cpp" line="57"/>
         <source>Node distance statistics</source>
-        <translation>Štatistika vzialeností medzi uzlami</translation>
+        <translation>Štatistika vzdialeností medzi uzlami</translation>
     </message>
     <message>
         <location filename="../src/model_statistics_dialog.cpp" line="59"/>
@@ -3796,7 +3796,7 @@
     <message>
         <location filename="../src/monitoring_points_dialog.cpp" line="28"/>
         <source>Variable</source>
-        <translation>Premenn=a</translation>
+        <translation>Premenná</translation>
     </message>
     <message>
         <location filename="../src/monitoring_points_dialog.cpp" line="38"/>
@@ -4183,17 +4183,17 @@
     <message>
         <location filename="../src/solver_setup_checker.cpp" line="132"/>
         <source>No boundary condition assigned.</source>
-        <translation>Nieje priradená žiadna okrajová podmienka.</translation>
+        <translation>Nie je priradená žiadna okrajová podmienka.</translation>
     </message>
     <message>
         <location filename="../src/solver_setup_checker.cpp" line="178"/>
         <source>No explicit boundary condition assigned.</source>
-        <translation>Nieje priradená žiadna explicitná okrajová podmienka.</translation>
+        <translation>Nie je priradená žiadna explicitná okrajová podmienka.</translation>
     </message>
     <message>
         <location filename="../src/solver_setup_checker.cpp" line="182"/>
         <source>No implicit boundary condition assigned.</source>
-        <translation>Nieje priradená žiadna implicitná okrajová podmienka.</translation>
+        <translation>Nie je priradená žiadna implicitná okrajová podmienka.</translation>
     </message>
 </context>
 <context>
@@ -4419,7 +4419,7 @@
         <location filename="../src/report_dialog.cpp" line="89"/>
         <location filename="../src/report_dialog.cpp" line="104"/>
         <source>files</source>
-        <translation>sÃºbory</translation>
+        <translation>súbory</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="62"/>
@@ -4650,7 +4650,7 @@
     <message>
         <location filename="../src/results_variable_tree.cpp" line="240"/>
         <source>Editing values for multiple models</source>
-        <translation>Upraviujú sa hodnoty pre viacero modelov</translation>
+        <translation>Upravujú sa hodnoty pre viacero modelov</translation>
     </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="254"/>
@@ -5141,7 +5141,7 @@ Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     <message>
         <location filename="../src/value_table.cpp" line="314"/>
         <source>Table values</source>
-        <translation>Tabo%lka hodnôt</translation>
+        <translation>Tabuľka hodnôt</translation>
     </message>
 </context>
 <context>

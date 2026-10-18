@@ -1,0 +1,37 @@
+{
+    "main": "theory_index.md",
+    "chapters": [
+        {
+            "title": "1. Spannung",
+            "file":  "theory_stress.md"
+        },
+        {
+            "title": "2. Wärmeübertragung",
+            "file":  "theory_heat.md"
+        },
+        {
+            "title": "3. Elektrostatik",
+            "file":  "theory_electrostatics.md"
+        },
+        {
+            "title": "4. Magnetostatik",
+            "file":  "theory_magnetostatics.md"
+        },
+        {
+            "title": "5. Fluidströmung",
+            "file":  "theory_fluid.md"
+        },
+        {
+            "title": "6. Wärmeübertragung in Fluiden",
+            "file":  "theory_fluid_heat.md"
+        },
+        {
+            "title": "7. Schadstoffausbreitung",
+            "file":  "theory_fluid_particle.md"
+        },
+        {
+            "title": "8. Akustik",
+            "file":  "theory_acoustic.md"
+        }
+    ]
+}
