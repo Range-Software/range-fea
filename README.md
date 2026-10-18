@@ -4,7 +4,7 @@ Range FEA is an open-source desktop application for computer-aided engineering u
 
 The application is built on Qt6 and ships with a standalone CLI solver (`fea-solver`) alongside the main GUI (`fea`). Mesh generation uses the embedded TetGen library for automatic tetrahedral meshing.
 
-![Range Software](http://www.range-software.com/files/common/Range3-CFD.png)
+![Range Software](./doc/RangeFEA-CFD.png)
 
 ## Help and tutorials
 
@@ -36,20 +36,20 @@ cmake --build build-Release --target package
 ### MacOS
 #### Drag & Drop
 ```
-open './build-Release/range-fea-1.2.1-darwin-arm64.dmg'
+open './build-Release/range-fea-1.3.0-darwin-arm64.dmg'
 ```
 ### Linux
 #### Self extracting Tar GZip
 ```
-./build-Release/range-fea-1.2.1-linux-x86_64.sh
+./build-Release/range-fea-1.3.0-linux-x86_64.sh
 ```
 #### Debian DEB package
 ```
-sudo apt install ./build-Release/range-fea-1.2.1-linux-x86_64.deb
+sudo apt install ./build-Release/range-fea-1.3.0-linux-x86_64.deb
 ```
 #### RedHat RPM package
 ```
-sudo dnf install ./build-Release/range-fea-1.2.1-linux-x86_64.rpm
+sudo dnf install ./build-Release/range-fea-1.3.0-linux-x86_64.rpm
 ```
 
 ## Rendering backends
