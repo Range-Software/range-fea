@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -6,6 +8,7 @@
 #include "application.h"
 #include "problem_task_dialog.h"
 #include <rgl_icon.h>
+#include <rgl_message_box.h>
 
 ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
@@ -36,14 +39,12 @@ ProblemTaskDialog::ProblemTaskDialog(uint modelID, QWidget *parent)
     this->cancelButton->setDisabled(rModel.getProblemTaskTree().getProblemTypeMask() == R_PROBLEM_NONE);
     buttonBox->addButton(this->cancelButton,QDialogButtonBox::RejectRole);
 
+    // An empty task flow is a valid choice - it removes all problems.
     this->okButton = new QPushButton(okIcon, tr("OK"));
-    this->okButton->setDisabled(true);
     buttonBox->addButton(this->okButton,QDialogButtonBox::AcceptRole);
 
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
-
-    QObject::connect(this->taskTree,&ProblemTaskTree::changed,this,&ProblemTaskDialog::onProblemTaskTreeChanged);
 }
 
 int ProblemTaskDialog::exec()
@@ -52,13 +53,89 @@ int ProblemTaskDialog::exec()
 
     if (retVal == QDialog::Accepted)
     {
-        Application::instance()->getSession()->getModel(this->modelID).setProblemTaskTree(this->taskTree->getProblemTaskTree());
+        Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
+        RProblemTaskItem problemTaskTree = this->taskTree->getProblemTaskTree();
+
+        RProblemTypeMask removedTypeMask = rModel.getProblemTaskTree().getProblemTypeMask() & ~problemTaskTree.getProblemTypeMask();
+        bool resultsCleared = (removedTypeMask != R_PROBLEM_NONE) && this->clearResults(removedTypeMask,problemTaskTree.getProblemTypeMask());
+
+        if (problemTaskTree.getNChildren() == 0)
+        {
+            // Without any problem the model keeps no problem configuration -
+            // time solver, matrix solvers, monitoring points and problem setup
+            // return to their defaults.
+            static_cast<RProblem&>(rModel) = RProblem();
+        }
+
+        // Also removes all conditions not belonging to any selected problem.
+        rModel.setProblemTaskTree(problemTaskTree);
 
         RLogger::info("Problem task flow have changed for model \'%s\'\n", Application::instance()->getSession()->getModel(this->modelID).getName().toUtf8().constData());
 
         Application::instance()->getSession()->setProblemSelectionChanged(this->modelID);
+        if (resultsCleared)
+        {
+            Application::instance()->getSession()->setResultsChanged(this->modelID);
+        }
     }
     return retVal;
+}
+
+bool ProblemTaskDialog::clearResults(RProblemTypeMask removedTypeMask, RProblemTypeMask remainingTypeMask)
+{
+    Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
+
+    // Results still computed by a remaining problem are kept - e.g. temperature
+    // when heat transfer in fluids stays in the flow.
+    std::vector<RVariableType> remainingVariableTypes = RProblem::getComputedVariableTypes(remainingTypeMask);
+
+    std::vector<RVariableType> variableTypes;
+    for (RVariableType variableType : RProblem::getComputedVariableTypes(removedTypeMask))
+    {
+        if (rModel.findVariable(variableType) != RConstants::eod &&
+            std::find(remainingVariableTypes.begin(),remainingVariableTypes.end(),variableType) == remainingVariableTypes.end())
+        {
+            variableTypes.push_back(variableType);
+        }
+    }
+
+    if (variableTypes.empty())
+    {
+        return false;
+    }
+
+    QStringList problemNames;
+    for (RProblemType problemType : RProblem::getTypes(removedTypeMask))
+    {
+        problemNames.append(RProblem::getName(problemType));
+    }
+
+    QStringList variableNames;
+    for (RVariableType variableType : variableTypes)
+    {
+        variableNames.append(RVariable::getName(variableType));
+    }
+
+    QString question = tr("Following problems were removed from the task flow") + ": <b>" + problemNames.join(", ") + "</b>.<br/><br/>"
+                     + tr("Clear their results from the model?") + "<br/>"
+                     + variableNames.join(", ");
+
+    if (RMessageBox::question(this,tr("Clear results"),question) != RMessageBox::Yes)
+    {
+        return false;
+    }
+
+    RLogger::info("Clearing results of removed problems from model \'%s\'\n",rModel.getName().toUtf8().constData());
+    for (RVariableType variableType : variableTypes)
+    {
+        uint variablePosition = RConstants::eod;
+        while ((variablePosition = rModel.findVariable(variableType)) != RConstants::eod)
+        {
+            rModel.removeVariable(variablePosition);
+        }
+    }
+
+    return true;
 }
 
 void ProblemTaskDialog::closeEvent(QCloseEvent *e)
@@ -84,10 +161,4 @@ void ProblemTaskDialog::keyPressEvent(QKeyEvent *e)
     {
         QDialog::keyPressEvent(e);
     }
-}
-
-void ProblemTaskDialog::onProblemTaskTreeChanged()
-{
-    RProblemTaskItem problemTaskTree = this->taskTree->getProblemTaskTree();
-    this->okButton->setEnabled(problemTaskTree.getNChildren() > 0);
 }

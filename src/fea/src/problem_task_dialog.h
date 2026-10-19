@@ -29,6 +29,12 @@ class ProblemTaskDialog : public QDialog
         //! Execute dialog.
         int exec();
 
+    private:
+
+        //! Ask user whether results of removed problems should be cleared and clear them.
+        //! Return true if any results were cleared.
+        bool clearResults(RProblemTypeMask removedTypeMask, RProblemTypeMask remainingTypeMask);
+
     protected slots:
 
         //! Handle close event.
@@ -36,9 +42,6 @@ class ProblemTaskDialog : public QDialog
 
         //! Handle key press event.
         void keyPressEvent(QKeyEvent *e);
-
-        //! handle ProblemtaskTree::changed() signal.
-        void onProblemTaskTreeChanged();
 
 };
 

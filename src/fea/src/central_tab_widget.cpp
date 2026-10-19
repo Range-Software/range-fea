@@ -334,7 +334,12 @@ void CentralTabWidget::onSolverJobStarted()
 
 void CentralTabWidget::onSolverJobFinished()
 {
-    this->setCurrentIndex(this->processOutputTabPosition);
+    // Results have been loaded into the model by now - show them unless the
+    // user has switched to another tab while the solver was running.
+    if (this->currentIndex() == this->processOutputTabPosition)
+    {
+        this->setCurrentIndex(this->modelTabPosition);
+    }
 }
 
 void CentralTabWidget::onSolverJobFailed()
