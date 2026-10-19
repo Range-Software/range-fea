@@ -57,6 +57,22 @@
   or removal through a surface, and *Particle mass transfer*, for deposition or
   exchange with an ambient concentration
 
+#### Flow through porous media
+
+- **Flow through porous media** can be solved. The problem type was listed but
+  had no solver behind it; it now computes steady Darcy flow of a fluid through
+  a saturated porous body - groundwater, seepage through dams, filters, packed
+  beds - with *Pressure* and *Velocity* (Darcy velocity) results
+- Boundary conditions *Pressure (explicit)* for outlets, *Velocity (inflow)*
+  and *Volumetric flow rate (inflow)* for a known inflow; faces without a
+  condition are impermeable. Gravity follows the *Gravitational acceleration*
+  environment condition, so a fluid at rest carries the hydrostatic pressure
+- Materials need *Permeability to fluids* together with the *Density* and
+  *Dynamic viscosity* of the pore fluid. New water saturated materials *Gravel*,
+  *Coarse Sand*, *Fine Sand*, *Sandstone*, *Silt* and *Clay* are ready to use
+- A model without a *Pressure (explicit)* condition stops with an error naming
+  the missing condition
+
 #### Languages and documentation
 
 - **Multiple languages.** The user interface, action help, tutorials and theory
@@ -65,7 +81,8 @@
   of the application settings (takes effect after restart)
 - Theory manuals with formulation, boundary conditions, user interface and
   tutorials for heat transfer, stress, acoustics, fluid flow, heat transfer in
-  fluids, contaminant dispersion, electro-statics and magneto-statics
+  fluids, contaminant dispersion, electro-statics, magneto-statics and flow
+  through porous media
 
 #### Application
 

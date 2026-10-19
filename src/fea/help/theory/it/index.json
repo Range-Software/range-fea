@@ -32,6 +32,10 @@
         {
             "title": "8. Acustica",
             "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "9. Flusso attraverso mezzi porosi",
+            "file":  "theory_potential.md"
         }
     ]
 }

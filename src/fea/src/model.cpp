@@ -5,6 +5,7 @@
 
 #include <rbl_progress.h>
 
+#include <rml_mesh_generator.h>
 #include <rml_polygon.h>
 #include <rml_file_utils.h>
 
@@ -1010,6 +1011,16 @@ uint Model::tetrahedralizeSurface(const std::vector<uint> surfaceIDs)
     this->consolidate(Model::ConsolidateActionAll);
 
     return nGenerated;
+}
+
+void Model::generateMesh()
+{
+    RMeshGenerator::generate(this->getMeshInput(),*this);
+
+    // The generator replaces nodes and elements and rebuilds element neighbors
+    // itself, so element counts may match the cached structures while edge,
+    // hole and sliver elements still refer to the old mesh.
+    this->invalidateConsolidationCache();
 }
 
 uint Model::mergeNearNodes(double tolerance)

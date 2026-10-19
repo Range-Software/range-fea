@@ -1,0 +1,121 @@
+{
+    "id": "38a66c30-165c-4568-bd4e-85f514d7af04",
+    "name": "Clay (water saturated)",
+    "properties": [
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 999.8395
+                },
+                {
+                    "key": 277.15,
+                    "value": 999.972
+                },
+                {
+                    "key": 283.15,
+                    "value": 999.7026
+                },
+                {
+                    "key": 288.15,
+                    "value": 999.1026
+                },
+                {
+                    "key": 293.15,
+                    "value": 998.2071
+                },
+                {
+                    "key": 295.15,
+                    "value": 997.7735
+                },
+                {
+                    "key": 298.15,
+                    "value": 997.0479
+                },
+                {
+                    "key": 303.15,
+                    "value": 995.6502
+                },
+                {
+                    "key": 313.15,
+                    "value": 992.2
+                },
+                {
+                    "key": 333.15,
+                    "value": 983.2
+                },
+                {
+                    "key": 353.15,
+                    "value": 971.8
+                },
+                {
+                    "key": 373.15,
+                    "value": 958.4
+                }
+            ],
+            "type": "prop-density"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 273.15,
+                    "value": 0.001787
+                },
+                {
+                    "key": 283.15,
+                    "value": 0.001308
+                },
+                {
+                    "key": 293.15,
+                    "value": 0.001003
+                },
+                {
+                    "key": 303.15,
+                    "value": 0.000798
+                },
+                {
+                    "key": 313.15,
+                    "value": 0.000653
+                },
+                {
+                    "key": 323.15,
+                    "value": 0.000547
+                },
+                {
+                    "key": 333.15,
+                    "value": 0.000467
+                },
+                {
+                    "key": 343.15,
+                    "value": 0.000404
+                },
+                {
+                    "key": 353.15,
+                    "value": 0.000355
+                },
+                {
+                    "key": 363.15,
+                    "value": 0.000315
+                },
+                {
+                    "key": 373.15,
+                    "value": 0.0002822
+                }
+            ],
+            "type": "prop-dynamic_viscosity"
+        },
+        {
+            "keyType": "var-temperature",
+            "table": [
+                {
+                    "key": 293.15,
+                    "value": 1e-17
+                }
+            ],
+            "type": "prop-permeability_to_fluids"
+        }
+    ],
+    "state": "3"
+}

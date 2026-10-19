@@ -32,6 +32,10 @@
         {
             "title": "8. Acoustique",
             "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "9. Écoulement en milieu poreux",
+            "file":  "theory_potential.md"
         }
     ]
 }

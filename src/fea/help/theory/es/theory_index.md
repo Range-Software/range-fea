@@ -8,3 +8,4 @@
 6. [Transferencia de calor en fluidos](theory_fluid_heat.md)
 7. [Dispersión de contaminantes](theory_fluid_particle.md)
 8. [Acústica](theory_acoustic.md)
+9. [Flujo a través de medios porosos](theory_potential.md)

@@ -32,6 +32,10 @@
         {
             "title": "8. Akustika",
             "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "9. Prúdenie poréznym prostredím",
+            "file":  "theory_potential.md"
         }
     ]
 }

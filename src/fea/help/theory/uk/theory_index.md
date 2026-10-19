@@ -8,3 +8,4 @@
 6. [Теплообмін у рідинах](theory_fluid_heat.md)
 7. [Дисперсія забруднення](theory_fluid_particle.md)
 8. [Акустичний](theory_acoustic.md)
+9. [Течія через пористі середовища](theory_potential.md)

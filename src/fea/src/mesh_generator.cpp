@@ -1,7 +1,5 @@
 #include <rbl_logger.h>
 
-#include <rml_mesh_generator.h>
-
 #include "application.h"
 #include "mesh_generator.h"
 
@@ -28,8 +26,7 @@ int MeshGenerator::perform()
                 RLogger::warning("Number of intersected elements found = %u.\n",nIntersected);
             }
         }
-        RMeshGenerator::generate(model.getMeshInput(),model);
-        model.clearEdgeNodes();
+        model.generateMesh();
     }
     catch (const RError &error)
     {
@@ -45,7 +42,7 @@ int MeshGenerator::perform()
 
     try
     {
-        model.consolidate(Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements | Model::ConsolidateSliverElements);
+        model.consolidate(Model::ConsolidateActionAll);
     }
     catch (const RError &error)
     {

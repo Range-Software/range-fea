@@ -32,6 +32,10 @@
         {
             "title": "8. Акустика",
             "file": "theory_acoustic.md"
+        },
+        {
+            "title": "9. Течія через пористі середовища",
+            "file":  "theory_potential.md"
         }
     ]
 }

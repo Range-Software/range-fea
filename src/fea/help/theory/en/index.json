@@ -32,6 +32,10 @@
         {
             "title": "8. Acoustics",
             "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "9. Flow through porous media",
+            "file":  "theory_potential.md"
         }
     ]
 }

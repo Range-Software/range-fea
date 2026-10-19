@@ -203,6 +203,10 @@ class Model : public RModel
         //! Tetrahedralize surface.
         uint tetrahedralizeSurface(const std::vector<uint> surfaceIDs);
 
+        //! Generate 3D mesh using current mesh input.
+        //! All consolidation caches are invalidated since the mesh is replaced.
+        void generateMesh();
+
         //! Merge near nodes.
         uint mergeNearNodes(double tolerance = RConstants::eps);
 

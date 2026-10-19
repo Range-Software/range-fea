@@ -32,6 +32,10 @@
         {
             "title": "8. Akustyka",
             "file":  "theory_acoustic.md"
+        },
+        {
+            "title": "9. Przepływ przez ośrodki porowate",
+            "file":  "theory_potential.md"
         }
     ]
 }

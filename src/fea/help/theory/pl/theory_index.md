@@ -8,3 +8,4 @@
 6. [Wymiana ciepła w płynach](theory_fluid_heat.md)
 7. [Dyspersja zanieczyszczeń](theory_fluid_particle.md)
 8. [Akustyka](theory_acoustic.md)
+9. [Przepływ przez ośrodki porowate](theory_potential.md)

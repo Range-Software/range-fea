@@ -8,3 +8,4 @@
 6. [Přenos tepla v tekutinách](theory_fluid_heat.md)
 7. [Rozptyl kontaminantu](theory_fluid_particle.md)
 8. [Akustika](theory_acoustic.md)
+9. [Proudění porézním prostředím](theory_potential.md)
