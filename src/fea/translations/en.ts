@@ -124,6 +124,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/action.cpp" line="623"/>
+        <source>Export model to STEP file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/action.cpp" line="610"/>
         <source>Close model?</source>
         <translation type="unfinished"></translation>
@@ -417,6 +422,11 @@
     <message>
         <location filename="../src/action.cpp" line="231"/>
         <source>Export STL model (binary)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="233"/>
+        <source>Export STEP model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -504,6 +504,7 @@ fea_add_icon_resources(icons-file "/icons/file"
         pixmaps/range-model_export_msh.svg
         pixmaps/range-model_export_raw.svg
         pixmaps/range-model_export_stl.svg
+        pixmaps/range-model_export_step.svg
         pixmaps/range-model_rename.svg
         pixmaps/range-model_drop_results.svg
         pixmaps/range-resetO.svg

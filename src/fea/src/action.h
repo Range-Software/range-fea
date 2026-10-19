@@ -61,6 +61,7 @@ class Action : public RAction
             ACTION_MODEL_EXPORT_RAW,
             ACTION_MODEL_EXPORT_STL_ASCII,
             ACTION_MODEL_EXPORT_STL_BINARY,
+            ACTION_MODEL_EXPORT_STEP,
             ACTION_MODEL_CLOSE,
             ACTION_MODEL_RELOAD_RESULTS,
             ACTION_MODEL_DROP_RESULTS,
@@ -228,6 +229,9 @@ class Action : public RAction
 
         //! Export STL model (binary).
         void onModelExportStlBinary();
+
+        //! Export STEP model.
+        void onModelExportStep();
 
         //! Close model.
         void onModelClose();

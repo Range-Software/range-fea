@@ -73,6 +73,22 @@
 - A model without a *Pressure (explicit)* condition stops with an error naming
   the missing condition
 
+#### STEP import and export
+
+- **STEP (ISO 10303-21) files** can be opened (`*.step`, `*.stp`) and models
+  exported to STEP (**File > Export > Export STEP model**), next to STL
+- Import triangulates exact CAD geometry - planes, cylinders, cones, spheres,
+  tori, B-spline, extruded, revolved and offset surfaces - as well as faceted
+  and tessellated (AP242) geometry. Edges shared by two faces are divided once,
+  so solids come in closed and ready for meshing
+- Every solid or shell becomes its own surface, named after the solid or the
+  product. Assemblies are placed as in the CAD system, repeated parts included,
+  and lengths are converted from the file units to meters
+- Export writes each surface as a separate body of planar triangles: closed
+  surfaces as solids, open surfaces as shells, in meters
+- Faces that cannot be triangulated are skipped and listed in the log by their
+  STEP entity number
+
 #### Languages and documentation
 
 - **Multiple languages.** The user interface, action help, tutorials and theory

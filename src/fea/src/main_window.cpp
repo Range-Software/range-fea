@@ -309,6 +309,7 @@ void MainWindow::createMenus()
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_RAW));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII));
     menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STL_BINARY));
+    menuFileExport->addAction(this->actionList->getAction(Action::ACTION_MODEL_EXPORT_STEP));
     menuFile->addAction(menuFileExport->menuAction());
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_RENAME));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_CLOSE));

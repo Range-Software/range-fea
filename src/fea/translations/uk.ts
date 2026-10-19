@@ -124,6 +124,11 @@
             <translation>Експортувати модель у STL (бінарний) файл</translation>
         </message>
         <message>
+            <location filename="../src/action.cpp" line="623"/>
+            <source>Export model to STEP file</source>
+            <translation>Експортувати модель у файл STEP</translation>
+        </message>
+        <message>
             <location filename="../src/action.cpp" line="610"/>
             <source>Close model?</source>
             <translation>Закрити модель?</translation>
@@ -418,6 +423,11 @@
             <location filename="../src/action.cpp" line="231"/>
             <source>Export STL model (binary)</source>
             <translation>Експорт моделі STL (бінарний)</translation>
+        </message>
+        <message>
+            <location filename="../src/action.cpp" line="233"/>
+            <source>Export STEP model</source>
+            <translation>Експорт моделі STEP</translation>
         </message>
         <message>
             <location filename="../src/action.cpp" line="236"/>

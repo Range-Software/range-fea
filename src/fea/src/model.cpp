@@ -124,6 +124,14 @@ Model::Model (const RModelStl &modelStl) : RModel(modelStl)
     R_LOG_TRACE_OUT;
 }
 
+Model::Model (const RModelStep &modelStep) : RModel(modelStep)
+{
+    R_LOG_TRACE_IN;
+    this->_init();
+    this->consolidate(Model::ConsolidateEdgeElements | Model::ConsolidateHoleElements | Model::ConsolidateSliverElements | Model::ConsolidateIntersectedElements);
+    R_LOG_TRACE_OUT;
+}
+
 Model::Model (const RModelRaw &modelRaw,
               const QString &name,
               const QString &description, bool consolidate) : RModel(modelRaw,name,description)

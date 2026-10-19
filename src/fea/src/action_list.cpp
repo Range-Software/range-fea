@@ -17,6 +17,7 @@ void ActionList::processAvailability()
     this->getAction(Action::ACTION_MODEL_EXPORT_RAW)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_EXPORT_STL_BINARY)->setEnabled(false);
+    this->getAction(Action::ACTION_MODEL_EXPORT_STEP)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_CLOSE)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_RELOAD_RESULTS)->setEnabled(false);
     this->getAction(Action::ACTION_MODEL_DROP_RESULTS)->setEnabled(false);
@@ -103,6 +104,7 @@ void ActionList::processAvailability()
         this->getAction(Action::ACTION_MODEL_EXPORT_RAW)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_EXPORT_STL_ASCII)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_EXPORT_STL_BINARY)->setEnabled(true);
+        this->getAction(Action::ACTION_MODEL_EXPORT_STEP)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_CLOSE)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_RELOAD_RESULTS)->setEnabled(true);
         this->getAction(Action::ACTION_MODEL_DROP_RESULTS)->setEnabled(true);

@@ -101,6 +101,9 @@ class Model : public RModel
         //! Convert constructor from STL model.
         Model (const RModelStl &modelStl);
 
+        //! Convert constructor from STEP model.
+        Model (const RModelStep &modelStep);
+
         //! Convert constructor from RAW model.
         Model (const RModelRaw &modelRaw,
                const QString &name = QString(),

@@ -124,6 +124,11 @@
         <translation>Esporta modello in file STL (binario)</translation>
     </message>
     <message>
+        <location filename="../src/action.cpp" line="623"/>
+        <source>Export model to STEP file</source>
+        <translation>Esporta modello in file STEP</translation>
+    </message>
+    <message>
         <location filename="../src/action.cpp" line="610" />
         <source>Close model?</source>
         <translation>Chiudere il modello?</translation>
@@ -418,6 +423,11 @@
         <location filename="../src/action.cpp" line="231" />
         <source>Export STL model (binary)</source>
         <translation>Esporta modello STL (binario)</translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="233"/>
+        <source>Export STEP model</source>
+        <translation>Esporta modello STEP</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="236" />
