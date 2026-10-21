@@ -62,9 +62,18 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     QObject::connect(Application::instance()->getSession(), &Session::modelAdded, this, &MaterialManagerTree::onModelAdded,Qt::BlockingQueuedConnection);
     QObject::connect(Application::instance()->getSession(), &Session::problemSelectionChanged, this, &MaterialManagerTree::onProblemChanged);
 
+    // Every refresh reads all material files, so a burst of changes (e.g. the
+    // material database being copied in) is refreshed only once it settles.
+    this->directoryChangedTimer = new QTimer(this);
+    this->directoryChangedTimer->setSingleShot(true);
+    this->directoryChangedTimer->setInterval(500);
+    QObject::connect(this->directoryChangedTimer,&QTimer::timeout,this,[this](){
+        this->onDirectoryChanged(Application::instance()->getApplicationSettings()->getMaterialsDir());
+    });
+
     QFileSystemWatcher *fileSystemWatcher = new QFileSystemWatcher(this);
     fileSystemWatcher->addPath(Application::instance()->getApplicationSettings()->getMaterialsDir());
-    QObject::connect(fileSystemWatcher,&QFileSystemWatcher::directoryChanged,this,&MaterialManagerTree::onDirectoryChanged);
+    QObject::connect(fileSystemWatcher,&QFileSystemWatcher::directoryChanged,this->directoryChangedTimer,qOverload<>(&QTimer::start));
 
     this->onDirectoryChanged(Application::instance()->getApplicationSettings()->getMaterialsDir());
 
@@ -320,13 +329,25 @@ RMaterial MaterialManagerTree::read(QString &filePath)
     QString suggestedFilePath = MaterialManagerTree::buildFilePath(material);
     if (filePath != suggestedFilePath)
     {
-        RLogger::info("Converting material file \"%s\" to \"%s\".\n",
-                      filePath.toUtf8().constData(),
-                      suggestedFilePath.toUtf8().constData());
+        if (QFileInfo(filePath) != QFileInfo(suggestedFilePath) && QFile::exists(suggestedFilePath))
+        {
+            // The material already exists in the default format, which is the
+            // newer one - the former file is a leftover and must not overwrite it.
+            RLogger::info("Material file \"%s\" is superseded by \"%s\".\n",
+                          filePath.toUtf8().constData(),
+                          suggestedFilePath.toUtf8().constData());
+            material.read(suggestedFilePath);
+        }
+        else
+        {
+            RLogger::info("Converting material file \"%s\" to \"%s\".\n",
+                          filePath.toUtf8().constData(),
+                          suggestedFilePath.toUtf8().constData());
 
-        // Write the material in the default format first so that the material
-        // is never lost in case the conversion fails.
-        MaterialManagerTree::write(suggestedFilePath,material);
+            // Write the material in the default format first so that the material
+            // is never lost in case the conversion fails.
+            MaterialManagerTree::write(suggestedFilePath,material);
+        }
 
         // Remove the former file only if it is not the file which has just been
         // written - the paths may differ while pointing to the same file on
@@ -411,9 +432,19 @@ void MaterialManagerTree::onDirectoryChanged(const QString &path)
     for (const QFileInfo &fileInfo : std::as_const(fileInfoList))
     {
         QString filePath = fileInfo.filePath();
+        if (this->materialCache.contains(filePath))
+        {
+            // Already added from a former file which was converted to this one.
+            continue;
+        }
         try
         {
             RMaterial material = MaterialManagerTree::read(filePath);
+            if (this->materialCache.contains(filePath))
+            {
+                // Former file was converted to a file which is already in the tree.
+                continue;
+            }
             QTreeWidgetItem *item = new QTreeWidgetItem(this->treeWidget);
             this->updateItem(item, material, filePath, false);
         }

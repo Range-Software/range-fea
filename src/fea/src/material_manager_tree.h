@@ -4,6 +4,7 @@
 #include <QTreeWidget>
 #include <QPushButton>
 #include <QMap>
+#include <QTimer>
 
 #include <rml_material.h>
 
@@ -29,6 +30,10 @@ class MaterialManagerTree : public QWidget
         //! be matched against the problem type - which happens on every model
         //! selection and problem change. Rebuilt by onDirectoryChanged().
         QMap<QString,RMaterial> materialCache;
+
+        //! Collapses bursts of directory change notifications (e.g. many files
+        //! being copied) into a single refresh.
+        QTimer *directoryChangedTimer;
 
         QTreeWidget *treeWidget;
 
