@@ -207,10 +207,10 @@
 ### Submodules
 
 - range-ai-lib @ v1.1.0
-- range-base-lib @ v1.1.0
-- range-build-tools @ v1.0.0
-- range-cloud-lib @ v1.1.0
-- range-gui-lib @ v1.1.0
+- range-base-lib @ v1.2.0
+- range-build-tools @ v1.1.0
+- range-cloud-lib @ v1.2.0
+- range-gui-lib @ v1.2.0
 - range-model-lib @ v1.2.0
 - range-solver-lib @ v1.2.0
 
