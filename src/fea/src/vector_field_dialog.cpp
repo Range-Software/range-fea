@@ -186,6 +186,10 @@ void VectorFieldDialog::createDialog()
             }
         }
     }
+    if (this->variableTree->topLevelItemCount() == 1)
+    {
+        this->variableTree->topLevelItem(0)->setSelected(true);
+    }
 
     hBoxLayout->addWidget(this->variableTree);
 

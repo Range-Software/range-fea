@@ -3502,6 +3502,12 @@ void Model::consolidate(int consolidateActionMask)
     RLogger::indent();
     try
     {
+        if (this->getNVolumes() > 0)
+        {
+            // Surface self-intersections are irrelevant when volume elements are present.
+            consolidateActionMask &= ~Model::ConsolidateIntersectedElements;
+        }
+
         bool didWork = false;
         auto cacheIsValid = [this](int cacheMask) -> bool
         {
