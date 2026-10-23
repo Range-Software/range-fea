@@ -945,17 +945,61 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
 
     const Model &rModel = Application::instance()->getSession()->getModel(this->getModelID());
 
-    QList<QString> messages;
+    QString modelName = rModel.getName();
+    if (!rModel.getDescription().isEmpty())
+    {
+        modelName += " (" + rModel.getDescription() + ")";
+    }
 
-    if (rModel.getDescription().isEmpty())
+    // Visible entities in the same order as in the model tree.
+    struct EntityName
     {
-        messages.push_back(rModel.getName());
-    }
-    else
+        QString name;
+        QColor color;
+        bool selected;
+    };
+    QList<EntityName> entityNames;
+
+    const REntityGroupType treeOrder[] = { R_ENTITY_GROUP_POINT,
+                                           R_ENTITY_GROUP_LINE,
+                                           R_ENTITY_GROUP_SURFACE,
+                                           R_ENTITY_GROUP_VOLUME,
+                                           R_ENTITY_GROUP_CUT,
+                                           R_ENTITY_GROUP_ISO,
+                                           R_ENTITY_GROUP_STREAM_LINE,
+                                           R_ENTITY_GROUP_SCALAR_FIELD,
+                                           R_ENTITY_GROUP_VECTOR_FIELD };
+    for (REntityGroupType entityType : treeOrder)
     {
-        messages.push_back(rModel.getName() + " (" + rModel.getDescription() + ")");
+        uint nEntities = 0;
+        switch (entityType)
+        {
+            case R_ENTITY_GROUP_POINT:        nEntities = rModel.getNPoints();       break;
+            case R_ENTITY_GROUP_LINE:         nEntities = rModel.getNLines();        break;
+            case R_ENTITY_GROUP_SURFACE:      nEntities = rModel.getNSurfaces();     break;
+            case R_ENTITY_GROUP_VOLUME:       nEntities = rModel.getNVolumes();      break;
+            case R_ENTITY_GROUP_CUT:          nEntities = rModel.getNCuts();         break;
+            case R_ENTITY_GROUP_ISO:          nEntities = rModel.getNIsos();         break;
+            case R_ENTITY_GROUP_STREAM_LINE:  nEntities = rModel.getNStreamLines();  break;
+            case R_ENTITY_GROUP_SCALAR_FIELD: nEntities = rModel.getNScalarFields(); break;
+            case R_ENTITY_GROUP_VECTOR_FIELD: nEntities = rModel.getNVectorFields(); break;
+            default: break;
+        }
+        for (uint i=0;i<nEntities;i++)
+        {
+            const REntityGroup *pEntityGroup = rModel.getEntityGroupPtr(rModel.getEntityGroupID(entityType,i));
+            if (!pEntityGroup->getData().getVisible())
+            {
+                continue;
+            }
+            int r, g, b, a;
+            pEntityGroup->getData().getColor(r,g,b,a);
+            entityNames.append({pEntityGroup->getName(),QColor(r,g,b),pEntityGroup->getData().getSelected()});
+        }
     }
-    messages.push_back(QString());
+
+    // Messages following the entity list.
+    QList<QString> messages;
 
     if (rModel.getNSlivers() > 0)
     {
@@ -1014,20 +1058,36 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
         }
     }
 
-    if (messages.size() == 0)
-    {
-        return;
-    }
-
     int offset = 10;
     int padding = 2;
 
     int fontPixelHeight = painter.fontInfo().pixelSize();
+    int lineHeight = fontPixelHeight+padding;
+    const QFontMetrics fontMetrics = painter.fontMetrics();
 
-    int sizeX = this->width() - offset - offset;
-    int sizeY = offset + (fontPixelHeight+padding)*messages.size();
+    // Space above and below the entity list.
+    int entityListGap = fontPixelHeight/2;
+
     int posX = offset;
     int posY = offset;
+
+    // Entity list is limited to lines which fit between the model name and the information box.
+    int infoBoxTop = this->height() - offset - GLWidget::lAxisWpHeight - (offset + lineHeight*int(this->findInfoMessages().size()));
+    int availableHeight = infoBoxTop - posY - lineHeight*(1+int(messages.size())) - 2*entityListGap - fontMetrics.descent();
+    int maxEntityLines = std::max(0,availableHeight/lineHeight);
+
+    int nShownEntities = int(entityNames.size());
+    int nHiddenEntities = 0;
+    if (nShownEntities > maxEntityLines)
+    {
+        // Last line is used for the number of entities which did not fit.
+        nShownEntities = std::max(0,maxEntityLines-1);
+        nHiddenEntities = int(entityNames.size()) - nShownEntities;
+    }
+    int nEntityLines = nShownEntities + ((nHiddenEntities > 0 && maxEntityLines > 0) ? 1 : 0);
+
+    int sizeX = this->width() - offset - offset;
+    int sizeY = offset + lineHeight*(1+nEntityLines+int(messages.size())) + 2*entityListGap;
 
     int colorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
 
@@ -1041,10 +1101,42 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
         painter.fillRect(posX,posY,sizeX,sizeY,QColor(boxColorValue,boxColorValue,boxColorValue,200));
     }
 
-    painter.setPen(QColor(colorValue,colorValue,colorValue,255));
+    const QColor textColor(colorValue,colorValue,colorValue,255);
+    const int indent = fontMetrics.horizontalAdvance("    ");
+    const int textX = posX+padding;
+    painter.setPen(textColor);
+
+    // Model name.
+    int textY = posY + lineHeight;
+    painter.drawText(textX,textY,modelName);
+
+    // Entity list, entities which are not selected are drawn 40% transparent.
+    textY += entityListGap;
+    for (int i=0;i<nShownEntities;i++)
+    {
+        const EntityName &entityName = entityNames.at(i);
+        textY += lineHeight;
+        painter.setOpacity(entityName.selected ? 1.0 : 0.4);
+        // Entity color square edged with text color in front of the entity name.
+        int squareSize = fontMetrics.ascent();
+        int squareX = textX + indent;
+        painter.fillRect(squareX,textY-squareSize,squareSize,squareSize,entityName.color);
+        painter.drawRect(squareX,textY-squareSize,squareSize-1,squareSize-1);
+        painter.drawText(squareX + squareSize + squareSize/2,textY,entityName.name);
+    }
+    painter.setOpacity(1.0);
+    if (nHiddenEntities > 0 && maxEntityLines > 0)
+    {
+        textY += lineHeight;
+        painter.drawText(textX + indent,textY,"+ " + QLocale().toString(nHiddenEntities) + " " + tr("more"));
+    }
+    textY += entityListGap;
+
+    // Remaining messages.
     for (int i=0;i<messages.size();i++)
     {
-        painter.drawText(posX+padding,posY+(fontPixelHeight+padding)*(i+1),messages[i]);
+        textY += lineHeight;
+        painter.drawText(textX,textY,messages[i]);
     }
     R_LOG_TRACE_OUT;
 }
@@ -1054,27 +1146,7 @@ void GLWidget::drawInfoBox(QPainter &painter, bool drawBox)
     R_LOG_TRACE_IN;
     painter.setFont(QGuiApplication::font());
 
-    QList<QString> messages;
-
-    QStringList actionMessage;
-    QString keyMouseMessage(this->actionEvent.getKeyMouseCombination());
-    QString eventMessage(GLActionEvent::toString(this->actionEvent.getType()));
-
-    if (keyMouseMessage.length() != 0)
-    {
-        actionMessage.append(keyMouseMessage);
-    }
-    if (eventMessage.length() != 0)
-    {
-        actionMessage.append(eventMessage);
-    }
-    if (actionMessage.size() > 0)
-    {
-        messages.append(tr("Action") + ": " + actionMessage.join(" - "));
-    }
-
-    messages.append(tr("Zoom") + ": " + QLocale().toString(double(this->scale)));
-    messages.append(tr("Model draw time") + ": " + QLocale().toString(this->modelDrawTime) + " [ms]");
+    QStringList messages = this->findInfoMessages();
 
     if (messages.size() == 0)
     {
@@ -1109,6 +1181,33 @@ void GLWidget::drawInfoBox(QPainter &painter, bool drawBox)
         painter.drawText(posX+padding,posY+(fontPixelHeight+padding)*(i+1),messages[i]);
     }
     R_LOG_TRACE_OUT;
+}
+
+QStringList GLWidget::findInfoMessages() const
+{
+    QStringList messages;
+
+    QStringList actionMessage;
+    QString keyMouseMessage(this->actionEvent.getKeyMouseCombination());
+    QString eventMessage(GLActionEvent::toString(this->actionEvent.getType()));
+
+    if (keyMouseMessage.length() != 0)
+    {
+        actionMessage.append(keyMouseMessage);
+    }
+    if (eventMessage.length() != 0)
+    {
+        actionMessage.append(eventMessage);
+    }
+    if (actionMessage.size() > 0)
+    {
+        messages.append(tr("Action") + ": " + actionMessage.join(" - "));
+    }
+
+    messages.append(tr("Zoom") + ": " + QLocale().toString(double(this->scale)));
+    messages.append(tr("Model draw time") + ": " + QLocale().toString(this->modelDrawTime) + " [ms]");
+
+    return messages;
 }
 
 void GLWidget::applyTransformations()

@@ -253,6 +253,9 @@ class GLWidget : public QWidget
         //! Draw information box.
         void drawInfoBox(QPainter &painter, bool drawBox);
 
+        //! Return messages displayed in information box.
+        QStringList findInfoMessages() const;
+
         //! Apply transformations.
         void applyTransformations();
 
