@@ -3543,7 +3543,11 @@ void Model::consolidate(int consolidateActionMask)
             // Base class call - the cache invalidation Model::syncSurfaceNormals()
             // performs is done by the block below, and consolidating from inside
             // a consolidation would recurse.
-            this->RModel::syncSurfaceNormals();
+            // Surface normals of a volume mesh are synchronized only on user request.
+            if (this->getNVolumes() == 0)
+            {
+                this->RModel::syncSurfaceNormals();
+            }
             this->validConsolidationCacheMask |= Model::ConsolidateSurfaceNeighbors;
             this->invalidateConsolidationCache(Model::ConsolidateEdgeElements |
                                                Model::ConsolidateHoleElements |
