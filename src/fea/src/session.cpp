@@ -124,6 +124,11 @@ void Session::removeModel(uint position)
         this->unlock();
     }
     emit this->modelRemoved(position);
+    if (this->getNModels() == 1)
+    {
+        // Remaining model is now considered selected.
+        emit this->modelSelectionChanged(0);
+    }
     R_LOG_TRACE_OUT;
 }
 
@@ -248,7 +253,7 @@ QList<uint> Session::getSelectedModelIDs() const
     for (uint i=0;i<this->getNModels();i++)
     {
         // Check if model is partialy selected (NOT completely unselected)
-        if (!this->getModel(i).isSelected(false))
+        if (this->isModelSelected(i))
         {
             selectedModelIDs.push_back(i);
         }
@@ -276,9 +281,14 @@ QList<uint> Session::getVisibleModelIDs() const
     return visibleModelIDs;
 }
 
-bool Session::isModelSelected(uint modelID)
+bool Session::isModelSelected(uint modelID) const
 {
 //    R_LOG_TRACE_IN;
+    // Only loaded model is always considered selected.
+    if (this->getNModels() == 1 && modelID == 0)
+    {
+        return true;
+    }
     return (!this->getModel(modelID).isSelected(false));
 }
 

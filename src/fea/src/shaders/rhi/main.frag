@@ -23,6 +23,11 @@ layout(std140, binding = 0) uniform Ubuf {
 
 // Fraction by which a highlighted (selected) entity is moved towards white.
 const float highlightAmount = 0.2;
+// Glow added to a highlighted entity, strongest where its surface turns away from the viewer.
+const vec3  glowColor    = vec3(0.4, 0.75, 1.0);
+const float glowStrength = 0.8;
+// Glow of elements without a surface normal (lines, points).
+const float glowFlat     = 0.25;
 
 // Colour map — an Nx1 strip standing in for the 1D texture of the OpenGL backend.
 layout(binding = 1) uniform sampler2D uColorMap;
@@ -68,6 +73,14 @@ void main()
     if (ubuf.params2.z > 0.5)
     {
         color = mix(color, vec3(1.0), highlightAmount);
+        // Projection is orthographic, the viewer looks along the eye space z axis.
+        // Expanded point quads carry the quad corner in the normal, not a surface normal.
+        float rim = glowFlat;
+        if (ubuf.params3.x < 0.5 && length(vNormal) > 1.0e-6)
+        {
+            rim = pow(1.0 - abs(normalize(vNormal).z), 2.0);
+        }
+        color = min(color + glowColor * glowStrength * rim, vec3(1.0));
     }
 
     fragColor = vec4(color, baseColor.a);

@@ -99,7 +99,8 @@ class Session : public QObject
         QList<uint> getVisibleModelIDs() const;
 
         //! Return true if given model ID is selected.
-        bool isModelSelected(uint modelID);
+        //! If only one model is loaded it is always considered selected.
+        bool isModelSelected(uint modelID) const;
 
         //! Return list of all entity IDs.
         QList<SessionEntityID> getAllEntityIDs() const;

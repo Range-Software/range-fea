@@ -994,7 +994,7 @@ void MainWindow::onModelAdded(uint position)
     R_LOG_TRACE;
     this->modelSubWindows->onModelAdded(position);
     this->modelManagerTree->onModelAdded(position);
-    if (!this->session->isModelSelected(position))
+    if (this->session->getModel(position).isSelected(false))
     {
         this->session->setModelSelected(position,true);
     }
