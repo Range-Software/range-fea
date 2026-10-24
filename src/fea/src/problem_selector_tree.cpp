@@ -25,7 +25,7 @@ ProblemSelectorTree::ProblemSelectorTree(QWidget *parent)
 
     this->resizeColumnToContents(PROBLEM_TREE_COLUMN_NAME);
 
-    std::vector<RProblemType> prbList(RProblem::getTypes(R_PROBLEM_ALL));
+    std::vector<RProblemType> prbList(ProblemSelectorTree::sortTypesByDependency(RProblem::getTypes(R_PROBLEM_ALL)));
 
     for (uint i=0;i<prbList.size();i++)
     {
@@ -45,6 +45,52 @@ ProblemSelectorTree::ProblemSelectorTree(QWidget *parent)
     }
 
     QObject::connect(this,&QTreeWidget::itemChanged,this,&ProblemSelectorTree::onTreeWidgetItemChanged);
+}
+
+std::vector<RProblemType> ProblemSelectorTree::sortTypesByDependency(const std::vector<RProblemType> &problemTypes)
+{
+    std::vector<RProblemType> sortedTypes;
+    RProblemTypeMask listedMask = R_PROBLEM_NONE;
+
+    for (uint i=0;i<problemTypes.size();i++)
+    {
+        if (RProblem::getRequiredProblemTypeMask(problemTypes[i]) == R_PROBLEM_NONE)
+        {
+            ProblemSelectorTree::appendTypeWithDependents(problemTypes,problemTypes[i],sortedTypes,listedMask);
+        }
+    }
+
+    // Problem types with dependencies which could not be resolved.
+    for (uint i=0;i<problemTypes.size();i++)
+    {
+        if (!(listedMask & problemTypes[i]))
+        {
+            sortedTypes.push_back(problemTypes[i]);
+            listedMask |= problemTypes[i];
+        }
+    }
+
+    return sortedTypes;
+}
+
+void ProblemSelectorTree::appendTypeWithDependents(const std::vector<RProblemType> &problemTypes, RProblemType problemType, std::vector<RProblemType> &sortedTypes, RProblemTypeMask &listedMask)
+{
+    sortedTypes.push_back(problemType);
+    listedMask |= problemType;
+
+    // Dependent problem types are listed directly after the problem type they depend on.
+    for (uint i=0;i<problemTypes.size();i++)
+    {
+        if (listedMask & problemTypes[i])
+        {
+            continue;
+        }
+        RProblemTypeMask requiredMask = RProblem::getRequiredProblemTypeMask(problemTypes[i]);
+        if ((requiredMask & problemType) && (requiredMask & ~listedMask) == R_PROBLEM_NONE)
+        {
+            ProblemSelectorTree::appendTypeWithDependents(problemTypes,problemTypes[i],sortedTypes,listedMask);
+        }
+    }
 }
 
 RProblemTypeMask ProblemSelectorTree::findProblemTypeMask()
