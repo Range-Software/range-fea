@@ -4,9 +4,26 @@ name: Store packages (App Store / Microsoft Store)
 # consumes a build number in App Store Connect. The trigger is publishing the
 # release (pre-releases included) - GitHub does not start workflows for a release
 # that is only saved as a draft. The checkout is the release tag.
+# It can also be run by hand (Actions > Store packages > Run workflow) to
+# rebuild and resubmit an existing release tag to one or both stores.
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to build and publish (e.g. v1.3.0)'
+        required: true
+        type: string
+      store:
+        description: 'Store to publish on'
+        required: true
+        type: choice
+        default: all
+        options:
+          - all
+          - apple
+          - microsoft
 
 permissions:
   contents: read
@@ -14,11 +31,14 @@ permissions:
 jobs:
   mac-app-store:
     name: Apple App Store package
+    if: github.event_name != 'workflow_dispatch' || inputs.store == 'all' || inputs.store == 'apple'
     runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
+          # Empty for a release event, which checks out the release tag itself.
+          ref: ${{ inputs.tag }}
           submodules: recursive
           fetch-depth: 0
 
@@ -149,11 +169,14 @@ jobs:
 
   microsoft-store:
     name: Microsoft Store package
+    if: github.event_name != 'workflow_dispatch' || inputs.store == 'all' || inputs.store == 'microsoft'
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
+          # Empty for a release event, which checks out the release tag itself.
+          ref: ${{ inputs.tag }}
           submodules: recursive
           fetch-depth: 0
 
