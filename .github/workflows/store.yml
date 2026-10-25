@@ -92,9 +92,40 @@ jobs:
       - name: Write provisioning profile
         run: |
           set -euo pipefail
-          echo "$MAC_PROVISION_PROFILE" | base64 -d > "$RUNNER_TEMP/range-fea.provisionprofile"
+          PROFILE="$RUNNER_TEMP/range-fea.provisionprofile"
+          echo "$MAC_PROVISION_PROFILE" | base64 -d > "$PROFILE"
+          # App Store Connect rejects anything but an Apple-signed Mac App Store
+          # distribution profile (ITMS-90282), so check it before building.
+          if ! security cms -D -i "$PROFILE" > "$RUNNER_TEMP/profile.plist"
+          then
+            echo "::error::The profile is not an Apple-signed CMS message; store the downloaded .provisionprofile file itself, base64 encoded"
+            exit 1
+          fi
+          field() { plutil -extract "$1" raw -o - "$RUNNER_TEMP/profile.plist" 2>/dev/null || true; }
+          APP_ID="$(field Entitlements.com\\.apple\\.application-identifier)"
+          EXPIRES="$(field ExpirationDate)"
+          echo "Profile: $(field Name)"
+          echo "  application identifier: $APP_ID"
+          echo "  expires: $EXPIRES"
+          if [ -n "$(field ProvisionedDevices)" ] || [ "$(field ProvisionsAllDevices)" = "true" ]
+          then
+            echo "::error::This is a development or Developer ID profile; a Mac App Store distribution profile is required"
+            exit 1
+          fi
+          if [ "$APP_ID" != "$MACOS_TEAM_ID.$MACOS_BUNDLE_IDENTIFIER" ]
+          then
+            echo "::error::The profile is for '$APP_ID', expected '$MACOS_TEAM_ID.$MACOS_BUNDLE_IDENTIFIER'"
+            exit 1
+          fi
+          if [[ "$EXPIRES" < "$(date -u +%Y-%m-%dT%H:%M:%SZ)" ]]
+          then
+            echo "::error::The profile expired on $EXPIRES"
+            exit 1
+          fi
         env:
           MAC_PROVISION_PROFILE: ${{ secrets.MAC_PROVISION_PROFILE }}
+          MACOS_BUNDLE_IDENTIFIER: ${{ vars.MACOS_BUNDLE_IDENTIFIER || 'com.range-software.fea' }}
+          MACOS_TEAM_ID: ${{ vars.MACOS_TEAM_ID }}
 
       - name: Write App Store Connect API key
         run: |
