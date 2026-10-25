@@ -142,7 +142,11 @@ jobs:
           set -euo pipefail
           PKG="$(/usr/bin/find build-store -maxdepth 1 -name '*.pkg' -print -quit)"
           echo "Package: $PKG"
-          APP="$(/usr/bin/find build-store -maxdepth 2 -name '*.app' -print -quit)"
+          # Check the bundle inside the package, which is what gets uploaded;
+          # build-store also holds an unsigned copy staged for the DMG layout.
+          /usr/sbin/pkgutil --expand-full "$PKG" pkg-expanded
+          APP="$(/usr/bin/find pkg-expanded -name '*.app' -type d -prune -print -quit)"
+          echo "Bundle: $APP"
           # The submission is rejected without these, so fail early instead.
           codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - - | tee entitlements.plist
           grep -q 'com.apple.application-identifier' entitlements.plist
