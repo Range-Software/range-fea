@@ -192,17 +192,23 @@ foreach(tgt IN LISTS all_targets)
     add_subdirectory(${tgt})
     set_debug_suffix_if_needed(${tgt})
     if(EXISTS "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md")
-        # The copy carries the target name, because several targets can share
-        # one output directory (fea and fea-solver both land in the build root)
-        # and a plain RELEASE_NOTES.md would be overwritten by the last one.
-        add_custom_target(copy-release-notes-${tgt} ALL
-            COMMAND ${CMAKE_COMMAND} -E copy
-                    "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
-                    "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES_${tgt}.md"
-            DEPENDS ${tgt}
-            COMMENT "Copying RELEASE_NOTES.md for ${tgt}"
-            VERBATIM
-        )
+        # On macOS a bundle's output directory is Contents/MacOS, where only
+        # binaries may live (macdeployqt and codesign reject anything else);
+        # its release notes go to Contents/Resources/doc during deployment.
+        get_target_property(_tgt_is_bundle ${tgt} MACOSX_BUNDLE)
+        if(NOT (APPLE AND _tgt_is_bundle))
+            # The copy carries the target name, because several targets can share
+            # one output directory (fea and fea-solver both land in the build root)
+            # and a plain RELEASE_NOTES.md would be overwritten by the last one.
+            add_custom_target(copy-release-notes-${tgt} ALL
+                COMMAND ${CMAKE_COMMAND} -E copy
+                        "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
+                        "$<TARGET_FILE_DIR:${tgt}>/RELEASE_NOTES_${tgt}.md"
+                DEPENDS ${tgt}
+                COMMENT "Copying RELEASE_NOTES.md for ${tgt}"
+                VERBATIM
+            )
+        endif()
         if(NOT APPLE)
             install(FILES "${CMAKE_SOURCE_DIR}/${tgt}/doc/RELEASE_NOTES.md"
                     DESTINATION doc
