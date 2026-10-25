@@ -327,6 +327,13 @@ jobs:
           chmod 600 $HOME/.private_keys/range_cloud_key.pem
           echo "$RANGE_CLOUD_CERT_PEM" | base64 -d > $HOME/.private_keys/range_cloud_cert.pem
           chmod 600 $HOME/.private_keys/range_cloud_cert.pem
+          # The server drops the connection without any HTTP response when it
+          # does not accept the client certificate, so check it up front.
+          openssl x509 -in $HOME/.private_keys/range_cloud_cert.pem -noout -subject -issuer -startdate -enddate
+          if ! openssl x509 -in $HOME/.private_keys/range_cloud_cert.pem -noout -checkend 0; then
+            echo "::error::Range Cloud client certificate (RANGE_CLOUD_CERT_PEM) has expired"
+            exit 1
+          fi
         env:
           RANGE_CLOUD_KEY_PEM: ${{ secrets.RANGE_CLOUD_KEY_PEM }}
           RANGE_CLOUD_CERT_PEM: ${{ secrets.RANGE_CLOUD_CERT_PEM }}
