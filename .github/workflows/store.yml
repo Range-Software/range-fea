@@ -92,13 +92,28 @@ jobs:
       - name: Write provisioning profile
         run: |
           set -euo pipefail
+          if [ -z "$MAC_PROVISION_PROFILE" ]
+          then
+            echo "::error::The MAC_PROVISION_PROFILE secret is not set"
+            exit 1
+          fi
           PROFILE="$RUNNER_TEMP/range-fea.provisionprofile"
           echo "$MAC_PROVISION_PROFILE" | base64 -d > "$PROFILE"
           # App Store Connect rejects anything but an Apple-signed Mac App Store
           # distribution profile (ITMS-90282), so check it before building.
           if ! security cms -D -i "$PROFILE" > "$RUNNER_TEMP/profile.plist"
           then
-            echo "::error::The profile is not an Apple-signed CMS message; store the downloaded .provisionprofile file itself, base64 encoded"
+            # Say what the secret decodes to, which tells the usual mistakes apart.
+            echo "Decoded secret: $(wc -c < "$PROFILE" | tr -d ' ') bytes, $(file -b "$PROFILE")"
+            if head -c 64 "$PROFILE" | grep -q '<?xml\|<plist'
+            then
+              echo "::error::The secret holds the decoded profile XML; store the downloaded .provisionprofile file itself, base64 encoded"
+            elif base64 -d -i "$PROFILE" 2>/dev/null | security cms -D > /dev/null 2>&1
+            then
+              echo "::error::The secret is base64 encoded twice; encode the .provisionprofile file only once"
+            else
+              echo "::error::The profile is not an Apple-signed CMS message; store the downloaded .provisionprofile file itself, base64 encoded"
+            fi
             exit 1
           fi
           field() { plutil -extract "$1" raw -o - "$RUNNER_TEMP/profile.plist" 2>/dev/null || true; }
@@ -181,7 +196,7 @@ jobs:
           # The submission is rejected without these, so fail early instead.
           codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - - | tee entitlements.plist
           grep -q 'com.apple.application-identifier' entitlements.plist
-          test -f "$APP/Contents/embedded.provisionprofile"
+          test -s "$APP/Contents/embedded.provisionprofile"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
