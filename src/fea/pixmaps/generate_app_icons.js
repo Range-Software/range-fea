@@ -58,7 +58,8 @@ const SVG_LARGE = windowsSvg({ stroke: 10, node: 100 });
 const SVG_SMALL = windowsSvg({ stroke: 36, node: 124 });
 const SMALL_LIMIT = 32;
 
-// Every raster output: [file, canvas size, icon size inside the canvas, vertical offset].
+// Every raster output: [file, canvas size, icon size inside the canvas, vertical offset,
+// canvas height when it differs from the width].
 const ICO_SIZES = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256];
 const MSIX = [];
 for (const s of [16, 24, 32, 48, 256]) {
@@ -72,10 +73,12 @@ MSIX.push(['StoreLogo.png', 50, 50, 0]);
 MSIX.push(['Square71x71Logo.png', 71, 50, 0]);
 MSIX.push(['Square150x150Logo.png', 150, 88, -8]);
 MSIX.push(['Square310x310Logo.png', 310, 180, -18]);
+// Required by the manifest whenever the large tile is declared.
+MSIX.push(['Wide310x150Logo.png', 310, 88, -8, 150]);
 
 const jobs = [
-  ...ICO_SIZES.map(s => ({ key: `ico-${s}`, canvas: s, size: s, dy: 0 })),
-  ...MSIX.map(([file, canvas, size, dy]) => ({ key: file, canvas, size, dy })),
+  ...ICO_SIZES.map(s => ({ key: `ico-${s}`, canvas: s, height: s, size: s, dy: 0 })),
+  ...MSIX.map(([file, canvas, size, dy, height = canvas]) => ({ key: file, canvas, height, size, dy })),
 ];
 
 function findBrowser() {
@@ -101,8 +104,9 @@ const load = src => new Promise((ok, fail) => { const i = new Image(); i.onload 
   const out = {};
   for (const j of jobs) {
     const c = document.createElement('canvas');
-    c.width = c.height = j.canvas;
-    const x = (j.canvas - j.size) / 2, y = x + j.dy;
+    c.width = j.canvas;
+    c.height = j.height;
+    const x = (j.canvas - j.size) / 2, y = (j.height - j.size) / 2 + j.dy;
     c.getContext('2d').drawImage(j.size <= ${SMALL_LIMIT} ? images.small : images.large, x, y, j.size, j.size);
     out[j.key] = c.toDataURL('image/png').split(',')[1];
   }

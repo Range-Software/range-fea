@@ -104,8 +104,14 @@ jobs:
           if ! security cms -D -i "$PROFILE" > "$RUNNER_TEMP/profile.plist"
           then
             # Say what the secret decodes to, which tells the usual mistakes apart.
-            echo "Decoded secret: $(wc -c < "$PROFILE" | tr -d ' ') bytes, $(file -b "$PROFILE")"
-            if head -c 64 "$PROFILE" | grep -q '<?xml\|<plist'
+            SIZE="$(wc -c < "$PROFILE" | tr -d ' ')"
+            echo "Decoded secret: $SIZE bytes, $(file -b "$PROFILE")"
+            if [ "$SIZE" -lt 1024 ]
+            then
+              # Profiles are several kilobytes; this is a file name or path,
+              # or whatever was on the clipboard, rather than the file content.
+              echo "::error::The secret is far too short to be a provisioning profile (${#MAC_PROVISION_PROFILE} characters); store the base64 encoded content of the .provisionprofile file"
+            elif head -c 64 "$PROFILE" | grep -q '<?xml\|<plist'
             then
               echo "::error::The secret holds the decoded profile XML; store the downloaded .provisionprofile file itself, base64 encoded"
             elif base64 -d -i "$PROFILE" 2>/dev/null | security cms -D > /dev/null 2>&1
