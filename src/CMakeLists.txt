@@ -326,6 +326,7 @@ elseif(APPLE)
         COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/${PROJECT_TARGET_NAME}/materials ${APP_DIR_NEW}/Contents/Resources/materials
         COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_DIR_NEW}/Contents/Resources/doc
         COMMAND ${CMAKE_COMMAND} -E copy           ${CMAKE_BINARY_DIR}/LICENSE.txt ${APP_DIR_NEW}/Contents/Resources/doc/LICENSE.txt
+        COMMAND ${CMAKE_COMMAND} -E copy           ${CMAKE_BINARY_DIR}/PRIVACY_POLICY.txt ${APP_DIR_NEW}/Contents/Resources/doc/PRIVACY_POLICY.txt
         DEPENDS deploy-qt
         COMMENT "Deploying application data"
         VERBATIM
@@ -436,11 +437,11 @@ if(WIN32)
     install(TARGETS fea-solver DESTINATION bin COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/help/ DESTINATION help COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/data/ DESTINATION data COMPONENT Application)
-    install(DIRECTORY ${PROJECT_TARGET_NAME}/doc/ DESTINATION doc COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/etc/ DESTINATION etc COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/materials/ DESTINATION materials COMPONENT Application)
     install(DIRECTORY ${_qt_deploy_dir}/ DESTINATION bin COMPONENT Application)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
+    install(FILES ${CMAKE_BINARY_DIR}/PRIVACY_POLICY.txt DESTINATION doc COMPONENT Application)
     if(_rn_json_path)
         install(FILES ${_rn_json_path} DESTINATION doc COMPONENT Application)
     endif()
@@ -483,11 +484,11 @@ else()
     install(TARGETS fea-solver DESTINATION bin COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/help/ DESTINATION help COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/data/ DESTINATION data COMPONENT Application)
-    install(DIRECTORY ${PROJECT_TARGET_NAME}/doc/ DESTINATION doc COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/etc/ DESTINATION etc COMPONENT Application)
     install(DIRECTORY ${PROJECT_TARGET_NAME}/materials/ DESTINATION materials COMPONENT Application)
     install(DIRECTORY ${_qt_deploy_dir}/ DESTINATION . COMPONENT Application)
     install(FILES ${CMAKE_BINARY_DIR}/LICENSE.txt DESTINATION doc COMPONENT Application)
+    install(FILES ${CMAKE_BINARY_DIR}/PRIVACY_POLICY.txt DESTINATION doc COMPONENT Application)
     install(FILES ${PROJECT_TARGET_NAME}/pixmaps/${PROJECT_PACKAGE_NAME}.svg DESTINATION pixmaps COMPONENT Application)
     if(_rn_json_path)
         install(FILES ${_rn_json_path} DESTINATION doc COMPONENT Application)
@@ -628,6 +629,12 @@ file(READ "${CMAKE_SOURCE_DIR}/../LICENSE" LICENSE_TEXT)
 configure_file(
     ${CMAKE_SOURCE_DIR}/range-build-tools/LICENSE.txt.in
     ${CMAKE_BINARY_DIR}/LICENSE.txt
+    @ONLY
+)
+
+configure_file(
+    ${CMAKE_SOURCE_DIR}/range-build-tools/PRIVACY_POLICY.txt.in
+    ${CMAKE_BINARY_DIR}/PRIVACY_POLICY.txt
     @ONLY
 )
 

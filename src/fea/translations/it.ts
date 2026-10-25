@@ -922,6 +922,12 @@
         <translation>Licenza</translation>
     </message>
     <message>
+        <location filename="../src/action.cpp" line="313"/>
+        <location filename="../src/action.cpp" line="2358"/>
+        <source>Privacy policy</source>
+        <translation>Informativa sulla privacy</translation>
+    </message>
+    <message>
         <location filename="../src/action.cpp" line="310" />
         <source>Release notes</source>
         <translation>Note di rilascio</translation>

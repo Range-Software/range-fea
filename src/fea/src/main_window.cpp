@@ -478,6 +478,7 @@ void MainWindow::createMenus()
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT_QT));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_LICENSE));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_PRIVACY_POLICY));
     menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RELEASE_NOTES));
     menuBar->addAction(menuHelp->menuAction());
     R_LOG_TRACE_OUT;

@@ -460,6 +460,7 @@ fea_add_icon_resources(icons-application "/icons/application"
         pixmaps/range-application_settings.svg
         pixmaps/range-display_preferences.svg
         pixmaps/range-license.svg
+        pixmaps/range-privacy_policy.svg
         pixmaps/range-qt.svg
         pixmaps/range-quit.svg
         pixmaps/range-release_notes.svg

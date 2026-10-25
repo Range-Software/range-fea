@@ -185,6 +185,7 @@ QString Action::getName(Type type)
         case ACTION_APPLICATION_ABOUT:                        return "application-about";
         case ACTION_APPLICATION_ABOUT_QT:                     return "application-about_qt";
         case ACTION_APPLICATION_LICENSE:                      return "application-license";
+        case ACTION_APPLICATION_PRIVACY_POLICY:               return "application-privacy_policy";
         case ACTION_APPLICATION_RELEASE_NOTES:                return "application-release_notes";
         case ACTION_APPLICATION_HELP:                         return "application-help";
         case ACTION_APPLICATION_QUIT:                         return "application-quit";
@@ -309,6 +310,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT, tr("About"), "", "F1", ":/icons/application/pixmaps/range-about.svg",static_cast<PointerToMemberTrigger>(&Action::onAbout), QAction::AboutRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT_QT, tr("About Qt"), "", "", ":/icons/application/pixmaps/range-qt.svg",static_cast<PointerToMemberTrigger>(&Action::onAboutQt), QAction::AboutQtRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_LICENSE, tr("License"), "", "", ":/icons/application/pixmaps/range-license.svg",static_cast<PointerToMemberTrigger>(&Action::onLicense));
+    Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_PRIVACY_POLICY, tr("Privacy policy"), "", "", ":/icons/application/pixmaps/range-privacy_policy.svg",static_cast<PointerToMemberTrigger>(&Action::onPrivacyPolicy));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_RELEASE_NOTES, tr("Release notes"), "", "", ":/icons/application/pixmaps/range-release_notes.svg",static_cast<PointerToMemberTrigger>(&Action::onReleaseNotes));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_HELP, tr("Help"), "", "Ctrl+H", ":/icons/file/pixmaps/range-help.svg",static_cast<PointerToMemberTrigger>(&Action::onHelp));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_QUIT, tr("Quit"), "", "Q", ":/icons/application/pixmaps/range-quit.svg",static_cast<PointerToMemberTrigger>(&Action::onQuit), QAction::QuitRole);
@@ -2334,6 +2336,37 @@ void Action::onLicense()
     catch (...)
     {
         RLogger::error("Failed to display license from file \'%s\'.\n",licenseFileName.toUtf8().constData());
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onPrivacyPolicy()
+{
+    R_LOG_TRACE_IN;
+    QString privacyPolicyFileName(Application::instance()->getApplicationSettings()->findPrivacyPolicyFileName());
+
+    try
+    {
+        QFile file(privacyPolicyFileName);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            throw RError(RError::Type::OpenFile,R_ERROR_REF,"Failed to open the file \'%s\'.",privacyPolicyFileName.toUtf8().constData());
+        }
+        QString privacyPolicyText(file.readAll());
+        file.close();
+
+        RTextBrowserDialog textBrowserDialog(tr("Privacy policy"),
+                                            privacyPolicyFileName,
+                                            privacyPolicyText);
+        textBrowserDialog.exec();
+    }
+    catch (const RError &rError)
+    {
+        RLogger::error("Failed to display privacy policy from file \'%s\'. %s\n",privacyPolicyFileName.toUtf8().constData(),rError.getMessage().toUtf8().constData());
+    }
+    catch (...)
+    {
+        RLogger::error("Failed to display privacy policy from file \'%s\'.\n",privacyPolicyFileName.toUtf8().constData());
     }
     R_LOG_TRACE_OUT;
 }

@@ -140,6 +140,7 @@ class Action : public RAction
             ACTION_APPLICATION_ABOUT,
             ACTION_APPLICATION_ABOUT_QT,
             ACTION_APPLICATION_LICENSE,
+            ACTION_APPLICATION_PRIVACY_POLICY,
             ACTION_APPLICATION_RELEASE_NOTES,
             ACTION_APPLICATION_HELP,
             ACTION_APPLICATION_QUIT,
@@ -472,6 +473,9 @@ class Action : public RAction
 
         //! License.
         void onLicense();
+
+        //! Privacy policy.
+        void onPrivacyPolicy();
 
         //! Release notes.
         void onReleaseNotes();

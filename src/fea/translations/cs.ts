@@ -922,6 +922,12 @@
         <translation>Licence</translation>
     </message>
     <message>
+        <location filename="../src/action.cpp" line="313"/>
+        <location filename="../src/action.cpp" line="2358"/>
+        <source>Privacy policy</source>
+        <translation>Zásady ochrany osobních údajů</translation>
+    </message>
+    <message>
         <location filename="../src/action.cpp" line="310"/>
         <source>Release notes</source>
         <translation>Poznámky k vydání</translation>
