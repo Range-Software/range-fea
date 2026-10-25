@@ -458,6 +458,30 @@ if(WIN32)
         endif()
     endif()
 
+    # MSVC LLVM OpenMP runtime (OpenMP_RUNTIME_MSVC llvm). Neither windeployqt
+    # nor vc_redist provides it, so without it fea.exe fails to start.
+    if(MSVC)
+        if(CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64|aarch64")
+            set(_omp_arch arm64)
+            set(_omp_dll libomp140.aarch64.dll)
+        else()
+            set(_omp_arch x64)
+            set(_omp_dll libomp140.x86_64.dll)
+        endif()
+        get_filename_component(_msvc_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+        file(GLOB _omp_redist_dirs "$ENV{VCToolsRedistDir}/${_omp_arch}/Microsoft.VC*.OpenMP.LLVM")
+        find_file(MSVC_OPENMP_LLVM_DLL ${_omp_dll}
+            HINTS ${_omp_redist_dirs} "${_msvc_bin_dir}"
+            NO_DEFAULT_PATH
+            DOC "MSVC LLVM OpenMP runtime bundled with the application"
+        )
+        if(MSVC_OPENMP_LLVM_DLL)
+            install(FILES "${MSVC_OPENMP_LLVM_DLL}" DESTINATION bin COMPONENT Application)
+        else()
+            message(WARNING "MSVC OpenMP runtime ${_omp_dll} not found; the installed application will not start")
+        endif()
+    endif()
+
     # MinGW runtime DLLs
     if(MINGW)
         get_filename_component(_mingw_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
