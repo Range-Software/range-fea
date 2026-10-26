@@ -51,6 +51,9 @@ class ModelIO : public RJob
         //! Find new model name.
         static QString findNewModelName(const QString &fileName);
 
+        //! Return true if file is located inside the application home directory.
+        static bool isInAppHomeDir(const QString &fileName);
+
         //! Retrieve (opens dialog if necessary) model save filename.
         static QString getModelSaveName(const ApplicationSettings *mainSettings, QWidget *parent, const Model &rModel, bool saveAs = false);
 

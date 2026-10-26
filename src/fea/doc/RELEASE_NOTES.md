@@ -22,6 +22,9 @@
 - **Save model as** of a model which was never saved opens in the data folder. Before,
   the dialog opened in the folder the operating system remembered from its last use,
   which in the Mac App Store version was the former data folder in Documents
+- In the Mac App Store version **Save model as** of a model opened from outside the
+  application folders (e.g. the former data folder in Documents) opens in the data
+  folder instead of the folder the model was opened from
 - The question about clearing results of problems removed from the task flow and the
   "+ N *more*" label of hidden entities in the 3D view are translated to all languages
 - The Microsoft Store package built with MSVC did not start because the LLVM OpenMP

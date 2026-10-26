@@ -30,6 +30,15 @@ QString ModelIO::findNewModelName(const QString &fileName)
     return modelName;
 }
 
+bool ModelIO::isInAppHomeDir(const QString &fileName)
+{
+    // Canonical paths resolve links, e.g. the container's Documents linking to the users Documents.
+    QString appHomeDir = QFileInfo(RApplicationSettings::getAppHomeDir()).canonicalFilePath();
+    QFileInfo dirInfo(QFileInfo(fileName).absolutePath());
+    QString dirPath = dirInfo.exists() ? dirInfo.canonicalFilePath() : QDir::cleanPath(dirInfo.absoluteFilePath());
+    return !appHomeDir.isEmpty() && (dirPath == appHomeDir || dirPath.startsWith(appHomeDir + "/"));
+}
+
 QString ModelIO::getModelSaveName(const ApplicationSettings *mainSettings, QWidget *parent, const Model &rModel, bool saveAs)
 {
     R_LOG_TRACE_IN;
@@ -48,6 +57,13 @@ QString ModelIO::getModelSaveName(const ApplicationSettings *mainSettings, QWidg
     }
     if (saveAs)
     {
+        if (RApplicationSettings::isSandboxed() && !ModelIO::isInAppHomeDir(fileName))
+        {
+            // Sandboxed application may write outside of its container only to files
+            // the user picked in this run, therefore offer the data directory instead
+            // of the directory the model was opened from.
+            fileName = dataDir.filePath(QFileInfo(fileName).fileName());
+        }
         fileName = QFileDialog::getSaveFileName(parent,
                                                 "Save model as",
                                                 fileName,
