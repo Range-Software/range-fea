@@ -7,6 +7,7 @@
 #include <QSplitter>
 #include <QScrollBar>
 #include <QHBoxLayout>
+#include <QScreen>
 
 #include <rbl_error.h>
 #include <rbl_job_manager.h>
@@ -123,7 +124,17 @@ MainWindow::MainWindow(Session *session,
     this->resultsTab = this->createResultsTab();
     solverDockTabWidget->addTab(this->resultsTab,tr("Results"));
 
-    this->restoreGeometry(this->applicationSettings->value("mainWindow/geometry").toByteArray());
+    if (!this->restoreGeometry(this->applicationSettings->value("mainWindow/geometry").toByteArray()))
+    {
+        // No stored geometry (first run): use 70 % of the screen and center the window.
+        if (QScreen *screen = QGuiApplication::primaryScreen())
+        {
+            QRect screenRect = screen->availableGeometry();
+            QSize windowSize(qRound(screenRect.width() * 0.7), qRound(screenRect.height() * 0.7));
+            this->resize(windowSize);
+            this->move(screenRect.center() - QPoint(windowSize.width() / 2, windowSize.height() / 2));
+        }
+    }
     this->restoreState(this->applicationSettings->value("mainWindow/windowState").toByteArray());
 
     // Toolbar icon size changed signal

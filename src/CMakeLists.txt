@@ -469,7 +469,25 @@ if(WIN32)
             set(_omp_dll libomp140.x86_64.dll)
         endif()
         get_filename_component(_msvc_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
-        file(GLOB _omp_redist_dirs "$ENV{VCToolsRedistDir}/${_omp_arch}/Microsoft.VC*.OpenMP.LLVM")
+        # Visual Studio ships the release DLL only under debug_nonredist. Outside
+        # a developer prompt VCToolsRedistDir is not set, so fall back to the
+        # Redist folders next to the compiler (VC/Tools/MSVC/<ver>/bin/Host*/<arch>).
+        set(_omp_redist_roots)
+        if(DEFINED ENV{VCToolsRedistDir})
+            file(TO_CMAKE_PATH "$ENV{VCToolsRedistDir}" _vc_tools_redist_dir)
+            list(APPEND _omp_redist_roots "${_vc_tools_redist_dir}")
+        endif()
+        get_filename_component(_msvc_vc_dir "${_msvc_bin_dir}/../../../../../.." ABSOLUTE)
+        file(GLOB _msvc_redist_version_dirs LIST_DIRECTORIES true "${_msvc_vc_dir}/Redist/MSVC/14.*")
+        list(SORT _msvc_redist_version_dirs COMPARE NATURAL ORDER DESCENDING)
+        list(APPEND _omp_redist_roots ${_msvc_redist_version_dirs})
+        set(_omp_redist_dirs)
+        foreach(_root IN LISTS _omp_redist_roots)
+            file(GLOB _dirs LIST_DIRECTORIES true
+                "${_root}/${_omp_arch}/Microsoft.VC*.OpenMP.LLVM"
+                "${_root}/debug_nonredist/${_omp_arch}/Microsoft.VC*.OpenMP.LLVM")
+            list(APPEND _omp_redist_dirs ${_dirs})
+        endforeach()
         find_file(MSVC_OPENMP_LLVM_DLL ${_omp_dll}
             HINTS ${_omp_redist_dirs} "${_msvc_bin_dir}"
             NO_DEFAULT_PATH
@@ -477,6 +495,8 @@ if(WIN32)
         )
         if(MSVC_OPENMP_LLVM_DLL)
             install(FILES "${MSVC_OPENMP_LLVM_DLL}" DESTINATION bin COMPONENT Application)
+        elseif(RANGE_STORE_BUILD)
+            message(FATAL_ERROR "MSVC OpenMP runtime ${_omp_dll} not found; the Store package would not start")
         else()
             message(WARNING "MSVC OpenMP runtime ${_omp_dll} not found; the installed application will not start")
         endif()
@@ -749,11 +769,19 @@ if(RANGE_STORE_BUILD AND APPLE)
 endif()
 
 if(RANGE_STORE_BUILD AND WIN32)
+    # The Windows SDK installs its tools into versioned folders such as
+    # bin/10.0.22621.0/x64, so search those too, newest version first.
+    set(_windows_sdk_bin_dirs)
+    foreach(_sdk_root "$ENV{ProgramFiles\(x86\)}/Windows Kits/10/bin" "$ENV{ProgramFiles}/Windows Kits/10/bin")
+        file(GLOB _sdk_version_dirs LIST_DIRECTORIES true "${_sdk_root}/10.*")
+        list(SORT _sdk_version_dirs COMPARE NATURAL ORDER DESCENDING)
+        list(APPEND _windows_sdk_bin_dirs ${_sdk_version_dirs} "${_sdk_root}")
+    endforeach()
+
     find_program(MAKEAPPX_EXECUTABLE
         NAMES makeappx
         PATHS
-            "$ENV{ProgramFiles\(x86\)}/Windows Kits/10/bin"
-            "$ENV{ProgramFiles}/Windows Kits/10/bin"
+            ${_windows_sdk_bin_dirs}
         PATH_SUFFIXES
             x64 arm64
         DOC "MSIX packaging tool (makeappx.exe) from the Windows SDK"

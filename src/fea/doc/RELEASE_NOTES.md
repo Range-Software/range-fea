@@ -9,6 +9,8 @@
   file browser of the operating system (Finder on macOS, File Explorer on Windows, the
   file manager on Linux)
 - Help pages of the new actions in all languages
+- On the first start the main window opens centered at 70 % of the screen width and
+  height. Later starts restore the size and position it was closed with
 
 ### Bug fixes
 
@@ -22,6 +24,13 @@
   which in the Mac App Store version was the former data folder in Documents
 - The question about clearing results of problems removed from the task flow and the
   "+ N *more*" label of hidden entities in the 3D view are translated to all languages
+- The Microsoft Store package built with MSVC did not start because the LLVM OpenMP
+  runtime (`libomp140.x86_64.dll`) was missing. Visual Studio installs it only in the
+  `debug_nonredist` Redist folder, which the build did not search. The build now finds
+  it there and a Store build stops if it is missing
+- The `msix` target was not created when the Windows SDK tools were only in a versioned
+  folder such as `Windows Kits/10/bin/10.0.22621.0/x64`. The build now finds
+  `makeappx.exe` there, newest SDK version first
 
 ### Submodules
 
