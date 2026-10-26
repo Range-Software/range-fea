@@ -135,6 +135,13 @@ class Action : public RAction
             ACTION_REPORT_CONVERGENCE_GRAPH,
             ACTION_REPORT_MONITORING_POINT_GRAPH,
             ACTION_REPORT_CREATE_REPORT,
+            ACTION_APPLICATION_FOLDER_CERT,
+            ACTION_APPLICATION_FOLDER_DATA,
+            ACTION_APPLICATION_FOLDER_DOC,
+            ACTION_APPLICATION_FOLDER_LOG,
+            ACTION_APPLICATION_FOLDER_MATERIALS,
+            ACTION_APPLICATION_FOLDER_SESSION,
+            ACTION_APPLICATION_FOLDER_TMP,
             ACTION_APPLICATION_SETTINGS,
             ACTION_APPLICATION_UPDATE,
             ACTION_APPLICATION_ABOUT,
@@ -189,6 +196,9 @@ class Action : public RAction
                            const QString &icon,
                            PointerToMemberToggle toggleSlot,
                            QAction::MenuRole menuRole = QAction::NoRole);
+
+        //! Open given folder in the platform file browser.
+        static void openFolder(const QString &dirPath);
 
     public slots:
 
@@ -458,6 +468,27 @@ class Action : public RAction
 
         //! Quit program.
         void onQuit();
+
+        //! Open certificates folder.
+        void onFolderCert();
+
+        //! Open data folder.
+        void onFolderData();
+
+        //! Open documents folder.
+        void onFolderDoc();
+
+        //! Open log folder.
+        void onFolderLog();
+
+        //! Open materials folder.
+        void onFolderMaterials();
+
+        //! Open session folder.
+        void onFolderSession();
+
+        //! Open temporary folder.
+        void onFolderTmp();
 
         //! Application settings.
         void onApplicationSettings();

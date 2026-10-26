@@ -1,3 +1,31 @@
+## Version 1.3.1
+
+### Improvements
+
+#### Application
+
+- New **File > Folders** submenu opens the application folders - *Certificates*,
+  *Data*, *Documents*, *Logs*, *Materials*, *Sessions* and *Temporary files* - in the
+  file browser of the operating system (Finder on macOS, File Explorer on Windows, the
+  file manager on Linux)
+- Help pages of the new actions in all languages
+
+### Bug fixes
+
+- The Mac App Store version could not write to its folders. They are kept in
+  `Documents/Range Software/FEA`, which the App Sandbox does not allow to be written to.
+  The sandboxed version now keeps them in `Library/Application Support/Range Software/FEA`
+  inside its container (`~/Library/Containers/com.range-software.fea/Data`); other
+  versions keep using the Documents folder. Use **File > Folders** to find them
+- The question about clearing results of problems removed from the task flow and the
+  "+ N *more*" label of hidden entities in the 3D view are translated to all languages
+
+### Submodules
+
+- range-gui-lib @ v1.3.0
+
+---
+
 ## Version 1.3.0
 
 ### Compatibility

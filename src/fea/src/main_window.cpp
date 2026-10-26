@@ -317,6 +317,18 @@ void MainWindow::createMenus()
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_RELOAD_RESULTS));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_MODEL_DROP_RESULTS));
     menuFile->addSeparator();
+    QMenu *menuFileFolders = new QMenu(menuFile);
+    menuFileFolders->setTitle(tr("Folders"));
+    menuFileFolders->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-open.svg"));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_CERT));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_DATA));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_DOC));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_LOG));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_MATERIALS));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_SESSION));
+    menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_TMP));
+    menuFile->addAction(menuFileFolders->menuAction());
+    menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
     menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
