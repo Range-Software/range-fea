@@ -39,6 +39,13 @@ QString ModelIO::getModelSaveName(const ApplicationSettings *mainSettings, QWidg
     QString dialogDesc = "Range model files (*." + binaryExtension + " *." + asciiExtension + ");;Any files (*)";
 
     QString fileName = RFileUtils::getFileNameWithOutTimeStep(rModel.getFileName());
+    bool neverSaved = fileName.isEmpty();
+    if (neverSaved)
+    {
+        // Without a file name the dialog would open in the directory the platform
+        // remembers from its last use instead of the data directory.
+        fileName = dataDir.filePath(rModel.getName() + "." + binaryExtension);
+    }
     if (saveAs)
     {
         fileName = QFileDialog::getSaveFileName(parent,
@@ -48,9 +55,8 @@ QString ModelIO::getModelSaveName(const ApplicationSettings *mainSettings, QWidg
     }
     else
     {
-        if (fileName.isEmpty())
+        if (neverSaved)
         {
-            fileName = dataDir.filePath(rModel.getName() + "." + binaryExtension);
             fileName = QFileDialog::getSaveFileName(parent,
                                                     "Save model",
                                                     fileName,

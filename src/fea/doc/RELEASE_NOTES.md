@@ -17,6 +17,9 @@
   The sandboxed version now keeps them in `Library/Application Support/Range Software/FEA`
   inside its container (`~/Library/Containers/com.range-software.fea/Data`); other
   versions keep using the Documents folder. Use **File > Folders** to find them
+- **Save model as** of a model which was never saved opens in the data folder. Before,
+  the dialog opened in the folder the operating system remembered from its last use,
+  which in the Mac App Store version was the former data folder in Documents
 - The question about clearing results of problems removed from the task flow and the
   "+ N *more*" label of hidden entities in the 3D view are translated to all languages
 
