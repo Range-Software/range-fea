@@ -3,6 +3,8 @@
 
 #include <QProcess>
 
+#include <atomic>
+
 #include <rbl_job.h>
 
 #include "application_settings.h"
@@ -23,6 +25,8 @@ class SolverTask : public RJob
         SolverTaskID taskID;
         //! Solver process.
         QProcess *solverProcess;
+        //! Stop was requested, the command is sent to the solver from the task thread.
+        std::atomic<bool> stopRequested;
         //! Solver executable.
         QString solverExecutable;
         //! Solver executable arguments.
@@ -52,6 +56,9 @@ class SolverTask : public RJob
 
         //! Return const reference to solver task ID.
         const QString getStopCommand() const;
+
+        //! Request solver to stop.
+        void stop();
 
         //! Kill task.
         void kill();

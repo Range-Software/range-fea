@@ -25,6 +25,11 @@
 - In the Mac App Store version **Save model as** of a model opened from outside the
   application folders (e.g. the former data folder in Documents) opens in the data
   folder instead of the folder the model was opened from
+- In the Mac App Store version the solver could not connect to the application
+  (`Failed to connect to: RANGE_SOLVER_TASK_SERVER_...`), so **Stop solver** did not
+  reach it. The path of the local socket used for the connection was too long inside
+  the App Sandbox container. The stop command is now sent through the standard input
+  of the solver on all platforms
 - The question about clearing results of problems removed from the task flow and the
   "+ N *more*" label of hidden entities in the 3D view are translated to all languages
 - The Microsoft Store package built with MSVC did not start because the LLVM OpenMP

@@ -37,7 +37,6 @@ void MainTask::run()
         validOptions.append(RArgumentOption("restart",RArgumentOption::Switch,QVariant(),"Restart solver",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("verify-jacobian",RArgumentOption::Switch,QVariant(),"Compare the fluid solver matrix with a finite difference of its residual (few elements only)",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("task-id",RArgumentOption::Path,QVariant(),"Task ID for inter process communication",RArgumentOption::Optional,false));
-        validOptions.append(RArgumentOption("task-server",RArgumentOption::Path,QVariant(),"Task server for inter process communication",RArgumentOption::Optional,false));
         validOptions.append(RArgumentOption("log-debug",RArgumentOption::Switch,QVariant(),"Switch on debug log level",RArgumentOption::Logger,false));
         validOptions.append(RArgumentOption("log-trace",RArgumentOption::Switch,QVariant(),"Switch on trace log level",RArgumentOption::Logger,false));
         validOptions.append(RArgumentOption("log-ssl",RArgumentOption::Switch,QVariant(),"Enable Qt debug logging",RArgumentOption::Logger,false));
@@ -104,9 +103,7 @@ void MainTask::run()
         }
 
         // Command processor.
-        new CommandProcessor(argumentsParser.getValue("task-server").toString(),
-                             argumentsParser.getValue("task-id").toString(),
-                             application);
+        new CommandProcessor(argumentsParser.getValue("task-id").toString(),application);
 
         SolverInput solverInput(argumentsParser.getValue("file").toString());
         if (argumentsParser.isSet("convergence-file"))

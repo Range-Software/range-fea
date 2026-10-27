@@ -1,3 +1,24 @@
+## Version 1.3.1
+
+### Improvements
+
+#### Command line
+
+- `--task-server` is removed. `--task-id` is still given by the application; with it
+  the solver reads commands such as `<task-id>:STOP` from its standard input
+
+### Bug fixes
+
+#### Solver run
+
+- In the Mac App Store version the solver reported `Failed to connect to:
+  RANGE_SOLVER_TASK_SERVER_...` on every start and could not be stopped from the
+  application. The application listened for the solver on a local socket in its
+  temporary folder, and inside the App Sandbox container the socket path is longer
+  than the 103 characters macOS allows, so the socket was never created. The solver
+  now reads commands one per line from its standard input, which the application
+  writes to, and no socket is used on any platform
+
 ## Version 1.3.0
 
 ### Improvements

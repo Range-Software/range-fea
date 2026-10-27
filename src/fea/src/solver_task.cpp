@@ -3,7 +3,6 @@
 #include <rml_file_utils.h>
 
 #include "model_io.h"
-#include "solver_manager.h"
 #include "solver_task.h"
 #include "application.h"
 
@@ -11,6 +10,7 @@ SolverTask::SolverTask(const ApplicationSettings *applicationSettings, uint mode
     : applicationSettings{applicationSettings}
     , modelID{modelID}
     , solverProcess{nullptr}
+    , stopRequested{false}
 {
     this->taskID.generate();
     this->solverExecutable = applicationSettings->getSolverPath();
@@ -30,7 +30,6 @@ SolverTask::SolverTask(const ApplicationSettings *applicationSettings, uint mode
     this->solverArguments.append("--monitoring-file=" + this->monitoringFileName);
     this->solverArguments.append("--nthreads=" + QString::number(this->applicationSettings->getNThreads()));
     this->solverArguments.append("--task-id=" + this->taskID.toString());
-    this->solverArguments.append("--task-server=" + SolverManager::getInstance().getTaskServerName());
 }
 
 uint SolverTask::getModelID() const
@@ -51,6 +50,13 @@ SolverTaskID &SolverTask::getTaskID()
 const QString SolverTask::getStopCommand() const
 {
     return QString(this->taskID.toString() + ":STOP");
+}
+
+void SolverTask::stop()
+{
+    // QProcess may be used only from the thread it was created in, therefore
+    // the command is written to the solver from perform().
+    this->stopRequested = true;
 }
 
 void SolverTask::kill()
@@ -112,7 +118,19 @@ int SolverTask::perform()
 
         this->solverProcess->start(this->solverExecutable,this->solverArguments);
 
-        if (!this->solverProcess->waitForFinished(-1) || this->solverProcess->exitCode() != 0)
+        // Commands are sent to the solver through its standard input.
+        bool finished = false;
+        while (!(finished = this->solverProcess->waitForFinished(100)) && this->solverProcess->state() != QProcess::NotRunning)
+        {
+            if (this->stopRequested.exchange(false))
+            {
+                QString command = this->getStopCommand();
+                RLogger::info("Sending command: %s\n",command.toUtf8().constData());
+                this->solverProcess->write(command.toUtf8() + "\n");
+            }
+        }
+
+        if (!finished || this->solverProcess->exitCode() != 0)
         {
             RLogger::warning("Command \'%s\' failed with exit code = %d.\n",cmdLine.toUtf8().constData(),this->solverProcess->exitCode());
 

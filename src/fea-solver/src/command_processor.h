@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QCoreApplication>
-#include <QLocalSocket>
 
 class CommandProcessor : public QObject
 {
@@ -12,33 +11,22 @@ class CommandProcessor : public QObject
 
     protected:
 
-        //! Local socket for IPC.
-        QLocalSocket *localSocket;
-
-        //! Task server name for IPC.
-        QString taskServer;
-
         //! Task ID.
         QString taskID;
 
     public:
 
         //! Constructor.
-        explicit CommandProcessor(const QString &taskServer, const QString &taskID, QCoreApplication *application = nullptr);
+        explicit CommandProcessor(const QString &taskID, QCoreApplication *application = nullptr);
 
     protected:
 
-        //! Start listening and processing.
+        //! Start reading and processing commands from standard input.
         void start(void);
 
-        //! Stop listening and processing.
-        void stop(void);
-        
-    public slots:
+        //! Process single command.
+        static void processCommand(const QString &taskID, const QString &command);
 
-        //! Read local socket.
-        void readSocket(void);
-        
 };
 
 #endif // COMMAND_PROCESSOR_H

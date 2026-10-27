@@ -266,8 +266,4 @@ void Application::finalize()
     {
         RLogger::error("Failed to write the session file \'%s\'. ERROR: %s\n",sessionFileName.toUtf8().constData(),error.getMessage().toUtf8().constData());
     }
-
-    // Stop solver manager server.
-    RLogger::info("Stoping solver task server\n");
-    SolverManager::getInstance().stopServer();
 }

@@ -18,6 +18,5 @@ add_dependencies(fea-solver range-base-lib range-model-lib range-solver-lib)
 target_link_libraries(fea-solver
     PRIVATE
         range-solver-lib
-        Qt6::Network
         common_defines
 )

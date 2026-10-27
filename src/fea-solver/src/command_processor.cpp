@@ -1,17 +1,17 @@
-#include <QDataStream>
+#include <iostream>
+#include <string>
+#include <thread>
 
 #include <rbl_application_state.h>
 #include <rbl_logger.h>
 
 #include "command_processor.h"
 
-CommandProcessor::CommandProcessor(const QString &taskServer, const QString &taskID, QCoreApplication *application)
+CommandProcessor::CommandProcessor(const QString &taskID, QCoreApplication *application)
     : QObject(application)
-    , localSocket(new QLocalSocket(this))
-    , taskServer(taskServer)
     , taskID(taskID)
 {
-    if (!this->taskServer.isEmpty() && !this->taskID.isEmpty())
+    if (!this->taskID.isEmpty())
     {
         this->start();
     }
@@ -19,39 +19,31 @@ CommandProcessor::CommandProcessor(const QString &taskServer, const QString &tas
 
 void CommandProcessor::start(void)
 {
-    this->localSocket->connectToServer(taskServer);
-    if (!this->localSocket->waitForConnected())
+    // Commands arrive one per line on standard input, which is a pipe when the solver
+    // is started by the application. No socket is used because its path inside the
+    // App Sandbox container would exceed the length allowed by macOS.
+    // Reading blocks and cannot be interrupted, therefore the thread is detached and
+    // ends with the end of input or with the process.
+    QString taskID(this->taskID);
+    std::thread([taskID]()
     {
-        RLogger::error("Failed to connect to: %s\n",taskServer.toUtf8().constData());
-    }
-    RLogger::info("Connected to: %s\n",this->localSocket->serverName().toUtf8().constData());
-    QObject::connect(this->localSocket, &QLocalSocket::readyRead, this, &CommandProcessor::readSocket);
+        std::string line;
+        while (std::getline(std::cin,line))
+        {
+            CommandProcessor::processCommand(taskID,QString::fromStdString(line).trimmed());
+        }
+    }).detach();
+    RLogger::info("Reading commands from standard input\n");
 }
 
-void CommandProcessor::stop(void)
+void CommandProcessor::processCommand(const QString &taskID, const QString &command)
 {
-    this->localSocket->disconnectFromServer();
-}
-
-void CommandProcessor::readSocket(void)
-{
-    if (this->localSocket->bytesAvailable() < (int)sizeof(quint32))
+    if (command.isEmpty())
     {
         return;
     }
-    QDataStream in;
-    in.setDevice(this->localSocket);
-    in.setVersion(QDataStream::Qt_6_8);
-    quint32 blockSize;
-    in >> blockSize;
-    if (this->localSocket->bytesAvailable() < blockSize || in.atEnd())
-    {
-        return;
-    }
-    QString message;
-    in >> message;
-    RLogger::info("Received command: \'%s\'\n",message.toUtf8().constData());
-    if (message.contains(this->taskID + ":STOP"))
+    RLogger::info("Received command: \'%s\'\n",command.toUtf8().constData());
+    if (command == taskID + ":STOP")
     {
         RApplicationState::getInstance().setStateType(R_APPLICATION_STATE_STOP);
     }

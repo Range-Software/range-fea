@@ -3,27 +3,13 @@
 
 SolverManager::SolverManager(QObject *parent)
     : RJobManager(parent)
-    , taskServer(0)
 {
-    this->taskServerName = "RANGE_SOLVER_TASK_SERVER_" + Application::instance()->getSession()->getID();
-    this->taskServer = new QLocalServer(this);
-    if (!this->taskServer->listen(this->taskServerName))
-    {
-        RLogger::warning("Local server failed to listen: %s\n", this->taskServer->errorString().toUtf8().constData());
-    }
-    RLogger::info("Listening on: %s\n", this->taskServer->serverName().toUtf8().constData());
-    QObject::connect(this->taskServer, &QLocalServer::newConnection, this, &SolverManager::onSolverTaskNewConnection);
 }
 
 SolverManager &SolverManager::getInstance()
 {
     static SolverManager solverManager;
     return solverManager;
-}
-
-const QString &SolverManager::getTaskServerName() const
-{
-    return this->taskServerName;
 }
 
 void SolverManager::submit(SolverTask *solverTask)
@@ -80,18 +66,7 @@ void SolverManager::stopRunningTasks()
         {
             SolverTask *solverTask = dynamic_cast<SolverTask*>(task);
             RLogger::info("Stopping solver task (#%s).\n",solverTask->getTaskID().toString().toUtf8().constData());
-            QString message = solverTask->getStopCommand();
-            foreach (QLocalSocket *localSocket, this->taskClients)
-            {
-                QByteArray block;
-                QDataStream out(&block, QIODevice::WriteOnly);
-                out.setVersion(QDataStream::Qt_6_8);
-                RLogger::info("Sendig signal: %s\n",message.toUtf8().constData());
-                out << quint32(message.size());
-                out << message;
-                localSocket->write(block);
-                localSocket->flush();
-            }
+            solverTask->stop();
         }
     }
 }
@@ -114,12 +89,6 @@ const QString &SolverManager::getLastLogFileName() const
     return this->lastLogFileName;
 }
 
-void SolverManager::stopServer()
-{
-    QObject::disconnect(this->taskServer, &QLocalServer::newConnection, this, &SolverManager::onSolverTaskNewConnection);
-    this->taskServer->close();
-}
-
 void SolverManager::onReadyReadStandardOutput(const QString &message)
 {
     emit this->readyReadStandardOutput(message);
@@ -128,13 +97,4 @@ void SolverManager::onReadyReadStandardOutput(const QString &message)
 void SolverManager::onReadyReadStandardError(const QString &message)
 {
     emit this->readyReadStandardError(message);
-}
-
-void SolverManager::onSolverTaskNewConnection()
-{
-    RLogger::info("Task client connected\n");
-    while (this->taskServer->hasPendingConnections())
-    {
-        this->taskClients.append(this->taskServer->nextPendingConnection());
-    }
 }
