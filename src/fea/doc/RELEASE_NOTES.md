@@ -37,7 +37,8 @@
 - The Microsoft Store package built with MSVC did not start because the LLVM OpenMP
   runtime (`libomp140.x86_64.dll`) was missing. Visual Studio installs it only in the
   `debug_nonredist` Redist folder, which the build did not search. The build now finds
-  it there and a Store build stops if it is missing
+  it there and stops if it is missing, for the Store package as well as for the
+  installer and ZIP package
 - The `msix` target was not created when the Windows SDK tools were only in a versioned
   folder such as `Windows Kits/10/bin/10.0.22621.0/x64`. The build now finds
   `makeappx.exe` there, newest SDK version first
