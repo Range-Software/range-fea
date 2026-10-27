@@ -182,7 +182,7 @@ uint ApplicationSettings::getDefaultNHistoryRecords()
 
 uint ApplicationSettings::getDefaultProcessOutputMaxLines()
 {
-    return 10000;
+    return 1000;
 }
 
 RenderBackend::Type ApplicationSettings::getDefaultRenderBackend()

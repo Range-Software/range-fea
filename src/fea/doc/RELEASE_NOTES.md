@@ -11,6 +11,8 @@
 - Help pages of the new actions in all languages
 - On the first start of a new version the main window opens centered at 70 % of the
   screen width and height. Later starts restore the size and position it was closed with
+- The **Process output** tab keeps at most `1000` lines by default instead of `10000`.
+  A *Max lines* value set before is kept
 
 ### Bug fixes
 
