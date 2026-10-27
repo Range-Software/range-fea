@@ -215,6 +215,24 @@ jobs:
       - name: Build
         run: cmake --build build-Release --target package --parallel
 
+      # macdeployqt is expected to copy the Homebrew OpenMP runtime into the
+      # bundle; without it the application does not start on other machines.
+      - name: Verify OpenMP runtime (macOS)
+        if: startsWith(matrix.os, 'macos-')
+        run: |
+          set -euo pipefail
+          APP="$(/usr/bin/find build-Release -maxdepth 2 -name '*.app' -type d -print -quit)"
+          echo "Bundle: $APP"
+          test -f "$APP/Contents/Frameworks/libomp.dylib"
+          for BIN in "$APP"/Contents/MacOS/fea*; do
+            echo "$BIN:"
+            otool -L "$BIN" | grep libomp
+            if otool -L "$BIN" | grep libomp | grep -v -E '@(rpath|executable_path|loader_path)/'; then
+              echo "$BIN loads libomp from outside the bundle"
+              exit 1
+            fi
+          done
+
       # Notarize
       - name: Notarize DMG with notarytool (macOS)
         if: startsWith(matrix.os, 'macos-')

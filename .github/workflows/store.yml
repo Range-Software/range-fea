@@ -203,6 +203,17 @@ jobs:
           codesign --display --entitlements - --xml "$APP" | plutil -convert xml1 -o - - | tee entitlements.plist
           grep -q 'com.apple.application-identifier' entitlements.plist
           test -s "$APP/Contents/embedded.provisionprofile"
+          # macdeployqt is expected to copy the Homebrew OpenMP runtime into
+          # the bundle; without it the application does not start.
+          test -f "$APP/Contents/Frameworks/libomp.dylib"
+          for BIN in "$APP"/Contents/MacOS/fea*; do
+            echo "$BIN:"
+            otool -L "$BIN" | grep libomp
+            if otool -L "$BIN" | grep libomp | grep -v -E '@(rpath|executable_path|loader_path)/'; then
+              echo "$BIN loads libomp from outside the bundle"
+              exit 1
+            fi
+          done
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
