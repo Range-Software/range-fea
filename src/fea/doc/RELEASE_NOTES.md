@@ -9,8 +9,8 @@
   file browser of the operating system (Finder on macOS, File Explorer on Windows, the
   file manager on Linux)
 - Help pages of the new actions in all languages
-- On the first start the main window opens centered at 70 % of the screen width and
-  height. Later starts restore the size and position it was closed with
+- On the first start of a new version the main window opens centered at 70 % of the
+  screen width and height. Later starts restore the size and position it was closed with
 
 ### Bug fixes
 

@@ -8,6 +8,7 @@
 #include <QScrollBar>
 #include <QHBoxLayout>
 #include <QScreen>
+#include <QTimer>
 
 #include <rbl_error.h>
 #include <rbl_job_manager.h>
@@ -124,9 +125,9 @@ MainWindow::MainWindow(Session *session,
     this->resultsTab = this->createResultsTab();
     solverDockTabWidget->addTab(this->resultsTab,tr("Results"));
 
-    if (!this->restoreGeometry(this->applicationSettings->value("mainWindow/geometry").toByteArray()))
+    if (this->isFirstRun || !this->restoreGeometry(this->applicationSettings->value("mainWindow/geometry").toByteArray()))
     {
-        // No stored geometry (first run): use 70 % of the screen and center the window.
+        // First run of this version or no stored geometry: use 70 % of the screen and center the window.
         if (QScreen *screen = QGuiApplication::primaryScreen())
         {
             QRect screenRect = screen->availableGeometry();
@@ -180,7 +181,11 @@ MainWindow::MainWindow(Session *session,
 
     if (this->isFirstRun)
     {
-        RFirstRunDialog(this).exec();
+        // Dialog executed before the main window is shown makes macOS discard the size set above.
+        QTimer::singleShot(0,this,[this]()
+        {
+            RFirstRunDialog(this).exec();
+        });
     }
 
     R_LOG_TRACE_OUT;
