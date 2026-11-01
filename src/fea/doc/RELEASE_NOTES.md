@@ -13,6 +13,12 @@
   screen width and height. Later starts restore the size and position it was closed with
 - The **Process output** tab keeps at most `1000` lines by default instead of `10000`.
   A *Max lines* value set before is kept
+- On macOS the private key and the certificate signing request for the cloud are
+  generated with the Apple Security framework instead of the `openssl` tool, and so
+  is the text shown by the private key view. The `openssl` tool is no longer bundled
+  with the application, only the OpenSSL libraries used for TLS connections. The paths
+  of the OpenSSL tool and its configuration are hidden in the application settings.
+  Configure with `-DRANGE_NATIVE_KEY_TOOL=OFF` to keep using the `openssl` tool
 
 ### Bug fixes
 
@@ -42,6 +48,9 @@
 - The `msix` target was not created when the Windows SDK tools were only in a versioned
   folder such as `Windows Kits/10/bin/10.0.22621.0/x64`. The build now finds
   `makeappx.exe` there, newest SDK version first
+- Certificate signing requests generated on macOS store subject fields with characters
+  outside ASCII, such as `Žilina`, correctly. The `openssl` tool used before stored
+  them in a mangled form (`Å½ilina`)
 
 ### Submodules
 

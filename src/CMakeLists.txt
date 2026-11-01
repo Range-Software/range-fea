@@ -369,9 +369,21 @@ elseif(APPLE)
 
     # Put openssl tool into Contents/MacOS on macOS ---------------------------
     if (OPENSSL_ROOT)
-        # This copies the already-built openssl tool next to the main executable inside the bundle
+        # The openssl tool is not needed when keys and CSRs are generated with Security framework,
+        # the libraries are still used by the Qt TLS backend
+        set(_openssl_tool_cmds "")
+        if (NOT RANGE_NATIVE_KEY_TOOL)
+            set(_openssl_tool_cmds
+                COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/bin/openssl ${APP_DIR_NEW}/Contents/MacOS/
+                # Fix openssl binary references and add rpath
+                COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libssl.3.dylib @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+                COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
+                COMMAND install_name_tool -add_rpath @executable_path/../Frameworks ${APP_DIR_NEW}/Contents/MacOS/openssl
+            )
+        endif()
+
+        # This copies the already-built openssl libraries (and tool) into the bundle
         add_custom_target(embed-openssl-tool ALL
-            COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/bin/openssl ${APP_DIR_NEW}/Contents/MacOS/
             COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
             COMMAND ${CMAKE_COMMAND} -E copy ${OPENSSL_ROOT}/lib/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/
             # Fix dylib identities
@@ -379,10 +391,7 @@ elseif(APPLE)
             COMMAND install_name_tool -id @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
             # Fix libssl -> libcrypto reference (use REAL path to match what's embedded in the binary)
             COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/Frameworks/libssl.3.dylib
-            # Fix openssl binary references and add rpath
-            COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libssl.3.dylib @rpath/libssl.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
-            COMMAND install_name_tool -change ${OPENSSL_ROOT_REAL}/lib/libcrypto.3.dylib @rpath/libcrypto.3.dylib ${APP_DIR_NEW}/Contents/MacOS/openssl
-            COMMAND install_name_tool -add_rpath @executable_path/../Frameworks ${APP_DIR_NEW}/Contents/MacOS/openssl
+            ${_openssl_tool_cmds}
             DEPENDS deploy-qt
             COMMENT "Embedding openssl-tool"
             VERBATIM
