@@ -1,3 +1,44 @@
+## Version 1.3.2
+
+### Improvements
+
+#### Cloud
+
+- New *Verification* setting of the cloud host in the **Cloud session manager**.
+  *Full verification* (default) checks that the host certificate is issued by a
+  trusted certificate authority and matches the host name. *Trusted certificate only
+  (skip host name)* is meant for a server reached by its IP address: set its
+  certificate authority as the session's host *Certificate* and the host name is not
+  checked. *No verification* accepts any certificate and does not guarantee the
+  identity of the host
+- Cloud requests are faster. A request completes as soon as the reply arrives, where
+  it used to wait up to an extra second, and connections to the cloud are kept open
+  and reused between requests instead of being opened for each one
+- On macOS the private key and the certificate signing request for the cloud are
+  generated with the Apple Security framework instead of the `openssl` tool, and so
+  is the text shown by the private key view. The `openssl` tool is no longer bundled
+  with the application, only the OpenSSL libraries used for TLS connections. The paths
+  of the OpenSSL tool and its configuration are hidden in the application settings.
+  Configure with `-DRANGE_NATIVE_KEY_TOOL=OFF` to keep using the `openssl` tool
+
+### Bug fixes
+
+- The cloud host certificate was not verified, so a connection to a host presenting a
+  certificate from an untrusted authority or for another host name was accepted and
+  only reported as SSL errors in the log. Such connections are now refused. A session
+  whose host uses a private certificate authority needs that authority set as its host
+  *Certificate*, or its *Verification* relaxed
+- Certificate signing requests generated on macOS store subject fields with characters
+  outside ASCII, such as `Žilina`, correctly. The `openssl` tool used before stored
+  them in a mangled form (`Å½ilina`)
+
+### Submodules
+
+- range-cloud-lib @ v1.3.0
+- range-gui-lib @ v1.3.1
+
+---
+
 ## Version 1.3.1
 
 ### Improvements
@@ -13,12 +54,6 @@
   screen width and height. Later starts restore the size and position it was closed with
 - The **Process output** tab keeps at most `1000` lines by default instead of `10000`.
   A *Max lines* value set before is kept
-- On macOS the private key and the certificate signing request for the cloud are
-  generated with the Apple Security framework instead of the `openssl` tool, and so
-  is the text shown by the private key view. The `openssl` tool is no longer bundled
-  with the application, only the OpenSSL libraries used for TLS connections. The paths
-  of the OpenSSL tool and its configuration are hidden in the application settings.
-  Configure with `-DRANGE_NATIVE_KEY_TOOL=OFF` to keep using the `openssl` tool
 
 ### Bug fixes
 
@@ -48,9 +83,6 @@
 - The `msix` target was not created when the Windows SDK tools were only in a versioned
   folder such as `Windows Kits/10/bin/10.0.22621.0/x64`. The build now finds
   `makeappx.exe` there, newest SDK version first
-- Certificate signing requests generated on macOS store subject fields with characters
-  outside ASCII, such as `Žilina`, correctly. The `openssl` tool used before stored
-  them in a mangled form (`Å½ilina`)
 
 ### Submodules
 
