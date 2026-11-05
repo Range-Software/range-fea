@@ -104,44 +104,44 @@
         <translation>Відкрити модель</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="566"/>
+        <location filename="../src/action.cpp" line="571"/>
         <source>Export model to MSH file</source>
         <translation>Експортуйте модель у файл MSH</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="587"/>
+        <location filename="../src/action.cpp" line="592"/>
         <source>Export model to RAW file</source>
         <translation>Експорт моделі у файл RAW</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="608"/>
+        <location filename="../src/action.cpp" line="613"/>
         <source>Export model to STL (ASCII) file</source>
         <translation>Експорт моделі у файл STL (ASCII).</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="629"/>
+        <location filename="../src/action.cpp" line="634"/>
         <source>Export model to STL (binary) file</source>
         <translation>Експортувати модель у STL (бінарний) файл</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="650"/>
+        <location filename="../src/action.cpp" line="655"/>
         <source>Export model to STEP file</source>
         <translation>Експортувати модель у файл STEP</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="665"/>
+        <location filename="../src/action.cpp" line="670"/>
         <source>Close model?</source>
         <translation>Закрити модель?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="666"/>
+        <location filename="../src/action.cpp" line="671"/>
         <source>Are you sure you want to close selected models?</source>
         <translation>Ви впевнені, що бажаєте закрити вибрані моделі?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="260"/>
-        <location filename="../src/action.cpp" line="829"/>
-        <location filename="../src/action.cpp" line="894"/>
+        <location filename="../src/action.cpp" line="839"/>
+        <location filename="../src/action.cpp" line="904"/>
         <source>Create element</source>
         <translation>Створити елемент</translation>
     </message>
@@ -196,131 +196,131 @@
         <translation>Перейменувати модель</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="830"/>
-        <location filename="../src/action.cpp" line="1233"/>
-        <location filename="../src/action.cpp" line="1277"/>
-        <location filename="../src/action.cpp" line="1330"/>
+        <location filename="../src/action.cpp" line="840"/>
+        <location filename="../src/action.cpp" line="1243"/>
+        <location filename="../src/action.cpp" line="1287"/>
+        <location filename="../src/action.cpp" line="1340"/>
         <source>No node selected.</source>
         <translation>Не вибрано вузол.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="871"/>
+        <location filename="../src/action.cpp" line="881"/>
         <source>Quadrilateral</source>
         <translation>Чотирикутник</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="872"/>
+        <location filename="../src/action.cpp" line="882"/>
         <source>Tetrahedra</source>
         <translation>Тетраедри</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="874"/>
+        <location filename="../src/action.cpp" line="884"/>
         <source>Choose element type</source>
         <translation>Виберіть тип елемента</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="876"/>
+        <location filename="../src/action.cpp" line="886"/>
         <source>Which element type to create?</source>
         <translation>Який тип елемента створити?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="895"/>
+        <location filename="../src/action.cpp" line="905"/>
         <source>Too many nodes selected.</source>
         <translation>Вибрано забагато вузлів.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1028"/>
-        <location filename="../src/action.cpp" line="1075"/>
-        <location filename="../src/action.cpp" line="1122"/>
-        <location filename="../src/action.cpp" line="1915"/>
-        <location filename="../src/action.cpp" line="1960"/>
+        <location filename="../src/action.cpp" line="1038"/>
+        <location filename="../src/action.cpp" line="1085"/>
+        <location filename="../src/action.cpp" line="1132"/>
+        <location filename="../src/action.cpp" line="1925"/>
+        <location filename="../src/action.cpp" line="1970"/>
         <source>Too few surfaces selected</source>
         <translation>Вибрано занадто мало поверхонь</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1029"/>
+        <location filename="../src/action.cpp" line="1039"/>
         <source>To perform union boolean operation at least two surfaces must be selected.</source>
         <translation>Щоб виконати булеву операцію об&apos;єднання, необхідно вибрати принаймні дві поверхні.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1040"/>
-        <location filename="../src/action.cpp" line="1087"/>
-        <location filename="../src/action.cpp" line="1134"/>
+        <location filename="../src/action.cpp" line="1050"/>
+        <location filename="../src/action.cpp" line="1097"/>
+        <location filename="../src/action.cpp" line="1144"/>
         <source>Surface is not closed</source>
         <translation>Поверхня не закрита</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1041"/>
-        <location filename="../src/action.cpp" line="1088"/>
-        <location filename="../src/action.cpp" line="1135"/>
+        <location filename="../src/action.cpp" line="1051"/>
+        <location filename="../src/action.cpp" line="1098"/>
+        <location filename="../src/action.cpp" line="1145"/>
         <source>Surface</source>
         <translation>Поверхня</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1042"/>
+        <location filename="../src/action.cpp" line="1052"/>
         <source>To perform union boolean operation all selected surfaces must be closed.</source>
         <translation>Для виконання логічної операції об’єднання всі вибрані поверхні повинні бути закриті.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1076"/>
+        <location filename="../src/action.cpp" line="1086"/>
         <source>To perform difference boolean operation at least two surfaces must be selected.</source>
         <translation>Щоб виконати різницеву логічну операцію, необхідно вибрати принаймні дві поверхні.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1089"/>
+        <location filename="../src/action.cpp" line="1099"/>
         <source>To perform difference boolean operation all selected surfaces must be closed.</source>
         <translation>Щоб виконати різницеву логічну операцію, усі вибрані поверхні мають бути закриті.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1123"/>
+        <location filename="../src/action.cpp" line="1133"/>
         <source>To perform intersection boolean operation at least two surfaces must be selected.</source>
         <translation>Щоб виконати булеву операцію перетину, необхідно вибрати принаймні дві поверхні.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1136"/>
+        <location filename="../src/action.cpp" line="1146"/>
         <source>To perform intersection boolean operation all selected surfaces must be closed.</source>
         <translation>Щоб виконати булеву операцію перетину, усі вибрані поверхні мають бути закриті.</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="270"/>
-        <location filename="../src/action.cpp" line="1232"/>
+        <location filename="../src/action.cpp" line="1242"/>
         <source>Move node</source>
         <translation>Перемістити вузол</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1276"/>
-        <location filename="../src/action.cpp" line="1282"/>
-        <location filename="../src/action.cpp" line="1329"/>
-        <location filename="../src/action.cpp" line="1335"/>
+        <location filename="../src/action.cpp" line="1286"/>
+        <location filename="../src/action.cpp" line="1292"/>
+        <location filename="../src/action.cpp" line="1339"/>
+        <location filename="../src/action.cpp" line="1345"/>
         <source>Remove nodes</source>
         <translation>Видаліть вузли</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1283"/>
-        <location filename="../src/action.cpp" line="1336"/>
+        <location filename="../src/action.cpp" line="1293"/>
+        <location filename="../src/action.cpp" line="1346"/>
         <source>Are you sure you want to remove picked nodes?</source>
         <translation>Ви впевнені, що бажаєте видалити вибрані вузли?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1382"/>
-        <location filename="../src/action.cpp" line="1388"/>
+        <location filename="../src/action.cpp" line="1392"/>
+        <location filename="../src/action.cpp" line="1398"/>
         <source>Remove elements</source>
         <translation>Видаліть елементи</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1383"/>
-        <location filename="../src/action.cpp" line="1461"/>
+        <location filename="../src/action.cpp" line="1393"/>
+        <location filename="../src/action.cpp" line="1471"/>
         <source>No element selected.</source>
         <translation>Елемент не вибрано.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1389"/>
+        <location filename="../src/action.cpp" line="1399"/>
         <source>Are you sure you want to remove picked elements?</source>
         <translation>Ви впевнені, що бажаєте видалити вибрані елементи?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="276"/>
-        <location filename="../src/action.cpp" line="1460"/>
+        <location filename="../src/action.cpp" line="1470"/>
         <source>Swap element normal</source>
         <translation>Змінити напрямок нормалі елемента</translation>
     </message>
@@ -536,7 +536,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="269"/>
-        <location filename="../src/action.cpp" line="1218"/>
+        <location filename="../src/action.cpp" line="1228"/>
         <source>Merge nodes</source>
         <translation>Об’єднати вузли</translation>
     </message>
@@ -832,7 +832,7 @@
     </message>
     <message>
         <location filename="../src/action.cpp" line="330"/>
-        <location filename="../src/action.cpp" line="2285"/>
+        <location filename="../src/action.cpp" line="2295"/>
         <source>Help</source>
         <translation>Довідка</translation>
     </message>
@@ -858,148 +858,148 @@
         <translation>Не вдалося відкрити теку</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1219"/>
+        <location filename="../src/action.cpp" line="1229"/>
         <source>At least two nodes of one model must be selected.</source>
         <translation>Необхідно вибрати принаймні два вузли однієї моделі.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1550"/>
+        <location filename="../src/action.cpp" line="1560"/>
         <source>Close surface hole</source>
         <translation>Закрити отвір у поверхні</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1551"/>
+        <location filename="../src/action.cpp" line="1561"/>
         <source>No edge selected.</source>
         <translation>Край не вибрано.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1916"/>
-        <location filename="../src/action.cpp" line="1961"/>
+        <location filename="../src/action.cpp" line="1926"/>
+        <location filename="../src/action.cpp" line="1971"/>
         <source>To perform point inside check at least one surface must be selected.</source>
         <translation>Щоб виконати точкову внутрішню перевірку, необхідно вибрати принаймні одну поверхню.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1925"/>
-        <location filename="../src/action.cpp" line="1970"/>
+        <location filename="../src/action.cpp" line="1935"/>
+        <location filename="../src/action.cpp" line="1980"/>
         <source>Unclosed surfaces</source>
         <translation>Незакриті поверхні</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1926"/>
-        <location filename="../src/action.cpp" line="1971"/>
+        <location filename="../src/action.cpp" line="1936"/>
+        <location filename="../src/action.cpp" line="1981"/>
         <source>Selected surfaces do not form closed surface.</source>
         <translation>Вибрані поверхні не утворюють закриту поверхню.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2048"/>
+        <location filename="../src/action.cpp" line="2058"/>
         <source>Reset problem setup</source>
         <translation>Скинути налаштування задачі</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2059"/>
+        <location filename="../src/action.cpp" line="2069"/>
         <source>Problem reset</source>
         <translation>Скидання задачі</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2280"/>
+        <location filename="../src/action.cpp" line="2290"/>
         <source>General</source>
         <translation>Загальне</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2281"/>
+        <location filename="../src/action.cpp" line="2291"/>
         <source>Tutorials</source>
         <translation>Підручники</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2282"/>
+        <location filename="../src/action.cpp" line="2292"/>
         <source>Theory</source>
         <translation>Теорія</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="309"/>
-        <location filename="../src/action.cpp" line="2094"/>
+        <location filename="../src/action.cpp" line="2104"/>
         <source>Stop solver</source>
         <translation>Зупинити розв’язувач</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2095"/>
+        <location filename="../src/action.cpp" line="2105"/>
         <source>Are you sure you want to stop all running solvers?</source>
         <translation>Ви впевнені, що хочете зупинити всі запущені розв’язувачі?</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="310"/>
-        <location filename="../src/action.cpp" line="2117"/>
+        <location filename="../src/action.cpp" line="2127"/>
         <source>Kill solver</source>
         <translation>Примусово завершити розв’язувач</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1041"/>
-        <location filename="../src/action.cpp" line="1088"/>
-        <location filename="../src/action.cpp" line="1135"/>
+        <location filename="../src/action.cpp" line="1051"/>
+        <location filename="../src/action.cpp" line="1098"/>
+        <location filename="../src/action.cpp" line="1145"/>
         <source>is not closed.</source>
         <translation>не закрито.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2049"/>
+        <location filename="../src/action.cpp" line="2059"/>
         <source>Are you sure you want to reset the problem setup including boundary, initial and environment conditions?</source>
         <translation>Ви впевнені, що бажаєте скинути налаштування задачі, включаючи граничні, початкові умови та умови середовища?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2118"/>
+        <location filename="../src/action.cpp" line="2128"/>
         <source>Are you sure you want to kill all running solvers?</source>
         <translation>Ви справді хочете примусово завершити всі запущені розв’язувачі?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2159"/>
+        <location filename="../src/action.cpp" line="2169"/>
         <source>No solver log file</source>
         <translation>Немає файлу журналу розв’язувача</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2159"/>
+        <location filename="../src/action.cpp" line="2169"/>
         <source>There is no file containing solver log.</source>
         <translation>Немає файлу, що містить журнал розв’язувача.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2228"/>
+        <location filename="../src/action.cpp" line="2238"/>
         <source>No convergence file</source>
         <translation>Немає файлу збіжності</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2228"/>
+        <location filename="../src/action.cpp" line="2238"/>
         <source>There is no file containing convergence values.</source>
         <translation>Немає файлу, що містить значення збіжності.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2250"/>
+        <location filename="../src/action.cpp" line="2260"/>
         <source>No monitoring file</source>
         <translation>Немає файлу моніторингу</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2250"/>
+        <location filename="../src/action.cpp" line="2260"/>
         <source>There is no file containing monitoring points.</source>
         <translation>Немає файлу з точками моніторингу.</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="325"/>
-        <location filename="../src/action.cpp" line="2367"/>
+        <location filename="../src/action.cpp" line="2377"/>
         <source>About</source>
         <translation>Про</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="326"/>
-        <location filename="../src/action.cpp" line="2382"/>
+        <location filename="../src/action.cpp" line="2392"/>
         <source>About Qt</source>
         <translation>Про Qt</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="327"/>
-        <location filename="../src/action.cpp" line="2401"/>
+        <location filename="../src/action.cpp" line="2411"/>
         <source>License</source>
         <translation>Ліцензія</translation>
     </message>
     <message>
         <location filename="../src/action.cpp" line="328"/>
-        <location filename="../src/action.cpp" line="2432"/>
+        <location filename="../src/action.cpp" line="2442"/>
         <source>Privacy policy</source>
         <translation>Політика конфіденційності</translation>
     </message>
@@ -1251,42 +1251,42 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="62"/>
+        <location filename="../src/central_tab_widget.cpp" line="72"/>
         <source>Tile windows</source>
         <translation>Розташувати вікна поруч</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="47"/>
+        <location filename="../src/central_tab_widget.cpp" line="48"/>
         <source>Max lines</source>
         <translation>Максимальна кількість рядків</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="49"/>
+        <location filename="../src/central_tab_widget.cpp" line="50"/>
         <source>Maximum number of lines kept in process output. Oldest lines are removed first.</source>
         <translation>Максимальна кількість рядків, що зберігаються у виводі процесу. Першими видаляються найстаріші рядки.</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="101"/>
+        <location filename="../src/central_tab_widget.cpp" line="133"/>
         <source>Model</source>
         <translation>Модель</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="106"/>
+        <location filename="../src/central_tab_widget.cpp" line="138"/>
         <source>Application output</source>
         <translation>Вивід програми</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="112"/>
+        <location filename="../src/central_tab_widget.cpp" line="144"/>
         <source>Process output</source>
         <translation>Вивід процесу</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="118"/>
+        <location filename="../src/central_tab_widget.cpp" line="150"/>
         <source>Pick details</source>
         <translation>Виберіть деталі</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="226"/>
+        <location filename="../src/central_tab_widget.cpp" line="258"/>
         <source>Notice</source>
         <translation>Примітка</translation>
     </message>
@@ -2299,102 +2299,88 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="659"/>
+        <location filename="../src/gl_widget.cpp" line="678"/>
         <source>Stream line</source>
         <translation>Лінія потоку</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="674"/>
+        <location filename="../src/gl_widget.cpp" line="693"/>
         <source>Scale</source>
         <translation>Масштаб</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="689"/>
+        <location filename="../src/gl_widget.cpp" line="708"/>
         <source>Rotation</source>
         <translation>Обертання</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="876"/>
-        <source>Units</source>
-        <translation>Одиниці</translation>
-    </message>
-    <message>
-        <location filename="../src/gl_widget.cpp" line="893"/>
+        <location filename="../src/gl_widget.cpp" line="989"/>
         <source>Time-step</source>
         <translation>Крок часу</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="894"/>
-        <source>Time</source>
-        <translation>Час</translation>
-    </message>
-    <message>
-        <location filename="../src/gl_widget.cpp" line="900"/>
+        <location filename="../src/gl_widget.cpp" line="994"/>
         <source>Mode</source>
         <translation>Форма коливань</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="901"/>
-        <source>Freq.</source>
-        <translation>Частота</translation>
-    </message>
-    <message>
-        <location filename="../src/gl_widget.cpp" line="905"/>
+        <location filename="../src/gl_widget.cpp" line="999"/>
         <source>Steady state</source>
         <translation>Стаціонарний стан</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1006"/>
+        <location filename="../src/gl_widget.cpp" line="1355"/>
         <source>Number of sliver elements</source>
         <translation>Кількість вироджених елементів</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1010"/>
+        <location filename="../src/gl_widget.cpp" line="1359"/>
         <source>Number of intersected elements</source>
         <translation>Кількість елементів, що перетинаються</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1014"/>
+        <location filename="../src/gl_widget.cpp" line="1363"/>
         <source>Number of hole elements</source>
         <translation>Кількість отворів</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1020"/>
+        <location filename="../src/gl_widget.cpp" line="1369"/>
         <source>Picked entities</source>
         <translation>Вибрані сутності</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1034"/>
+        <location filename="../src/gl_widget.cpp" line="1383"/>
         <source>Hole edge</source>
         <translation>Край отвору</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1131"/>
+        <location filename="../src/gl_widget.cpp" line="1506"/>
+        <location filename="../src/gl_widget.cpp" line="1542"/>
         <source>more</source>
         <translation>більше</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1204"/>
+        <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation>Дія</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1207"/>
+        <location filename="../src/gl_widget.cpp" line="1620"/>
         <source>Zoom</source>
         <translation>Збільшити</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1208"/>
+        <location filename="../src/gl_widget.cpp" line="1621"/>
         <source>Model draw time</source>
         <translation>Час малювання моделі</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2377"/>
+        <location filename="../src/gl_widget.cpp" line="2813"/>
         <source>Image files</source>
         <translation>Файли зображень</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2394"/>
+        <location filename="../src/gl_widget.cpp" line="2830"/>
         <source>Save screenshot as</source>
         <translation>Зберегти знімок екрана як</translation>
     </message>
@@ -2701,193 +2687,193 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../src/main_window.cpp" line="65"/>
+        <location filename="../src/main_window.cpp" line="67"/>
         <source>Finite Element Analysis</source>
         <translation>Аналіз методом скінченних елементів</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="81"/>
+        <location filename="../src/main_window.cpp" line="83"/>
         <source>Models</source>
         <translation>Моделі</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="90"/>
+        <location filename="../src/main_window.cpp" line="92"/>
         <source>Model</source>
         <translation>Модель</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="93"/>
+        <location filename="../src/main_window.cpp" line="95"/>
         <source>Documents</source>
         <translation>Документи</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="96"/>
+        <location filename="../src/main_window.cpp" line="98"/>
         <source>Records</source>
         <translation>Записи</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="100"/>
+        <location filename="../src/main_window.cpp" line="102"/>
         <source>Solver</source>
         <translation>Розв’язувач</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="109"/>
-        <location filename="../src/main_window.cpp" line="455"/>
+        <location filename="../src/main_window.cpp" line="111"/>
+        <location filename="../src/main_window.cpp" line="471"/>
         <source>Problem</source>
         <translation>Задача</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="112"/>
+        <location filename="../src/main_window.cpp" line="114"/>
         <source>Boundary conditions</source>
         <translation>Граничні умови</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="115"/>
+        <location filename="../src/main_window.cpp" line="117"/>
         <source>Initial conditions</source>
         <translation>Початкові умови</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="118"/>
+        <location filename="../src/main_window.cpp" line="120"/>
         <source>Environment conditions</source>
         <translation>Умови навколишнього середовища</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="121"/>
+        <location filename="../src/main_window.cpp" line="123"/>
         <source>Material</source>
         <translation>Матеріал</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="124"/>
+        <location filename="../src/main_window.cpp" line="126"/>
         <source>Results</source>
         <translation>Результати</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="193"/>
+        <location filename="../src/main_window.cpp" line="209"/>
         <source>Transform geometry</source>
         <translation>Перетворення геометрії</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="212"/>
+        <location filename="../src/main_window.cpp" line="228"/>
         <source>Draw object</source>
         <translation>Намалюйте об&apos;єкт</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="291"/>
+        <location filename="../src/main_window.cpp" line="307"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="293"/>
+        <location filename="../src/main_window.cpp" line="309"/>
         <source>Session</source>
         <translation>Сеанс</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="306"/>
+        <location filename="../src/main_window.cpp" line="322"/>
         <source>Export</source>
         <translation>Експорт</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="321"/>
+        <location filename="../src/main_window.cpp" line="337"/>
         <source>Folders</source>
         <translation>Теки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="338"/>
+        <location filename="../src/main_window.cpp" line="354"/>
         <source>Geometry</source>
         <translation>Геометрія</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="343"/>
+        <location filename="../src/main_window.cpp" line="359"/>
         <source>Draw</source>
         <translation>Побудова</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="363"/>
+        <location filename="../src/main_window.cpp" line="379"/>
         <source>Line</source>
         <translation>Лінія</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="368"/>
+        <location filename="../src/main_window.cpp" line="384"/>
         <source>Surface</source>
         <translation>Поверхня</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="380"/>
+        <location filename="../src/main_window.cpp" line="396"/>
         <source>Boolean operations</source>
         <translation>Логічні операції</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="388"/>
+        <location filename="../src/main_window.cpp" line="404"/>
         <source>Volume</source>
         <translation>Об’єм</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="394"/>
+        <location filename="../src/main_window.cpp" line="410"/>
         <source>Cut</source>
         <translation>Переріз</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="400"/>
+        <location filename="../src/main_window.cpp" line="416"/>
         <source>Iso</source>
         <translation>Iso</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="406"/>
+        <location filename="../src/main_window.cpp" line="422"/>
         <source>Stream line</source>
         <translation>Лінія потоку</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="412"/>
+        <location filename="../src/main_window.cpp" line="428"/>
         <source>Scalar field</source>
         <translation>Скалярне поле</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="418"/>
+        <location filename="../src/main_window.cpp" line="434"/>
         <source>Vector field</source>
         <translation>Векторне поле</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="441"/>
+        <location filename="../src/main_window.cpp" line="457"/>
         <source>Special tools</source>
         <translation>Спеціальні інструменти</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="464"/>
+        <location filename="../src/main_window.cpp" line="480"/>
         <source>Solution</source>
         <translation>Рішення</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="472"/>
+        <location filename="../src/main_window.cpp" line="488"/>
         <source>Report</source>
         <translation>Звіт</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="481"/>
+        <location filename="../src/main_window.cpp" line="497"/>
         <source>Cloud</source>
         <translation>Хмара</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="487"/>
+        <location filename="../src/main_window.cpp" line="503"/>
         <source>Help</source>
         <translation>Довідка</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="505"/>
+        <location filename="../src/main_window.cpp" line="521"/>
         <source>Main toolbar</source>
         <translation>Головна панель інструментів</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="545"/>
+        <location filename="../src/main_window.cpp" line="561"/>
         <source>Draw toolbar</source>
         <translation>Панель інструментів малювання</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="562"/>
+        <location filename="../src/main_window.cpp" line="578"/>
         <source>Surface toolbar</source>
         <translation>Панель інструментів поверхні</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="843"/>
+        <location filename="../src/main_window.cpp" line="860"/>
         <source>If you quit now solver will continue executing in the background.</source>
         <translation>Якщо ви вийдете зараз, розв’язувач продовжить виконуватися у фоновому режимі.</translation>
     </message>
@@ -3526,62 +3512,62 @@
 <context>
     <name>ModelEntityDisplayPropertiesTree</name>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="34"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="35"/>
         <source>Display properties</source>
         <translation>Властивості відображення</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="237"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
         <source>Draw as wireframe</source>
         <translation>Намалюйте як каркас</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="245"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
         <source>Draw element edges</source>
         <translation>Намалюйте краї елемента</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="253"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
         <source>Draw element nodes</source>
         <translation>Намалюйте вузли елементів</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="261"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
         <source>Draw element numbers</source>
         <translation>Намалюйте номери елементів</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="269"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
         <source>Draw node numbers</source>
         <translation>Намалюйте номери вузлів</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
         <source>Draw boundary conditions</source>
         <translation>Намалюйте граничні умови</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
         <source>Draw arrow heads</source>
         <translation>Намалюйте наконечники стріл</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="285"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
         <source>Draw arrows with same length</source>
         <translation>Намалюйте стрілки однакової довжини</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="293"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
         <source>Draw arrows pointing from</source>
         <translation>Намалюйте стрілки, що вказують з</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="301"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="323"/>
         <source>Color elements by surface patch ID</source>
         <translation>Кольорові елементи за ідентифікатором плями поверхні</translation>
     </message>
     <message>
-        <location filename="../src/model_entity_display_properties_tree.cpp" line="309"/>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="331"/>
         <source>Color elements by view-factor</source>
         <translation>Кольорові елементи за фактором перегляду</translation>
     </message>
@@ -3627,7 +3613,17 @@
 <context>
     <name>ModelIO</name>
     <message>
-        <location filename="../src/model_io.cpp" line="367"/>
+        <location filename="../src/model_io.cpp" line="133"/>
+        <source>Newer file format</source>
+        <translation>Новіший формат файлу</translation>
+    </message>
+    <message>
+        <location filename="../src/model_io.cpp" line="134"/>
+        <source>Model file &lt;b&gt;%1&lt;/b&gt; uses file format version &lt;b&gt;%2&lt;/b&gt;, which is newer than the supported version &lt;b&gt;%3&lt;/b&gt;.&lt;br/&gt;The model may not load correctly. Update the application to load it safely.&lt;br/&gt;&lt;br/&gt;Do you really want to load it?</source>
+        <translation>Файл моделі &lt;b&gt;%1&lt;/b&gt; використовує формат версії &lt;b&gt;%2&lt;/b&gt;, новішої за підтримувану версію &lt;b&gt;%3&lt;/b&gt;.&lt;br/&gt;Модель може завантажитися неправильно. Оновіть застосунок, щоб завантажити її безпечно.&lt;br/&gt;&lt;br/&gt;Ви дійсно бажаєте її завантажити?</translation>
+    </message>
+    <message>
+        <location filename="../src/model_io.cpp" line="430"/>
         <source>Update model from file</source>
         <translation>Оновити модель із файлу</translation>
     </message>
@@ -3820,52 +3816,52 @@
 <context>
     <name>ModelTree</name>
     <message>
-        <location filename="../src/model_tree.cpp" line="82"/>
+        <location filename="../src/model_tree.cpp" line="126"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="257"/>
+        <location filename="../src/model_tree.cpp" line="319"/>
         <source>Points</source>
         <translation>Точки</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="302"/>
+        <location filename="../src/model_tree.cpp" line="364"/>
         <source>Lines</source>
         <translation>Лінії</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="347"/>
+        <location filename="../src/model_tree.cpp" line="409"/>
         <source>Surfaces</source>
         <translation>Поверхні</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="392"/>
+        <location filename="../src/model_tree.cpp" line="454"/>
         <source>Volumes</source>
         <translation>Об’єми</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="437"/>
+        <location filename="../src/model_tree.cpp" line="499"/>
         <source>Cuts</source>
         <translation>Перерізи</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="481"/>
+        <location filename="../src/model_tree.cpp" line="543"/>
         <source>ISOs</source>
         <translation>ISO</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="527"/>
+        <location filename="../src/model_tree.cpp" line="589"/>
         <source>Stream lines</source>
         <translation>Лінії потоку</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="569"/>
+        <location filename="../src/model_tree.cpp" line="631"/>
         <source>Scalar fields</source>
         <translation>Скалярні поля</translation>
     </message>
     <message>
-        <location filename="../src/model_tree.cpp" line="613"/>
+        <location filename="../src/model_tree.cpp" line="675"/>
         <source>Vector fields</source>
         <translation>Векторні поля</translation>
     </message>
@@ -4906,12 +4902,12 @@
 <context>
     <name>Session</name>
     <message>
-        <location filename="../src/session.cpp" line="863"/>
+        <location filename="../src/session.cpp" line="879"/>
         <source>Undo</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../src/session.cpp" line="882"/>
+        <location filename="../src/session.cpp" line="898"/>
         <source>Redo</source>
         <translation>Повторити</translation>
     </message>
@@ -4962,7 +4958,7 @@
 <context>
     <name>SolverTask</name>
     <message>
-        <location filename="../src/solver_task.cpp" line="81"/>
+        <location filename="../src/solver_task.cpp" line="87"/>
         <source>Execute solver task</source>
         <translation>Виконати завдання розв’язувача</translation>
     </message>
@@ -5041,49 +5037,49 @@
 <context>
     <name>SubWindow</name>
     <message>
-        <location filename="../src/sub_window.cpp" line="40"/>
+        <location filename="../src/sub_window.cpp" line="48"/>
         <source>Sub window toolbar</source>
         <translation>Панель інструментів підвікна</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="46"/>
+        <location filename="../src/sub_window.cpp" line="54"/>
         <source>Reset to original view.</source>
         <translation>Відновити початковий вигляд.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="53"/>
+        <location filename="../src/sub_window.cpp" line="61"/>
         <source>Reset to X plane.</source>
         <translation>Скинути до площини X.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="60"/>
+        <location filename="../src/sub_window.cpp" line="68"/>
         <source>Reset to Y plane.</source>
         <translation>Скинути до площини Y.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="67"/>
+        <location filename="../src/sub_window.cpp" line="75"/>
         <source>Reset to Z plane.</source>
         <translation>Скинути до площини Z.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="76"/>
+        <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
         <translation>Скріншот.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="86"/>
+        <location filename="../src/sub_window.cpp" line="94"/>
         <source>Same face color</source>
         <translation>Однаковий колір граней</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="87"/>
+        <location filename="../src/sub_window.cpp" line="95"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Якщо позначено, обидві сторони елементів поверхні мають однаковий колір.
 Якщо не позначено, тильна сторона буде показана іншим кольором.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="97"/>
+        <location filename="../src/sub_window.cpp" line="105"/>
         <source>Display preferences.</source>
         <translation>Показати налаштування.</translation>
     </message>
