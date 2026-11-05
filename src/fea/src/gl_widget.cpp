@@ -17,6 +17,7 @@
 #include "gl_widget.h"
 #include "gl_arrow.h"
 #include "gl_axis.h"
+#include "gl_boundary_conditions.h"
 #include "gl_dimension.h"
 #include "gl_cut_plane.h"
 #include "gl_grid.h"
@@ -1311,6 +1312,41 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
         }
     }
 
+    // Boundary conditions whose symbols are drawn, each type is listed once.
+    QList<RBoundaryConditionType> boundaryConditionTypes;
+    const RProblemTypeMask problemTypeMask = rModel.getProblemTaskTree().getProblemTypeMask();
+    const REntityGroupType elementGroupTypes[] = { R_ENTITY_GROUP_POINT, R_ENTITY_GROUP_LINE, R_ENTITY_GROUP_SURFACE, R_ENTITY_GROUP_VOLUME };
+    for (REntityGroupType entityType : elementGroupTypes)
+    {
+        uint nEntities = 0;
+        switch (entityType)
+        {
+            case R_ENTITY_GROUP_POINT:   nEntities = rModel.getNPoints();   break;
+            case R_ENTITY_GROUP_LINE:    nEntities = rModel.getNLines();    break;
+            case R_ENTITY_GROUP_SURFACE: nEntities = rModel.getNSurfaces(); break;
+            case R_ENTITY_GROUP_VOLUME:  nEntities = rModel.getNVolumes();  break;
+            default: break;
+        }
+        for (uint i=0;i<nEntities;i++)
+        {
+            const RElementGroup *pElementGroup = rModel.getElementGroupPtr(rModel.getEntityGroupID(entityType,i));
+            if (!pElementGroup->getData().getVisible() || !pElementGroup->getData().getDrawBoundaryConditions())
+            {
+                continue;
+            }
+            for (uint j=0;j<pElementGroup->getNBoundaryConditions();j++)
+            {
+                const RBoundaryConditionType type = pElementGroup->getBoundaryCondition(j).getType();
+                if ((RBoundaryCondition::getProblemTypeMask(type) & problemTypeMask)
+                    && GLBoundaryConditions::findCategory(type) != GLBoundaryConditions::None
+                    && !boundaryConditionTypes.contains(type))
+                {
+                    boundaryConditionTypes.append(type);
+                }
+            }
+        }
+    }
+
     // Messages following the entity list.
     QList<QString> messages;
 
@@ -1389,6 +1425,24 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
     int availableHeight = infoBoxTop - posY - lineHeight*(1+int(messages.size())) - 2*entityListGap - fontMetrics.descent();
     int maxEntityLines = std::max(0,availableHeight/lineHeight);
 
+    // Boundary conditions are placed below the entities, or next to them when both do not fit.
+    int nStackedLines = int(entityNames.size() + boundaryConditionTypes.size());
+    bool boundaryConditionsBelow = (lineHeight*nStackedLines + entityListGap <= availableHeight);
+    if (boundaryConditionTypes.isEmpty())
+    {
+        boundaryConditionsBelow = true;
+    }
+
+    int nShownBoundaryConditions = int(boundaryConditionTypes.size());
+    int nHiddenBoundaryConditions = 0;
+    if (!boundaryConditionsBelow && nShownBoundaryConditions > maxEntityLines)
+    {
+        // Last line is used for the number of boundary conditions which did not fit.
+        nShownBoundaryConditions = std::max(0,maxEntityLines-1);
+        nHiddenBoundaryConditions = int(boundaryConditionTypes.size()) - nShownBoundaryConditions;
+    }
+    int nBoundaryConditionLines = nShownBoundaryConditions + ((nHiddenBoundaryConditions > 0 && maxEntityLines > 0) ? 1 : 0);
+
     int nShownEntities = int(entityNames.size());
     int nHiddenEntities = 0;
     if (nShownEntities > maxEntityLines)
@@ -1400,7 +1454,12 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
     int nEntityLines = nShownEntities + ((nHiddenEntities > 0 && maxEntityLines > 0) ? 1 : 0);
 
     int sizeX = this->width() - offset - offset;
-    int sizeY = offset + lineHeight*(1+nEntityLines+int(messages.size())) + 2*entityListGap;
+    int nListLines = boundaryConditionsBelow ? nEntityLines + nBoundaryConditionLines : std::max(nEntityLines,nBoundaryConditionLines);
+    int sizeY = offset + lineHeight*(1+nListLines+int(messages.size())) + 2*entityListGap;
+    if (boundaryConditionsBelow && nBoundaryConditionLines > 0)
+    {
+        sizeY += entityListGap;
+    }
 
     int colorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
 
@@ -1425,6 +1484,8 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
 
     // Entity list, entities which are not selected are drawn 40% transparent.
     textY += entityListGap;
+    const int listTopY = textY;
+    int entityColumnWidth = 0;
     for (int i=0;i<nShownEntities;i++)
     {
         const EntityName &entityName = entityNames.at(i);
@@ -1436,12 +1497,51 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
         painter.fillRect(squareX,textY-squareSize,squareSize,squareSize,entityName.color);
         painter.drawRect(squareX,textY-squareSize,squareSize-1,squareSize-1);
         painter.drawText(squareX + squareSize + squareSize/2,textY,entityName.name);
+        entityColumnWidth = std::max(entityColumnWidth,squareSize + squareSize/2 + fontMetrics.horizontalAdvance(entityName.name));
     }
     painter.setOpacity(1.0);
     if (nHiddenEntities > 0 && maxEntityLines > 0)
     {
         textY += lineHeight;
-        painter.drawText(textX + indent,textY,"+ " + QLocale().toString(nHiddenEntities) + " " + tr("more"));
+        const QString moreText = "+ " + QLocale().toString(nHiddenEntities) + " " + tr("more");
+        painter.drawText(textX + indent,textY,moreText);
+        entityColumnWidth = std::max(entityColumnWidth,fontMetrics.horizontalAdvance(moreText));
+    }
+
+    // Boundary condition list, symbols are drawn in front of the names.
+    if (nBoundaryConditionLines > 0)
+    {
+        int listX = textX + indent;
+        int listY = textY + entityListGap;
+        if (!boundaryConditionsBelow)
+        {
+            listX += entityColumnWidth + 2*fontMetrics.horizontalAdvance("    ");
+            listY = listTopY;
+        }
+
+        // Symbol column is wide enough for text tags of scalar conditions.
+        const int symbolSize = fontMetrics.ascent();
+        QFont tagFont(painter.font());
+        tagFont.setBold(true);
+        const QFontMetrics tagFontMetrics(tagFont);
+        int symbolColumnWidth = symbolSize;
+        for (int i=0;i<nShownBoundaryConditions;i++)
+        {
+            symbolColumnWidth = std::max(symbolColumnWidth,tagFontMetrics.horizontalAdvance(GLBoundaryConditions::findCategory(boundaryConditionTypes.at(i)) == GLBoundaryConditions::Scalar ? GLBoundaryConditions::getTag(boundaryConditionTypes.at(i)) : QString()));
+        }
+
+        for (int i=0;i<nShownBoundaryConditions;i++)
+        {
+            listY += lineHeight;
+            GLBoundaryConditions::drawSymbol(painter,QRectF(listX,listY-symbolSize,symbolColumnWidth,symbolSize),boundaryConditionTypes.at(i));
+            painter.drawText(listX + symbolColumnWidth + symbolSize/2,listY,RBoundaryCondition::getName(boundaryConditionTypes.at(i)));
+        }
+        if (nHiddenBoundaryConditions > 0 && maxEntityLines > 0)
+        {
+            listY += lineHeight;
+            painter.drawText(listX,listY,"+ " + QLocale().toString(nHiddenBoundaryConditions) + " " + tr("more"));
+        }
+        textY = std::max(textY,listY);
     }
     textY += entityListGap;
 

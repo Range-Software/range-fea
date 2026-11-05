@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QMdiArea>
+#include <QToolButton>
 
 #include <rbl_message.h>
 
@@ -48,6 +49,10 @@ class CentralTabWidget : public QTabWidget
         RTextBrowser *processOutputBrowser;
         //! Pick Details tree.
         PickDetailsTree *pickDetailsTree;
+        //! Tile windows button.
+        QToolButton *tileWindowsButton;
+        //! Windows can be tiled.
+        bool tileWindowsAvailable;
 
     public:
 
@@ -67,7 +72,20 @@ class CentralTabWidget : public QTabWidget
         //! return MDI Area.
         QMdiArea *getMdiArea();
 
+    public slots:
+
+        //! Set whether windows can be tiled.
+        void setTileWindowsAvailable(bool available);
+
+    protected:
+
+        //! Change event.
+        void changeEvent(QEvent *event) override;
+
     private:
+
+        //! Show tile windows button when windows can be tiled and model tab is displayed.
+        void updateTileWindowsButton();
 
         //! Set text and icon for given tab.
         void setTabTitle(CentralTabWidget::Type tabType, RMessage::Type messageType = RMessage::Type::None, const QString &additionalText = QString());

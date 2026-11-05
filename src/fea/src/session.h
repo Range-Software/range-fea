@@ -1,6 +1,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#include <QColor>
 #include <QObject>
 #include <QList>
 
@@ -23,6 +24,10 @@ class Session : public QObject
         QString fileName;
         //! List of models.
         QList<Model> models;
+        //! Colors distinguishing models.
+        QList<QColor> modelColors;
+        //! Number of colors created so far.
+        uint nModelColors;
         //! Pick list.
         PickList pickList;
         //! Draw mode engine.
@@ -73,6 +78,9 @@ class Session : public QObject
 
         //! Add model to the list.
         void addModel(const Model &model);
+
+        //! Return color distinguishing model at given position.
+        QColor getModelColor(uint position) const;
 
         //! Set model to the list at given position.
         void setModel(uint position, const Model &model);

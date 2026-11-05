@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include <QLocale>
+#include <QPainter>
 
 #include <rbl_utils.h>
 
@@ -149,6 +150,130 @@ QString GLBoundaryConditions::getTag(RBoundaryConditionType type)
         case R_BOUNDARY_CONDITION_CUSTOM:                 return "BC";
         default:                                          return QString();
     }
+}
+
+void GLBoundaryConditions::drawSymbol(QPainter &painter, const QRectF &rect, RBoundaryConditionType type)
+{
+    const Category category = GLBoundaryConditions::findCategory(type);
+    const QColor color = GLBoundaryConditions::getCategoryColor(category);
+
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setPen(QPen(color,1.5,Qt::SolidLine,Qt::RoundCap));
+    painter.setBrush(Qt::NoBrush);
+
+    const double size = std::min(rect.width(),rect.height());
+    const QPointF center = rect.center();
+    const double half = 0.5*size;
+
+    auto point = [&](double x, double y) { return QPointF(center.x() + x*half,center.y() + y*half); };
+
+    // Cone with apex on the top.
+    auto drawCone = [&](double bottom)
+    {
+        const QPointF cone[3] = { point(0.0,-1.0), point(-0.6,bottom), point(0.6,bottom) };
+        painter.save();
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(color);
+        painter.drawPolygon(cone,3);
+        painter.restore();
+    };
+
+    // Arrow between two points with filled head at the end.
+    auto drawArrow = [&](const QPointF &start, const QPointF &end)
+    {
+        const QPointF axis = end - start;
+        const double length = std::hypot(axis.x(),axis.y());
+        const QPointF unit = axis/length;
+        const QPointF normal(-unit.y(),unit.x());
+        const QPointF base = end - 0.8*half*unit;
+        const QPointF head[3] = { end, base + 0.4*half*normal, base - 0.4*half*normal };
+        painter.drawLine(start,base);
+        painter.save();
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(color);
+        painter.drawPolygon(head,3);
+        painter.restore();
+    };
+
+    switch (category)
+    {
+        case FixedSupport:
+        {
+            drawCone(1.0);
+            break;
+        }
+        case NormalSupport:
+        {
+            drawCone(0.5);
+            painter.drawLine(point(-0.9,0.9),point(0.9,0.9));
+            break;
+        }
+        case RollerSupport:
+        {
+            drawCone(0.3);
+            painter.drawEllipse(point(0.0,0.65),0.3*half,0.3*half);
+            break;
+        }
+        case VectorLoad:
+        {
+            drawArrow(point(-1.0,0.0),point(1.0,0.0));
+            break;
+        }
+        case NormalLoad:
+        {
+            drawArrow(point(-1.0,0.0),point(0.7,0.0));
+            painter.drawLine(point(0.9,-1.0),point(0.9,1.0));
+            break;
+        }
+        case WeightLoad:
+        {
+            drawArrow(point(0.0,-1.0),point(0.0,1.0));
+            break;
+        }
+        case Inflow:
+        {
+            drawArrow(point(-1.0,-0.5),point(0.7,-0.5));
+            drawArrow(point(-1.0,0.5),point(0.7,0.5));
+            painter.drawLine(point(0.9,-1.0),point(0.9,1.0));
+            break;
+        }
+        case NormalVelocity:
+        {
+            painter.drawLine(point(-0.9,-1.0),point(-0.9,1.0));
+            drawArrow(point(-0.7,0.0),point(1.0,0.0));
+            break;
+        }
+        case Wall:
+        {
+            painter.drawLine(point(-1.0,-0.4),point(1.0,-0.4));
+            for (int i=-1;i<=1;i++)
+            {
+                painter.drawLine(point(0.6*i,-0.4),point(0.6*i-0.5,0.5));
+            }
+            break;
+        }
+        case WallFrictionless:
+        {
+            painter.drawLine(point(-1.0,-0.4),point(1.0,-0.4));
+            painter.drawEllipse(point(-0.5,0.2),0.35*half,0.35*half);
+            painter.drawEllipse(point(0.5,0.2),0.35*half,0.35*half);
+            break;
+        }
+        case Scalar:
+        case None:
+        default:
+        {
+            QFont font(painter.font());
+            font.setBold(true);
+            painter.setFont(font);
+            painter.setPen(color);
+            painter.drawText(rect,Qt::AlignCenter,GLBoundaryConditions::getTag(type));
+            break;
+        }
+    }
+
+    painter.restore();
 }
 
 void GLBoundaryConditions::initialize()

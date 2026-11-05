@@ -625,6 +625,7 @@ void MainWindow::createCentralWidget()
     this->centralTabWidget = new CentralTabWidget(this);
     this->setCentralWidget(this->centralTabWidget);
     this->modelSubWindows = new SubWindowManager(this->centralTabWidget->getMdiArea(), this);
+    QObject::connect(this->modelSubWindows,&SubWindowManager::tilingAvailableChanged,this->centralTabWidget,&CentralTabWidget::setTileWindowsAvailable);
 }
 
 QWidget *MainWindow::createModelTab()

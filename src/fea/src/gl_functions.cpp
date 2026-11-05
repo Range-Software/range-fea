@@ -144,6 +144,9 @@ void GLFunctions::normal3f(GLfloat x, GLfloat y, GLfloat z)
     else
     {
         glNormal3f(x, y, z);
+        // Generic attribute 1 (aNormal) is not fed by glNormal3f, so set it explicitly
+        // so immediate-mode geometry drawn while a shader is active is lit correctly.
+        QOpenGLContext::currentContext()->functions()->glVertexAttrib3f(1, x, y, z);
     }
 }
 

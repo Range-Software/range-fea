@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <QDir>
 #include <QDesktopServices>
 
@@ -14,6 +16,7 @@ Session::Session(QObject *parent)
 {
     R_LOG_TRACE_IN;
     this->sessionID = QDateTime::currentDateTimeUtc().toString("yyyyMMddHHmmsszzz");
+    this->nModelColors = 0;
     this->drawEngine = new DrawEngine(this);
 
     QObject::connect(&this->pickList,&PickList::pickListChanged,this,&Session::onPickListChanged);
@@ -92,12 +95,19 @@ void Session::addModel(const Model &model)
     bool locked = this->trylock();
     this->models.push_back(model);
     this->models.last().initializeMeshInput();
+    // Golden ratio steps keep hues of any number of models far apart, also after some were removed.
+    this->modelColors.push_back(QColor::fromHsvF(float(std::fmod(0.58 + 0.618034*double(this->nModelColors++),1.0)),0.7f,0.95f));
     if (locked)
     {
         this->unlock();
     }
     emit this->modelAdded(uint(this->models.size()-1));
     R_LOG_TRACE_OUT;
+}
+
+QColor Session::getModelColor(uint position) const
+{
+    return this->modelColors.value(int(position));
 }
 
 void Session::setModel(uint position, const Model &model)
@@ -118,6 +128,7 @@ void Session::removeModel(uint position)
     R_LOG_TRACE_IN;
     bool locked = this->trylock();
     this->models.removeAt(int(position));
+    this->modelColors.removeAt(int(position));
     this->pickList.removeItems(position);
     if (locked)
     {

@@ -19,6 +19,8 @@
   - all other conditions as a text tag with the value and units, such as
     `T = 293.1 K`
 - The option is saved in the model file
+- Symbols of the boundary conditions being drawn are listed with their names in the
+  3D view, below the visible entities or next to them when both do not fit
 - The 3D view is redrawn when the problem setup changes, so edited boundary
   conditions are shown straight away
 - Redesigned value range in the 3D view, now a slim legend over the full height of
@@ -35,6 +37,16 @@
 - Redesigned orientation axis in the lower left corner of the 3D view, with thin
   labelled arrows which follow the background color. Arrows pointing away from the
   viewer are drawn fainter
+- Redesigned model windows to match the application: a flat title bar with thin
+  window buttons, a thin outline marking the active window, and an area behind the
+  windows which follows the color scheme
+- A new model window which is not maximized opens at 60% of the area, which is also
+  the size it returns to when first restored from maximized
+- Each model has its own color, shown as a line at the top of its row in the model
+  tree and of its window title bar. Models in the model tree are separated by a small
+  gap
+- New *Tile windows* button next to the tabs below the 3D view, shown when several
+  model windows are open and none of them is maximized
 
 #### Model files
 
@@ -66,6 +78,8 @@
 
 - The orientation axis did not follow rotations made while it was hidden, so it could
   show a wrong orientation after being shown again
+- Arrow heads and cones of boundary condition symbols were drawn black, because their
+  surface normals did not reach the shader
 - The cloud host certificate was not verified, so a connection to a host presenting a
   certificate from an untrusted authority or for another host name was accepted and
   only reported as SSL errors in the log. Such connections are now refused. A session

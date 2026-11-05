@@ -1251,6 +1251,11 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
+        <location filename="../src/central_tab_widget.cpp" line="62"/>
+        <source>Tile windows</source>
+        <translation>Uspořádat okna vedle sebe</translation>
+    </message>
+    <message>
         <location filename="../src/central_tab_widget.cpp" line="47"/>
         <source>Max lines</source>
         <translation>Max. řádků</translation>

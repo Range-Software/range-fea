@@ -2,6 +2,7 @@
 #include <QGridLayout>
 
 #include "sub_window.h"
+#include "sub_window_style.h"
 #include "application.h"
 #include "gl_display_properties_dialog.h"
 #include "clipping_plane_widget.h"
@@ -23,10 +24,17 @@ void SubWindow::createSubWindow()
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(RIcon::fromFile(Application::windowIconFile()));
 
+    SubWindowStyle *subWindowStyle = new SubWindowStyle(Application::instance()->getSession()->getModelColor(this->modelID));
+    this->setStyle(subWindowStyle);
+    // Children of this window use the style while they are being destroyed, so it must outlive them.
+    QObject::connect(this,&QObject::destroyed,subWindowStyle,&QObject::deleteLater);
+
     QWidget *mainWidget = new QWidget(this);
     this->setWidget(mainWidget);
 
     QGridLayout *gridLayoutSubwindow = new QGridLayout(mainWidget);
+    gridLayoutSubwindow->setContentsMargins(0,0,0,0);
+    gridLayoutSubwindow->setSpacing(0);
     this->glWidget = new GLWidget(this->getModelID());
 //    QSurfaceFormat format;
 //    format.setDepthBufferSize(24);

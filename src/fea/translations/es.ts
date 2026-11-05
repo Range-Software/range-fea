@@ -1251,6 +1251,11 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
+        <location filename="../src/central_tab_widget.cpp" line="62"/>
+        <source>Tile windows</source>
+        <translation>Organizar ventanas en mosaico</translation>
+    </message>
+    <message>
         <location filename="../src/central_tab_widget.cpp" line="47"/>
         <source>Max lines</source>
         <translation>Líneas máximas</translation>

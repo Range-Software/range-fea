@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <QColor>
+#include <QRectF>
 #include <QString>
 
 #include <rbl_r3vector.h>
@@ -11,6 +12,8 @@
 #include <rml_element_group.h>
 
 #include "gl_object.h"
+
+class QPainter;
 
 //! Draws symbols of the boundary conditions applied on an element group.
 //! Symbols are drawn in immediate mode (they are never recorded into the
@@ -93,6 +96,9 @@ class GLBoundaryConditions : public GLObject
 
         //! Return short text tag for given boundary condition type.
         static QString getTag(RBoundaryConditionType type);
+
+        //! Draw 2D symbol of given boundary condition type into rectangle.
+        static void drawSymbol(QPainter &painter, const QRectF &rect, RBoundaryConditionType type);
 
     protected:
 

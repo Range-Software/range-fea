@@ -33,6 +33,12 @@ class ModelTree : public QTreeWidget
 
     protected:
 
+        //! Draw row, row of a model has a line in the color of the model at its top.
+        void drawRow(QPainter *painter, const QStyleOptionViewItem &options, const QModelIndex &index) const override;
+
+        //! Draw branches, branches of a model are moved below the line in the color of the model.
+        void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const override;
+
         //! Return all items in the tree widget.
         QList<QTreeWidgetItem*> getAllItems(QTreeWidgetItem *parent = nullptr) const;
 

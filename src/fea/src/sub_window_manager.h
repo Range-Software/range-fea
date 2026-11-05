@@ -21,10 +21,16 @@ class SubWindowManager : public QObject
         //! MDI area.
         QMdiArea *mdiArea;
 
+        //! Windows can be tiled.
+        bool tilingAvailable;
+
     private:
 
         //! Find window position for given model ID.
         uint findWindow(uint modelID);
+
+        //! Tell whether windows can be tiled.
+        void updateTilingAvailable();
 
     public:
 
@@ -64,6 +70,9 @@ class SubWindowManager : public QObject
 
         //! Window was closed for given model ID.
         void windowClosed(uint modelID);
+
+        //! Availability of tiling windows has changed.
+        void tilingAvailableChanged(bool available);
 
 };
 

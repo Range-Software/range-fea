@@ -173,6 +173,7 @@ qt_add_executable(fea
     src/stress_setup_widget.cpp
     src/sub_window.cpp
     src/sub_window_manager.cpp
+    src/sub_window_style.cpp
     src/text_edit_widget.cpp
     src/time_solver_setup_widget.cpp
     src/usage_info.cpp
@@ -359,6 +360,7 @@ qt_add_executable(fea
     src/stress_setup_widget.h
     src/sub_window.h
     src/sub_window_manager.h
+    src/sub_window_style.h
     src/text_edit_widget.h
     src/time_solver_setup_widget.h
     src/usage_info.h
@@ -514,6 +516,7 @@ fea_add_icon_resources(icons-file "/icons/file"
         pixmaps/range-resetX.svg
         pixmaps/range-resetY.svg
         pixmaps/range-resetZ.svg
+        pixmaps/range-tile_windows.svg
         pixmaps/range-save.svg
         pixmaps/range-screenshot.svg
         pixmaps/range-remove.svg

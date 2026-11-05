@@ -5,6 +5,7 @@ SubWindowManager::SubWindowManager(QMdiArea *mdiArea, QObject *parent) : QObject
 {
     R_LOG_TRACE_IN;
     this->mdiArea = mdiArea;
+    this->tilingAvailable = false;
     R_LOG_TRACE_OUT;
 }
 
@@ -23,6 +24,26 @@ uint SubWindowManager::findWindow(uint modelID)
     return uint(this->subWindows.size());
 }
 
+void SubWindowManager::updateTilingAvailable()
+{
+    R_LOG_TRACE_IN;
+    int nNormalWindows = 0;
+    bool hasMaximizedWindow = false;
+    for (const SubWindow *subWindow : std::as_const(this->subWindows))
+    {
+        hasMaximizedWindow = hasMaximizedWindow || subWindow->isMaximized();
+        nNormalWindows += subWindow->isMinimized() ? 0 : 1;
+    }
+
+    bool available = !hasMaximizedWindow && nNormalWindows > 1;
+    if (available != this->tilingAvailable)
+    {
+        this->tilingAvailable = available;
+        emit this->tilingAvailableChanged(available);
+    }
+    R_LOG_TRACE_OUT;
+}
+
 bool SubWindowManager::windowCreate(uint modelID)
 {
     R_LOG_TRACE_IN;
@@ -35,6 +56,10 @@ bool SubWindowManager::windowCreate(uint modelID)
     SubWindow *subWindow = new SubWindow(modelID,qobject_cast<QWidget*>(this->parent()));
     subWindow->setAttribute(Qt::WA_DeleteOnClose);
     this->mdiArea->addSubWindow(subWindow,Qt::SubWindow);
+
+    // Default size takes 60% of the area. This is also the size restored after being maximized.
+    const QSize areaSize = this->mdiArea->viewport()->size();
+    subWindow->resize((0.6*areaSize).expandedTo(subWindow->minimumSizeHint()));
 
     if (this->subWindows.empty())
     {
@@ -49,6 +74,13 @@ bool SubWindowManager::windowCreate(uint modelID)
                      &SubWindow::closed,
                      this,
                      &SubWindowManager::onWindowClosed);
+
+    QObject::connect(subWindow,
+                     &QMdiSubWindow::windowStateChanged,
+                     this,
+                     &SubWindowManager::updateTilingAvailable);
+
+    this->updateTilingAvailable();
 
     emit this->windowCreated(modelID);
 
@@ -67,10 +99,12 @@ bool SubWindowManager::windowClose(uint modelID)
     }
 
     SubWindow *subWindow = this->subWindows[int(winPos)];
+    // Deleting the window changes state of other windows, which goes through the list of windows.
+    this->subWindows.removeAt(int(winPos));
 //    this->mdiArea->removeSubWindow(subWindow);
     delete subWindow;
 
-    this->subWindows.removeAt(int(winPos));
+    this->updateTilingAvailable();
 
     emit this->windowClosed(modelID);
 
@@ -138,5 +172,6 @@ void SubWindowManager::onWindowClosed(uint modelID)
     Application::instance()->getSession()->setModelVisible(modelID,false);
     uint winPos = this->findWindow(modelID);
     this->subWindows.removeAt(winPos);
+    this->updateTilingAvailable();
     R_LOG_TRACE_OUT;
 }

@@ -31,6 +31,7 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
     this->mdiArea->setObjectName(QString::fromUtf8("mdiArea"));
     this->mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     this->mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->mdiArea->setBackground(this->palette().brush(QPalette::Active,QPalette::Window));
 
     this->applicationOutputBrowser = new RTextBrowser(true);
     this->processOutputBrowser = new RTextBrowser(true);
@@ -66,6 +67,16 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
     this->setTabTitle(CentralTabWidget::ProcessOutput);
     this->setTabTitle(CentralTabWidget::PickDetails);
 
+    this->tileWindowsAvailable = false;
+    this->tileWindowsButton = new QToolButton(this);
+    this->tileWindowsButton->setText(tr("Tile windows"));
+    this->tileWindowsButton->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-tile_windows.svg"));
+    this->tileWindowsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    this->tileWindowsButton->setAutoRaise(true);
+    this->setCornerWidget(this->tileWindowsButton,Qt::BottomRightCorner);
+    this->tileWindowsButton->hide();
+    QObject::connect(this->tileWindowsButton,&QToolButton::clicked,this->mdiArea,&QMdiArea::tileSubWindows);
+
     QObject::connect(this,&QTabWidget::currentChanged,this,&CentralTabWidget::onCurrentChanged);
 
     // Pick list signals
@@ -83,6 +94,27 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
     QObject::connect(&SolverManager::getInstance(),&SolverManager::jobStarted,this,&CentralTabWidget::onSolverJobStarted);
     QObject::connect(&SolverManager::getInstance(),&SolverManager::jobFinished,this,&CentralTabWidget::onSolverJobFinished);
     QObject::connect(&SolverManager::getInstance(),&SolverManager::jobFailed,this,&CentralTabWidget::onSolverJobFailed);
+}
+
+void CentralTabWidget::setTileWindowsAvailable(bool available)
+{
+    this->tileWindowsAvailable = available;
+    this->updateTileWindowsButton();
+}
+
+void CentralTabWidget::updateTileWindowsButton()
+{
+    this->tileWindowsButton->setVisible(this->tileWindowsAvailable && this->currentIndex() == this->modelTabPosition);
+}
+
+void CentralTabWidget::changeEvent(QEvent *event)
+{
+    // Area behind sub windows follows the color scheme.
+    if (event->type() == QEvent::PaletteChange)
+    {
+        this->mdiArea->setBackground(this->palette().brush(QPalette::Active,QPalette::Window));
+    }
+    QTabWidget::changeEvent(event);
 }
 
 QMdiArea *CentralTabWidget::getMdiArea()
@@ -300,6 +332,7 @@ void CentralTabWidget::onProcessReadyStandardError(const QString &message)
 
 void CentralTabWidget::onCurrentChanged(int tabPosition)
 {
+    this->updateTileWindowsButton();
     if (useTabIcons)
     {
         this->setTabIcon(tabPosition,QIcon());
