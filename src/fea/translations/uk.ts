@@ -3551,6 +3551,11 @@
         <translation>Намалюйте номери вузлів</translation>
     </message>
     <message>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <source>Draw boundary conditions</source>
+        <translation>Намалюйте граничні умови</translation>
+    </message>
+    <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
         <translation>Намалюйте наконечники стріл</translation>

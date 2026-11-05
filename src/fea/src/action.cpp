@@ -510,6 +510,11 @@ void Action::onModelOpen()
         else
         {
             modelIOType = MODEL_IO_OPEN;
+            if (!ModelIO::confirmFileVersion(fileName,Application::instance()->getMainWindow()))
+            {
+                R_LOG_TRACE_OUT;
+                return;
+            }
         }
 
         RJobManager::getInstance().submit(new ModelIO(modelIOType, fileName));
@@ -682,7 +687,12 @@ void Action::onModelReloadResults()
     QList<uint> modelIDs = Application::instance()->getSession()->getSelectedModelIDs();
     for (int i=0;i<modelIDs.size();i++)
     {
-        RJob *updateJob = new ModelIO(MODEL_IO_UPDATE, Application::instance()->getSession()->getModel(modelIDs[i]).getFileName(), &Application::instance()->getSession()->getModel(modelIDs[i]));
+        const QString &modelFileName = Application::instance()->getSession()->getModel(modelIDs[i]).getFileName();
+        if (!ModelIO::confirmFileVersion(modelFileName,Application::instance()->getMainWindow()))
+        {
+            continue;
+        }
+        RJob *updateJob = new ModelIO(MODEL_IO_UPDATE, modelFileName, &Application::instance()->getSession()->getModel(modelIDs[i]));
         RJobManager::getInstance().submit(updateJob);
     }
     R_LOG_TRACE_OUT;

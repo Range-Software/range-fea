@@ -1,3 +1,16 @@
+## Version 1.3.2
+
+### Improvements
+
+#### Solver run
+
+- A model file whose file format version is newer than supported is still
+  loaded, but a warning in the log says that it may not be read correctly
+
+### Submodules
+
+- range-model-lib @ v1.3.0
+
 ## Version 1.3.1
 
 ### Improvements

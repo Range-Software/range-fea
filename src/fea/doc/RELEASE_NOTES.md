@@ -1,6 +1,33 @@
-## Version 1.3.2
+## Version 1.4.0
 
 ### Improvements
+
+#### 3D view
+
+- New *Draw boundary conditions* option in the entity **Display properties**, for
+  points, lines, surfaces and volumes. When it is on, symbols of the boundary
+  conditions applied to the entity are drawn on it, as long as the entity is
+  visible. Only conditions of the current problem type are shown, with values at
+  the current time, and the symbols keep their size on screen when zooming:
+  - displacement supports as blue cones, one per constrained direction, normal
+    displacement with a ground bar and roller displacement with rollers
+  - force, pressure and weight as red arrows, fluid inflow and normal velocity as
+    orange arrows; every arrow points at the entity. Negative pressure (suction)
+    and negative normal velocity reverse the arrow, weight follows the entity's
+    gravity setting
+  - walls as a green bar with hatching, frictionless walls as a bar with rollers
+  - all other conditions as a text tag with the value and units, such as
+    `T = 293.1 K`
+- The option is saved in the model file
+- The 3D view is redrawn when the problem setup changes, so edited boundary
+  conditions are shown straight away
+
+#### Model files
+
+- Opening a model whose file format is newer than this version supports asks
+  whether to load it anyway, as it may not load correctly. This applies to
+  *Open model*, models given on the command line or restored with the session,
+  *Reload results* and selecting a result record
 
 #### Cloud
 
@@ -36,6 +63,7 @@
 
 - range-cloud-lib @ v1.3.0
 - range-gui-lib @ v1.3.1
+- range-model-lib @ v1.3.0
 
 ---
 

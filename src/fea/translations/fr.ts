@@ -3551,6 +3551,11 @@
         <translation>Dessiner les numéros des nœuds</translation>
     </message>
     <message>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <source>Draw boundary conditions</source>
+        <translation>Dessiner les conditions aux limites</translation>
+    </message>
+    <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
         <translation>Dessiner les pointes des flèches</translation>

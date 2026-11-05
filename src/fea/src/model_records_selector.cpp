@@ -202,6 +202,11 @@ void ModelRecordsSelector::onRecordMarked(uint modelID, const QString &recordFil
 {
     RLogger::info("Selected record: \'%s\'\n", recordFileName.toUtf8().constData());
 
+    if (!ModelIO::confirmFileVersion(recordFileName,this))
+    {
+        return;
+    }
+
     RJob *updateJob = new ModelIO(MODEL_IO_UPDATE, recordFileName, &Application::instance()->getSession()->getModel(modelID));
     this->updateModelID = modelID;
 

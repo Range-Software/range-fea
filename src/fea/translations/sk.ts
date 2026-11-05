@@ -3551,6 +3551,11 @@
         <translation>Vykresliť čísla uzlov</translation>
     </message>
     <message>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <source>Draw boundary conditions</source>
+        <translation>Vykresliť okrajové podmienky</translation>
+    </message>
+    <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
         <translation>Vykresliť hroty šípiek</translation>

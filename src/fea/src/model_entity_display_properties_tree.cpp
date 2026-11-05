@@ -10,6 +10,7 @@ typedef enum _DisplayPropertyType
     DISPLAY_PROPERTY_DRAW_NODES,
     DISPLAY_PROPERTY_DRAW_ELEMENT_NUMS,
     DISPLAY_PROPERTY_DRAW_NODE_NUMS,
+    DISPLAY_PROPERTY_DRAW_BOUNDARY_CONDITIONS,
     DISPLAY_PROPERTY_DRAW_ARROW_HEADS,
     DISPLAY_PROPERTY_DRAW_EQUAL_ARROW_LENGTHS,
     DISPLAY_PROPERTY_DRAW_ARROW_FROM,
@@ -72,6 +73,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     int nDrawNodes = 0;
     int nDrawElementNums = 0;
     int nDrawNodeNums = 0;
+    int nDrawBoundaryConditions = 0;
     int nDrawArrowHeads = 0;
     int nDrawEqualArrowLengths = 0;
     int nDrawArrowFrom = 0;
@@ -82,6 +84,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     bool canDrawNodes = false;
     bool canDrawElementNums = false;
     bool canDrawNodeNums = false;
+    bool canDrawBoundaryConditions = false;
     bool canDrawArrowHeads = false;
     bool canDrawEqualArrowLengths = false;
     bool canDrawArrowFrom = false;
@@ -111,6 +114,10 @@ void ModelEntityDisplayPropertiesTree::populate()
         {
             nDrawNodeNums++;
         }
+        if (rModel.getDrawBoundaryConditions(entityIDs[i].getType(),entityIDs[i].getEid()))
+        {
+            nDrawBoundaryConditions++;
+        }
         if (rModel.getDrawArrowHeads(entityIDs[i].getType(),entityIDs[i].getEid()))
         {
             nDrawArrowHeads++;
@@ -139,11 +146,13 @@ void ModelEntityDisplayPropertiesTree::populate()
             case R_ENTITY_GROUP_SURFACE:
                 canDrawNodes = canDrawElementNums = canDrawNodeNums = true;
                 canDrawWire = canDrawEdges = true;
+                canDrawBoundaryConditions = true;
                 break;
             case R_ENTITY_GROUP_LINE:
             case R_ENTITY_GROUP_POINT:
                 canDrawNodes = canDrawElementNums = canDrawNodeNums = true;
                 canDrawWire = true;
+                canDrawBoundaryConditions = true;
                 break;
             case R_ENTITY_GROUP_VECTOR_FIELD:
                 canDrawArrowHeads = true;
@@ -183,6 +192,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     Qt::CheckState csDrawNodes = Qt::Unchecked;
     Qt::CheckState csDrawElementNums = Qt::Unchecked;
     Qt::CheckState csDrawNodeNums = Qt::Unchecked;
+    Qt::CheckState csDrawBoundaryConditions = Qt::Unchecked;
     Qt::CheckState csDrawArrowHeads = Qt::Unchecked;
     Qt::CheckState csDrawEqualArrowLengths = Qt::Unchecked;
     Qt::CheckState csDrawArrowFrom = Qt::Unchecked;
@@ -207,6 +217,10 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (nDrawNodeNums > 0)
     {
         csDrawNodeNums = (nDrawNodeNums == entityIDs.size()) ? Qt::Checked : Qt::PartiallyChecked;
+    }
+    if (nDrawBoundaryConditions > 0)
+    {
+        csDrawBoundaryConditions = (nDrawBoundaryConditions == entityIDs.size()) ? Qt::Checked : Qt::PartiallyChecked;
     }
     if (nDrawArrowHeads > 0)
     {
@@ -269,6 +283,14 @@ void ModelEntityDisplayPropertiesTree::populate()
         item->setText(DP_TREE_COLUMN_NAME,tr("Draw node numbers"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawNodeNums));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_NODE_NUMS));
+    }
+
+    if (canDrawBoundaryConditions)
+    {
+        item = new QTreeWidgetItem(this);
+        item->setText(DP_TREE_COLUMN_NAME,tr("Draw boundary conditions"));
+        item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawBoundaryConditions));
+        item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_BOUNDARY_CONDITIONS));
     }
 
     if (canDrawArrowHeads)
@@ -399,6 +421,17 @@ void ModelEntityDisplayPropertiesTree::onItemChanged(QTreeWidgetItem *item, int 
                 else if (item->checkState(column) == Qt::Unchecked)
                 {
                     pModel->setDrawNodeNumbers(entityIDs[i].getType(), entityIDs[i].getEid(), false);
+                }
+            }
+            else if (type == DISPLAY_PROPERTY_DRAW_BOUNDARY_CONDITIONS)
+            {
+                if (item->checkState(column) == Qt::Checked)
+                {
+                    pModel->setDrawBoundaryConditions(entityIDs[i].getType(), entityIDs[i].getEid(), true);
+                }
+                else if (item->checkState(column) == Qt::Unchecked)
+                {
+                    pModel->setDrawBoundaryConditions(entityIDs[i].getType(), entityIDs[i].getEid(), false);
                 }
             }
             else if (type == DISPLAY_PROPERTY_DRAW_ARROW_HEADS)

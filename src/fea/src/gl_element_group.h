@@ -68,6 +68,9 @@ class GLElementGroup : public GLEntity, public RElementGroup
         //! Draw scene.
         void draw();
 
+        //! Draw boundary condition symbols if enabled.
+        void drawBoundaryConditions();
+
 };
 
 #endif /* GL_ELEMENT_GROUP_H */

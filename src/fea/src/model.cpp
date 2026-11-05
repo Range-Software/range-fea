@@ -2029,6 +2029,25 @@ void Model::setDrawNodeNumbers(REntityGroupType elementGroupType, uint position,
     }
 }
 
+bool Model::getDrawBoundaryConditions(REntityGroupType elementGroupType, uint position) const
+{
+    const REntityGroupData *pElementGroupData = this->getElementGroupData(elementGroupType,position);
+    if (pElementGroupData)
+    {
+        return pElementGroupData->getDrawBoundaryConditions();
+    }
+    return false;
+}
+
+void Model::setDrawBoundaryConditions(REntityGroupType elementGroupType, uint position, bool drawBoundaryConditions)
+{
+    REntityGroupData *pElementGroupData = this->getElementGroupData(elementGroupType,position);
+    if (pElementGroupData)
+    {
+        pElementGroupData->setDrawBoundaryConditions(drawBoundaryConditions);
+    }
+}
+
 bool Model::getDrawArrowHeads(REntityGroupType elementGroupType, uint position) const
 {
     const REntityGroupData *pElementGroupData = this->getElementGroupData(elementGroupType,position);

@@ -60,6 +60,10 @@ class ModelIO : public RJob
         //! Save model.
         static void save(Model &rModel, const QString &fileName, bool writeLinkFile = true);
 
+        //! Ask user to confirm loading of the model file if its file format version is newer than supported.
+        //! Return false if the user declined, true otherwise (also when the version could not be determined).
+        static bool confirmFileVersion(const QString &fileName, QWidget *parent);
+
         //! Open model.
         static void open(Model &rModel, const QString &fileName);
 

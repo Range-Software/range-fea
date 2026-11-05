@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "gl_functions.h"
+#include "gl_boundary_conditions.h"
 #include "gl_element_group.h"
 #include "gl_element.h"
 #include "gl_simplex_tetrahedra.h"
@@ -486,4 +487,19 @@ void GLElementGroup::draw()
             glElement.paint();
         }
     }
+
+    this->drawBoundaryConditions();
+}
+
+void GLElementGroup::drawBoundaryConditions()
+{
+    if (!this->getData().getDrawBoundaryConditions() || this->getNBoundaryConditions() == 0)
+    {
+        return;
+    }
+
+    const Model *pModel = this->pParentModel ? this->pParentModel : &Application::instance()->getSession()->getModel(this->getEntityID().getMid());
+
+    GLBoundaryConditions glBoundaryConditions(this->getGLWidget(),pModel,*this,this->getEntityID().getType());
+    glBoundaryConditions.paint();
 }

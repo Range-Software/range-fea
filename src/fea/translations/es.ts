@@ -3551,6 +3551,11 @@
         <translation>Dibujar los números de nodo</translation>
     </message>
     <message>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <source>Draw boundary conditions</source>
+        <translation>Dibujar las condiciones de contorno</translation>
+    </message>
+    <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
         <translation>Dibujar puntas de flecha</translation>

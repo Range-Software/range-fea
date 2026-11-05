@@ -3551,6 +3551,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/model_entity_display_properties_tree.cpp" line="287"/>
+        <source>Draw boundary conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="277"/>
         <source>Draw arrow heads</source>
         <translation type="unfinished"></translation>

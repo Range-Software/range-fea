@@ -130,6 +130,7 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
     QObject::connect(Application::instance()->getSession(),&Session::modelChanged,this,&GLWidget::onModelChanged);
     QObject::connect(Application::instance()->getSession(),&Session::modelSelectionChanged,this,&GLWidget::onModelSelectionChanged);
     QObject::connect(Application::instance()->getSession(),&Session::resultsChanged,this,&GLWidget::onResultsChanged);
+    QObject::connect(Application::instance()->getSession(),&Session::problemChanged,this,&GLWidget::onProblemChanged);
     QObject::connect(Application::instance()->getSession(),&Session::beginDrawStreamLinePosition,this,&GLWidget::onBeginDrawStreamLinePosition);
     QObject::connect(Application::instance()->getSession(),&Session::endDrawStreamLinePosition,this,&GLWidget::onEndDrawStreamLinePosition);
     QObject::connect(Application::instance()->getSession(),&Session::beginDrawScaleOrigin,this,&GLWidget::onBeginDrawScaleOrigin);
@@ -317,6 +318,16 @@ void GLWidget::update()
 const QColor &GLWidget::getClearColor() const
 {
     return this->clearColor;
+}
+
+double GLWidget::findModelLength(double viewLength) const
+{
+    double viewScale = double(this->mscale) * double(this->scale);
+    if (viewScale < RConstants::eps)
+    {
+        return viewLength;
+    }
+    return viewLength / viewScale;
 }
 
 void GLWidget::releaseRenderResources()
@@ -2173,6 +2184,20 @@ void GLWidget::onResultsChanged(uint modelID)
         return;
     }
     this->glModelList.invalidateAll();
+    this->update();
+    R_LOG_TRACE_OUT;
+}
+
+void GLWidget::onProblemChanged(uint modelID)
+{
+    R_LOG_TRACE_IN;
+    if (this->modelID != modelID)
+    {
+        R_LOG_TRACE_OUT;
+        return;
+    }
+    // Boundary condition symbols are drawn outside of the recorded entity lists,
+    // so a repaint is enough to show the changed conditions.
     this->update();
     R_LOG_TRACE_OUT;
 }

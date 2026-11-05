@@ -207,6 +207,10 @@ class GLWidget : public QWidget
         //! Return the colour the render surface clears to.
         const QColor &getClearColor() const;
 
+        //! Convert length given as a fraction of the view into model units.
+        //! Objects drawn with such length keep constant size on screen regardless of zoom.
+        double findModelLength(double viewLength) const;
+
         // --- Render surface callbacks ---------------------------------------
 
         //! Initialize the scene.  Called once by the render surface.
@@ -348,6 +352,9 @@ class GLWidget : public QWidget
 
         //! Slot to catch signal emitted when results have changed
         void onResultsChanged(uint modelID);
+
+        //! Slot to catch signal emitted when problem (boundary conditions, problem type) has changed.
+        void onProblemChanged(uint modelID);
 
         //! Stream line position drawing should begin.
         void onBeginDrawStreamLinePosition(const RR3Vector &streamLinePosition);

@@ -2,6 +2,7 @@
 #include <QFileDialog>
 
 #include <rml_file_utils.h>
+#include <rgl_message_box.h>
 
 #include "model_io.h"
 #include "application.h"
@@ -104,6 +105,46 @@ void ModelIO::save(Model &rModel, const QString &fileName, bool writeLinkFile)
         throw error;
     }
     R_LOG_TRACE_OUT;
+}
+
+bool ModelIO::confirmFileVersion(const QString &fileName, QWidget *parent)
+{
+    R_LOG_TRACE_IN;
+    RVersion fileVersion;
+    try
+    {
+        fileVersion = RModel::readFileVersion(fileName);
+    }
+    catch (const RError &error)
+    {
+        // Loading the model reports the problem.
+        RLogger::debug("Failed to read file version of \'%s\': %s\n",fileName.toUtf8().constData(),error.getMessage().toUtf8().constData());
+        R_LOG_TRACE_OUT;
+        return true;
+    }
+
+    if (!(fileVersion > RModel::version))
+    {
+        R_LOG_TRACE_OUT;
+        return true;
+    }
+
+    int response = RMessageBox::question(parent,
+                                         tr("Newer file format"),
+                                         tr("Model file <b>%1</b> uses file format version <b>%2</b>, "
+                                            "which is newer than the supported version <b>%3</b>.<br/>"
+                                            "The model may not load correctly. Update the application to load it safely.<br/><br/>"
+                                            "Do you really want to load it?")
+                                         .arg(fileName.toHtmlEscaped(),fileVersion.toString(),RModel::version.toString()));
+    bool accepted = (response == RMessageBox::Yes);
+    if (!accepted)
+    {
+        RLogger::info("Loading of model file \'%s\' with newer file format version %s was cancelled.\n",
+                      fileName.toUtf8().constData(),
+                      fileVersion.toString().toUtf8().constData());
+    }
+    R_LOG_TRACE_OUT;
+    return accepted;
 }
 
 void ModelIO::open(Model &rModel, const QString &fileName)

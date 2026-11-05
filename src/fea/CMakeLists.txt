@@ -57,6 +57,7 @@ qt_add_executable(fea
     src/gl_acion_event.cpp
     src/gl_arrow.cpp
     src/gl_axis.cpp
+    src/gl_boundary_conditions.cpp
     src/gl_cut_plane.cpp
     src/gl_dimension.cpp
     src/gl_display_properties.cpp
@@ -244,6 +245,7 @@ qt_add_executable(fea
     src/gl_acion_event.h
     src/gl_arrow.h
     src/gl_axis.h
+    src/gl_boundary_conditions.h
     src/gl_cut_plane.h
     src/gl_dimension.h
     src/gl_display_properties.h

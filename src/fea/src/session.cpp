@@ -670,6 +670,11 @@ void Session::readModels(const QStringList &fileNames)
 
         if (!fileNames.at(i).isEmpty())
         {
+            if (!ModelIO::confirmFileVersion(fileNames.at(i),Application::instance()->getMainWindow()))
+            {
+                continue;
+            }
+
             // Read model.
             ModelIO *modelIO = new ModelIO(MODEL_IO_OPEN, fileNames.at(i));
             modelIO->setAutoDelete(true);

@@ -376,6 +376,15 @@ class Model : public RModel
                                 uint              position,
                                 bool              drawNodeNumbers);
 
+        //! Return true if draw boundary conditions.
+        bool getDrawBoundaryConditions(REntityGroupType elementGroupType,
+                                       uint              position) const;
+
+        //! Set entity draw boundary conditions.
+        void setDrawBoundaryConditions(REntityGroupType elementGroupType,
+                                       uint              position,
+                                       bool              drawBoundaryConditions);
+
         //! Return true if draw arrow heads.
         bool getDrawArrowHeads(REntityGroupType elementGroupType,
                                uint             position) const;
