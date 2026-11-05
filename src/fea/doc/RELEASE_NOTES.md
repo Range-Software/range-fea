@@ -21,6 +21,20 @@
 - The option is saved in the model file
 - The 3D view is redrawn when the problem setup changes, so edited boundary
   conditions are shown straight away
+- Redesigned value range in the 3D view, now a slim legend over the full height of
+  the view which follows the background color and covers less of the model:
+  - values use readable units, such as `328.5 MPa` instead of `3.28452e+08 Pa`. Simple
+    units such as Pa, N, m or s take an SI prefix, other units a common multiplier
+    such as `×10⁶ W/m³`. Temperature in K keeps its unit
+  - round tick values between the minimum and the maximum
+  - a smooth color bar, which is no longer loaded from its file on every redraw
+  - one line with the steady state, time step and time, or mode and frequency
+  - value ranges of several variables share the height of the view
+  - a picked value is shown next to the picked point, with a line to a marker on the
+    color bar
+- Redesigned orientation axis in the lower left corner of the 3D view, with thin
+  labelled arrows which follow the background color. Arrows pointing away from the
+  viewer are drawn fainter
 
 #### Model files
 
@@ -50,6 +64,8 @@
 
 ### Bug fixes
 
+- The orientation axis did not follow rotations made while it was hidden, so it could
+  show a wrong orientation after being shown again
 - The cloud host certificate was not verified, so a connection to a host presenting a
   certificate from an untrusted authority or for another host name was accepted and
   only reported as SSL errors in the log. Such connections are now refused. A session

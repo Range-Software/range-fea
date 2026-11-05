@@ -242,14 +242,19 @@ class GLWidget : public QWidget
         //! Draw value ranges.
         void drawValueRanges(QPainter &painter);
 
-        //! Draw value ranges.
+        //! Draw value range legend with top right corner at position and move position below the legend.
         void drawValueRange(QPainter &painter,
-                            unsigned int rangeCount,
+                            QPoint &position,
+                            int cardHeight,
+                            bool drawFooter,
                             double lowerValue,
                             double upperValue,
-                            std::vector<RR3Vector> pickedPositions,
-                            std::vector<double> pickedValues,
+                            const std::vector<RR3Vector> &pickedPositions,
+                            const std::vector<double> &pickedValues,
                             const QString &valueRangeFile, const QString &valueRangeName, const QString &valueRangeUnits);
+
+        //! Draw local axis in lower left corner.
+        void drawLocalAxis(QPainter &painter);
 
         //! Draw message box.
         void drawMessageBox(QPainter &painter, bool drawBox);

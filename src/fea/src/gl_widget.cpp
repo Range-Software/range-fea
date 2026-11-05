@@ -1,7 +1,13 @@
+#include <algorithm>
+#include <cmath>
+
 #include <QApplication>
 #include <QFileDialog>
+#include <QHash>
+#include <QLocale>
 #include <QMatrix4x4>
 #include <QPainter>
+#include <QPainterPath>
 #include <QGuiApplication>
 //#include <QDesktopWidget>
 #include <QScreen>
@@ -299,6 +305,7 @@ void GLWidget::paintOverlay(QPainter &painter)
     this->drawValueRanges(painter);
     this->drawMessageBox(painter,false);
     this->drawInfoBox(painter,false);
+    this->drawLocalAxis(painter);
     R_LOG_TRACE_OUT;
 }
 
@@ -718,55 +725,15 @@ void GLWidget::drawModel()
     double invMscale = 1.0/double(this->mscale);
     RenderMatrixStack::scale(invMscale,invMscale,invMscale);
 
-    if (this->displayProperties.getDrawLocalAxis())
+    // Update lMatrix CPU-side (same rotation increments, no translation).
     {
-        RLogger::trace("Draw local axis\n");
-        // LOWER-LEFT CORNER VIEWPORT
-        RenderMatrixStack::setViewport(0, 0,
-                                       int(GLWidget::lAxisWpWidth*this->desktopDevicePixelRatio),
-                                       int(GLWidget::lAxisWpHeight*this->desktopDevicePixelRatio));
-
-        RenderMatrixStack::setOrtho(-1.0, 1.0, -1.0, 1.0, -winScale, winScale);
-
-        // The indicator has to sit in front of the model.  OpenGL clears the
-        // depth buffer for that; QRhi cannot clear inside a pass, so the
-        // indicator is squeezed into the near end of the depth range instead.
-        if (RenderBackend::isRhi())
-        {
-            if (RhiRenderer *renderer = RhiRenderer::current())
-            {
-                renderer->setDepthRange(0.0f, 0.05f);
-            }
-        }
-        else
-        {
-            GL_SAFE_CALL(glClear(GL_DEPTH_BUFFER_BIT));
-        }
-
-        // Update lMatrix CPU-side (same rotation increments, no translation).
-        {
-            QMatrix4x4 lDelta;
-            if (this->drx != 0.0f)
-                lDelta.rotate(this->drx, 1.0f, 0.0f, 0.0f);
-            if (this->dry != 0.0f)
-                lDelta.rotate(this->dry, 0.0f, 1.0f, 0.0f);
-            QMatrix4x4 lNew = lDelta * matrixFromGL(this->lMatrix);
-            matrixToGL(lNew, this->lMatrix);
-        }
-        RenderMatrixStack::loadMatrix(this->lMatrix);
-
-        // Draw local axis.
-        GLAxis lAxis(this,GL_AXIS_LOCAL);
-        lAxis.setSize(0.7f);
-        lAxis.paint();
-
-        if (RenderBackend::isRhi())
-        {
-            if (RhiRenderer *renderer = RhiRenderer::current())
-            {
-                renderer->setDepthRange(0.0f, 1.0f);
-            }
-        }
+        QMatrix4x4 lDelta;
+        if (this->drx != 0.0f)
+            lDelta.rotate(this->drx, 1.0f, 0.0f, 0.0f);
+        if (this->dry != 0.0f)
+            lDelta.rotate(this->dry, 0.0f, 1.0f, 0.0f);
+        QMatrix4x4 lNew = lDelta * matrixFromGL(this->lMatrix);
+        matrixToGL(lNew, this->lMatrix);
     }
 
     this->dtx = this->dty = this->dtz = 0.0;
@@ -775,177 +742,512 @@ void GLWidget::drawModel()
     R_LOG_TRACE_OUT;
 } // drawModel()
 
+// Value range legend displays values and units using common scale.
+struct ValueRangeScale
+{
+    double factor;
+    QString units;
+};
+
+static QString formatValueRangeUnits(const QString &units)
+{
+    if (units == "N/A")
+    {
+        return QString();
+    }
+    QString displayUnits(units);
+    displayUnits.replace("^2",QStringLiteral("²"));
+    displayUnits.replace("^3",QStringLiteral("³"));
+    displayUnits.replace("*",QStringLiteral("·"));
+    return displayUnits;
+}
+
+static QString formatValueRangeExponent(int exponent)
+{
+    const QString superscriptDigits = QStringLiteral("⁰¹²³⁴⁵⁶⁷⁸⁹");
+    QString superscript = (exponent < 0) ? QStringLiteral("⁻") : QString();
+    const QString digits = QString::number(std::abs(exponent));
+    for (const QChar &digit : digits)
+    {
+        superscript += superscriptDigits.at(digit.digitValue());
+    }
+    return QStringLiteral("×") + "10" + superscript;
+}
+
+static ValueRangeScale findValueRangeScale(double maxAbsValue, const QString &units)
+{
+    const QString displayUnits = formatValueRangeUnits(units);
+    ValueRangeScale scale = { 1.0, displayUnits };
+
+    if (!std::isfinite(maxAbsValue) || maxAbsValue <= 0.0)
+    {
+        return scale;
+    }
+
+    int exponent = int(std::floor(std::log10(maxAbsValue)/3.0))*3;
+
+    // Only simple units can take SI prefix. Seconds are not scaled to kiloseconds.
+    const bool canUsePrefix = QStringList({"Pa","N","W","V","Hz","T","m","s"}).contains(units);
+    if (canUsePrefix && exponent >= -9 && exponent <= (units == "s" ? 0 : 12))
+    {
+        const QStringList prefixes = { "n", QStringLiteral("µ"), "m", "", "k", "M", "G", "T" };
+        scale.factor = std::pow(10.0,exponent);
+        scale.units = prefixes.at((exponent+9)/3) + displayUnits;
+    }
+    else if (canUsePrefix || maxAbsValue >= 1.0e4 || maxAbsValue < 1.0e-2)
+    {
+        scale.factor = std::pow(10.0,exponent);
+        scale.units = formatValueRangeExponent(exponent);
+        if (!displayUnits.isEmpty())
+        {
+            scale.units += " " + displayUnits;
+        }
+    }
+    return scale;
+}
+
+// Number of decimals needed to show value with four significant digits and to distinguish lower from upper value.
+static int findValueRangeDecimals(double lowerValue, double upperValue)
+{
+    const double maxAbsValue = std::max(std::abs(lowerValue),std::abs(upperValue));
+    const double range = std::abs(upperValue - lowerValue);
+
+    int decimals = 0;
+    if (std::isfinite(maxAbsValue) && maxAbsValue > 0.0)
+    {
+        decimals = 3 - int(std::floor(std::log10(maxAbsValue)));
+    }
+    if (std::isfinite(range) && range > 0.0)
+    {
+        decimals = std::max(decimals,1 - int(std::floor(std::log10(range))));
+    }
+    return std::clamp(decimals,0,6);
+}
+
+static QString formatValueRangeNumber(double value, int decimals)
+{
+    const QLocale locale;
+    QString text = locale.toString(value,'f',decimals);
+    if (decimals > 0)
+    {
+        while (text.endsWith(locale.zeroDigit()))
+        {
+            text.chop(locale.zeroDigit().size());
+        }
+        if (text.endsWith(locale.decimalPoint()))
+        {
+            text.chop(locale.decimalPoint().size());
+        }
+    }
+    return (text == locale.negativeSign() + locale.zeroDigit()) ? locale.zeroDigit() : text;
+}
+
+static QString formatValueRangeQuantity(double value, const QString &units)
+{
+    const ValueRangeScale scale = findValueRangeScale(std::abs(value),units);
+    const double scaledValue = value/scale.factor;
+    return formatValueRangeNumber(scaledValue,findValueRangeDecimals(scaledValue,scaledValue)) + " " + scale.units;
+}
+
+// Round step between ticks: 1, 2 or 5 times power of ten.
+static double findValueRangeTickStep(double range, int nIntervals)
+{
+    const double rawStep = range/double(nIntervals);
+    if (!std::isfinite(rawStep) || rawStep <= 0.0)
+    {
+        return 0.0;
+    }
+    const double magnitude = std::pow(10.0,std::floor(std::log10(rawStep)));
+    const double ratio = rawStep/magnitude;
+    return magnitude * (ratio < 1.5 ? 1.0 : (ratio < 3.0 ? 2.0 : (ratio < 7.0 ? 5.0 : 10.0)));
+}
+
 void GLWidget::drawValueRanges(QPainter &painter)
 {
     R_LOG_TRACE_IN;
     const Model &rModel = Application::instance()->getSession()->getModel(this->getModelID());
-    uint nDisplayVariableRanges = 0;
 
+    std::vector<uint> variableIndexes;
     for (uint i=0;i<rModel.getNVariables();i++)
     {
-        const RVariable &rVariable = rModel.getVariable(i);
-
-        if (rVariable.getVariableData().getDisplayValueRange())
+        if (rModel.getVariable(i).getVariableData().getDisplayValueRange())
         {
-            std::vector<RR3Vector> pickedPositions;
-            std::vector<double> pickedValues;
-
-            const QVector<PickItem> &rPickItems = Application::instance()->getSession()->getPickList().getItems(this->getModelID());
-
-            for (int j=0;j<rPickItems.size();j++)
-            {
-                QList<PickValue> vectorList = rModel.getPickedResultsValues(rPickItems[j]).values(rVariable.getType());
-
-                for (int k=0;k<vectorList.size();k++)
-                {
-                    pickedPositions.push_back(vectorList.at(k).getPosition());
-                    pickedValues.push_back(RRVector::euclideanNorm(vectorList.at(k).getValues()));
-                }
-            }
-
-            this->drawValueRange(painter,
-                                 ++nDisplayVariableRanges,
-                                 rVariable.getVariableData().getMinDisplayValue(),
-                                 rVariable.getVariableData().getMaxDisplayValue(),
-                                 pickedPositions,
-                                 pickedValues,
-                                 rVariable.getVariableData().getValueRangeName(),
-                                 rVariable.getName(),
-                                 rVariable.getUnits());
+            variableIndexes.push_back(i);
         }
+    }
+
+    if (variableIndexes.empty())
+    {
+        R_LOG_TRACE_OUT;
+        return;
+    }
+
+    int offset = 10;
+    int nRanges = int(variableIndexes.size());
+
+    // Legends share full height of the view.
+    int cardHeight = (this->height() - offset*(nRanges+1))/nRanges;
+
+    QPoint position(this->width()-offset,offset);
+
+    for (int i=0;i<nRanges;i++)
+    {
+        const RVariable &rVariable = rModel.getVariable(variableIndexes[i]);
+
+        std::vector<RR3Vector> pickedPositions;
+        std::vector<double> pickedValues;
+
+        const QVector<PickItem> &rPickItems = Application::instance()->getSession()->getPickList().getItems(this->getModelID());
+
+        for (int j=0;j<rPickItems.size();j++)
+        {
+            QList<PickValue> vectorList = rModel.getPickedResultsValues(rPickItems[j]).values(rVariable.getType());
+
+            for (int k=0;k<vectorList.size();k++)
+            {
+                pickedPositions.push_back(vectorList.at(k).getPosition());
+                pickedValues.push_back(RRVector::euclideanNorm(vectorList.at(k).getValues()));
+            }
+        }
+
+        this->drawValueRange(painter,
+                             position,
+                             cardHeight,
+                             i == nRanges-1,
+                             rVariable.getVariableData().getMinDisplayValue(),
+                             rVariable.getVariableData().getMaxDisplayValue(),
+                             pickedPositions,
+                             pickedValues,
+                             rVariable.getVariableData().getValueRangeName(),
+                             rVariable.getName(),
+                             rVariable.getUnits());
     }
     R_LOG_TRACE_OUT;
 }
 
 void GLWidget::drawValueRange(QPainter &painter,
-                              unsigned int rangeCount,
+                              QPoint &position,
+                              int cardHeight,
+                              bool drawFooter,
                               double lowerValue,
                               double upperValue,
-                              std::vector<RR3Vector> pickedPositions,
-                              std::vector<double> pickedValues,
+                              const std::vector<RR3Vector> &pickedPositions,
+                              const std::vector<double> &pickedValues,
                               const QString &valueRangeFile,
                               const QString &valueRangeName,
                               const QString &valueRangeUnits)
 {
     R_LOG_TRACE_IN;
-    int lineColorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform);
+
+    bool darkBackground = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96;
+
+    const QColor cardColor = darkBackground ? QColor(24,24,24,190) : QColor(255,255,255,210);
+    const QColor cardBorderColor = darkBackground ? QColor(255,255,255,36) : QColor(0,0,0,30);
+    const QColor primaryColor = darkBackground ? QColor(242,242,242) : QColor(28,28,28);
+    const QColor secondaryColor = darkBackground ? QColor(168,168,168) : QColor(102,102,102);
+
+    QFont labelFont(painter.font());
+    QFont titleFont(labelFont);
+    titleFont.setWeight(QFont::Medium);
+    QFont smallFont(labelFont);
+    if (smallFont.pointSizeF() > 0.0)
+    {
+        smallFont.setPointSizeF(smallFont.pointSizeF()*0.9);
+    }
+    QFont emphasizedFont(labelFont);
+    emphasizedFont.setWeight(QFont::Medium);
+
+    const QFontMetrics labelMetrics(labelFont);
+    const QFontMetrics titleMetrics(titleFont);
+    const QFontMetrics smallMetrics(smallFont);
 
     int offset = 10;
-    int padding = 2;
+    int padding = 8;
+    int gap = labelMetrics.height()/2 + 2;
+    int barWidth = 12;
+    int markerWidth = 6;
+    int tickLength = 4;
 
-    int rangeWidth = 150;
-    int rangeHeight = this->height() - 2*offset;
-    int rangeX = this->width() - (rangeWidth + offset) * int(rangeCount);
-    int rangeY = offset;
+    int cardWidth = std::max(132,22*labelMetrics.averageCharWidth());
+    int contentWidth = cardWidth - 2*padding;
 
-    int fontHeight = painter.fontMetrics().height();
-    int fontAscent = painter.fontMetrics().ascent();
-    int fontDescent = painter.fontMetrics().descent();
-    int fontPixelHeight = painter.fontInfo().pixelSize();
-    int fontPixelAscent = qRound(fontAscent*double(fontPixelHeight)/double(fontHeight));
-    int fontPixelDescent = qRound(fontDescent*double(fontPixelHeight)/double(fontHeight));
+    const double maxAbsValue = std::max(std::abs(lowerValue),std::abs(upperValue));
+    const ValueRangeScale scale = findValueRangeScale(maxAbsValue,valueRangeUnits);
 
-    int headerWidth = rangeWidth;
-    int headerHeight = 2*(fontPixelHeight + padding) + padding;
-    int headerX = rangeX;
-    int headerY = rangeY;
-
-    int footerWidth = rangeWidth;
-    int footerHeight = 2*(fontPixelHeight + padding) + padding;
-    int footerX = rangeX;
-    int footerY = rangeY + rangeHeight - footerHeight;
-
-    int imageWidth = 20;
-    int imageHeight = rangeHeight - headerHeight - footerHeight - 4*padding;
-    int imageX = rangeX + rangeWidth - padding - imageWidth;
-    int imageY = rangeY + headerHeight + 2*padding;
-
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    // Outer box
-    painter.setPen(QColor(lineColorValue,lineColorValue,lineColorValue,255));
-    painter.drawRect(rangeX,rangeY,rangeWidth,rangeHeight);
-    painter.fillRect(rangeX,rangeY,rangeWidth,rangeHeight,QColor(255,255,255,200));
-
-    // Image
-    QTransform t;
-    t.rotate(-90.0);
-    painter.drawImage(QRect(imageX,imageY,imageWidth,imageHeight),QImage(valueRangeFile).transformed(t));
-
-    // Image box
-    painter.setPen(QColor(lineColorValue,lineColorValue,lineColorValue,255));
-    painter.drawRect(imageX,imageY,imageWidth,imageHeight);
-
-    // Header box
-    QLinearGradient headerGradient(headerX,headerY,headerX,headerY+headerHeight);
-    headerGradient.setColorAt(0, Qt::white);
-    headerGradient.setColorAt(1, Qt::lightGray);
-    painter.fillRect(headerX,headerY,headerWidth,headerHeight,headerGradient);
-
-    painter.setPen(QColor(0,0,0,255));
-    painter.drawText(headerX+padding,headerY+fontPixelAscent+padding,QString(valueRangeName));
-    painter.drawText(headerX+padding,headerY+fontPixelAscent+padding+fontPixelHeight+padding,tr("Units")+ ": [" + QString(valueRangeUnits) + "]");
-
-    painter.setPen(QColor(lineColorValue,lineColorValue,lineColorValue,255));
-    painter.drawRect(headerX,headerY,headerWidth,headerHeight);
-
-    // Footer box
-    QLinearGradient footerGradient(footerX,footerY,footerX,footerY+footerHeight);
-    footerGradient.setColorAt(0, Qt::lightGray);
-    footerGradient.setColorAt(1, Qt::white);
-    painter.fillRect(footerX,footerY,footerWidth,footerHeight, footerGradient);
-
-    const Model &rModel = Application::instance()->getSession()->getModel(this->getModelID());
-
-    QString recordNumberStr;
-    QString recordValueStr;
-    if (rModel.getTimeSolver().getEnabled())
+    // Footer
+    QString footerText;
+    if (drawFooter)
     {
-        recordNumberStr = tr("Time-step") + ": " + QLocale().toString(rModel.getTimeSolver().getCurrentTimeStep()+1);
-        recordValueStr = tr("Time") + ": " + QLocale().toString(rModel.getTimeSolver().getComputedTime(),'e',3) + " [" + RVariable::getUnits(R_VARIABLE_TIME) + "]";
-    }
-    else
-    {
-        if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+        const Model &rModel = Application::instance()->getSession()->getModel(this->getModelID());
+
+        if (rModel.getTimeSolver().getEnabled())
         {
-            recordNumberStr = tr("Mode") + ": " + QLocale().toString(rModel.getProblemSetup().getModalSetup().getMode()+1);
-            recordValueStr = tr("Freq.") + ": " + QLocale().toString(rModel.getProblemSetup().getModalSetup().getFrequency(),'e',3) + " [" + RVariable::getUnits(R_VARIABLE_FREQUENCY) + "]";
+            footerText = tr("Time-step") + " " + QLocale().toString(rModel.getTimeSolver().getCurrentTimeStep()+1)
+                       + QStringLiteral(" · ") + formatValueRangeQuantity(rModel.getTimeSolver().getComputedTime(),RVariable::getUnits(R_VARIABLE_TIME));
+        }
+        else if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+        {
+            footerText = tr("Mode") + " " + QLocale().toString(rModel.getProblemSetup().getModalSetup().getMode()+1)
+                       + QStringLiteral(" · ") + formatValueRangeQuantity(rModel.getProblemSetup().getModalSetup().getFrequency(),RVariable::getUnits(R_VARIABLE_FREQUENCY));
         }
         else
         {
-            recordNumberStr = tr("Steady state");
-            recordValueStr = "----------------------";
+            footerText = tr("Steady state");
         }
     }
 
-    painter.setPen(QColor(0,0,0,255));
-    painter.drawText(footerX+padding,footerY+fontPixelAscent+padding,recordNumberStr);
-    painter.drawText(footerX+padding,footerY+fontPixelAscent+padding+fontPixelHeight+padding,recordValueStr);
+    const QRect wrapRect(0,0,contentWidth,this->height());
+    int titleHeight = titleMetrics.boundingRect(wrapRect,Qt::TextWordWrap,valueRangeName).height();
+    int unitsHeight = scale.units.isEmpty() ? 0 : smallMetrics.height();
+    int footerHeight = footerText.isEmpty() ? 0 : smallMetrics.boundingRect(wrapRect,Qt::TextWordWrap,footerText).height();
 
-    painter.setPen(QColor(lineColorValue,lineColorValue,lineColorValue,255));
-    painter.drawRect(footerX,footerY,footerWidth,footerHeight);
+    // Bar takes all height not used by texts. When too small the legend grows over the requested height.
+    int barHeight = std::max(40,cardHeight - (2*padding + titleHeight + unitsHeight + gap + (footerHeight > 0 ? gap + footerHeight : 0)));
+    cardHeight = 2*padding + titleHeight + unitsHeight + gap + barHeight + (footerHeight > 0 ? gap + footerHeight : 0);
 
-    // Min max values
-    painter.setPen(QColor(0,0,0,255));
-    painter.drawText(rangeX+padding,imageY+fontPixelAscent,QLocale().toString(upperValue));
-    painter.drawText(rangeX+padding,imageY+imageHeight-fontPixelDescent,QLocale().toString(lowerValue));
+    // Continue in next column when the legend does not fit.
+    if (position.y() > offset && position.y() + cardHeight > this->height() - offset)
+    {
+        position = QPoint(position.x() - cardWidth - offset,offset);
+    }
+
+    int cardX = position.x() - cardWidth;
+    int cardY = position.y();
+    int contentX = cardX + padding;
+
+    position.ry() += cardHeight + offset;
+
+    // Card
+    painter.setPen(cardBorderColor);
+    painter.setBrush(cardColor);
+    painter.drawRoundedRect(QRectF(cardX+0.5,cardY+0.5,cardWidth-1,cardHeight-1),8.0,8.0);
+    painter.setBrush(Qt::NoBrush);
+
+    // Title and units
+    int textY = cardY + padding;
+    painter.setFont(titleFont);
+    painter.setPen(primaryColor);
+    painter.drawText(QRect(contentX,textY,contentWidth,titleHeight),Qt::TextWordWrap,valueRangeName);
+    textY += titleHeight;
+
+    if (unitsHeight > 0)
+    {
+        painter.setFont(smallFont);
+        painter.setPen(secondaryColor);
+        painter.drawText(QRect(contentX,textY,contentWidth,unitsHeight),Qt::AlignLeft,scale.units);
+        textY += unitsHeight;
+    }
+
+    // Color bar
+    int barX = contentX + markerWidth;
+    int barY = textY + gap;
+    int barBottom = barY + barHeight;
+
+    static QHash<QString,QImage> barImages;
+    if (!barImages.contains(valueRangeFile))
+    {
+        QTransform t;
+        t.rotate(-90.0);
+        barImages.insert(valueRangeFile,QImage(valueRangeFile).transformed(t));
+    }
+
+    QPainterPath barPath;
+    barPath.addRoundedRect(QRectF(barX,barY,barWidth,barHeight),3.0,3.0);
+    painter.setClipPath(barPath);
+    painter.drawImage(QRect(barX,barY,barWidth,barHeight),barImages.value(valueRangeFile));
+    painter.setClipping(false);
+
+    // Labels
+    const double range = upperValue - lowerValue;
+    auto valueToY = [&](double value)
+    {
+        double fraction = (range > 0.0) ? (value - lowerValue)/range : 0.0;
+        return barBottom - qRound(double(barHeight)*std::clamp(fraction,0.0,1.0));
+    };
+
+    int labelX = barX + barWidth + tickLength + 3;
+    int labelWidth = cardX + cardWidth - padding - labelX;
+    int labelHeight = labelMetrics.height();
+
+    auto drawLabel = [&](int y, const QString &text)
+    {
+        painter.drawLine(barX+barWidth,y,barX+barWidth+tickLength,y);
+        painter.drawText(QRect(labelX,y-labelHeight/2,labelWidth,labelHeight),Qt::AlignLeft|Qt::AlignVCenter,text);
+    };
+
+    const double scaledLower = lowerValue/scale.factor;
+    const double scaledUpper = upperValue/scale.factor;
+
+    // Intermediate ticks at round values, those too close to minimum and maximum are skipped.
+    const double tickStep = findValueRangeTickStep(scaledUpper-scaledLower,std::clamp(barHeight/(3*labelHeight),2,10));
+    if (tickStep > 0.0)
+    {
+        int tickDecimals = std::clamp(-int(std::floor(std::log10(tickStep))),0,6);
+        int minLabelDistance = labelHeight + labelHeight/3;
+
+        painter.setFont(labelFont);
+        painter.setPen(secondaryColor);
+        for (double i=std::ceil(scaledLower/tickStep);i*tickStep<scaledUpper;i+=1.0)
+        {
+            const double tickValue = i*tickStep;
+            int tickY = valueToY(tickValue*scale.factor);
+            if (tickY - barY >= minLabelDistance && barBottom - tickY >= minLabelDistance)
+            {
+                drawLabel(tickY,formatValueRangeNumber(tickValue,tickDecimals));
+            }
+        }
+    }
+
+    // Minimum and maximum
+    const int endDecimals = findValueRangeDecimals(scaledLower,scaledUpper);
+    painter.setFont(emphasizedFont);
+    painter.setPen(primaryColor);
+    drawLabel(barY,formatValueRangeNumber(scaledUpper,endDecimals));
+    drawLabel(barBottom,formatValueRangeNumber(scaledLower,endDecimals));
+
+    // Footer
+    if (footerHeight > 0)
+    {
+        painter.setFont(smallFont);
+        painter.setPen(secondaryColor);
+        painter.drawText(QRect(contentX,barBottom+gap,contentWidth,footerHeight),Qt::TextWordWrap,footerText);
+    }
 
     // Picked values
+    painter.setFont(labelFont);
+    const int pickedDecimals = findValueRangeDecimals(scaledLower,scaledUpper);
     for (uint i=0;i<pickedValues.size();i++)
     {
-        int pickedWidth = imageWidth;
-        int pickedX = imageX - pickedWidth;
-        int pickedY = imageY + imageHeight - qRound(double(imageHeight) * (pickedValues[i] - lowerValue)/ (upperValue - lowerValue));
+        int pickedY = valueToY(pickedValues[i]);
 
-        painter.setPen(QColor(lineColorValue,lineColorValue,lineColorValue,255));
-        painter.drawLine(pickedX,pickedY,pickedX+pickedWidth,pickedY);
         QPoint pickPosition;
         this->convertModelToScreen(pickedPositions[i],pickPosition);
-        painter.drawLine(pickedX,pickedY,pickPosition.x(),pickPosition.y());
 
-        painter.setPen(QColor(200,0,0,255));
-        painter.drawText(rangeX+padding,pickedY-fontPixelDescent+qRound(double(fontPixelHeight)*(pickedValues[i] - lowerValue)/ (upperValue - lowerValue)),QLocale().toString(pickedValues[i]));
+        painter.setPen(primaryColor);
+        painter.drawLine(barX-markerWidth,pickedY,pickPosition.x(),pickPosition.y());
+
+        const QPointF marker[3] = { QPointF(barX,pickedY),
+                                    QPointF(barX-markerWidth,pickedY-4),
+                                    QPointF(barX-markerWidth,pickedY+4) };
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(primaryColor);
+        painter.drawPolygon(marker,3);
+
+        painter.setPen(primaryColor);
+        painter.setBrush(cardColor);
+        painter.drawEllipse(QPointF(pickPosition),3.5,3.5);
+
+        // Value next to the picked point
+        const QString pickedText = formatValueRangeNumber(pickedValues[i]/scale.factor,pickedDecimals)
+                                 + (scale.units.isEmpty() ? QString() : " " + scale.units);
+        int chipWidth = labelMetrics.horizontalAdvance(pickedText) + 12;
+        int chipHeight = labelHeight + 4;
+        int chipX = std::clamp(pickPosition.x() - chipWidth/2,offset,std::max(offset,this->width()-chipWidth-offset));
+        int chipY = std::clamp(pickPosition.y() - chipHeight - 8,offset,std::max(offset,this->height()-chipHeight-offset));
+        const QRect chipRect(chipX,chipY,chipWidth,chipHeight);
+
+        painter.setPen(cardBorderColor);
+        painter.drawRoundedRect(QRectF(chipRect).adjusted(0.5,0.5,-0.5,-0.5),4.0,4.0);
+        painter.setPen(primaryColor);
+        painter.drawText(chipRect,Qt::AlignCenter,pickedText);
+        painter.setBrush(Qt::NoBrush);
     }
+
+    painter.restore();
+    R_LOG_TRACE_OUT;
+}
+
+void GLWidget::drawLocalAxis(QPainter &painter)
+{
+    R_LOG_TRACE_IN;
+    if (!this->displayProperties.getDrawLocalAxis())
+    {
+        R_LOG_TRACE_OUT;
+        return;
+    }
+
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    bool darkBackground = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96;
+
+    const QPointF center(GLWidget::lAxisWpWidth/2.0,this->height()-GLWidget::lAxisWpHeight/2.0);
+
+    double axisLength = 30.0;
+    double arrowLength = 6.0;
+    double arrowHalfWidth = 2.5;
+    double labelDistance = 9.0;
+
+    struct AxisArrow
+    {
+        QPointF direction;
+        double depth;
+        QColor color;
+        QString label;
+    };
+
+    const QColor axisColors[3] = { darkBackground ? QColor(226,120,120) : QColor(176,58,58),
+                                   darkBackground ? QColor(130,190,140) : QColor(46,120,70),
+                                   darkBackground ? QColor(125,160,230) : QColor(48,88,176) };
+    const QString axisLabels[3] = { "X", "Y", "Z" };
+
+    // Matrix columns are axis directions in view space with Z pointing to the viewer.
+    std::vector<AxisArrow> axisArrows;
+    for (int i=0;i<3;i++)
+    {
+        axisArrows.push_back({QPointF(this->lMatrix[4*i],-this->lMatrix[4*i+1]),this->lMatrix[4*i+2],axisColors[i],axisLabels[i]});
+    }
+
+    // Arrows further from the viewer are drawn first and fainter.
+    std::stable_sort(axisArrows.begin(),axisArrows.end(),[](const AxisArrow &a, const AxisArrow &b) { return a.depth < b.depth; });
+
+    QFont labelFont(painter.font());
+    labelFont.setPixelSize(11);
+    labelFont.setWeight(QFont::Medium);
+    painter.setFont(labelFont);
+
+    for (const AxisArrow &axisArrow : axisArrows)
+    {
+        QColor color(axisArrow.color);
+        color.setAlphaF(axisArrow.depth < 0.0 ? 0.6f : 1.0f);
+
+        const QPointF tip = center + axisLength*axisArrow.direction;
+        const double projectedLength = std::hypot(axisArrow.direction.x(),axisArrow.direction.y());
+
+        // Label of an axis pointing along the view direction is moved aside.
+        QPointF labelDirection(0.7071,-0.7071);
+
+        if (projectedLength > 0.15)
+        {
+            labelDirection = axisArrow.direction/projectedLength;
+            const QPointF normal(-labelDirection.y(),labelDirection.x());
+            const QPointF arrowBase = tip - arrowLength*labelDirection;
+            const QPointF arrow[3] = { tip,
+                                       arrowBase + arrowHalfWidth*normal,
+                                       arrowBase - arrowHalfWidth*normal };
+
+            painter.setPen(QPen(color,1.5,Qt::SolidLine,Qt::FlatCap));
+            painter.drawLine(center,arrowBase);
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(color);
+            painter.drawPolygon(arrow,3);
+        }
+        else
+        {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(color);
+            painter.drawEllipse(center,2.0,2.0);
+        }
+
+        const QPointF labelCenter = tip + labelDistance*labelDirection;
+        painter.setPen(color);
+        painter.drawText(QRectF(labelCenter.x()-8.0,labelCenter.y()-8.0,16.0,16.0),Qt::AlignCenter,axisArrow.label);
+    }
+
+    painter.restore();
     R_LOG_TRACE_OUT;
 }
 
@@ -2388,6 +2690,15 @@ void GLWidget::takeScreenShot(const QString &fileName)
 {
     R_LOG_TRACE_IN;
     QPixmap screenShot(QPixmap::fromImage(this->renderSurface->grabImage()));
+
+    // Grabbed image does not contain the overlay.
+    screenShot.setDevicePixelRatio(double(screenShot.width())/double(this->width()));
+    {
+        QPainter screenShotPainter(&screenShot);
+        screenShotPainter.setFont(QGuiApplication::font());
+        this->drawLocalAxis(screenShotPainter);
+    }
+
     QString format = "PNG";
     QString saveFileName(fileName);
 

@@ -7,7 +7,6 @@ typedef enum _GLAxisType
 {
     GL_AXIS_NONE = 0,
     GL_AXIS_GLOBAL,
-    GL_AXIS_LOCAL,
     GL_AXIS_POSITION,
     GL_AXIS_N_TYPES
 } GLAxisType;
