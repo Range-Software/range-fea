@@ -119,6 +119,6 @@ The temperature ranges from about 505 K to 620 K; the beam is hottest in the mid
 
 1. In the **Model** tree uncheck **Volumes**, check **Vector fields** and select **Electric field**.
 2. In the **Results** tab choose **Temperature - Scalar**, check **Scalar** and **Display value range**. The arrows are now colored by the temperature at their position.
-3. In **Display properties** below the tree check **Draw arrow heads** to show the direction of the electric field.
+3. In **Display properties** below the tree check **Arrow heads** to show the direction of the electric field.
 
 ![Applied temperature on vector field](image-Applied_temperature_on_vector_field.png)

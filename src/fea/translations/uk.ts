@@ -2360,6 +2360,11 @@
         <translation>більше</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <source>Boundary conditions</source>
+        <translation>Граничні умови</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation>Дія</translation>
@@ -3518,48 +3523,48 @@
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
-        <source>Draw as wireframe</source>
-        <translation>Намалюйте як каркас</translation>
+        <source>As wireframe</source>
+        <translation>Як каркас</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
-        <source>Draw element edges</source>
-        <translation>Намалюйте краї елемента</translation>
+        <source>Element edges</source>
+        <translation>Краї елемента</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
-        <source>Draw element nodes</source>
-        <translation>Намалюйте вузли елементів</translation>
+        <source>Element nodes</source>
+        <translation>Вузли елементів</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
-        <source>Draw element numbers</source>
-        <translation>Намалюйте номери елементів</translation>
+        <source>Element numbers</source>
+        <translation>Номери елементів</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
-        <source>Draw node numbers</source>
-        <translation>Намалюйте номери вузлів</translation>
+        <source>Node numbers</source>
+        <translation>Номери вузлів</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
-        <source>Draw boundary conditions</source>
-        <translation>Намалюйте граничні умови</translation>
+        <source>Boundary conditions</source>
+        <translation>Граничні умови</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
-        <source>Draw arrow heads</source>
-        <translation>Намалюйте наконечники стріл</translation>
+        <source>Arrow heads</source>
+        <translation>Наконечники стріл</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
-        <source>Draw arrows with same length</source>
-        <translation>Намалюйте стрілки однакової довжини</translation>
+        <source>Arrows with same length</source>
+        <translation>Стрілки однакової довжини</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
-        <source>Draw arrows pointing from</source>
-        <translation>Намалюйте стрілки, що вказують з</translation>
+        <source>Arrows pointing from</source>
+        <translation>Стрілки, що вказують з</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="323"/>
@@ -5065,6 +5070,16 @@
         <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
         <translation>Скріншот.</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="94"/>
+        <source>Highlight selection</source>
+        <translation>Підсвічувати вибране</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="95"/>
+        <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
+        <translation>Якщо позначено, сутності, вибрані в дереві моделі, підсвічуються у 3D-поданні.</translation>
     </message>
     <message>
         <location filename="../src/sub_window.cpp" line="94"/>

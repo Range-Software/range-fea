@@ -32,7 +32,7 @@ Questa azione apre la finestra **Genera mesh 3D**.
 
 Per ora i valori precompilati sono sufficienti. Conferma con **OK**.
 
-Una volta generata la mesh, nell'albero del modello (scheda **Modello**) compare una nuova entità **Volume**. Per vedere la mesh generata, nascondi le entità superficie, mostra solo i **Volumi** e attiva **Disegna come wireframe** nelle **Proprietà di visualizzazione**.
+Una volta generata la mesh, nell'albero del modello (scheda **Modello**) compare una nuova entità **Volume**. Per vedere la mesh generata, nascondi le entità superficie, mostra solo i **Volumi** e attiva **Come wireframe** nelle **Proprietà di visualizzazione**.
 
 ![Mesh di volume](image-Volume_mesh.png)
 

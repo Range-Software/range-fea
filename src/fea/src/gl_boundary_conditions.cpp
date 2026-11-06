@@ -281,10 +281,12 @@ void GLBoundaryConditions::initialize()
     this->lightingEnabled = GLStateCache::instance().getLighting();
     this->normalizeEnabled = GLStateCache::instance().getNormalize();
     this->cullFaceEnabled = GLStateCache::instance().getCullFace();
+    this->twoSidedEnabled = GLStateCache::instance().getTwoSided();
     this->lineWidth = GLStateCache::instance().getLineWidth();
 
     GLStateCache::instance().setNormalize(GL_TRUE);
     GLStateCache::instance().setCullFace(GL_FALSE);
+    GLStateCache::instance().setTwoSided(true);
 }
 
 void GLBoundaryConditions::finalize()
@@ -292,6 +294,7 @@ void GLBoundaryConditions::finalize()
     GLStateCache::instance().setLighting(this->lightingEnabled);
     GLStateCache::instance().setNormalize(this->normalizeEnabled);
     GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setTwoSided(this->twoSidedEnabled);
     GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 

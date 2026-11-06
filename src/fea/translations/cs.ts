@@ -2360,6 +2360,11 @@
         <translation>více</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <source>Boundary conditions</source>
+        <translation>Okrajové podmínky</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation>Akce</translation>
@@ -3518,48 +3523,48 @@
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
-        <source>Draw as wireframe</source>
-        <translation>Vykreslit jako drátový model</translation>
+        <source>As wireframe</source>
+        <translation>Jako drátový model</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
-        <source>Draw element edges</source>
-        <translation>Vykreslit hrany prvků</translation>
+        <source>Element edges</source>
+        <translation>Hrany prvků</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
-        <source>Draw element nodes</source>
-        <translation>Vykreslit uzly prvků</translation>
+        <source>Element nodes</source>
+        <translation>Uzly prvků</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
-        <source>Draw element numbers</source>
-        <translation>Vykreslit čísla prvků</translation>
+        <source>Element numbers</source>
+        <translation>Čísla prvků</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
-        <source>Draw node numbers</source>
-        <translation>Vykreslit čísla uzlů</translation>
+        <source>Node numbers</source>
+        <translation>Čísla uzlů</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
-        <source>Draw boundary conditions</source>
-        <translation>Vykreslit okrajové podmínky</translation>
+        <source>Boundary conditions</source>
+        <translation>Okrajové podmínky</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
-        <source>Draw arrow heads</source>
-        <translation>Vykreslit hroty šipek</translation>
+        <source>Arrow heads</source>
+        <translation>Hroty šipek</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
-        <source>Draw arrows with same length</source>
-        <translation>Vykreslit šipky stejně dlouhé</translation>
+        <source>Arrows with same length</source>
+        <translation>Šipky stejně dlouhé</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
-        <source>Draw arrows pointing from</source>
-        <translation>Vykreslit šipky vycházející z bodu</translation>
+        <source>Arrows pointing from</source>
+        <translation>Šipky vycházející z bodu</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="323"/>
@@ -5065,6 +5070,16 @@
         <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
         <translation>Snímek obrazovky.</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="94"/>
+        <source>Highlight selection</source>
+        <translation>Zvýraznit výběr</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="95"/>
+        <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
+        <translation>Je-li zaškrtnuto, entity vybrané ve stromu modelu jsou zvýrazněny ve 3D zobrazení.</translation>
     </message>
     <message>
         <location filename="../src/sub_window.cpp" line="94"/>

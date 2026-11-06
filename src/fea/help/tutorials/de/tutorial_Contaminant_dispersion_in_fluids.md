@@ -191,12 +191,12 @@ Der transiente Löser läuft im Hintergrund, sodass die Ergebnisse bereits währ
 Damit die Strömungsrichtung über dem eingefärbten Schnitt besser lesbar ist, zeichnen Sie die Pfeile mit Spitzen und in Weiß:
 
 1. Wählen Sie im Baum **Modell** das Vektorfeld aus (**Velocity** unter **Vektorfelder**).
-2. Aktivieren Sie in den **Anzeigeeigenschaften** unter dem Baum die Option **Pfeilspitzen zeichnen**.
+2. Aktivieren Sie in den **Anzeigeeigenschaften** unter dem Baum die Option **Pfeilspitzen**.
 3. Klicken Sie auf die Farbauswahl unter den Kontrollkästchen und wählen Sie Weiß (**#ffffffff**).
 
-Die übrigen Anzeigeeigenschaften steuern, ob alle Pfeile dieselbe Länge haben (**Pfeile mit gleicher Länge zeichnen**) und ob die Pfeile an dem Punkt beginnen, an dem die Geschwindigkeit ausgewertet wird (**Pfeile vom Punkt ausgehend zeichnen**).
+Die übrigen Anzeigeeigenschaften steuern, ob alle Pfeile dieselbe Länge haben (**Pfeile mit gleicher Länge**) und ob die Pfeile an dem Punkt beginnen, an dem die Geschwindigkeit ausgewertet wird (**Pfeile vom Punkt ausgehend**).
 
-![CFD – Pfeilspitzen zeichnen](image-CFD-Draw_arrow_heads.png)
+![CFD – Pfeilspitzen](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Modelldatensätze (Ergebnisse in der Zeit)
 

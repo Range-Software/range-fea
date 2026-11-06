@@ -191,12 +191,12 @@ Přechodový řešič běží na pozadí, takže výsledky lze prohlížet ješt
 Aby byl směr proudění nad obarveným řezem lépe čitelný, vykreslete šipky s hroty a bílou barvou:
 
 1. Ve stromu **Model** vyberte vektorové pole (**Velocity** ve skupině **Vektorová pole**).
-2. V části **Možnosti zobrazení** pod stromem zaškrtněte **Vykreslit hroty šipek**.
+2. V části **Možnosti zobrazení** pod stromem zaškrtněte **Hroty šipek**.
 3. Klikněte na výběr barvy pod zaškrtávacími políčky a zvolte bílou (**#ffffffff**).
 
-Další možnosti zobrazení určují, zda mají všechny šipky stejnou délku (**Vykreslit šipky stejně dlouhé**) a zda šipky začínají v bodě, ve kterém se rychlost vyhodnocuje (**Vykreslit šipky vycházející z bodu**).
+Další možnosti zobrazení určují, zda mají všechny šipky stejnou délku (**Šipky stejně dlouhé**) a zda šipky začínají v bodě, ve kterém se rychlost vyhodnocuje (**Šipky vycházející z bodu**).
 
-![CFD – Vykreslit hroty šipek](image-CFD-Draw_arrow_heads.png)
+![CFD – Hroty šipek](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Záznamy modelu (výsledky v čase)
 

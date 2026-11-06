@@ -191,12 +191,12 @@ El solver transitorio se ejecuta en segundo plano, por lo que los resultados se 
 Para que la dirección del flujo se lea mejor sobre el corte coloreado, dibuje las flechas con puntas y en blanco:
 
 1. Seleccione el campo vectorial (**Velocity** bajo **Campos vectoriales**) en el árbol **Modelo**.
-2. En las **Propiedades de visualización**, bajo el árbol, marque **Dibujar puntas de flecha**.
+2. En las **Propiedades de visualización**, bajo el árbol, marque **Puntas de flecha**.
 3. Haga clic en el selector de color situado bajo las casillas y elija el blanco (**#ffffffff**).
 
-Las demás propiedades de visualización determinan si todas las flechas tienen la misma longitud (**Dibujar flechas de igual longitud**) y si las flechas parten del punto donde se evalúa la velocidad (**Dibujar flechas que parten de**).
+Las demás propiedades de visualización determinan si todas las flechas tienen la misma longitud (**Flechas de igual longitud**) y si las flechas parten del punto donde se evalúa la velocidad (**Flechas que parten de**).
 
-![CFD – Dibujar puntas de flecha](image-CFD-Draw_arrow_heads.png)
+![CFD – Puntas de flecha](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Registros del modelo (resultados en el tiempo)
 

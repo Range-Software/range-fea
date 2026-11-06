@@ -75,6 +75,9 @@ class SubWindow : public QMdiSubWindow
         //! Show errors.
         void onShowErrorsToggled(bool checked);
 
+        //! Highlight selection check toggled.
+        void onHighlightSelectedChanged(Qt::CheckState state);
+
         //! Back side color check toggled.
         void onTwoSideFaceChanged(Qt::CheckState state);
 

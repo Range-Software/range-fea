@@ -148,7 +148,11 @@ void GLVectorField::draw()
         pGlEntityList->endList(GL_ENTITY_LIST_ITEM_NORMAL);
     }
 
+    // Arrow heads have the same color on both sides, face color is decided when the list is drawn.
+    const bool twoSidedEnabled = GLStateCache::instance().getTwoSided();
+    GLStateCache::instance().setTwoSided(true);
     pGlEntityList->callList(GL_ENTITY_LIST_ITEM_NORMAL);
+    GLStateCache::instance().setTwoSided(twoSidedEnabled);
 
     if (scalarVariablePosition != RConstants::eod)
     {

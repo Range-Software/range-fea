@@ -119,6 +119,6 @@ Teplota se pohybuje přibližně od 505 K do 620 K; nosník je nejteplejší upr
 
 1. Ve stromu **Model** zrušte zaškrtnutí **Objemy**, zaškrtněte **Vektorová pole** a vyberte **Electric field**.
 2. V záložce **Výsledky** vyberte **Temperature - Scalar**, zaškrtněte **Scalar** a **Zobrazit rozsah hodnot**. Šipky jsou nyní obarveny podle teploty v místě, kde se nacházejí.
-3. V části **Možnosti zobrazení** pod stromem zaškrtněte **Vykreslit hroty šipek**, aby byl vidět směr elektrického pole.
+3. V části **Možnosti zobrazení** pod stromem zaškrtněte **Hroty šipek**, aby byl vidět směr elektrického pole.
 
 ![Teplota na vektorovém poli](image-Applied_temperature_on_vector_field.png)

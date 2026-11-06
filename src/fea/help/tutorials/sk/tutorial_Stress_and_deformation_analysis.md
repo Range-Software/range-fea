@@ -32,7 +32,7 @@ Táto akcia zobrazí dialóg **Vygenerovať 3D sieť**.
 
 Predvyplnené hodnoty sú zatiaľ postačujúce. Potvrďte kliknutím na **OK**.
 
-Po vygenerovaní siete sa v strome **Model** objaví nový celok v skupine **Objemy**. Ak chcete vygenerovanú sieť vidieť, skryte celky povrchov, zobrazte iba **Objemy** a v **Možnosti zobrazenia** zaškrtnite **Vykresliť ako drôtený model**.
+Po vygenerovaní siete sa v strome **Model** objaví nový celok v skupine **Objemy**. Ak chcete vygenerovanú sieť vidieť, skryte celky povrchov, zobrazte iba **Objemy** a v **Možnosti zobrazenia** zaškrtnite **Ako drôtený model**.
 
 ![Objemová sieť](image-Volume_mesh.png)
 

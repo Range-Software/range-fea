@@ -32,7 +32,7 @@ Cette action ouvre la fenêtre **Générer un maillage 3D**.
 
 Pour l'instant, les valeurs préremplies suffisent. Confirmez avec **OK**.
 
-Une fois le maillage généré, une nouvelle entité **Volume** apparaît dans l'arbre du modèle (onglet **Modèle**). Pour voir le maillage généré, masquez les entités surface, n'affichez que les **Volumes** et cochez **Dessiner en fil de fer** dans les **Propriétés d'affichage**.
+Une fois le maillage généré, une nouvelle entité **Volume** apparaît dans l'arbre du modèle (onglet **Modèle**). Pour voir le maillage généré, masquez les entités surface, n'affichez que les **Volumes** et cochez **En fil de fer** dans les **Propriétés d'affichage**.
 
 ![Maillage volumique](image-Volume_mesh.png)
 

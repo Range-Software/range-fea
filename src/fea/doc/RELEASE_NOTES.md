@@ -4,7 +4,7 @@
 
 #### 3D view
 
-- New *Draw boundary conditions* option in the entity **Display properties**, for
+- New *Boundary conditions* option in the entity **Display properties**, for
   points, lines, surfaces and volumes. When it is on, symbols of the boundary
   conditions applied to the entity are drawn on it, as long as the entity is
   visible. Only conditions of the current problem type are shown, with values at
@@ -20,11 +20,19 @@
     `T = 293.1 K`
 - The option is saved in the model file
 - Symbols of the boundary conditions being drawn are listed with their names in the
-  3D view, below the visible entities or next to them when both do not fit
+  3D view, in a card below the model card or next to it when both do not fit
+- New *Highlight selection* option below the 3D view, on by default, turning off the
+  highlight of entities selected in the model tree
+- Arrows and boundary condition symbols always have the same color on both sides,
+  their back faces are no longer drawn silver
+- Model information and boundary conditions in the 3D view are shown in cards with
+  the same look as the value range. Text which does not fit in a card is shortened
+- Zoom and model draw time are shown as one line of text beside the orientation axis,
+  with the current action above it, in white or black to contrast with the background
 - The 3D view is redrawn when the problem setup changes, so edited boundary
   conditions are shown straight away
 - Redesigned value range in the 3D view, now a slim legend over the full height of
-  the view which follows the background color and covers less of the model:
+  the view which follows the color scheme and covers less of the model:
   - values use readable units, such as `328.5 MPa` instead of `3.28452e+08 Pa`. Simple
     units such as Pa, N, m or s take an SI prefix, other units a common multiplier
     such as `×10⁶ W/m³`. Temperature in K keeps its unit
@@ -35,7 +43,7 @@
   - a picked value is shown next to the picked point, with a line to a marker on the
     color bar
 - Redesigned orientation axis in the lower left corner of the 3D view, with thin
-  labelled arrows which follow the background color. Arrows pointing away from the
+  labelled arrows in the colors of the global axis. Arrows pointing away from the
   viewer are drawn fainter
 - Redesigned model windows to match the application: a flat title bar with thin
   window buttons, a thin outline marking the active window, and an area behind the

@@ -191,12 +191,12 @@ The transient solver runs in the background, so results can be inspected while i
 To make the flow direction easier to read on top of the colored cut, draw the arrows with heads and in white:
 
 1. Select the vector field (**Velocity** under **Vector fields**) in the **Model** tree.
-2. In **Display properties** below the tree check **Draw arrow heads**.
+2. In **Display properties** below the tree check **Arrow heads**.
 3. Click the color selector below the check-boxes and choose white (**#ffffffff**).
 
-The other display properties control whether all arrows have the same length (**Draw arrows with same length**) and whether arrows start at the point where the velocity is evaluated (**Draw arrows pointing from**).
+The other display properties control whether all arrows have the same length (**Arrows with same length**) and whether arrows start at the point where the velocity is evaluated (**Arrows pointing from**).
 
-![CFD - Draw arrow heads](image-CFD-Draw_arrow_heads.png)
+![CFD - Arrow heads](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Model records (results in time)
 

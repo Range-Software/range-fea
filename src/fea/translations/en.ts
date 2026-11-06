@@ -2360,6 +2360,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <source>Boundary conditions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
@@ -3518,47 +3523,47 @@
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
-        <source>Draw as wireframe</source>
+        <source>As wireframe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
-        <source>Draw element edges</source>
+        <source>Element edges</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
-        <source>Draw element nodes</source>
+        <source>Element nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
-        <source>Draw element numbers</source>
+        <source>Element numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
-        <source>Draw node numbers</source>
+        <source>Node numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
-        <source>Draw boundary conditions</source>
+        <source>Boundary conditions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
-        <source>Draw arrow heads</source>
+        <source>Arrow heads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
-        <source>Draw arrows with same length</source>
+        <source>Arrows with same length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
-        <source>Draw arrows pointing from</source>
+        <source>Arrows pointing from</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5063,6 +5068,16 @@
     <message>
         <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="94"/>
+        <source>Highlight selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="95"/>
+        <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

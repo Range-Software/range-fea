@@ -119,6 +119,6 @@ Temperatura wynosi od około 505 K do 620 K; belka jest najgorętsza w środku s
 
 1. W drzewie **Model** odznacz **Objętości**, zaznacz **Pola wektorowe** i wybierz **Electric field**.
 2. Na karcie **Wyniki** wybierz **Temperature - Scalar**, zaznacz **Scalar** i **Wyświetl zakres wartości**. Strzałki są teraz pokolorowane według temperatury w miejscu, w którym się znajdują.
-3. We **Właściwościach wyświetlania** pod drzewem zaznacz **Rysuj groty strzałek**, aby pokazać kierunek pola elektrycznego.
+3. We **Właściwościach wyświetlania** pod drzewem zaznacz **Groty strzałek**, aby pokazać kierunek pola elektrycznego.
 
 ![Temperatura zastosowana na polu wektorowym](image-Applied_temperature_on_vector_field.png)

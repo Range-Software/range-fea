@@ -119,6 +119,6 @@ La temperatura varia da circa 505 K a 620 K; la trave è più calda al centro de
 
 1. Nell'albero **Modello** disattiva **Volumi**, attiva **Campi vettoriali** e seleziona **Electric field**.
 2. Nella scheda **Risultati** scegli **Temperature - Scalar**, attiva **Scalar** e **Mostra intervallo di valori**. Le frecce vengono ora colorate in base alla temperatura nella loro posizione.
-3. In **Proprietà di visualizzazione** sotto l'albero attiva **Disegna punte delle frecce** per mostrare la direzione del campo elettrico.
+3. In **Proprietà di visualizzazione** sotto l'albero attiva **Punte delle frecce** per mostrare la direzione del campo elettrico.
 
 ![Temperatura applicata sul campo vettoriale](image-Applied_temperature_on_vector_field.png)

@@ -32,7 +32,7 @@ This action will show the **Generate 3D mesh** dialog.
 
 For now, the prefilled values are sufficient. Click **OK** button to accept.
 
-Once the mesh is generated, a new **Volume** entity appears in the **Model tree**. To see the generated mesh, hide the surface entities, show only **Volumes** and check **Draw as wireframe** in **Display properties**.
+Once the mesh is generated, a new **Volume** entity appears in the **Model tree**. To see the generated mesh, hide the surface entities, show only **Volumes** and check **As wireframe** in **Display properties**.
 
 ![Volume mesh](image-Volume_mesh.png)
 

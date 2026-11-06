@@ -2360,6 +2360,11 @@
         <translation>più</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <source>Boundary conditions</source>
+        <translation>Condizioni al contorno</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation>Azione</translation>
@@ -3518,48 +3523,48 @@
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
-        <source>Draw as wireframe</source>
-        <translation>Disegna come wireframe</translation>
+        <source>As wireframe</source>
+        <translation>Come wireframe</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
-        <source>Draw element edges</source>
-        <translation>Disegna bordi degli elementi</translation>
+        <source>Element edges</source>
+        <translation>Bordi degli elementi</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
-        <source>Draw element nodes</source>
-        <translation>Disegna nodi degli elementi</translation>
+        <source>Element nodes</source>
+        <translation>Nodi degli elementi</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
-        <source>Draw element numbers</source>
-        <translation>Disegna numeri degli elementi</translation>
+        <source>Element numbers</source>
+        <translation>Numeri degli elementi</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
-        <source>Draw node numbers</source>
-        <translation>Disegna numeri dei nodi</translation>
+        <source>Node numbers</source>
+        <translation>Numeri dei nodi</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
-        <source>Draw boundary conditions</source>
-        <translation>Disegna condizioni al contorno</translation>
+        <source>Boundary conditions</source>
+        <translation>Condizioni al contorno</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
-        <source>Draw arrow heads</source>
-        <translation>Disegna punte delle frecce</translation>
+        <source>Arrow heads</source>
+        <translation>Punte delle frecce</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
-        <source>Draw arrows with same length</source>
-        <translation>Disegna frecce di uguale lunghezza</translation>
+        <source>Arrows with same length</source>
+        <translation>Frecce di uguale lunghezza</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
-        <source>Draw arrows pointing from</source>
-        <translation>Disegna frecce uscenti dal punto</translation>
+        <source>Arrows pointing from</source>
+        <translation>Frecce uscenti dal punto</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="323"/>
@@ -5064,6 +5069,16 @@
         <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
         <translation>Screenshot.</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="94"/>
+        <source>Highlight selection</source>
+        <translation>Evidenzia selezione</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="95"/>
+        <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
+        <translation>Se selezionato, le entità selezionate nell&apos;albero del modello sono evidenziate nella vista 3D.</translation>
     </message>
     <message>
         <location filename="../src/sub_window.cpp" line="94"/>

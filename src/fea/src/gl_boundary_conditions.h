@@ -78,6 +78,7 @@ class GLBoundaryConditions : public GLObject
         GLboolean lightingEnabled;
         GLboolean normalizeEnabled;
         GLboolean cullFaceEnabled;
+        bool twoSidedEnabled;
         GLfloat lineWidth;
 
     public:

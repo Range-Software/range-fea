@@ -191,12 +191,12 @@ Solver przejściowy działa w tle, więc wyniki można oglądać, gdy obliczenia
 Aby kierunek przepływu był czytelniejszy na tle pokolorowanego przekroju, narysuj strzałki z grotami i w kolorze białym:
 
 1. Wybierz pole wektorowe (**Velocity** pod **Pola wektorowe**) w drzewie **Model**.
-2. We **Właściwościach wyświetlania** pod drzewem zaznacz **Rysuj groty strzałek**.
+2. We **Właściwościach wyświetlania** pod drzewem zaznacz **Groty strzałek**.
 3. Kliknij selektor koloru pod polami wyboru i wybierz biały (**#ffffffff**).
 
-Pozostałe właściwości wyświetlania określają, czy wszystkie strzałki mają tę samą długość (**Rysuj strzałki o jednakowej długości**) i czy strzałki zaczynają się w punkcie, w którym obliczana jest prędkość (**Rysuj strzałki wychodzące z**).
+Pozostałe właściwości wyświetlania określają, czy wszystkie strzałki mają tę samą długość (**Strzałki o jednakowej długości**) i czy strzałki zaczynają się w punkcie, w którym obliczana jest prędkość (**Strzałki wychodzące z**).
 
-![CFD – Rysuj groty strzałek](image-CFD-Draw_arrow_heads.png)
+![CFD – Groty strzałek](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Rekordy modelu (wyniki w czasie)
 

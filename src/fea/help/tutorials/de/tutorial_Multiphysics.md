@@ -119,6 +119,6 @@ Die Temperatur reicht von etwa 505 K bis 620 K; der Balken ist in der Mitte sein
 
 1. Deaktivieren Sie im Baum **Modell** die Gruppe **Volumen**, aktivieren Sie **Vektorfelder** und wählen Sie **Electric field** aus.
 2. Wählen Sie auf der Registerkarte **Ergebnisse** den Eintrag **Temperature - Scalar** und aktivieren Sie **Scalar** und **Wertebereich anzeigen**. Die Pfeile werden nun nach der Temperatur an ihrer Position eingefärbt.
-3. Aktivieren Sie in den **Anzeigeeigenschaften** unter dem Baum die Option **Pfeilspitzen zeichnen**, um die Richtung des elektrischen Felds anzuzeigen.
+3. Aktivieren Sie in den **Anzeigeeigenschaften** unter dem Baum die Option **Pfeilspitzen**, um die Richtung des elektrischen Felds anzuzeigen.
 
 ![Angewendete Temperatur auf dem Vektorfeld](image-Applied_temperature_on_vector_field.png)

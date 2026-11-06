@@ -32,7 +32,7 @@ Diese Aktion öffnet den Dialog **3D-Netz erzeugen**.
 
 Für den Moment reichen die vorausgefüllten Werte aus. Bestätigen Sie mit **OK**.
 
-Sobald das Netz erzeugt ist, erscheint im Modellbaum (Registerkarte **Modell**) eine neue **Volumen**-Entität. Um das erzeugte Netz zu sehen, blenden Sie die Flächenentitäten aus, zeigen Sie nur **Volumen** an und aktivieren Sie in den **Anzeigeeigenschaften** die Option **Als Drahtgitter zeichnen**.
+Sobald das Netz erzeugt ist, erscheint im Modellbaum (Registerkarte **Modell**) eine neue **Volumen**-Entität. Um das erzeugte Netz zu sehen, blenden Sie die Flächenentitäten aus, zeigen Sie nur **Volumen** an und aktivieren Sie in den **Anzeigeeigenschaften** die Option **Als Drahtgitter**.
 
 ![Volumennetz](image-Volume_mesh.png)
 

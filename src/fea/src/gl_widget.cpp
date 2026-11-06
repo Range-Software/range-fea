@@ -93,6 +93,7 @@ GLWidget::GLWidget(uint modelID, QWidget *parent)
       clippingPlaneDistance(0.5),
       showRotationSphere(false),
       twoSidedFace(false),
+      highlightSelected(true),
       lightsNeedUpdate(true),
       cachedNLights(0),
       currentGLColor(Qt::white),
@@ -305,8 +306,8 @@ void GLWidget::paintOverlay(QPainter &painter)
     painter.setFont(QGuiApplication::font());
 
     this->drawValueRanges(painter);
-    this->drawMessageBox(painter,false);
-    this->drawInfoBox(painter,false);
+    this->drawMessageBox(painter);
+    this->drawInfoBox(painter);
     this->drawLocalAxis(painter);
     R_LOG_TRACE_OUT;
 }
@@ -864,6 +865,62 @@ static double findValueRangeTickStep(double range, int nIntervals)
     return magnitude * (ratio < 1.5 ? 1.0 : (ratio < 3.0 ? 2.0 : (ratio < 7.0 ? 5.0 : 10.0)));
 }
 
+//! Look of cards drawn over the 3D view.
+struct OverlayCardStyle
+{
+    QColor cardColor;
+    QColor cardBorderColor;
+    QColor primaryColor;
+    QColor secondaryColor;
+    QFont labelFont;
+    QFont titleFont;
+    QFont smallFont;
+    int offset;
+    int padding;
+    int gap;
+    int lineHeight;
+    int minCardWidth;
+};
+
+//! Card follows application color scheme, it is independent of the 3D view background.
+static OverlayCardStyle findOverlayCardStyle(const QFont &font)
+{
+    const bool darkPalette = RIcon::isDarkPalette();
+
+    OverlayCardStyle style;
+    style.cardColor = darkPalette ? QColor(24,24,24,190) : QColor(255,255,255,230);
+    style.cardBorderColor = darkPalette ? QColor(255,255,255,36) : QColor(0,0,0,30);
+    style.primaryColor = darkPalette ? QColor(242,242,242) : QColor(28,28,28);
+    style.secondaryColor = darkPalette ? QColor(168,168,168) : QColor(102,102,102);
+
+    style.labelFont = font;
+    style.titleFont = font;
+    style.titleFont.setWeight(QFont::Medium);
+    style.smallFont = font;
+    if (style.smallFont.pointSizeF() > 0.0)
+    {
+        style.smallFont.setPointSizeF(style.smallFont.pointSizeF()*0.9);
+    }
+
+    const QFontMetrics labelMetrics(style.labelFont);
+    style.offset = 10;
+    style.padding = 8;
+    style.gap = labelMetrics.height()/2 + 2;
+    style.lineHeight = labelMetrics.height() + 2;
+    style.minCardWidth = std::max(132,22*labelMetrics.averageCharWidth());
+
+    return style;
+}
+
+//! Draw background and border of a card.
+static void drawOverlayCard(QPainter &painter, const OverlayCardStyle &style, const QRect &rect)
+{
+    painter.setPen(style.cardBorderColor);
+    painter.setBrush(style.cardColor);
+    painter.drawRoundedRect(QRectF(rect).adjusted(0.5,0.5,-0.5,-0.5),8.0,8.0);
+    painter.setBrush(Qt::NoBrush);
+}
+
 void GLWidget::drawValueRanges(QPainter &painter)
 {
     R_LOG_TRACE_IN;
@@ -944,40 +1001,23 @@ void GLWidget::drawValueRange(QPainter &painter,
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    // Card follows application color scheme, it is independent of the 3D view background.
-    const bool darkPalette = RIcon::isDarkPalette();
-
-    const QColor cardColor = darkPalette ? QColor(24,24,24,190) : QColor(255,255,255,230);
-    const QColor cardBorderColor = darkPalette ? QColor(255,255,255,36) : QColor(0,0,0,30);
-    const QColor primaryColor = darkPalette ? QColor(242,242,242) : QColor(28,28,28);
-    const QColor secondaryColor = darkPalette ? QColor(168,168,168) : QColor(102,102,102);
+    const OverlayCardStyle style = findOverlayCardStyle(painter.font());
 
     // Leader lines to picked points run over the 3D view and have to contrast with its background.
     const QColor leaderColor = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? QColor(242,242,242) : QColor(28,28,28);
 
-    QFont labelFont(painter.font());
-    QFont titleFont(labelFont);
-    titleFont.setWeight(QFont::Medium);
-    QFont smallFont(labelFont);
-    if (smallFont.pointSizeF() > 0.0)
-    {
-        smallFont.setPointSizeF(smallFont.pointSizeF()*0.9);
-    }
-    QFont emphasizedFont(labelFont);
-    emphasizedFont.setWeight(QFont::Medium);
+    const QFontMetrics labelMetrics(style.labelFont);
+    const QFontMetrics titleMetrics(style.titleFont);
+    const QFontMetrics smallMetrics(style.smallFont);
 
-    const QFontMetrics labelMetrics(labelFont);
-    const QFontMetrics titleMetrics(titleFont);
-    const QFontMetrics smallMetrics(smallFont);
-
-    int offset = 10;
-    int padding = 8;
-    int gap = labelMetrics.height()/2 + 2;
+    int offset = style.offset;
+    int padding = style.padding;
+    int gap = style.gap;
     int barWidth = 12;
     int markerWidth = 6;
     int tickLength = 4;
 
-    int cardWidth = std::max(132,22*labelMetrics.averageCharWidth());
+    int cardWidth = style.minCardWidth;
     int contentWidth = cardWidth - 2*padding;
 
     const double maxAbsValue = std::max(std::abs(lowerValue),std::abs(upperValue));
@@ -1027,22 +1067,22 @@ void GLWidget::drawValueRange(QPainter &painter,
     position.ry() += cardHeight + offset;
 
     // Card
-    painter.setPen(cardBorderColor);
-    painter.setBrush(cardColor);
+    painter.setPen(style.cardBorderColor);
+    painter.setBrush(style.cardColor);
     painter.drawRoundedRect(QRectF(cardX+0.5,cardY+0.5,cardWidth-1,cardHeight-1),8.0,8.0);
     painter.setBrush(Qt::NoBrush);
 
     // Title and units
     int textY = cardY + padding;
-    painter.setFont(titleFont);
-    painter.setPen(primaryColor);
+    painter.setFont(style.titleFont);
+    painter.setPen(style.primaryColor);
     painter.drawText(QRect(contentX,textY,contentWidth,titleHeight),Qt::TextWordWrap,valueRangeName);
     textY += titleHeight;
 
     if (unitsHeight > 0)
     {
-        painter.setFont(smallFont);
-        painter.setPen(secondaryColor);
+        painter.setFont(style.smallFont);
+        painter.setPen(style.secondaryColor);
         painter.drawText(QRect(contentX,textY,contentWidth,unitsHeight),Qt::AlignLeft,scale.units);
         textY += unitsHeight;
     }
@@ -1094,8 +1134,8 @@ void GLWidget::drawValueRange(QPainter &painter,
         int tickDecimals = std::clamp(-int(std::floor(std::log10(tickStep))),0,6);
         int minLabelDistance = labelHeight + labelHeight/3;
 
-        painter.setFont(labelFont);
-        painter.setPen(secondaryColor);
+        painter.setFont(style.labelFont);
+        painter.setPen(style.secondaryColor);
         for (double i=std::ceil(scaledLower/tickStep);i*tickStep<scaledUpper;i+=1.0)
         {
             const double tickValue = i*tickStep;
@@ -1109,21 +1149,21 @@ void GLWidget::drawValueRange(QPainter &painter,
 
     // Minimum and maximum
     const int endDecimals = findValueRangeDecimals(scaledLower,scaledUpper);
-    painter.setFont(emphasizedFont);
-    painter.setPen(primaryColor);
+    painter.setFont(style.titleFont);
+    painter.setPen(style.primaryColor);
     drawLabel(barY,formatValueRangeNumber(scaledUpper,endDecimals));
     drawLabel(barBottom,formatValueRangeNumber(scaledLower,endDecimals));
 
     // Footer
     if (footerHeight > 0)
     {
-        painter.setFont(smallFont);
-        painter.setPen(secondaryColor);
+        painter.setFont(style.smallFont);
+        painter.setPen(style.secondaryColor);
         painter.drawText(QRect(contentX,barBottom+gap,contentWidth,footerHeight),Qt::TextWordWrap,footerText);
     }
 
     // Picked values
-    painter.setFont(labelFont);
+    painter.setFont(style.labelFont);
     const int pickedDecimals = findValueRangeDecimals(scaledLower,scaledUpper);
     for (uint i=0;i<pickedValues.size();i++)
     {
@@ -1139,11 +1179,11 @@ void GLWidget::drawValueRange(QPainter &painter,
                                     QPointF(barX-markerWidth,pickedY-4),
                                     QPointF(barX-markerWidth,pickedY+4) };
         painter.setPen(Qt::NoPen);
-        painter.setBrush(primaryColor);
+        painter.setBrush(style.primaryColor);
         painter.drawPolygon(marker,3);
 
-        painter.setPen(primaryColor);
-        painter.setBrush(cardColor);
+        painter.setPen(style.primaryColor);
+        painter.setBrush(style.cardColor);
         painter.drawEllipse(QPointF(pickPosition),3.5,3.5);
 
         // Value next to the picked point
@@ -1155,9 +1195,9 @@ void GLWidget::drawValueRange(QPainter &painter,
         int chipY = std::clamp(pickPosition.y() - chipHeight - 8,offset,std::max(offset,this->height()-chipHeight-offset));
         const QRect chipRect(chipX,chipY,chipWidth,chipHeight);
 
-        painter.setPen(cardBorderColor);
+        painter.setPen(style.cardBorderColor);
         painter.drawRoundedRect(QRectF(chipRect).adjusted(0.5,0.5,-0.5,-0.5),4.0,4.0);
-        painter.setPen(primaryColor);
+        painter.setPen(style.primaryColor);
         painter.drawText(chipRect,Qt::AlignCenter,pickedText);
         painter.setBrush(Qt::NoBrush);
     }
@@ -1178,8 +1218,6 @@ void GLWidget::drawLocalAxis(QPainter &painter)
     painter.save();
     painter.setRenderHint(QPainter::Antialiasing);
 
-    bool darkBackground = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96;
-
     const QPointF center(GLWidget::lAxisWpWidth/2.0,this->height()-GLWidget::lAxisWpHeight/2.0);
 
     double axisLength = 30.0;
@@ -1195,9 +1233,8 @@ void GLWidget::drawLocalAxis(QPainter &painter)
         QString label;
     };
 
-    const QColor axisColors[3] = { darkBackground ? QColor(226,120,120) : QColor(176,58,58),
-                                   darkBackground ? QColor(130,190,140) : QColor(46,120,70),
-                                   darkBackground ? QColor(125,160,230) : QColor(48,88,176) };
+    // Same colors as global axis.
+    const QColor axisColors[3] = { QColor(Qt::red), QColor(Qt::green), QColor(Qt::blue) };
     const QString axisLabels[3] = { "X", "Y", "Z" };
 
     // Matrix columns are axis directions in view space with Z pointing to the viewer.
@@ -1257,18 +1294,10 @@ void GLWidget::drawLocalAxis(QPainter &painter)
     R_LOG_TRACE_OUT;
 }
 
-void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
+void GLWidget::drawMessageBox(QPainter &painter)
 {
     R_LOG_TRACE_IN;
-    painter.setFont(QGuiApplication::font());
-
     const Model &rModel = Application::instance()->getSession()->getModel(this->getModelID());
-
-    QString modelName = rModel.getName();
-    if (!rModel.getDescription().isEmpty())
-    {
-        modelName += " (" + rModel.getDescription() + ")";
-    }
 
     // Visible entities in the same order as in the model tree.
     struct EntityName
@@ -1412,192 +1441,256 @@ void GLWidget::drawMessageBox(QPainter &painter, bool drawBox)
         }
     }
 
-    int offset = 10;
-    int padding = 2;
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
 
-    int fontPixelHeight = painter.fontInfo().pixelSize();
-    int lineHeight = fontPixelHeight+padding;
-    const QFontMetrics fontMetrics = painter.fontMetrics();
+    const OverlayCardStyle style = findOverlayCardStyle(QGuiApplication::font());
+    const QFontMetrics labelMetrics(style.labelFont);
+    const QFontMetrics titleMetrics(style.titleFont);
+    const QFontMetrics smallMetrics(style.smallFont);
 
-    // Space above and below the entity list.
-    int entityListGap = fontPixelHeight/2;
+    const int lineHeight = style.lineHeight;
+    const int titleHeight = titleMetrics.height();
+    const int maxCardWidth = std::max(style.minCardWidth,this->width()/3);
 
-    int posX = offset;
-    int posY = offset;
+    // Cards are stacked between the top of the view and the local axis.
+    const int availableHeight = this->height() - GLWidget::lAxisWpHeight - 2*style.offset;
 
-    // Entity list is limited to lines which fit between the model name and the information box.
-    int infoBoxTop = this->height() - offset - GLWidget::lAxisWpHeight - (offset + lineHeight*int(this->findInfoMessages().size()));
-    int availableHeight = infoBoxTop - posY - lineHeight*(1+int(messages.size())) - 2*entityListGap - fontMetrics.descent();
-    int maxEntityLines = std::max(0,availableHeight/lineHeight);
+    // Height of cards without their lists.
+    const int descriptionHeight = rModel.getDescription().isEmpty() ? 0 : smallMetrics.height();
+    const int messagesHeight = messages.isEmpty() ? 0 : style.gap + lineHeight*int(messages.size());
+    const int modelCardBaseHeight = 2*style.padding + titleHeight + descriptionHeight + messagesHeight;
+    const int boundaryConditionCardBaseHeight = 2*style.padding + titleHeight + style.gap;
 
     // Boundary conditions are placed below the entities, or next to them when both do not fit.
-    int nStackedLines = int(entityNames.size() + boundaryConditionTypes.size());
-    bool boundaryConditionsBelow = (lineHeight*nStackedLines + entityListGap <= availableHeight);
-    if (boundaryConditionTypes.isEmpty())
-    {
-        boundaryConditionsBelow = true;
-    }
+    const int nEntities = int(entityNames.size());
+    const int nBoundaryConditions = int(boundaryConditionTypes.size());
+    const bool boundaryConditionsBelow = (nBoundaryConditions == 0)
+                                      || (modelCardBaseHeight + (nEntities > 0 ? style.gap + lineHeight*nEntities : 0)
+                                          + style.offset + boundaryConditionCardBaseHeight + lineHeight*nBoundaryConditions <= availableHeight);
 
-    int nShownBoundaryConditions = int(boundaryConditionTypes.size());
-    int nHiddenBoundaryConditions = 0;
-    if (!boundaryConditionsBelow && nShownBoundaryConditions > maxEntityLines)
+    // Last line of a list which does not fit is used for the number of hidden items.
+    auto fitList = [](int nItems, int maxLines, int &nShown, int &nHidden)
     {
-        // Last line is used for the number of boundary conditions which did not fit.
-        nShownBoundaryConditions = std::max(0,maxEntityLines-1);
-        nHiddenBoundaryConditions = int(boundaryConditionTypes.size()) - nShownBoundaryConditions;
-    }
-    int nBoundaryConditionLines = nShownBoundaryConditions + ((nHiddenBoundaryConditions > 0 && maxEntityLines > 0) ? 1 : 0);
+        nShown = nItems;
+        nHidden = 0;
+        if (nItems > maxLines)
+        {
+            nShown = std::max(0,maxLines-1);
+            nHidden = (maxLines > 0) ? nItems - nShown : 0;
+        }
+    };
 
-    int nShownEntities = int(entityNames.size());
+    int nShownEntities = 0;
     int nHiddenEntities = 0;
-    if (nShownEntities > maxEntityLines)
-    {
-        // Last line is used for the number of entities which did not fit.
-        nShownEntities = std::max(0,maxEntityLines-1);
-        nHiddenEntities = int(entityNames.size()) - nShownEntities;
-    }
-    int nEntityLines = nShownEntities + ((nHiddenEntities > 0 && maxEntityLines > 0) ? 1 : 0);
+    fitList(nEntities,(availableHeight - modelCardBaseHeight - style.gap)/lineHeight,nShownEntities,nHiddenEntities);
 
-    int sizeX = this->width() - offset - offset;
-    int nListLines = boundaryConditionsBelow ? nEntityLines + nBoundaryConditionLines : std::max(nEntityLines,nBoundaryConditionLines);
-    int sizeY = offset + lineHeight*(1+nListLines+int(messages.size())) + 2*entityListGap;
+    int nShownBoundaryConditions = 0;
+    int nHiddenBoundaryConditions = 0;
+    fitList(nBoundaryConditions,(availableHeight - boundaryConditionCardBaseHeight)/lineHeight,nShownBoundaryConditions,nHiddenBoundaryConditions);
+
+    const int nEntityLines = nShownEntities + (nHiddenEntities > 0 ? 1 : 0);
+    const int nBoundaryConditionLines = nShownBoundaryConditions + (nHiddenBoundaryConditions > 0 ? 1 : 0);
+
+    const QString moreEntitiesText = "+ " + QLocale().toString(nHiddenEntities) + " " + tr("more");
+    const QString moreBoundaryConditionsText = "+ " + QLocale().toString(nHiddenBoundaryConditions) + " " + tr("more");
+
+    // Text is elided when it does not fit in the card.
+    auto drawLine = [&painter](const QFontMetrics &metrics, int x, int y, int width, int height, const QString &text)
+    {
+        painter.drawText(QRect(x,y,width,height),Qt::AlignLeft|Qt::AlignVCenter,metrics.elidedText(text,Qt::ElideRight,width));
+    };
+
+    const int markerSize = labelMetrics.ascent();
+    const int markerGap = markerSize/2;
+
+    // Model card
+    int modelContentWidth = std::max(titleMetrics.horizontalAdvance(rModel.getName()),smallMetrics.horizontalAdvance(rModel.getDescription()));
+    for (int i=0;i<nShownEntities;i++)
+    {
+        modelContentWidth = std::max(modelContentWidth,markerSize + markerGap + labelMetrics.horizontalAdvance(entityNames.at(i).name));
+    }
+    if (nHiddenEntities > 0)
+    {
+        modelContentWidth = std::max(modelContentWidth,labelMetrics.horizontalAdvance(moreEntitiesText));
+    }
+    for (int i=0;i<messages.size();i++)
+    {
+        modelContentWidth = std::max(modelContentWidth,labelMetrics.horizontalAdvance(messages[i]));
+    }
+
+    // Boundary condition card width
+    const QString boundaryConditionsTitle = tr("Boundary conditions");
+
+    // Symbol column is wide enough for text tags of scalar conditions.
+    QFont tagFont(style.labelFont);
+    tagFont.setBold(true);
+    const QFontMetrics tagMetrics(tagFont);
+    int symbolColumnWidth = markerSize;
+    for (int i=0;i<nShownBoundaryConditions;i++)
+    {
+        if (GLBoundaryConditions::findCategory(boundaryConditionTypes.at(i)) == GLBoundaryConditions::Scalar)
+        {
+            symbolColumnWidth = std::max(symbolColumnWidth,tagMetrics.horizontalAdvance(GLBoundaryConditions::getTag(boundaryConditionTypes.at(i))));
+        }
+    }
+
+    int boundaryConditionContentWidth = titleMetrics.horizontalAdvance(boundaryConditionsTitle);
+    for (int i=0;i<nShownBoundaryConditions;i++)
+    {
+        boundaryConditionContentWidth = std::max(boundaryConditionContentWidth,symbolColumnWidth + markerGap + labelMetrics.horizontalAdvance(RBoundaryCondition::getName(boundaryConditionTypes.at(i))));
+    }
+    if (nHiddenBoundaryConditions > 0)
+    {
+        boundaryConditionContentWidth = std::max(boundaryConditionContentWidth,labelMetrics.horizontalAdvance(moreBoundaryConditionsText));
+    }
+
+    int modelCardWidth = std::clamp(modelContentWidth + 2*style.padding,style.minCardWidth,maxCardWidth);
+    int boundaryConditionCardWidth = std::clamp(boundaryConditionContentWidth + 2*style.padding,style.minCardWidth,maxCardWidth);
+
+    // Cards placed below each other have the same width.
     if (boundaryConditionsBelow && nBoundaryConditionLines > 0)
     {
-        sizeY += entityListGap;
+        modelCardWidth = boundaryConditionCardWidth = std::max(modelCardWidth,boundaryConditionCardWidth);
     }
 
-    int colorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
+    const int modelCardHeight = modelCardBaseHeight + (nEntityLines > 0 ? style.gap + lineHeight*nEntityLines : 0);
+    const int modelTextWidth = modelCardWidth - 2*style.padding;
+    const int modelTextX = style.offset + style.padding;
 
-    // Outer box
-    if (drawBox)
+    drawOverlayCard(painter,style,QRect(style.offset,style.offset,modelCardWidth,modelCardHeight));
+
+    // Model name and description.
+    int textY = style.offset + style.padding;
+    painter.setFont(style.titleFont);
+    painter.setPen(style.primaryColor);
+    drawLine(titleMetrics,modelTextX,textY,modelTextWidth,titleHeight,rModel.getName());
+    textY += titleHeight;
+
+    if (descriptionHeight > 0)
     {
-        colorValue = 255 - colorValue;
-        int boxColorValue = 255 - colorValue;
-        painter.setPen(QColor(boxColorValue,boxColorValue,boxColorValue,255));
-        painter.drawRect(posX,posY,sizeX,sizeY);
-        painter.fillRect(posX,posY,sizeX,sizeY,QColor(boxColorValue,boxColorValue,boxColorValue,200));
+        painter.setFont(style.smallFont);
+        painter.setPen(style.secondaryColor);
+        drawLine(smallMetrics,modelTextX,textY,modelTextWidth,descriptionHeight,rModel.getDescription());
+        textY += descriptionHeight;
     }
-
-    const QColor textColor(colorValue,colorValue,colorValue,255);
-    const int indent = fontMetrics.horizontalAdvance("    ");
-    const int textX = posX+padding;
-    painter.setPen(textColor);
-
-    // Model name.
-    int textY = posY + lineHeight;
-    painter.drawText(textX,textY,modelName);
 
     // Entity list, entities which are not selected are drawn 40% transparent.
-    textY += entityListGap;
-    const int listTopY = textY;
-    int entityColumnWidth = 0;
+    painter.setFont(style.labelFont);
+    if (nEntityLines > 0)
+    {
+        textY += style.gap;
+    }
     for (int i=0;i<nShownEntities;i++)
     {
         const EntityName &entityName = entityNames.at(i);
-        textY += lineHeight;
         painter.setOpacity(entityName.selected ? 1.0 : 0.4);
-        // Entity color square edged with text color in front of the entity name.
-        int squareSize = fontMetrics.ascent();
-        int squareX = textX + indent;
-        painter.fillRect(squareX,textY-squareSize,squareSize,squareSize,entityName.color);
-        painter.drawRect(squareX,textY-squareSize,squareSize-1,squareSize-1);
-        painter.drawText(squareX + squareSize + squareSize/2,textY,entityName.name);
-        entityColumnWidth = std::max(entityColumnWidth,squareSize + squareSize/2 + fontMetrics.horizontalAdvance(entityName.name));
+
+        // Entity color square in front of the entity name.
+        painter.setPen(style.secondaryColor);
+        painter.setBrush(entityName.color);
+        painter.drawRoundedRect(QRectF(modelTextX+0.5,textY+(lineHeight-markerSize)/2+0.5,markerSize-1,markerSize-1),2.0,2.0);
+        painter.setBrush(Qt::NoBrush);
+
+        painter.setPen(style.primaryColor);
+        drawLine(labelMetrics,modelTextX+markerSize+markerGap,textY,modelTextWidth-markerSize-markerGap,lineHeight,entityName.name);
+        textY += lineHeight;
     }
     painter.setOpacity(1.0);
-    if (nHiddenEntities > 0 && maxEntityLines > 0)
+    if (nHiddenEntities > 0)
     {
+        painter.setPen(style.secondaryColor);
+        drawLine(labelMetrics,modelTextX,textY,modelTextWidth,lineHeight,moreEntitiesText);
         textY += lineHeight;
-        const QString moreText = "+ " + QLocale().toString(nHiddenEntities) + " " + tr("more");
-        painter.drawText(textX + indent,textY,moreText);
-        entityColumnWidth = std::max(entityColumnWidth,fontMetrics.horizontalAdvance(moreText));
     }
-
-    // Boundary condition list, symbols are drawn in front of the names.
-    if (nBoundaryConditionLines > 0)
-    {
-        int listX = textX + indent;
-        int listY = textY + entityListGap;
-        if (!boundaryConditionsBelow)
-        {
-            listX += entityColumnWidth + 2*fontMetrics.horizontalAdvance("    ");
-            listY = listTopY;
-        }
-
-        // Symbol column is wide enough for text tags of scalar conditions.
-        const int symbolSize = fontMetrics.ascent();
-        QFont tagFont(painter.font());
-        tagFont.setBold(true);
-        const QFontMetrics tagFontMetrics(tagFont);
-        int symbolColumnWidth = symbolSize;
-        for (int i=0;i<nShownBoundaryConditions;i++)
-        {
-            symbolColumnWidth = std::max(symbolColumnWidth,tagFontMetrics.horizontalAdvance(GLBoundaryConditions::findCategory(boundaryConditionTypes.at(i)) == GLBoundaryConditions::Scalar ? GLBoundaryConditions::getTag(boundaryConditionTypes.at(i)) : QString()));
-        }
-
-        for (int i=0;i<nShownBoundaryConditions;i++)
-        {
-            listY += lineHeight;
-            GLBoundaryConditions::drawSymbol(painter,QRectF(listX,listY-symbolSize,symbolColumnWidth,symbolSize),boundaryConditionTypes.at(i));
-            painter.drawText(listX + symbolColumnWidth + symbolSize/2,listY,RBoundaryCondition::getName(boundaryConditionTypes.at(i)));
-        }
-        if (nHiddenBoundaryConditions > 0 && maxEntityLines > 0)
-        {
-            listY += lineHeight;
-            painter.drawText(listX,listY,"+ " + QLocale().toString(nHiddenBoundaryConditions) + " " + tr("more"));
-        }
-        textY = std::max(textY,listY);
-    }
-    textY += entityListGap;
 
     // Remaining messages.
-    for (int i=0;i<messages.size();i++)
+    if (!messages.isEmpty())
     {
-        textY += lineHeight;
-        painter.drawText(textX,textY,messages[i]);
+        textY += style.gap;
+        painter.setPen(style.primaryColor);
+        for (int i=0;i<messages.size();i++)
+        {
+            drawLine(labelMetrics,modelTextX,textY,modelTextWidth,lineHeight,messages[i]);
+            textY += lineHeight;
+        }
     }
+
+    // Boundary condition card, symbols are drawn in front of the names.
+    if (nBoundaryConditionLines > 0)
+    {
+        const int cardWidth = boundaryConditionCardWidth;
+        const int cardHeight = boundaryConditionCardBaseHeight + lineHeight*nBoundaryConditionLines;
+        const int cardX = boundaryConditionsBelow ? style.offset : style.offset + modelCardWidth + style.offset;
+        const int cardY = boundaryConditionsBelow ? style.offset + modelCardHeight + style.offset : style.offset;
+        const int listX = cardX + style.padding;
+        const int listWidth = cardWidth - 2*style.padding;
+
+        drawOverlayCard(painter,style,QRect(cardX,cardY,cardWidth,cardHeight));
+
+        int listY = cardY + style.padding;
+        painter.setFont(style.titleFont);
+        painter.setPen(style.primaryColor);
+        drawLine(titleMetrics,listX,listY,listWidth,titleHeight,boundaryConditionsTitle);
+        listY += titleHeight + style.gap;
+
+        painter.setFont(style.labelFont);
+        for (int i=0;i<nShownBoundaryConditions;i++)
+        {
+            GLBoundaryConditions::drawSymbol(painter,QRectF(listX,listY+(lineHeight-markerSize)/2,symbolColumnWidth,markerSize),boundaryConditionTypes.at(i));
+            painter.setPen(style.primaryColor);
+            drawLine(labelMetrics,listX+symbolColumnWidth+markerGap,listY,listWidth-symbolColumnWidth-markerGap,lineHeight,RBoundaryCondition::getName(boundaryConditionTypes.at(i)));
+            listY += lineHeight;
+        }
+        if (nHiddenBoundaryConditions > 0)
+        {
+            painter.setPen(style.secondaryColor);
+            drawLine(labelMetrics,listX,listY,listWidth,lineHeight,moreBoundaryConditionsText);
+        }
+    }
+
+    painter.restore();
     R_LOG_TRACE_OUT;
 }
 
-void GLWidget::drawInfoBox(QPainter &painter, bool drawBox)
+void GLWidget::drawInfoBox(QPainter &painter)
 {
     R_LOG_TRACE_IN;
-    painter.setFont(QGuiApplication::font());
+    const QStringList messages = this->findInfoMessages();
 
-    QStringList messages = this->findInfoMessages();
+    painter.save();
+    painter.setRenderHint(QPainter::Antialiasing);
 
-    if (messages.size() == 0)
+    const OverlayCardStyle style = findOverlayCardStyle(QGuiApplication::font());
+    const QFontMetrics labelMetrics(style.labelFont);
+
+    // Text is placed beside the local axis and leaves space for the value range on the right.
+    const int textX = GLWidget::lAxisWpWidth;
+    const int textBottom = this->height() - style.offset;
+    const int textWidth = std::max(0,this->width() - textX - style.minCardWidth - 2*style.offset);
+
+    // The background gradient lightens the view towards the bottom.
+    QColor bgColor = this->getGLDisplayProperties().getBgColor();
+    if (this->getGLDisplayProperties().getBgGradient() && this->height() > 0)
     {
-        R_LOG_TRACE_OUT;
-        return;
+        const double viewY = 1.0 - 2.0*double(textBottom - style.lineHeight/2)/double(this->height());
+        const double whiteFraction = std::clamp((0.3 - viewY)/1.3,0.0,1.0)*100.0/255.0;
+        bgColor = QColor::fromRgbF(bgColor.redF() + (1.0-bgColor.redF())*whiteFraction,
+                                   bgColor.greenF() + (1.0-bgColor.greenF())*whiteFraction,
+                                   bgColor.blueF() + (1.0-bgColor.blueF())*whiteFraction);
     }
 
-    int offset = 10;
-    int padding = 2;
-
-    int fontPixelHeight = painter.fontInfo().pixelSize();
-
-    int sizeX = GLWidget::lAxisWpWidth;
-    int sizeY = offset + (fontPixelHeight+padding)*messages.size();
-    int posX = offset;
-    int posY = this->height() - offset - GLWidget::lAxisWpHeight - sizeY;
-
-    int colorValue = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? 255 : 0;
-
-    // Outer box
-    if (drawBox)
-    {
-        colorValue = 255 - colorValue;
-        int boxColorValue = 255 - colorValue;
-        painter.setPen(QColor(boxColorValue,boxColorValue,boxColorValue,255));
-        painter.drawRect(posX,posY,sizeX,sizeY);
-        painter.fillRect(posX,posY,sizeX,sizeY,QColor(boxColorValue,boxColorValue,boxColorValue,200));
-    }
-    painter.setPen(QColor(colorValue,colorValue,colorValue,255));
+    painter.setFont(style.labelFont);
+    painter.setPen(qGray(bgColor.rgb()) < 128 ? QColor(255,255,255) : QColor(0,0,0));
     for (int i=0;i<messages.size();i++)
     {
-        painter.drawText(posX+padding,posY+(fontPixelHeight+padding)*(i+1),messages[i]);
+        const int textY = textBottom - style.lineHeight*int(messages.size()-i);
+        painter.drawText(QRect(textX,textY,textWidth,style.lineHeight),
+                         Qt::AlignLeft|Qt::AlignVCenter,
+                         labelMetrics.elidedText(messages[i],Qt::ElideRight,textWidth));
     }
+
+    painter.restore();
     R_LOG_TRACE_OUT;
 }
 
@@ -1622,8 +1715,8 @@ QStringList GLWidget::findInfoMessages() const
         messages.append(tr("Action") + ": " + actionMessage.join(" - "));
     }
 
-    messages.append(tr("Zoom") + ": " + QLocale().toString(double(this->scale)));
-    messages.append(tr("Model draw time") + ": " + QLocale().toString(this->modelDrawTime) + " [ms]");
+    messages.append(tr("Zoom") + ": " + QLocale().toString(double(this->scale))
+                    + QStringLiteral("  |  ") + tr("Model draw time") + ": " + QLocale().toString(this->modelDrawTime) + " [ms]");
 
     return messages;
 }
@@ -2787,6 +2880,24 @@ void GLWidget::setTwoSidedFace(bool twoSidedFace)
     {
         this->twoSidedFace = twoSidedFace;
         Application::instance()->getSession()->setModelChanged(this->modelID);
+    }
+    R_LOG_TRACE_OUT;
+}
+
+bool GLWidget::getHighlightSelected() const
+{
+    R_LOG_TRACE;
+    return this->highlightSelected;
+}
+
+void GLWidget::setHighlightSelected(bool highlightSelected)
+{
+    R_LOG_TRACE_IN;
+    // Highlight is a shader state rather than part of the recorded geometry - a repaint is all it takes.
+    if (this->highlightSelected != highlightSelected)
+    {
+        this->highlightSelected = highlightSelected;
+        this->update();
     }
     R_LOG_TRACE_OUT;
 }

@@ -248,7 +248,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawWire)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw as wireframe"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("As wireframe"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawWire));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_WIRE));
     }
@@ -256,7 +256,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawEdges)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw element edges"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Element edges"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawEdges));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_EDGES));
     }
@@ -264,7 +264,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawNodes)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw element nodes"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Element nodes"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawNodes));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_NODES));
     }
@@ -272,7 +272,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawElementNums)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw element numbers"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Element numbers"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawElementNums));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_ELEMENT_NUMS));
     }
@@ -280,7 +280,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawNodeNums)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw node numbers"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Node numbers"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawNodeNums));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_NODE_NUMS));
     }
@@ -288,7 +288,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawBoundaryConditions)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw boundary conditions"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Boundary conditions"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawBoundaryConditions));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_BOUNDARY_CONDITIONS));
     }
@@ -296,7 +296,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawArrowHeads)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw arrow heads"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Arrow heads"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawArrowHeads));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_ARROW_HEADS));
     }
@@ -304,7 +304,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawEqualArrowLengths)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw arrows with same length"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Arrows with same length"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawEqualArrowLengths));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_EQUAL_ARROW_LENGTHS));
     }
@@ -312,7 +312,7 @@ void ModelEntityDisplayPropertiesTree::populate()
     if (canDrawArrowFrom)
     {
         item = new QTreeWidgetItem(this);
-        item->setText(DP_TREE_COLUMN_NAME,tr("Draw arrows pointing from"));
+        item->setText(DP_TREE_COLUMN_NAME,tr("Arrows pointing from"));
         item->setData(DP_TREE_COLUMN_NAME,Qt::CheckStateRole,QVariant(csDrawArrowFrom));
         item->setData(DP_TREE_COLUMN_NAME,Qt::UserRole,QVariant(DISPLAY_PROPERTY_DRAW_ARROW_FROM));
     }

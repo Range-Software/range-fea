@@ -47,9 +47,11 @@ void GLArrow::initialize()
     this->normalizeEnabled = GLStateCache::instance().getNormalize();
     this->lineWidth = GLStateCache::instance().getLineWidth();
     this->cullFaceEnabled = GLStateCache::instance().getCullFace();
+    this->twoSidedEnabled = GLStateCache::instance().getTwoSided();
     // Initialize environment
     GLStateCache::instance().setNormalize(GL_TRUE);
     GLStateCache::instance().setCullFace(GL_FALSE);
+    GLStateCache::instance().setTwoSided(true);
     GLStateCache::instance().setLineWidth(1.0f);
 }
 
@@ -57,6 +59,7 @@ void GLArrow::finalize()
 {
     GLStateCache::instance().setNormalize(this->normalizeEnabled);
     GLStateCache::instance().setCullFace(this->cullFaceEnabled);
+    GLStateCache::instance().setTwoSided(this->twoSidedEnabled);
     GLStateCache::instance().setLineWidth(this->lineWidth);
 }
 

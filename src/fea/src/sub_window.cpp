@@ -91,6 +91,13 @@ void SubWindow::createSubWindow()
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     this->toolBar->addWidget(spacer);
 
+    QCheckBox *highlightSelectedCheck = new QCheckBox(tr("Highlight selection"));
+    highlightSelectedCheck->setToolTip(tr("When checked, entities selected in the model tree are highlighted in the 3D view."));
+    highlightSelectedCheck->setCheckState(this->glWidget->getHighlightSelected() ? Qt::Checked : Qt::Unchecked);
+    this->toolBar->addWidget(highlightSelectedCheck);
+
+    QObject::connect(highlightSelectedCheck,&QCheckBox::checkStateChanged,this,&SubWindow::onHighlightSelectedChanged);
+
     QCheckBox *twoSidedFaceCheck = new QCheckBox(tr("Same face color"));
     twoSidedFaceCheck->setToolTip(tr("When checked, both sides of surface elements share the same color.\nWhen unchecked, the back side is shown in a different color."));
     twoSidedFaceCheck->setCheckState(this->glWidget->getTwoSidedFace() ? Qt::Checked : Qt::Unchecked);
@@ -222,6 +229,13 @@ void SubWindow::onShowErrorsToggled(bool checked)
     this->glWidget->getGLDisplayProperties().setShowErrors(checked);
     this->glWidget->getGLDisplayProperties().store();
     this->glWidget->update();
+    R_LOG_TRACE_OUT;
+}
+
+void SubWindow::onHighlightSelectedChanged(Qt::CheckState state)
+{
+    R_LOG_TRACE_IN;
+    this->glWidget->setHighlightSelected(state == Qt::Checked);
     R_LOG_TRACE_OUT;
 }
 

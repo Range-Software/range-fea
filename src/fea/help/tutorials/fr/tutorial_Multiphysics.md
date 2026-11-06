@@ -119,6 +119,6 @@ La température varie d'environ 505 K à 620 K ; la poutre est la plus chaude au
 
 1. Dans l'arbre **Modèle**, décochez **Volumes**, cochez **Champs vectoriels** et sélectionnez **Electric field**.
 2. Dans l'onglet **Résultats**, choisissez **Temperature - Scalar**, cochez **Scalar** et **Afficher la plage de valeurs**. Les flèches sont maintenant colorées selon la température à leur emplacement.
-3. Dans les **Propriétés d'affichage** sous l'arbre, cochez **Dessiner les pointes des flèches** pour montrer la direction du champ électrique.
+3. Dans les **Propriétés d'affichage** sous l'arbre, cochez **Pointes des flèches** pour montrer la direction du champ électrique.
 
 ![Température appliquée sur le champ vectoriel](image-Applied_temperature_on_vector_field.png)

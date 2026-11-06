@@ -119,6 +119,6 @@ La temperatura varía entre unos 505 K y 620 K; la viga está más caliente en e
 
 1. En el árbol **Modelo**, desmarque **Volúmenes**, marque **Campos vectoriales** y seleccione **Electric field**.
 2. En la pestaña **Resultados**, elija **Temperature - Scalar** y marque **Scalar** y **Mostrar el rango de valores**. Las flechas se colorean ahora según la temperatura en su posición.
-3. En las **Propiedades de visualización**, bajo el árbol, marque **Dibujar puntas de flecha** para mostrar la dirección del campo eléctrico.
+3. En las **Propiedades de visualización**, bajo el árbol, marque **Puntas de flecha** para mostrar la dirección del campo eléctrico.
 
 ![Temperatura aplicada en el campo vectorial](image-Applied_temperature_on_vector_field.png)

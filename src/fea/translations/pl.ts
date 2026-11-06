@@ -2360,6 +2360,11 @@
         <translation>więcej</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <source>Boundary conditions</source>
+        <translation>Warunki brzegowe</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1617"/>
         <source>Action</source>
         <translation>Akcja</translation>
@@ -3518,48 +3523,48 @@
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="251"/>
-        <source>Draw as wireframe</source>
-        <translation>Rysuj jako siatkę krawędziową</translation>
+        <source>As wireframe</source>
+        <translation>Jako siatka krawędziowa</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="259"/>
-        <source>Draw element edges</source>
-        <translation>Rysuj krawędzie elementów</translation>
+        <source>Element edges</source>
+        <translation>Krawędzie elementów</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="267"/>
-        <source>Draw element nodes</source>
-        <translation>Rysuj węzły elementów</translation>
+        <source>Element nodes</source>
+        <translation>Węzły elementów</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="275"/>
-        <source>Draw element numbers</source>
-        <translation>Rysuj numery elementów</translation>
+        <source>Element numbers</source>
+        <translation>Numery elementów</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="283"/>
-        <source>Draw node numbers</source>
-        <translation>Rysuj numery węzłów</translation>
+        <source>Node numbers</source>
+        <translation>Numery węzłów</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="291"/>
-        <source>Draw boundary conditions</source>
-        <translation>Rysuj warunki brzegowe</translation>
+        <source>Boundary conditions</source>
+        <translation>Warunki brzegowe</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="299"/>
-        <source>Draw arrow heads</source>
-        <translation>Rysuj groty strzałek</translation>
+        <source>Arrow heads</source>
+        <translation>Groty strzałek</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="307"/>
-        <source>Draw arrows with same length</source>
-        <translation>Rysuj strzałki o jednakowej długości</translation>
+        <source>Arrows with same length</source>
+        <translation>Strzałki o jednakowej długości</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="315"/>
-        <source>Draw arrows pointing from</source>
-        <translation>Rysuj strzałki wychodzące z</translation>
+        <source>Arrows pointing from</source>
+        <translation>Strzałki wychodzące z</translation>
     </message>
     <message>
         <location filename="../src/model_entity_display_properties_tree.cpp" line="323"/>
@@ -5065,6 +5070,16 @@
         <location filename="../src/sub_window.cpp" line="84"/>
         <source>Screenshot.</source>
         <translation>Zrzut ekranu.</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="94"/>
+        <source>Highlight selection</source>
+        <translation>Podświetl zaznaczenie</translation>
+    </message>
+    <message>
+        <location filename="../src/sub_window.cpp" line="95"/>
+        <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
+        <translation>Jeśli zaznaczone, encje wybrane w drzewie modelu są podświetlane w widoku 3D.</translation>
     </message>
     <message>
         <location filename="../src/sub_window.cpp" line="94"/>

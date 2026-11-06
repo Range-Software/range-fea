@@ -120,6 +120,8 @@ class GLWidget : public QWidget
         bool showRotationSphere;
         //! Use two sided face
         bool twoSidedFace;
+        //! Highlight entities selected in model tree.
+        bool highlightSelected;
         //! Model draw time in milliseconds;
         qint64 modelDrawTime;
         //! Flag indicating lights need to be updated.
@@ -184,6 +186,12 @@ class GLWidget : public QWidget
 
         //! Set whether to paint two sided face.
         void setTwoSidedFace(bool twoSidedFace);
+
+        //! Return whether to highlight entities selected in model tree.
+        bool getHighlightSelected() const;
+
+        //! Set whether to highlight entities selected in model tree.
+        void setHighlightSelected(bool highlightSelected);
 
         //! Take screenshot.
         void takeScreenShot(const QString &fileName);
@@ -257,10 +265,10 @@ class GLWidget : public QWidget
         void drawLocalAxis(QPainter &painter);
 
         //! Draw message box.
-        void drawMessageBox(QPainter &painter, bool drawBox);
+        void drawMessageBox(QPainter &painter);
 
         //! Draw information box.
-        void drawInfoBox(QPainter &painter, bool drawBox);
+        void drawInfoBox(QPainter &painter);
 
         //! Return messages displayed in information box.
         QStringList findInfoMessages() const;

@@ -32,7 +32,7 @@ Tato akce zobrazí dialog **Generovat 3D síť**.
 
 Předvyplněné hodnoty zatím postačují. Potvrďte kliknutím na **OK**.
 
-Po vygenerování sítě se ve stromu **Model** objeví nová entita ve skupině **Objemy**. Chcete-li vygenerovanou síť vidět, skryjte povrchové entity, zobrazte pouze **Objemy** a v **Možnosti zobrazení** zaškrtněte **Vykreslit jako drátový model**.
+Po vygenerování sítě se ve stromu **Model** objeví nová entita ve skupině **Objemy**. Chcete-li vygenerovanou síť vidět, skryjte povrchové entity, zobrazte pouze **Objemy** a v **Možnosti zobrazení** zaškrtněte **Jako drátový model**.
 
 ![Objemová síť](image-Volume_mesh.png)
 

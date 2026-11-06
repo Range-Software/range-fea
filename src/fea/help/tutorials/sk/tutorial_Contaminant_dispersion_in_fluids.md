@@ -191,12 +191,12 @@ Prechodový riešič beží na pozadí, takže výsledky možno prezerať ešte 
 Aby bol smer prúdenia nad zafarbeným rezom lepšie čitateľný, vykreslite šípky s hrotmi a bielou farbou:
 
 1. V strome **Model** vyberte vektorové pole (**Velocity** v skupine **Vektorové polia**).
-2. V časti **Možnosti zobrazenia** pod stromom zaškrtnite **Vykresliť hroty šípiek**.
+2. V časti **Možnosti zobrazenia** pod stromom zaškrtnite **Hroty šípiek**.
 3. Kliknite na výber farby pod zaškrtávacími políčkami a zvoľte bielu (**#ffffffff**).
 
-Ďalšie možnosti zobrazenia určujú, či majú všetky šípky rovnakú dĺžku (**Vykresliť šípky rovnako dlhé**) a či šípky začínajú v bode, v ktorom sa rýchlosť vyhodnocuje (**Vykresliť šípky smerujúce von**).
+Ďalšie možnosti zobrazenia určujú, či majú všetky šípky rovnakú dĺžku (**Šípky rovnako dlhé**) a či šípky začínajú v bode, v ktorom sa rýchlosť vyhodnocuje (**Šípky smerujúce von**).
 
-![CFD – Vykresliť hroty šípiek](image-CFD-Draw_arrow_heads.png)
+![CFD – Hroty šípiek](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Záznamy modelu (výsledky v čase)
 

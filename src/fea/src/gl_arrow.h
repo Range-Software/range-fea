@@ -15,6 +15,7 @@ class GLArrow : public GLObject
         // Environment settings
         GLboolean normalizeEnabled;
         GLboolean cullFaceEnabled;
+        bool twoSidedEnabled;
         GLfloat lineWidth;
 
     protected:

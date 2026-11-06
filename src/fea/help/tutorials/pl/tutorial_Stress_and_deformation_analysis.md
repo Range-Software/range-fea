@@ -32,7 +32,7 @@ Ta akcja otworzy okno **Generuj siatkę 3D**.
 
 Na razie wartości domyślne są wystarczające. Kliknij **OK**, aby zatwierdzić.
 
-Po wygenerowaniu siatki w **drzewie modelu** pojawi się nowa encja **Volume**. Aby zobaczyć wygenerowaną siatkę, ukryj encje powierzchni, pokaż tylko **Objętości** i zaznacz **Rysuj jako siatkę krawędziową** we **Właściwościach wyświetlania**.
+Po wygenerowaniu siatki w **drzewie modelu** pojawi się nowa encja **Volume**. Aby zobaczyć wygenerowaną siatkę, ukryj encje powierzchni, pokaż tylko **Objętości** i zaznacz **Jako siatka krawędziowa** we **Właściwościach wyświetlania**.
 
 ![Siatka objętościowa](image-Volume_mesh.png)
 

@@ -32,7 +32,7 @@ Esta acción abre la ventana **Generar malla 3D**.
 
 Por ahora, los valores predeterminados son suficientes. Haga clic en **Aceptar** para confirmar.
 
-Una vez generada la malla, aparece una nueva entidad **Volume** en el **árbol del modelo**. Para ver la malla generada, oculte las entidades de superficie, muestre solo los **Volúmenes** y marque **Dibujar en alambre** en las **Propiedades de visualización**.
+Una vez generada la malla, aparece una nueva entidad **Volume** en el **árbol del modelo**. Para ver la malla generada, oculte las entidades de superficie, muestre solo los **Volúmenes** y marque **En alambre** en las **Propiedades de visualización**.
 
 ![Malla de volumen](image-Volume_mesh.png)
 

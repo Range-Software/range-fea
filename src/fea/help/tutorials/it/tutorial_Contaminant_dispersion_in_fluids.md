@@ -191,12 +191,12 @@ Il solutore transitorio viene eseguito in background, quindi i risultati possono
 Per rendere più leggibile la direzione del flusso sopra la sezione colorata, disegna le frecce con le punte e in bianco:
 
 1. Seleziona il campo vettoriale (**Velocity** sotto **Campi vettoriali**) nell'albero **Modello**.
-2. In **Proprietà di visualizzazione** sotto l'albero attiva **Disegna punte delle frecce**.
+2. In **Proprietà di visualizzazione** sotto l'albero attiva **Punte delle frecce**.
 3. Fai clic sul selettore di colore sotto le caselle di controllo e scegli il bianco (**#ffffffff**).
 
-Le altre proprietà di visualizzazione stabiliscono se tutte le frecce hanno la stessa lunghezza (**Disegna frecce di uguale lunghezza**) e se le frecce partono dal punto in cui viene valutata la velocità (**Disegna frecce uscenti dal punto**).
+Le altre proprietà di visualizzazione stabiliscono se tutte le frecce hanno la stessa lunghezza (**Frecce di uguale lunghezza**) e se le frecce partono dal punto in cui viene valutata la velocità (**Frecce uscenti dal punto**).
 
-![CFD – Disegna punte delle frecce](image-CFD-Draw_arrow_heads.png)
+![CFD – Punte delle frecce](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Record del modello (risultati nel tempo)
 

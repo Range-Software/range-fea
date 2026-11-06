@@ -191,12 +191,12 @@ Le solveur transitoire s'exécute en arrière-plan ; les résultats peuvent donc
 Pour rendre la direction de l'écoulement plus lisible au-dessus de la coupe colorée, tracez les flèches avec des pointes et en blanc :
 
 1. Sélectionnez le champ vectoriel (**Velocity** sous **Champs vectoriels**) dans l'arbre **Modèle**.
-2. Dans les **Propriétés d'affichage** sous l'arbre, cochez **Dessiner les pointes des flèches**.
+2. Dans les **Propriétés d'affichage** sous l'arbre, cochez **Pointes des flèches**.
 3. Cliquez sur le sélecteur de couleur sous les cases à cocher et choisissez le blanc (**#ffffffff**).
 
-Les autres propriétés d'affichage déterminent si toutes les flèches ont la même longueur (**Dessiner des flèches de même longueur**) et si les flèches partent du point où la vitesse est évaluée (**Dessiner les flèches partant du point**).
+Les autres propriétés d'affichage déterminent si toutes les flèches ont la même longueur (**Flèches de même longueur**) et si les flèches partent du point où la vitesse est évaluée (**Flèches partant du point**).
 
-![CFD – Dessiner les pointes des flèches](image-CFD-Draw_arrow_heads.png)
+![CFD – Pointes des flèches](image-CFD-Draw_arrow_heads.png)
 
 ## 14. Enregistrements du modèle (résultats dans le temps)
 
