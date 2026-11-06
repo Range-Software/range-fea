@@ -13,6 +13,7 @@
 #include <QScreen>
 
 #include <rbl_stop_watch.h>
+#include <rgl_icon.h>
 
 #include "gl_widget.h"
 #include "gl_arrow.h"
@@ -943,12 +944,16 @@ void GLWidget::drawValueRange(QPainter &painter,
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-    bool darkBackground = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96;
+    // Card follows application color scheme, it is independent of the 3D view background.
+    const bool darkPalette = RIcon::isDarkPalette();
 
-    const QColor cardColor = darkBackground ? QColor(24,24,24,190) : QColor(255,255,255,210);
-    const QColor cardBorderColor = darkBackground ? QColor(255,255,255,36) : QColor(0,0,0,30);
-    const QColor primaryColor = darkBackground ? QColor(242,242,242) : QColor(28,28,28);
-    const QColor secondaryColor = darkBackground ? QColor(168,168,168) : QColor(102,102,102);
+    const QColor cardColor = darkPalette ? QColor(24,24,24,190) : QColor(255,255,255,230);
+    const QColor cardBorderColor = darkPalette ? QColor(255,255,255,36) : QColor(0,0,0,30);
+    const QColor primaryColor = darkPalette ? QColor(242,242,242) : QColor(28,28,28);
+    const QColor secondaryColor = darkPalette ? QColor(168,168,168) : QColor(102,102,102);
+
+    // Leader lines to picked points run over the 3D view and have to contrast with its background.
+    const QColor leaderColor = qGray(this->getGLDisplayProperties().getBgColor().rgb()) < 96 ? QColor(242,242,242) : QColor(28,28,28);
 
     QFont labelFont(painter.font());
     QFont titleFont(labelFont);
@@ -1127,7 +1132,7 @@ void GLWidget::drawValueRange(QPainter &painter,
         QPoint pickPosition;
         this->convertModelToScreen(pickedPositions[i],pickPosition);
 
-        painter.setPen(primaryColor);
+        painter.setPen(leaderColor);
         painter.drawLine(barX-markerWidth,pickedY,pickPosition.x(),pickPosition.y());
 
         const QPointF marker[3] = { QPointF(barX,pickedY),
