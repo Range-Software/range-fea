@@ -28,6 +28,8 @@ GLStateCache::GLStateCache()
     , polygonOffsetUnits(0.0f)
     , twoSided(false)
     , highlight(false)
+    , bandCount(0)
+    , bandOutline(false)
     , clipPlaneEnabled(false)
     , initialized(false)
     , shaderProgram(nullptr)
@@ -75,6 +77,8 @@ void GLStateCache::initialize()
     this->polygonOffsetUnits = 0.0f;
     this->twoSided = false;
     this->highlight = false;
+    this->bandCount = 0;
+    this->bandOutline = false;
     this->initialized = true;
 }
 
@@ -113,6 +117,8 @@ GLfloat GLStateCache::getPolygonOffsetUnits() const { return this->polygonOffset
 
 bool GLStateCache::getTwoSided() const { return this->twoSided; }
 bool GLStateCache::getHighlight() const { return this->highlight; }
+int GLStateCache::getBandCount() const { return this->bandCount; }
+bool GLStateCache::getBandOutline() const { return this->bandOutline; }
 bool GLStateCache::getClipPlaneEnabled() const { return this->clipPlaneEnabled; }
 const double *GLStateCache::getClipPlane() const { return this->clipPlane; }
 
@@ -318,6 +324,17 @@ void GLStateCache::setHighlight(bool highlight)
     if (this->shaderProgram)
     {
         this->shaderProgram->setUniformBool("uHighlight", highlight);
+    }
+}
+
+void GLStateCache::setColorMapBands(int bandCount, bool bandOutline)
+{
+    this->bandCount = bandCount;
+    this->bandOutline = bandOutline;
+    if (this->shaderProgram)
+    {
+        this->shaderProgram->setUniformInt("uBandCount", bandCount);
+        this->shaderProgram->setUniformBool("uBandOutline", bandOutline);
     }
 }
 

@@ -51,6 +51,12 @@ class GLStateCache
         //! Whether the entity being drawn is highlighted (selected).
         bool highlight;
 
+        //! Number of bands of the current color map, 0 for a continuous one.
+        int bandCount;
+
+        //! Whether lines are drawn between bands of the current color map.
+        bool bandOutline;
+
         //! Whether the clipping plane is active.
         bool clipPlaneEnabled;
         //! Clipping plane equation in eye space.
@@ -111,6 +117,12 @@ class GLStateCache
         //! Return whether the entity being drawn is highlighted.
         bool getHighlight() const;
 
+        //! Return number of bands of the current color map, 0 for a continuous one.
+        int getBandCount() const;
+
+        //! Return whether lines are drawn between bands of the current color map.
+        bool getBandOutline() const;
+
         //! Return whether the clipping plane is active.
         bool getClipPlaneEnabled() const;
 
@@ -144,6 +156,8 @@ class GLStateCache
         void setTwoSided(bool twoSided);
         //! Highlight (lighten) what is drawn next - used for selected entities.
         void setHighlight(bool highlight);
+        //! Set bands of the color map used for what is drawn next, 0 bands for a continuous one.
+        void setColorMapBands(int bandCount, bool bandOutline);
         void setClipPlane(bool enabled, const double plane[4] = nullptr);
 
         // Convenience methods for enable/disable

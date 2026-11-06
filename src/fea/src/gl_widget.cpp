@@ -15,6 +15,7 @@
 #include <rbl_stop_watch.h>
 #include <rgl_icon.h>
 
+#include "color_scale.h"
 #include "gl_widget.h"
 #include "gl_arrow.h"
 #include "gl_axis.h"
@@ -553,6 +554,8 @@ void GLWidget::drawModel()
         this->mainShaderProgram.setUniformBool("uUseTexture", false);
         this->mainShaderProgram.setUniformBool("uTwoSided", false);
         this->mainShaderProgram.setUniformBool("uHighlight", false);
+        this->mainShaderProgram.setUniformInt("uBandCount", 0);
+        this->mainShaderProgram.setUniformBool("uBandOutline", false);
         this->mainShaderProgram.setUniformInt("uColorMap", 0);
     }
 
@@ -1092,18 +1095,49 @@ void GLWidget::drawValueRange(QPainter &painter,
     int barY = textY + gap;
     int barBottom = barY + barHeight;
 
-    static QHash<QString,QImage> barImages;
-    if (!barImages.contains(valueRangeFile))
+    const int nBands = ColorScale::getBandCount(valueRangeFile);
+
+    // Position of the edge between bands.
+    auto bandEdgeToY = [&](int edge)
     {
-        QTransform t;
-        t.rotate(-90.0);
-        barImages.insert(valueRangeFile,QImage(valueRangeFile).transformed(t));
-    }
+        return barBottom - qRound(double(barHeight)*double(edge)/double(nBands));
+    };
 
     QPainterPath barPath;
     barPath.addRoundedRect(QRectF(barX,barY,barWidth,barHeight),3.0,3.0);
     painter.setClipPath(barPath);
-    painter.drawImage(QRect(barX,barY,barWidth,barHeight),barImages.value(valueRangeFile));
+    if (nBands > 0)
+    {
+        static QHash<QString,QList<QColor>> barBandColors;
+        if (!barBandColors.contains(valueRangeFile))
+        {
+            barBandColors.insert(valueRangeFile,ColorScale::getBandColors(valueRangeFile));
+        }
+        const QList<QColor> bandColors = barBandColors.value(valueRangeFile);
+
+        for (int i=0;i<bandColors.size();i++)
+        {
+            painter.fillRect(barX,bandEdgeToY(i+1),barWidth,bandEdgeToY(i)-bandEdgeToY(i+1),bandColors.at(i));
+        }
+        if (ColorScale::getBandOutline(valueRangeFile))
+        {
+            for (int i=1;i<bandColors.size();i++)
+            {
+                painter.fillRect(barX,bandEdgeToY(i),barWidth,1,ColorScale::findBandLineColor(bandColors.at(i-1),bandColors.at(i)));
+            }
+        }
+    }
+    else
+    {
+        static QHash<QString,QImage> barImages;
+        if (!barImages.contains(valueRangeFile))
+        {
+            QTransform t;
+            t.rotate(-90.0);
+            barImages.insert(valueRangeFile,QImage(valueRangeFile).transformed(t));
+        }
+        painter.drawImage(QRect(barX,barY,barWidth,barHeight),barImages.value(valueRangeFile));
+    }
     painter.setClipping(false);
 
     // Labels
@@ -1127,12 +1161,32 @@ void GLWidget::drawValueRange(QPainter &painter,
     const double scaledLower = lowerValue/scale.factor;
     const double scaledUpper = upperValue/scale.factor;
 
+    const int minLabelDistance = labelHeight + labelHeight/3;
+
     // Intermediate ticks at round values, those too close to minimum and maximum are skipped.
-    const double tickStep = findValueRangeTickStep(scaledUpper-scaledLower,std::clamp(barHeight/(3*labelHeight),2,10));
+    const double tickStep = (nBands > 0) ? 0.0 : findValueRangeTickStep(scaledUpper-scaledLower,std::clamp(barHeight/(3*labelHeight),2,10));
+    if (nBands > 0 && range > 0.0)
+    {
+        // Ticks of a stepped scale are at band edges, labels which would overlap are left out.
+        const int bandDecimals = findValueRangeDecimals(scaledLower,scaledUpper);
+
+        painter.setFont(style.labelFont);
+        painter.setPen(style.secondaryColor);
+        int lastLabelY = barBottom;
+        for (int i=1;i<nBands;i++)
+        {
+            const int tickY = bandEdgeToY(i);
+            const bool drawText = (lastLabelY - tickY >= minLabelDistance && tickY - barY >= minLabelDistance);
+            drawLabel(tickY,drawText ? formatValueRangeNumber(scaledLower + (scaledUpper-scaledLower)*double(i)/double(nBands),bandDecimals) : QString());
+            if (drawText)
+            {
+                lastLabelY = tickY;
+            }
+        }
+    }
     if (tickStep > 0.0)
     {
         int tickDecimals = std::clamp(-int(std::floor(std::log10(tickStep))),0,6);
-        int minLabelDistance = labelHeight + labelHeight/3;
 
         painter.setFont(style.labelFont);
         painter.setPen(style.secondaryColor);

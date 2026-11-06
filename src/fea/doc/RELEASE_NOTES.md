@@ -42,6 +42,14 @@
   - value ranges of several variables share the height of the view
   - a picked value is shown next to the picked point, with a line to a marker on the
     color bar
+- Stepped color scales look better in the 3D view and the value range:
+  - bands have equal width and smooth edges
+  - lines between bands keep a constant thin width at any zoom and are a darker shade
+    of the neighbouring colors instead of black. They fade out where bands get too
+    narrow to show them
+  - ticks of the value range are at band edges, showing the value where the color
+    changes
+  - values at the ends of a color scale no longer wrap around to the other end
 - Redesigned orientation axis in the lower left corner of the 3D view, with thin
   labelled arrows in the colors of the global axis. Arrows pointing away from the
   viewer are drawn fainter
