@@ -2360,6 +2360,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation type="unfinished"></translation>
@@ -4749,6 +4754,17 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

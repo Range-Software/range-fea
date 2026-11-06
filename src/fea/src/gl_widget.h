@@ -24,6 +24,7 @@
 #include "session_entity_id.h"
 #include "session_node_id.h"
 
+struct RSmoothedVariable;
 class QPainter;
 class RenderSurface;
 class RenderOverlayWidget;
@@ -259,7 +260,8 @@ class GLWidget : public QWidget
                             double upperValue,
                             const std::vector<RR3Vector> &pickedPositions,
                             const std::vector<double> &pickedValues,
-                            const QString &valueRangeFile, const QString &valueRangeName, const QString &valueRangeUnits);
+                            const QString &valueRangeFile, const QString &valueRangeName, const QString &valueRangeUnits,
+                            const RSmoothedVariable *pSmoothedVariable);
 
         //! Draw local axis in lower left corner.
         void drawLocalAxis(QPainter &painter);

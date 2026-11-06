@@ -4,6 +4,21 @@
 #include "gl_simplex_polygon.h"
 #include "gl_simplex_tetrahedra.h"
 
+void GLElement::findTextureCoordinates(std::vector<double> &values) const
+{
+    if (!this->pSmoothedScalarVariable)
+    {
+        this->findScalarNodeValues(this->elementID,*this->pScalarVariable,values);
+        return;
+    }
+
+    values.resize(this->size());
+    for (uint i=0;i<this->size();i++)
+    {
+        values[i] = this->findTextureCoordinate(this->pSmoothedScalarVariable->getValue(this->elementID,i));
+    }
+}
+
 void GLElement::_init(const GLElement *pGlElement)
 {
     this->pPrecomputed = nullptr; // never copy the precomputed pointer
@@ -113,7 +128,7 @@ GLElementPrecomputedData GLElement::precompute() const
     // Scalar texture coordinates
     if (this->pScalarVariable)
     {
-        this->findScalarNodeValues(this->elementID, *this->pScalarVariable, data.textureCoords);
+        this->findTextureCoordinates(data.textureCoords);
     }
 
     // Visible faces (tetrahedra only)
@@ -277,7 +292,7 @@ void GLElement::drawPoint()
             if (this->pScalarVariable != 0)
             {
                 std::vector<double> scalarValues;
-                this->findScalarNodeValues(this->elementID,*this->pScalarVariable,scalarValues);
+                this->findTextureCoordinates(scalarValues);
                 point.setNodeTextureCoordinates(scalarValues);
             }
             if (this->elementGroupData.getDrawWire())
@@ -350,7 +365,7 @@ void GLElement::drawLine()
             if (this->pScalarVariable != 0)
             {
                 std::vector<double> scalarValues;
-                this->findScalarNodeValues(this->elementID,*this->pScalarVariable,scalarValues);
+                this->findTextureCoordinates(scalarValues);
                 segment.setNodeTextureCoordinates(scalarValues);
             }
             if (this->elementGroupData.getDrawWire())
@@ -427,7 +442,7 @@ void GLElement::drawTriangle()
             if (this->pScalarVariable != 0)
             {
                 std::vector<double> scalarValues;
-                this->findScalarNodeValues(this->elementID,*this->pScalarVariable,scalarValues);
+                this->findTextureCoordinates(scalarValues);
                 polygon.setNodeTextureCoordinates(scalarValues);
             }
             if (this->elementGroupData.getDrawWire())
@@ -507,7 +522,7 @@ void GLElement::drawQuadrilateral()
             if (this->pScalarVariable != 0)
             {
                 std::vector<double> scalarValues;
-                this->findScalarNodeValues(this->elementID,*this->pScalarVariable,scalarValues);
+                this->findTextureCoordinates(scalarValues);
                 polygon.setNodeTextureCoordinates(scalarValues);
             }
             if (this->elementGroupData.getDrawWire())
@@ -587,7 +602,7 @@ void GLElement::drawTetrahedra()
             if (this->pScalarVariable != 0)
             {
                 std::vector<double> scalarValues;
-                this->findScalarNodeValues(this->elementID,*this->pScalarVariable,scalarValues);
+                this->findTextureCoordinates(scalarValues);
                 tetrahedra.setNodeTextureCoordinates(scalarValues);
             }
             if (this->elementGroupData.getDrawWire())

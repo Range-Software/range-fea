@@ -2360,6 +2360,11 @@
         <translation>більше</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation>Згладжено. Діапазон елементів: від %1 до %2</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation>Граничні умови</translation>
@@ -4750,6 +4755,18 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation>Згладжене відображення</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation>Результати елементів усереднюються у вузлах лише для відображення, самі результати залишаються незмінними.
+Усереднення знижує пікові значення, порівнюйте їх із діапазоном елементів, показаним у діапазоні значень.</translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

@@ -60,6 +60,9 @@ class ResultsVariableTree : public QTreeWidget
         //! Apply as displacement toggle state has changed.
         void onApplyAsDisplacementStateChanged(Qt::CheckState);
 
+        //! Smooth display toggle state has changed.
+        void onSmoothDisplayStateChanged(Qt::CheckState state);
+
         //! Apply on node button has been clicked.
         void onApplyOnNodeClicked();
 

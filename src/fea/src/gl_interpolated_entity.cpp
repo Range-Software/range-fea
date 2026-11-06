@@ -120,6 +120,8 @@ void GLInterpolatedEntity::draw()
     {
         pGlEntityList->newList(GL_ENTITY_LIST_ITEM_NORMAL);
 
+        const RSmoothedVariable *pSmoothedScalarVariable = pScalarVariable ? rModel.prepareSmoothedVariable(*pScalarVariable) : nullptr;
+
         for (uint i=0;i<this->size();i++)
         {
             GLObject::PaintActionMask paintAction = GLObject::Draw;
@@ -133,6 +135,7 @@ void GLInterpolatedEntity::draw()
                                              this->getData(),
                                              GL_ELEMENT_DRAW_NORMAL);
             glIElement.setScalarVariable(pScalarVariable);
+            glIElement.setSmoothedScalarVariable(pSmoothedScalarVariable);
             glIElement.setDisplacementVariable(pDisplacementVariable);
             glIElement.setApplyEnvironmentSettings(false);
             glIElement.paint(paintAction);

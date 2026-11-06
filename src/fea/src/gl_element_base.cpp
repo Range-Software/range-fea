@@ -13,6 +13,7 @@ void GLElementBase::_init(const GLElementBase *pGlElement)
         this->setElementID(pGlElement->getElementID());
         this->setApplyEnvironmentSettings(pGlElement->getApplyEnvironmentSettings());
         this->pScalarVariable = pGlElement->pScalarVariable;
+        this->pSmoothedScalarVariable = pGlElement->pSmoothedScalarVariable;
         this->pDisplacementVariable = pGlElement->pDisplacementVariable;
         this->nodePointSize = pGlElement->nodePointSize;
         this->edgeLineWidth = pGlElement->edgeLineWidth;
@@ -27,6 +28,7 @@ GLElementBase::GLElementBase(GLWidget *glWidget, const Model *pModel, uint eleme
     , pModel(pModel)
     , elementID(elementID)
     , pScalarVariable(nullptr)
+    , pSmoothedScalarVariable(nullptr)
     , pDisplacementVariable(nullptr)
     , nodePointSize(GLElementBase::defaultNodePointSize)
     , edgeLineWidth(1.0f)
@@ -89,6 +91,19 @@ void GLElementBase::setElementID(uint elementID)
 void GLElementBase::setScalarVariable(const RVariable *pScalarVariable)
 {
     this->pScalarVariable = pScalarVariable;
+}
+
+void GLElementBase::setSmoothedScalarVariable(const RSmoothedVariable *pSmoothedScalarVariable)
+{
+    this->pSmoothedScalarVariable = pSmoothedScalarVariable;
+}
+
+double GLElementBase::findTextureCoordinate(double value) const
+{
+    const double minValue = this->pScalarVariable->getVariableData().getMinDisplayValue();
+    const double maxValue = this->pScalarVariable->getVariableData().getMaxDisplayValue();
+
+    return std::max(std::min((value - minValue) / (maxValue - minValue),0.99),0.01);
 }
 
 void GLElementBase::setDisplacementVariable(const RVariable *pDisplacementVariable)

@@ -2360,6 +2360,11 @@
         <translation>viac</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation>Vyhladené. Rozsah prvkov: %1 až %2</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmienky</translation>
@@ -4750,6 +4755,18 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation>Vyhladené zobrazenie</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation>Výsledky prvkov sa spriemerujú v uzloch iba na zobrazenie, samotné výsledky zostávajú nezmenené.
+Priemerovanie znižuje špičkové hodnoty, porovnajte ich s rozsahom prvkov uvedeným v rozsahu hodnôt.</translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

@@ -2360,6 +2360,11 @@
         <translation>più</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation>Levigato. Intervallo elementi: da %1 a %2</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation>Condizioni al contorno</translation>
@@ -4749,6 +4754,18 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation>Visualizzazione levigata</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation>I risultati degli elementi vengono mediati sui nodi solo per la visualizzazione, i risultati stessi restano invariati.
+La media riduce i valori di picco, confrontali con l&apos;intervallo degli elementi mostrato nell&apos;intervallo di valori.</translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

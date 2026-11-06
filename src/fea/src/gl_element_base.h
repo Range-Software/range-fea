@@ -35,6 +35,8 @@ class GLElementBase : public GLObject
         uint elementID;
         //! Const pointer to scalar variable.
         const RVariable *pScalarVariable;
+        //! Const pointer to smoothed values of scalar variable, null to use its own values.
+        const RSmoothedVariable *pSmoothedScalarVariable;
         //! Const pointer to displacement variable.
         const RVariable *pDisplacementVariable;
         //! Node point size.
@@ -90,6 +92,12 @@ class GLElementBase : public GLObject
 
         //! Set scalar variable position.
         void setScalarVariable(const RVariable *pScalarVariable);
+
+        //! Set smoothed values of scalar variable.
+        void setSmoothedScalarVariable(const RSmoothedVariable *pSmoothedScalarVariable);
+
+        //! Return texture coordinate of given value of scalar variable.
+        double findTextureCoordinate(double value) const;
 
         //! Set displacement variable position.
         void setDisplacementVariable(const RVariable *pDisplacementVariable);

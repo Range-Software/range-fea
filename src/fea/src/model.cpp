@@ -71,6 +71,8 @@ void Model::_init(const Model *pModel)
     R_LOG_TRACE;
     if (pModel)
     {
+        this->smoothedVariableTypes = pModel->smoothedVariableTypes;
+        this->smoothedVariableCache = pModel->smoothedVariableCache;
         this->edgeNodes = pModel->edgeNodes;
         this->edgeElements = pModel->edgeElements;
         this->holeElements = pModel->holeElements;
@@ -3890,6 +3892,120 @@ void Model::clearEdgeNodes()
 {
     this->edgeNodes.clear();
     this->invalidateConsolidationCache(Model::ConsolidateEdgeNodes | Model::ConsolidateMeshInput);
+}
+
+bool Model::canSmoothVariable(RVariableType variableType)
+{
+    switch (variableType)
+    {
+        case R_VARIABLE_STRESS_VON_MISES:
+        case R_VARIABLE_STRESS_NORMAL:
+        case R_VARIABLE_STRESS_SHEAR:
+        case R_VARIABLE_STRESS_X:
+        case R_VARIABLE_STRESS_Y:
+        case R_VARIABLE_STRESS_Z:
+        case R_VARIABLE_STRESS_YZ:
+        case R_VARIABLE_STRESS_XZ:
+        case R_VARIABLE_STRESS_XY:
+            return true;
+        default:
+            return false;
+    }
+}
+
+bool Model::getSmoothVariable(RVariableType variableType) const
+{
+    return this->smoothedVariableTypes.contains(variableType);
+}
+
+void Model::setSmoothVariable(RVariableType variableType, bool smooth)
+{
+    const uint variablePosition = this->findVariable(variableType);
+    if (variablePosition == RConstants::eod || this->getSmoothVariable(variableType) == smooth)
+    {
+        return;
+    }
+
+    RVariable &rVariable = this->getVariable(variablePosition);
+
+    // Both value ranges are known from smoothed values.
+    this->smoothedVariableTypes.insert(variableType);
+    const RSmoothedVariable *pSmoothed = this->prepareSmoothedVariable(rVariable);
+    if (!pSmoothed)
+    {
+        this->smoothedVariableTypes.remove(variableType);
+        return;
+    }
+
+    const double oldMinValue = smooth ? pSmoothed->elementMinValue : pSmoothed->minValue;
+    const double oldMaxValue = smooth ? pSmoothed->elementMaxValue : pSmoothed->maxValue;
+    const double newMinValue = smooth ? pSmoothed->minValue : pSmoothed->elementMinValue;
+    const double newMaxValue = smooth ? pSmoothed->maxValue : pSmoothed->elementMaxValue;
+
+    auto isSame = [](double a, double b)
+    {
+        return std::abs(a - b) <= 1.0e-9*std::max(std::abs(a),std::abs(b));
+    };
+
+    RVariableData &rVariableData = rVariable.getVariableData();
+    if (isSame(rVariableData.getMinDisplayValue(),oldMinValue) && isSame(rVariableData.getMaxDisplayValue(),oldMaxValue))
+    {
+        rVariableData.setMinMaxDisplayValue(newMinValue,newMaxValue);
+    }
+
+    if (!smooth)
+    {
+        this->smoothedVariableTypes.remove(variableType);
+    }
+}
+
+const RSmoothedVariable *Model::prepareSmoothedVariable(const RVariable &rVariable) const
+{
+    const RVariableType variableType = rVariable.getType();
+
+    if (!this->getSmoothVariable(variableType)
+        || rVariable.getApplyType() != R_VARIABLE_APPLY_ELEMENT
+        || rVariable.getNValues() != this->getNElements())
+    {
+        return nullptr;
+    }
+
+    // Results change for example with displayed time step.
+    quint64 stamp = 14695981039346656037ULL ^ quint64(this->getNNodes());
+    for (uint i=0;i<rVariable.getNValues();i++)
+    {
+        const double value = rVariable.getValue(i);
+        quint64 bits = 0;
+        std::memcpy(&bits,&value,sizeof(bits));
+        stamp = (stamp ^ bits)*1099511628211ULL;
+    }
+
+    SmoothedVariableCacheItem &rItem = this->smoothedVariableCache[variableType];
+    if (!rItem.data || rItem.stamp != stamp)
+    {
+        rItem.stamp = stamp;
+        rItem.data = std::make_shared<const RSmoothedVariable>(this->findSmoothedVariable(this->findVariable(variableType)));
+    }
+    return rItem.data.get();
+}
+
+const RSmoothedVariable *Model::getSmoothedVariable(RVariableType variableType) const
+{
+    if (!this->getSmoothVariable(variableType))
+    {
+        return nullptr;
+    }
+    QHash<RVariableType,SmoothedVariableCacheItem>::const_iterator it = this->smoothedVariableCache.constFind(variableType);
+    return (it == this->smoothedVariableCache.constEnd()) ? nullptr : it.value().data.get();
+}
+
+void Model::findDefaultDisplayRange(RVariableType variableType, double &minValue, double &maxValue) const
+{
+    const RVariable &rVariable = this->getVariable(this->findVariable(variableType));
+    const RSmoothedVariable *pSmoothed = this->prepareSmoothedVariable(rVariable);
+
+    minValue = pSmoothed ? pSmoothed->minValue : rVariable.getMinValue();
+    maxValue = pSmoothed ? pSmoothed->maxValue : rVariable.getMaxValue();
 }
 
 QSet<uint> Model::findEdgeNodeIDs(const QList<SessionEntityID> &entityIDs) const

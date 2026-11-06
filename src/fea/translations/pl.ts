@@ -2360,6 +2360,11 @@
         <translation>więcej</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation>Wygładzone. Zakres elementów: %1 do %2</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation>Warunki brzegowe</translation>
@@ -4750,6 +4755,18 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation>Wygładzone wyświetlanie</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation>Wyniki elementów są uśredniane w węzłach tylko na potrzeby wyświetlania, same wyniki pozostają bez zmian.
+Uśrednianie obniża wartości szczytowe, porównaj je z zakresem elementów pokazanym w zakresie wartości.</translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

@@ -2360,6 +2360,11 @@
         <translation>více</translation>
     </message>
     <message>
+        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <source>Smoothed. Element range: %1 to %2</source>
+        <translation>Vyhlazeno. Rozsah prvků: %1 až %2</translation>
+    </message>
+    <message>
         <location filename="../src/gl_widget.cpp" line="1592"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmínky</translation>
@@ -4750,6 +4755,18 @@
 </context>
 <context>
     <name>ResultsVariableTree</name>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <source>Smooth display</source>
+        <translation>Vyhlazené zobrazení</translation>
+    </message>
+    <message>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <source>Averages element results at nodes for display only, results themselves stay unchanged.
+Averaging lowers peak values, compare them with the element range shown in the value range.</source>
+        <translation>Výsledky prvků se průměrují v uzlech pouze pro zobrazení, samotné výsledky zůstávají beze změny.
+Průměrování snižuje špičkové hodnoty, porovnejte je s rozsahem prvků uvedeným v rozsahu hodnot.</translation>
+    </message>
     <message>
         <location filename="../src/results_variable_tree.cpp" line="32"/>
         <source>Results display properties</source>

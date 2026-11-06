@@ -181,6 +181,7 @@ void GLElementGroup::draw()
         {
             pScalarVariable = &pModel->getVariable(scalarVariablePosition);
         }
+        const RSmoothedVariable *pSmoothedScalarVariable = pScalarVariable ? pModel->prepareSmoothedVariable(*pScalarVariable) : nullptr;
 
         uint displacementVarPosition = pModel->findVariablePositionByDisplayType(this->getData(),R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT);
         const RVariable *pDisplacementVariable = nullptr;
@@ -363,6 +364,7 @@ void GLElementGroup::draw()
                                 GL_ELEMENT_DRAW_NORMAL);
             glElement.setApplyEnvironmentSettings(false);
             glElement.setScalarVariable(pScalarVariable);
+            glElement.setSmoothedScalarVariable(pSmoothedScalarVariable);
             glElement.setDisplacementVariable(pDisplacementVariable);
             glElement.setPointVolume(this->pointVolume);
             glElement.setLineCrossArea(this->lineCrossArea);

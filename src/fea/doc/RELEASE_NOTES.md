@@ -50,6 +50,16 @@
   - ticks of the value range are at band edges, showing the value where the color
     changes
   - values at the ends of a color scale no longer wrap around to the other end
+- New *Smooth display* option on the **Results** tab for stresses, replacing the
+  *Display on nodes* button for them. It averages element results at nodes for display
+  only, so it can be turned off again at any time:
+  - von Mises, normal and shear stress of volumes are computed from averaged stress
+    components rather than being averaged themselves
+  - elements are averaged only with elements of the same material, thickness or cross
+    area, so real jumps of stress between them are preserved
+  - averaging lowers peak values, so the value range also shows the range of the
+    original element values
+  - the setting is not saved in the model file
 - Redesigned orientation axis in the lower left corner of the 3D view, with thin
   labelled arrows in the colors of the global axis. Arrows pointing away from the
   viewer are drawn fainter

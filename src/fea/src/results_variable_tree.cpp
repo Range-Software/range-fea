@@ -57,6 +57,7 @@ void ResultsVariableTree::populate()
     Qt::CheckState applyAsScalarState = Qt::Unchecked;
     Qt::CheckState applyAsDisplacementState = Qt::Unchecked;
     Qt::CheckState displayRangeState = Qt::Unchecked;
+    Qt::CheckState smoothDisplayState = Qt::Unchecked;
     uint nApplyAsScalar = 0;
     uint nApplyAsDisplacement = 0;
     uint nApplyTotal = 0;
@@ -173,9 +174,14 @@ void ResultsVariableTree::populate()
                 rangeName = variableData.getValueRangeName();
 
                 displayRangeState = variableData.getDisplayValueRange() ? Qt::Checked : Qt::Unchecked;
+                smoothDisplayState = model.getSmoothVariable(this->variableType) ? Qt::Checked : Qt::Unchecked;
             }
             else
             {
+                if (model.getSmoothVariable(this->variableType) != (smoothDisplayState == Qt::Checked))
+                {
+                    smoothDisplayState = Qt::PartiallyChecked;
+                }
                 minValue = std::min(minValue,variableData.getMinDisplayValue());
                 maxValue = std::max(maxValue,variableData.getMaxDisplayValue());
                 if ((variableData.getDisplayValueRange() && displayRangeState == Qt::Unchecked)
@@ -246,6 +252,18 @@ void ResultsVariableTree::populate()
 
     item = new QTreeWidgetItem(this);
     item->setText(RESULTS_VARIABLE_TREE_COLUMN_1,appliesOnStr);
+
+    // Display only, results stored on elements stay unchanged.
+    const bool canSmooth = appliesOnElement && Model::canSmoothVariable(this->variableType);
+    if (canSmooth)
+    {
+        item = new QTreeWidgetItem(this);
+        QCheckBox *smoothDisplayCheckBox = new QCheckBox(tr("Smooth display"));
+        smoothDisplayCheckBox->setToolTip(tr("Averages element results at nodes for display only, results themselves stay unchanged.\nAveraging lowers peak values, compare them with the element range shown in the value range."));
+        smoothDisplayCheckBox->setCheckState(smoothDisplayState);
+        this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,smoothDisplayCheckBox);
+        QObject::connect(smoothDisplayCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onSmoothDisplayStateChanged);
+    }
 
     // -----------------------------------------------------------------
     // APPLY AS
@@ -367,7 +385,7 @@ void ResultsVariableTree::populate()
     QGroupBox *actionsGroupBox= new QGroupBox("Actions");
     QGridLayout *actionsLayout = new QGridLayout;
 
-    if (appliesOnElement)
+    if (appliesOnElement && !canSmooth)
     {
         QPushButton *applyOnNodeButton = new QPushButton(tr("Display on nodes"));
         actionsLayout->addWidget(applyOnNodeButton);
@@ -469,6 +487,45 @@ void ResultsVariableTree::onApplyAsScalarStateChanged(Qt::CheckState)
 void ResultsVariableTree::onApplyAsDisplacementStateChanged(Qt::CheckState)
 {
     this->processApplyAsStates();
+}
+
+void ResultsVariableTree::onSmoothDisplayStateChanged(Qt::CheckState state)
+{
+    QList<uint> selectedModelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    double minDisplayValue = 0.0;
+    double maxDisplayValue = 0.0;
+    bool firstValue = true;
+
+    for (int i=0;i<selectedModelIDs.size();i++)
+    {
+        Model &model = Application::instance()->getSession()->getModel(selectedModelIDs[i]);
+
+        const uint variablePosition = model.findVariable(this->variableType);
+        if (variablePosition == RConstants::eod)
+        {
+            continue;
+        }
+
+        model.setSmoothVariable(this->variableType,state == Qt::Checked);
+
+        const RVariableData &rVariableData = model.getVariable(variablePosition).getVariableData();
+        minDisplayValue = firstValue ? rVariableData.getMinDisplayValue() : std::min(minDisplayValue,rVariableData.getMinDisplayValue());
+        maxDisplayValue = firstValue ? rVariableData.getMaxDisplayValue() : std::max(maxDisplayValue,rVariableData.getMaxDisplayValue());
+        firstValue = false;
+
+        emit this->variableDataChanged(selectedModelIDs[i],this->variableType);
+    }
+
+    if (!firstValue)
+    {
+        this->minValueScale->blockSignals(true);
+        this->maxValueScale->blockSignals(true);
+        this->minValueScale->setValue(minDisplayValue);
+        this->maxValueScale->setValue(maxDisplayValue);
+        this->minValueScale->blockSignals(false);
+        this->maxValueScale->blockSignals(false);
+    }
 }
 
 void ResultsVariableTree::onApplyOnNodeClicked()
@@ -656,10 +713,10 @@ void ResultsVariableTree::onRangeAutofillClicked()
         {
             continue;
         }
-        RVariable &variable =  model.getVariable(variablePos);
 
-        double minValue = variable.getMinValue();
-        double maxValue = variable.getMaxValue();
+        double minValue = 0.0;
+        double maxValue = 0.0;
+        model.findDefaultDisplayRange(this->variableType,minValue,maxValue);
 
         if (firstValue)
         {

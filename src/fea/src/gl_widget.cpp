@@ -982,7 +982,8 @@ void GLWidget::drawValueRanges(QPainter &painter)
                              pickedValues,
                              rVariable.getVariableData().getValueRangeName(),
                              rVariable.getName(),
-                             rVariable.getUnits());
+                             rVariable.getUnits(),
+                             rModel.getSmoothedVariable(rVariable.getType()));
     }
     R_LOG_TRACE_OUT;
 }
@@ -997,7 +998,8 @@ void GLWidget::drawValueRange(QPainter &painter,
                               const std::vector<double> &pickedValues,
                               const QString &valueRangeFile,
                               const QString &valueRangeName,
-                              const QString &valueRangeUnits)
+                              const QString &valueRangeUnits,
+                              const RSmoothedVariable *pSmoothedVariable)
 {
     R_LOG_TRACE_IN;
     painter.save();
@@ -1048,14 +1050,27 @@ void GLWidget::drawValueRange(QPainter &painter,
         }
     }
 
+    // Averaging lowers peaks, range of original element values is always shown along smoothed values.
+    QString smoothedText;
+    if (pSmoothedVariable)
+    {
+        const double elementMin = pSmoothedVariable->elementMinValue/scale.factor;
+        const double elementMax = pSmoothedVariable->elementMaxValue/scale.factor;
+        const int elementDecimals = findValueRangeDecimals(elementMin,elementMax);
+        smoothedText = tr("Smoothed. Element range: %1 to %2").arg(formatValueRangeNumber(elementMin,elementDecimals),
+                                                                   formatValueRangeNumber(elementMax,elementDecimals));
+    }
+
     const QRect wrapRect(0,0,contentWidth,this->height());
     int titleHeight = titleMetrics.boundingRect(wrapRect,Qt::TextWordWrap,valueRangeName).height();
     int unitsHeight = scale.units.isEmpty() ? 0 : smallMetrics.height();
+    int smoothedHeight = smoothedText.isEmpty() ? 0 : smallMetrics.boundingRect(wrapRect,Qt::TextWordWrap,smoothedText).height();
     int footerHeight = footerText.isEmpty() ? 0 : smallMetrics.boundingRect(wrapRect,Qt::TextWordWrap,footerText).height();
+    int textsBelowBarHeight = (smoothedHeight > 0 ? gap + smoothedHeight : 0) + (footerHeight > 0 ? gap + footerHeight : 0);
 
     // Bar takes all height not used by texts. When too small the legend grows over the requested height.
-    int barHeight = std::max(40,cardHeight - (2*padding + titleHeight + unitsHeight + gap + (footerHeight > 0 ? gap + footerHeight : 0)));
-    cardHeight = 2*padding + titleHeight + unitsHeight + gap + barHeight + (footerHeight > 0 ? gap + footerHeight : 0);
+    int barHeight = std::max(40,cardHeight - (2*padding + titleHeight + unitsHeight + gap + textsBelowBarHeight));
+    cardHeight = 2*padding + titleHeight + unitsHeight + gap + barHeight + textsBelowBarHeight;
 
     // Continue in next column when the legend does not fit.
     if (position.y() > offset && position.y() + cardHeight > this->height() - offset)
@@ -1208,12 +1223,18 @@ void GLWidget::drawValueRange(QPainter &painter,
     drawLabel(barY,formatValueRangeNumber(scaledUpper,endDecimals));
     drawLabel(barBottom,formatValueRangeNumber(scaledLower,endDecimals));
 
-    // Footer
+    // Texts below the bar
+    int belowBarY = barBottom + gap;
+    painter.setFont(style.smallFont);
+    painter.setPen(style.secondaryColor);
+    if (smoothedHeight > 0)
+    {
+        painter.drawText(QRect(contentX,belowBarY,contentWidth,smoothedHeight),Qt::TextWordWrap,smoothedText);
+        belowBarY += smoothedHeight + gap;
+    }
     if (footerHeight > 0)
     {
-        painter.setFont(style.smallFont);
-        painter.setPen(style.secondaryColor);
-        painter.drawText(QRect(contentX,barBottom+gap,contentWidth,footerHeight),Qt::TextWordWrap,footerText);
+        painter.drawText(QRect(contentX,belowBarY,contentWidth,footerHeight),Qt::TextWordWrap,footerText);
     }
 
     // Picked values

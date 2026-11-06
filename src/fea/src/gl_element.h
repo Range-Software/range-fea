@@ -55,6 +55,9 @@ class GLElement : public GLElementBase, public RElement
         //! Internal initialization function.
         void _init(const GLElement *pGlElement = nullptr);
 
+        //! Find texture coordinates of element nodes.
+        void findTextureCoordinates(std::vector<double> &values) const;
+
     public:
 
         //! Constructor.

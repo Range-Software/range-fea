@@ -1,6 +1,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#include <memory>
+
 #include <QColor>
 #include <QHash>
 #include <QSet>
@@ -42,6 +44,17 @@ class Model : public RModel
 
         //! Lock enabling model to be drawn.
         QMutex drawLock;
+
+        //! Smoothed values of element variable together with stamp of values they were computed from.
+        struct SmoothedVariableCacheItem
+        {
+            quint64 stamp = 0;
+            std::shared_ptr<const RSmoothedVariable> data;
+        };
+        //! Variables whose display is smoothed - not saved in model file.
+        QSet<RVariableType> smoothedVariableTypes;
+        //! Computed smoothed values.
+        mutable QHash<RVariableType,SmoothedVariableCacheItem> smoothedVariableCache;
 
         //! Book of edge nodes.
         QVector<bool> edgeNodes;
@@ -549,6 +562,26 @@ class Model : public RModel
 
         //! Clear edge nodes.
         void clearEdgeNodes();
+
+        //! Return whether display of variable type can be smoothed.
+        static bool canSmoothVariable(RVariableType variableType);
+
+        //! Return whether display of variable type is smoothed.
+        bool getSmoothVariable(RVariableType variableType) const;
+
+        //! Set whether display of variable type is smoothed.
+        //! Display range is moved to the new values unless it was set to custom values.
+        void setSmoothVariable(RVariableType variableType, bool smooth);
+
+        //! Return smoothed values to be drawn for given variable, null when it is not smoothed.
+        //! Values are computed again when values of the variable have changed.
+        const RSmoothedVariable *prepareSmoothedVariable(const RVariable &rVariable) const;
+
+        //! Return last computed smoothed values of variable type, null when it is not smoothed.
+        const RSmoothedVariable *getSmoothedVariable(RVariableType variableType) const;
+
+        //! Find default display range of variable type taking smoothing into account.
+        void findDefaultDisplayRange(RVariableType variableType, double &minValue, double &maxValue) const;
 
     protected:
 

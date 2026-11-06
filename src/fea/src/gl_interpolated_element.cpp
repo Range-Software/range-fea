@@ -70,7 +70,26 @@ void GLInterpolatedElement::drawNormal()
 
     if (validScalarValues)
     {
-        this->findScalarNodeValues(this->pModel->getNodes(),this->pModel->getElements(),*this->pScalarVariable,scalarValues);
+        if (this->pSmoothedScalarVariable)
+        {
+            // Smoothed values vary inside an element, so they are interpolated like node values.
+            scalarValues.resize(this->size());
+            for (uint i=0;i<this->size();i++)
+            {
+                const uint iElementID = this->at(i).getElementID();
+                const RElement &rElement = this->pModel->getElement(iElementID);
+                std::vector<double> cornerValues(rElement.size(),0.0);
+                for (uint j=0;j<rElement.size();j++)
+                {
+                    cornerValues[j] = this->pSmoothedScalarVariable->getValue(iElementID,j);
+                }
+                scalarValues[i] = this->findTextureCoordinate(rElement.interpolate(this->pModel->getNodes(),this->at(i),cornerValues));
+            }
+        }
+        else
+        {
+            this->findScalarNodeValues(this->pModel->getNodes(),this->pModel->getElements(),*this->pScalarVariable,scalarValues);
+        }
     }
 
     if (validDisplacementValues)
