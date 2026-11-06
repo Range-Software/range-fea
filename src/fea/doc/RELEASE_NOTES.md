@@ -102,6 +102,9 @@
 
 ### Bug fixes
 
+- Fixed results kept when generating a 3D mesh with *Keep computed results*. Some new
+  nodes on the model boundary got values of unrelated nodes, which showed as spikes in
+  the displaced shape, and surface elements got values of unrelated elements
 - The orientation axis did not follow rotations made while it was hidden, so it could
   show a wrong orientation after being shown again
 - Arrow heads and cones of boundary condition symbols were drawn black, because their
