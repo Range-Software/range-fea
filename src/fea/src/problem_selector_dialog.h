@@ -5,6 +5,9 @@
 
 #include "problem_selector_tree.h"
 
+class ProblemSelectorTiles;
+class QToolButton;
+
 class ProblemSelectorDialog : public QDialog
 {
 
@@ -14,6 +17,12 @@ class ProblemSelectorDialog : public QDialog
 
         //! Problem selector tree widget.
         ProblemSelectorTree *problemTree;
+        //! Problem selector tiles widget.
+        ProblemSelectorTiles *problemTiles;
+        //! Show problem types as a list button.
+        QToolButton *listViewButton;
+        //! Show problem types as tiles button.
+        QToolButton *tileViewButton;
         //! OK button.
         QPushButton *okButton;
         //! Cancel button.
@@ -31,6 +40,9 @@ class ProblemSelectorDialog : public QDialog
 
         //! Handle ProblemSelectorTree::changed signal.
         void onProblemTreeChanged();
+
+        //! Show problem types as tiles or as a list.
+        void setTileView(bool tileView);
 
 };
 

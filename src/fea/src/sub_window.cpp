@@ -24,10 +24,11 @@ void SubWindow::createSubWindow()
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(RIcon::fromFile(Application::windowIconFile()));
 
-    SubWindowStyle *subWindowStyle = new SubWindowStyle(Application::instance()->getSession()->getModelColor(this->modelID));
-    this->setStyle(subWindowStyle);
+    this->subWindowStyle = new SubWindowStyle(Application::instance()->getSession()->getModelColor(this->modelID));
+    this->setStyle(this->subWindowStyle);
     // Children of this window use the style while they are being destroyed, so it must outlive them.
-    QObject::connect(this,&QObject::destroyed,subWindowStyle,&QObject::deleteLater);
+    QObject::connect(this,&QObject::destroyed,this->subWindowStyle,&QObject::deleteLater);
+    this->updateHighlight();
 
     QWidget *mainWidget = new QWidget(this);
     this->setWidget(mainWidget);
@@ -130,11 +131,25 @@ void SubWindow::createSubWindow()
                      this->glWidget,
                      &GLWidget::setClippingPlane);
 
+    QObject::connect(Application::instance()->getSession(),
+                     &Session::modelSelectionChanged,
+                     this,
+                     &SubWindow::onModelSelectionChanged);
+
     // Tooplbar icon size changed signal
     QObject::connect(Application::instance()->getApplicationSettings(),
                      &ApplicationSettings::toolbarIconSizeChanged,
                      this,
                      &SubWindow::onToolbarIconSizeChanged);
+    R_LOG_TRACE_OUT;
+}
+
+void SubWindow::updateHighlight()
+{
+    R_LOG_TRACE_IN;
+    // Selecting only a part of the model highlights its window too.
+    this->subWindowStyle->setHighlighted(!Application::instance()->getSession()->getModel(this->modelID).isSelected(false));
+    this->update();
     R_LOG_TRACE_OUT;
 }
 
@@ -163,6 +178,16 @@ void SubWindow::closeEvent(QCloseEvent *closeEvent)
     R_LOG_TRACE_IN;
     emit closed(this->getModelID());
     closeEvent->accept();
+    R_LOG_TRACE_OUT;
+}
+
+void SubWindow::onModelSelectionChanged(uint modelID)
+{
+    R_LOG_TRACE_IN;
+    if (this->modelID == modelID)
+    {
+        this->updateHighlight();
+    }
     R_LOG_TRACE_OUT;
 }
 

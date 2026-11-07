@@ -20,6 +20,7 @@ const QString ApplicationSettings::processOutputMaxLinesKey = "application/proce
 const QString ApplicationSettings::solverPathKey = "application/solverPath";
 const QString ApplicationSettings::renderBackendKey = "application/renderBackend";
 const QString ApplicationSettings::rhiApiKey = "application/rhiApi";
+const QString ApplicationSettings::problemSelectorTileViewKey = "application/problemSelectorTileView";
 
 ApplicationSettings::ApplicationSettings(QObject *parent)
     : RApplicationSettings{parent}
@@ -146,6 +147,16 @@ void ApplicationSettings::setRhiApi(RenderBackend::RhiApi rhiApi)
     this->setValue(ApplicationSettings::rhiApiKey, RenderBackend::toString(rhiApi));
 
     emit this->rhiApiChanged(rhiApi);
+}
+
+bool ApplicationSettings::getProblemSelectorTileView() const
+{
+    return this->value(ApplicationSettings::problemSelectorTileViewKey,true).toBool();
+}
+
+void ApplicationSettings::setProblemSelectorTileView(bool tileView)
+{
+    this->setValue(ApplicationSettings::problemSelectorTileViewKey,tileView);
 }
 
 uint ApplicationSettings::getMaxThreads()

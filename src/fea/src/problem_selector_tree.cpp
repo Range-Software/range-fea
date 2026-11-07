@@ -123,6 +123,42 @@ bool ProblemSelectorTree::checkProblemIsChecked() const
     return false;
 }
 
+std::vector<RProblemType> ProblemSelectorTree::getProblemTypes() const
+{
+    std::vector<RProblemType> problemTypes;
+    for (int i=0;i<this->topLevelItemCount();i++)
+    {
+        problemTypes.push_back(RProblemType(this->topLevelItem(i)->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt()));
+    }
+    return problemTypes;
+}
+
+bool ProblemSelectorTree::isProblemTypeChecked(RProblemType problemType) const
+{
+    for (int i=0;i<this->topLevelItemCount();i++)
+    {
+        const QTreeWidgetItem *item = this->topLevelItem(i);
+        if (RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt()) == problemType)
+        {
+            return item->checkState(PROBLEM_TREE_COLUMN_NAME) != Qt::Unchecked;
+        }
+    }
+    return false;
+}
+
+void ProblemSelectorTree::setProblemTypeChecked(RProblemType problemType, bool checked)
+{
+    for (int i=0;i<this->topLevelItemCount();i++)
+    {
+        QTreeWidgetItem *item = this->topLevelItem(i);
+        if (RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt()) == problemType)
+        {
+            item->setCheckState(PROBLEM_TREE_COLUMN_NAME,checked ? Qt::Checked : Qt::Unchecked);
+            return;
+        }
+    }
+}
+
 void ProblemSelectorTree::checkCheckedTreeWidgetItem(QTreeWidgetItem *item)
 {
     RProblemType problemType = RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());

@@ -2299,98 +2299,98 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="678"/>
+        <location filename="../src/gl_widget.cpp" line="683"/>
         <source>Stream line</source>
         <translation>Línea de corriente</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="693"/>
+        <location filename="../src/gl_widget.cpp" line="698"/>
         <source>Scale</source>
         <translation>Escala</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="708"/>
+        <location filename="../src/gl_widget.cpp" line="713"/>
         <source>Rotation</source>
         <translation>Rotación</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="989"/>
+        <location filename="../src/gl_widget.cpp" line="1039"/>
         <source>Time-step</source>
         <translation>Paso de tiempo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="994"/>
+        <location filename="../src/gl_widget.cpp" line="1044"/>
         <source>Mode</source>
         <translation>Modo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="999"/>
+        <location filename="../src/gl_widget.cpp" line="1049"/>
         <source>Steady state</source>
         <translation>Estado estacionario</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1355"/>
+        <location filename="../src/gl_widget.cpp" line="1464"/>
         <source>Number of sliver elements</source>
         <translation>Número de elementos degenerados</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1359"/>
+        <location filename="../src/gl_widget.cpp" line="1468"/>
         <source>Number of intersected elements</source>
         <translation>Número de elementos intersecados</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1363"/>
+        <location filename="../src/gl_widget.cpp" line="1472"/>
         <source>Number of hole elements</source>
         <translation>Número de elementos de agujero</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1369"/>
+        <location filename="../src/gl_widget.cpp" line="1478"/>
         <source>Picked entities</source>
         <translation>Entidades señaladas</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1383"/>
+        <location filename="../src/gl_widget.cpp" line="1492"/>
         <source>Hole edge</source>
         <translation>Arista del agujero</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1506"/>
-        <location filename="../src/gl_widget.cpp" line="1542"/>
+        <location filename="../src/gl_widget.cpp" line="1570"/>
+        <location filename="../src/gl_widget.cpp" line="1571"/>
         <source>more</source>
         <translation>más</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <location filename="../src/gl_widget.cpp" line="1060"/>
         <source>Smoothed. Element range: %1 to %2</source>
         <translation>Suavizado. Rango de elementos: %1 a %2</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <location filename="../src/gl_widget.cpp" line="1598"/>
         <source>Boundary conditions</source>
         <translation>Condiciones de contorno</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1617"/>
+        <location filename="../src/gl_widget.cpp" line="1790"/>
         <source>Action</source>
         <translation>Acción</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1620"/>
+        <location filename="../src/gl_widget.cpp" line="1793"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1621"/>
+        <location filename="../src/gl_widget.cpp" line="1794"/>
         <source>Model draw time</source>
         <translation>Tiempo de dibujo del modelo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2813"/>
+        <location filename="../src/gl_widget.cpp" line="3004"/>
         <source>Image files</source>
         <translation>Archivos de imagen</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2830"/>
+        <location filename="../src/gl_widget.cpp" line="3021"/>
         <source>Save screenshot as</source>
         <translation>Guardar captura de pantalla como</translation>
     </message>
@@ -4126,22 +4126,32 @@
 <context>
     <name>ProblemSelectorDialog</name>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="15"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="20"/>
         <source>Problem type selector</source>
         <translation>Selector de tipo de problema</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="23"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="28"/>
         <source>Select problem types</source>
         <translation>Seleccionar tipos de problema</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="34"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="32"/>
+        <source>List view</source>
+        <translation>Vista de lista</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="38"/>
+        <source>Tile view</source>
+        <translation>Vista de mosaicos</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="65"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="37"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="68"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
@@ -4159,17 +4169,17 @@
         <translation>Descripción</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="165"/>
+        <location filename="../src/problem_selector_tree.cpp" line="201"/>
         <source>Problem type</source>
         <translation>Tipo de problema</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="167"/>
+        <location filename="../src/problem_selector_tree.cpp" line="203"/>
         <source>is incompatible with following selected problem types</source>
         <translation>es incompatible con los siguientes tipos de problema seleccionados</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="173"/>
+        <location filename="../src/problem_selector_tree.cpp" line="209"/>
         <source>Incompatible problems selected</source>
         <translation>Se han seleccionado problemas incompatibles</translation>
     </message>
@@ -4755,12 +4765,12 @@
 <context>
     <name>ResultsVariableTree</name>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <location filename="../src/results_variable_tree.cpp" line="261"/>
         <source>Smooth display</source>
         <translation>Visualización suavizada</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <location filename="../src/results_variable_tree.cpp" line="262"/>
         <source>Averages element results at nodes for display only, results themselves stay unchanged.
 Averaging lowers peak values, compare them with the element range shown in the value range.</source>
         <translation>Los resultados de los elementos se promedian en los nodos solo para la visualización, los resultados en sí no cambian.
@@ -4772,102 +4782,102 @@ El promedio reduce los valores máximos, compárelos con el rango de elementos m
         <translation>Propiedades de visualización de resultados</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="218"/>
+        <location filename="../src/results_variable_tree.cpp" line="224"/>
         <source>Results are displayed on nodes and elements</source>
         <translation>Los resultados se muestran en nodos y elementos</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="222"/>
+        <location filename="../src/results_variable_tree.cpp" line="228"/>
         <source>Results are displayed on nodes</source>
         <translation>Los resultados se muestran en nodos</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="226"/>
+        <location filename="../src/results_variable_tree.cpp" line="232"/>
         <source>Results are displayed on elements</source>
         <translation>Los resultados se muestran en elementos</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="230"/>
+        <location filename="../src/results_variable_tree.cpp" line="236"/>
         <source>Results can not be displayed</source>
         <translation>Los resultados no se pueden mostrar</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="240"/>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
         <source>Editing values for multiple models</source>
         <translation>Edición de valores para varios modelos</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="254"/>
+        <location filename="../src/results_variable_tree.cpp" line="272"/>
         <source>Apply as ...</source>
         <translation>Aplicar como ...</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="285"/>
+        <location filename="../src/results_variable_tree.cpp" line="303"/>
         <source>Value range and color scale</source>
         <translation>Rango de valores y escala de colores</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="291"/>
+        <location filename="../src/results_variable_tree.cpp" line="309"/>
         <source>Maximum</source>
         <translation>Máximo</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="300"/>
+        <location filename="../src/results_variable_tree.cpp" line="318"/>
         <source>Minimum</source>
         <translation>Mínimo</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="309"/>
+        <location filename="../src/results_variable_tree.cpp" line="327"/>
         <source>Set default min/max values</source>
         <translation>Establecer valores mín./máx. predeterminados</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="317"/>
+        <location filename="../src/results_variable_tree.cpp" line="335"/>
         <source>Show graph values</source>
         <translation>Mostrar los valores del gráfico</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="325"/>
+        <location filename="../src/results_variable_tree.cpp" line="343"/>
         <source>Color scale</source>
         <translation>Escala de colores</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="339"/>
+        <location filename="../src/results_variable_tree.cpp" line="357"/>
         <source>Display value range</source>
         <translation>Mostrar el rango de valores</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="356"/>
+        <location filename="../src/results_variable_tree.cpp" line="374"/>
         <source>Scale</source>
         <translation>Escala</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="372"/>
+        <location filename="../src/results_variable_tree.cpp" line="390"/>
         <source>Display on nodes</source>
         <translation>Mostrar en los nodos</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="377"/>
+        <location filename="../src/results_variable_tree.cpp" line="395"/>
         <source>Remove variable</source>
         <translation>Quitar variable</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="477"/>
+        <location filename="../src/results_variable_tree.cpp" line="534"/>
         <source>Display on nodes?</source>
         <translation>¿Mostrar en los nodos?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="478"/>
+        <location filename="../src/results_variable_tree.cpp" line="535"/>
         <source>Are you sure you want to change display from elements to nodes?</source>
         <translation>¿Está seguro de que desea cambiar la visualización de elementos a nodos?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="500"/>
+        <location filename="../src/results_variable_tree.cpp" line="557"/>
         <source>Remove variable?</source>
         <translation>¿Quitar la variable?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="501"/>
+        <location filename="../src/results_variable_tree.cpp" line="558"/>
         <source>Are you sure you want to remove selected variable?</source>
         <translation>¿Está seguro de que desea quitar la variable seleccionada?</translation>
     </message>
@@ -5098,19 +5108,19 @@ El promedio reduce los valores máximos, compárelos con el rango de elementos m
         <translation>Si está marcado, las entidades seleccionadas en el árbol del modelo se resaltan en la vista 3D.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="94"/>
+        <location filename="../src/sub_window.cpp" line="101"/>
         <source>Same face color</source>
         <translation>Mismo color en ambas caras</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="95"/>
+        <location filename="../src/sub_window.cpp" line="102"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Si está marcado, ambas caras de los elementos de superficie comparten el mismo color.
 Si no está marcado, la cara posterior se muestra en otro color.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="105"/>
+        <location filename="../src/sub_window.cpp" line="112"/>
         <source>Display preferences.</source>
         <translation>Propiedades de visualización.</translation>
     </message>

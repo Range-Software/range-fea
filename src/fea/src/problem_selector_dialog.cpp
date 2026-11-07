@@ -1,11 +1,16 @@
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QToolButton>
+#include <QButtonGroup>
 #include <QDialogButtonBox>
 
 #include <rbl_logger.h>
 
+#include "application.h"
 #include "problem_selector_dialog.h"
+#include "problem_selector_tiles.h"
 #include <rgl_icon.h>
 
 ProblemSelectorDialog::ProblemSelectorDialog(QWidget *parent) :
@@ -21,12 +26,38 @@ ProblemSelectorDialog::ProblemSelectorDialog(QWidget *parent) :
     this->setLayout (mainLayout);
 
     QLabel *messageLabel = new QLabel(tr("Select problem types"));
-    mainLayout->addWidget(messageLabel);
+
+    this->listViewButton = new QToolButton;
+    this->listViewButton->setIcon(RIcon::fromFile(":/icons/action/pixmaps/range-view_list.svg"));
+    this->listViewButton->setToolTip(tr("List view"));
+    this->listViewButton->setCheckable(true);
+    this->listViewButton->setAutoRaise(true);
+
+    this->tileViewButton = new QToolButton;
+    this->tileViewButton->setIcon(RIcon::fromFile(":/icons/action/pixmaps/range-view_tiles.svg"));
+    this->tileViewButton->setToolTip(tr("Tile view"));
+    this->tileViewButton->setCheckable(true);
+    this->tileViewButton->setAutoRaise(true);
+
+    QButtonGroup *viewButtonGroup = new QButtonGroup(this);
+    viewButtonGroup->addButton(this->listViewButton);
+    viewButtonGroup->addButton(this->tileViewButton);
+
+    QHBoxLayout *headerLayout = new QHBoxLayout;
+    headerLayout->addWidget(messageLabel);
+    headerLayout->addStretch(1);
+    headerLayout->addWidget(this->listViewButton);
+    headerLayout->addWidget(this->tileViewButton);
+    mainLayout->addLayout(headerLayout);
 
     this->problemTree = new ProblemSelectorTree(this);
     this->problemTree->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     this->problemTree->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
     mainLayout->addWidget(this->problemTree);
+
+    this->problemTiles = new ProblemSelectorTiles(this->problemTree,this);
+    this->problemTiles->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::MinimumExpanding);
+    mainLayout->addWidget(this->problemTiles);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox;
     mainLayout->addWidget(buttonBox);
@@ -42,6 +73,17 @@ ProblemSelectorDialog::ProblemSelectorDialog(QWidget *parent) :
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
 
     QObject::connect(this->problemTree,&ProblemSelectorTree::changed,this,&ProblemSelectorDialog::onProblemTreeChanged);
+
+    const bool tileView = Application::instance()->getApplicationSettings()->getProblemSelectorTileView();
+    this->setTileView(tileView);
+    (tileView ? this->tileViewButton : this->listViewButton)->setChecked(true);
+
+    QObject::connect(this->tileViewButton,&QToolButton::toggled,this,[this](bool checked)
+    {
+        Application::instance()->getApplicationSettings()->setProblemSelectorTileView(checked);
+        this->setTileView(checked);
+        this->adjustSize();
+    });
     R_LOG_TRACE_OUT;
 }
 
@@ -60,5 +102,13 @@ void ProblemSelectorDialog::onProblemTreeChanged()
 {
     R_LOG_TRACE_IN;
     this->okButton->setEnabled(this->problemTree->checkProblemIsChecked());
+    R_LOG_TRACE_OUT;
+}
+
+void ProblemSelectorDialog::setTileView(bool tileView)
+{
+    R_LOG_TRACE_IN;
+    this->problemTree->setVisible(!tileView);
+    this->problemTiles->setVisible(tileView);
     R_LOG_TRACE_OUT;
 }

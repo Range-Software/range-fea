@@ -25040,6 +25040,14 @@ void tetgenmesh::reconstructmesh()
     points->traversalinit();
     point ptloop = pointtraverse();
     while (ptloop != NULL) {
+      // Range FEA: input vertices with a positive marker are point elements,
+      //   do not let them become Steiner points which may be moved or removed.
+      idx = pointmark(ptloop) - in->firstnumber;
+      if ((in->pointmarkerlist != NULL) && (idx < in->numberofpoints) &&
+          (in->pointmarkerlist[idx] > 0)) {
+        ptloop = pointtraverse();
+        continue;
+      }
       vt = pointtype(ptloop);
       if (vt == VOLVERTEX) {
         setpointtype(ptloop, FREEVOLVERTEX);

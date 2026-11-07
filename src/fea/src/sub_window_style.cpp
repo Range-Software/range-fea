@@ -10,6 +10,7 @@ static const int buttonSize = 18;
 static const int buttonSpacing = 2;
 static const int titleBarPadding = 8;
 static const double cornerRadius = 8.0;
+static const double highlightWidth = 2.0;
 
 static QColor findSurfaceColor(const QPalette &palette)
 {
@@ -28,7 +29,7 @@ static double findCornerRadius(const QWidget *widget)
 }
 
 // Corners outside of the rounded window show the color of the area behind the window.
-static void drawWindowShape(QPainter *painter, const QRectF &windowRect, double radius, const QPalette &palette, bool active)
+static void drawWindowShape(QPainter *painter, const QRectF &windowRect, double radius, const QPalette &palette, const QPen &outlinePen)
 {
     QPainterPath cornersPath;
     cornersPath.setFillRule(Qt::OddEvenFill);
@@ -41,8 +42,9 @@ static void drawWindowShape(QPainter *painter, const QRectF &windowRect, double 
     painter->fillPath(windowPath,findSurfaceColor(palette));
 
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(QPen(findOutlineColor(palette,active),1.0));
-    painter->drawRoundedRect(windowRect.adjusted(0.5,0.5,-0.5,-0.5),radius,radius);
+    painter->setPen(outlinePen);
+    const double inset = outlinePen.widthF()/2.0;
+    painter->drawRoundedRect(windowRect.adjusted(inset,inset,-inset,-inset),radius,radius);
 }
 
 static void drawButtonIcon(QPainter *painter, QStyle::SubControl subControl, const QRectF &buttonRect, const QColor &color)
@@ -87,7 +89,18 @@ static void drawButtonIcon(QPainter *painter, QStyle::SubControl subControl, con
 
 SubWindowStyle::SubWindowStyle(const QColor &modelColor)
     : modelColor(modelColor)
+    , highlighted(false)
 {
+}
+
+void SubWindowStyle::setHighlighted(bool highlighted)
+{
+    this->highlighted = highlighted;
+}
+
+QPen SubWindowStyle::findOutlinePen(const QPalette &palette, bool active) const
+{
+    return this->highlighted ? QPen(this->modelColor,highlightWidth) : QPen(findOutlineColor(palette,active),1.0);
 }
 
 int SubWindowStyle::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
@@ -139,7 +152,7 @@ void SubWindowStyle::drawPrimitive(PrimitiveElement element, const QStyleOption 
 
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
-    drawWindowShape(painter,QRectF(option->rect),findCornerRadius(widget),option->palette,option->state & State_Active);
+    drawWindowShape(painter,QRectF(option->rect),findCornerRadius(widget),option->palette,this->findOutlinePen(option->palette,option->state & State_Active));
     painter->restore();
 }
 
@@ -167,7 +180,7 @@ void SubWindowStyle::drawComplexControl(ComplexControl control, const QStyleOpti
     {
         shapeRect.setBottom(shapeRect.bottom() + 2.0*cornerRadius);
     }
-    drawWindowShape(painter,shapeRect,findCornerRadius(widget),palette,active);
+    drawWindowShape(painter,shapeRect,findCornerRadius(widget),palette,this->findOutlinePen(palette,active));
 
     // Line distinguishing the model follows rounded corners of the window, 1px of padding separates it from the outline.
     QPainterPath shapePath;

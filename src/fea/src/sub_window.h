@@ -6,6 +6,8 @@
 
 #include "gl_widget.h"
 
+class SubWindowStyle;
+
 class SubWindow : public QMdiSubWindow
 {
 
@@ -16,6 +18,9 @@ class SubWindow : public QMdiSubWindow
         //! Create sub window.
         void createSubWindow();
 
+        //! Highlight window if its model is selected in model tree.
+        void updateHighlight();
+
     protected:
 
         //! Model ID.
@@ -24,6 +29,8 @@ class SubWindow : public QMdiSubWindow
         GLWidget *glWidget;
         //! Toolbar.
         QToolBar *toolBar;
+        //! Style of the window.
+        SubWindowStyle *subWindowStyle;
 
     public:
 
@@ -50,6 +57,9 @@ class SubWindow : public QMdiSubWindow
         void closed(uint modelID);
 
     protected slots:
+
+        //! Model selection has changed.
+        void onModelSelectionChanged(uint modelID);
 
         //! Reset to origin.
         void onResetO();

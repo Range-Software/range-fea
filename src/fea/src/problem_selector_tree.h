@@ -28,6 +28,15 @@ class ProblemSelectorTree : public QTreeWidget
         //! Check if some problem type is selected.
         bool checkProblemIsChecked() const;
 
+        //! Return listed problem types in order in which they are listed.
+        std::vector<RProblemType> getProblemTypes() const;
+
+        //! Return true if given problem type is checked.
+        bool isProblemTypeChecked(RProblemType problemType) const;
+
+        //! Check or uncheck given problem type. Rules for required and excluded problem types are applied.
+        void setProblemTypeChecked(RProblemType problemType, bool checked);
+
     protected:
 
         //! Sort problem types so that each is listed directly after the problem types it depends on.

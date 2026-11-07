@@ -2299,98 +2299,98 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="678"/>
+        <location filename="../src/gl_widget.cpp" line="683"/>
         <source>Stream line</source>
         <translation>Proudnice</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="693"/>
+        <location filename="../src/gl_widget.cpp" line="698"/>
         <source>Scale</source>
         <translation>Měřítko</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="708"/>
+        <location filename="../src/gl_widget.cpp" line="713"/>
         <source>Rotation</source>
         <translation>Rotace</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="989"/>
+        <location filename="../src/gl_widget.cpp" line="1039"/>
         <source>Time-step</source>
         <translation>Časový krok</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="994"/>
+        <location filename="../src/gl_widget.cpp" line="1044"/>
         <source>Mode</source>
         <translation>Mód</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="999"/>
+        <location filename="../src/gl_widget.cpp" line="1049"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1355"/>
+        <location filename="../src/gl_widget.cpp" line="1464"/>
         <source>Number of sliver elements</source>
         <translation>Počet degenerovaných prvků</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1359"/>
+        <location filename="../src/gl_widget.cpp" line="1468"/>
         <source>Number of intersected elements</source>
         <translation>Počet protínajících se prvků</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1363"/>
+        <location filename="../src/gl_widget.cpp" line="1472"/>
         <source>Number of hole elements</source>
         <translation>Počet hraničních prvků děr</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1369"/>
+        <location filename="../src/gl_widget.cpp" line="1478"/>
         <source>Picked entities</source>
         <translation>Označené entity</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1383"/>
+        <location filename="../src/gl_widget.cpp" line="1492"/>
         <source>Hole edge</source>
         <translation>Hrana díry</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1506"/>
-        <location filename="../src/gl_widget.cpp" line="1542"/>
+        <location filename="../src/gl_widget.cpp" line="1570"/>
+        <location filename="../src/gl_widget.cpp" line="1571"/>
         <source>more</source>
         <translation>více</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <location filename="../src/gl_widget.cpp" line="1060"/>
         <source>Smoothed. Element range: %1 to %2</source>
         <translation>Vyhlazeno. Rozsah prvků: %1 až %2</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1592"/>
+        <location filename="../src/gl_widget.cpp" line="1598"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmínky</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1617"/>
+        <location filename="../src/gl_widget.cpp" line="1790"/>
         <source>Action</source>
         <translation>Akce</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1620"/>
+        <location filename="../src/gl_widget.cpp" line="1793"/>
         <source>Zoom</source>
         <translation>Přiblížení</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1621"/>
+        <location filename="../src/gl_widget.cpp" line="1794"/>
         <source>Model draw time</source>
         <translation>Doba vykreslení modelu</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2813"/>
+        <location filename="../src/gl_widget.cpp" line="3004"/>
         <source>Image files</source>
         <translation>Obrázkové soubory</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="2830"/>
+        <location filename="../src/gl_widget.cpp" line="3021"/>
         <source>Save screenshot as</source>
         <translation>Uložit snímek obrazovky jako</translation>
     </message>
@@ -4127,22 +4127,32 @@
 <context>
     <name>ProblemSelectorDialog</name>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="15"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="20"/>
         <source>Problem type selector</source>
         <translation>Výběr typu úlohy</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="23"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="28"/>
         <source>Select problem types</source>
         <translation>Vyberte typy úloh</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="34"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="32"/>
+        <source>List view</source>
+        <translation>Zobrazení seznamu</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="38"/>
+        <source>Tile view</source>
+        <translation>Zobrazení dlaždic</translation>
+    </message>
+    <message>
+        <location filename="../src/problem_selector_dialog.cpp" line="65"/>
         <source>Cancel</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_dialog.cpp" line="37"/>
+        <location filename="../src/problem_selector_dialog.cpp" line="68"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -4160,17 +4170,17 @@
         <translation>Popis</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="165"/>
+        <location filename="../src/problem_selector_tree.cpp" line="201"/>
         <source>Problem type</source>
         <translation>Typ úlohy</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="167"/>
+        <location filename="../src/problem_selector_tree.cpp" line="203"/>
         <source>is incompatible with following selected problem types</source>
         <translation>není kompatibilní s následujícími vybranými typy úloh</translation>
     </message>
     <message>
-        <location filename="../src/problem_selector_tree.cpp" line="173"/>
+        <location filename="../src/problem_selector_tree.cpp" line="209"/>
         <source>Incompatible problems selected</source>
         <translation>Vybrané úlohy nejsou kompatibilní</translation>
     </message>
@@ -4756,12 +4766,12 @@
 <context>
     <name>ResultsVariableTree</name>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="245"/>
+        <location filename="../src/results_variable_tree.cpp" line="261"/>
         <source>Smooth display</source>
         <translation>Vyhlazené zobrazení</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="246"/>
+        <location filename="../src/results_variable_tree.cpp" line="262"/>
         <source>Averages element results at nodes for display only, results themselves stay unchanged.
 Averaging lowers peak values, compare them with the element range shown in the value range.</source>
         <translation>Výsledky prvků se průměrují v uzlech pouze pro zobrazení, samotné výsledky zůstávají beze změny.
@@ -4773,102 +4783,102 @@ Průměrování snižuje špičkové hodnoty, porovnejte je s rozsahem prvků uv
         <translation>Vlastnosti zobrazení výsledků</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="218"/>
+        <location filename="../src/results_variable_tree.cpp" line="224"/>
         <source>Results are displayed on nodes and elements</source>
         <translation>Výsledky se zobrazují na uzlech a prvcích</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="222"/>
+        <location filename="../src/results_variable_tree.cpp" line="228"/>
         <source>Results are displayed on nodes</source>
         <translation>Výsledky se zobrazují na uzlech</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="226"/>
+        <location filename="../src/results_variable_tree.cpp" line="232"/>
         <source>Results are displayed on elements</source>
         <translation>Výsledky se zobrazují na prvcích</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="230"/>
+        <location filename="../src/results_variable_tree.cpp" line="236"/>
         <source>Results can not be displayed</source>
         <translation>Výsledky nelze zobrazit</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="240"/>
+        <location filename="../src/results_variable_tree.cpp" line="246"/>
         <source>Editing values for multiple models</source>
         <translation>Upravují se hodnoty pro více modelů</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="254"/>
+        <location filename="../src/results_variable_tree.cpp" line="272"/>
         <source>Apply as ...</source>
         <translation>Použít jako ...</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="285"/>
+        <location filename="../src/results_variable_tree.cpp" line="303"/>
         <source>Value range and color scale</source>
         <translation>Rozsah hodnot a barevná škála</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="291"/>
+        <location filename="../src/results_variable_tree.cpp" line="309"/>
         <source>Maximum</source>
         <translation>Maximum</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="300"/>
+        <location filename="../src/results_variable_tree.cpp" line="318"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="309"/>
+        <location filename="../src/results_variable_tree.cpp" line="327"/>
         <source>Set default min/max values</source>
         <translation>Nastavit výchozí min/max hodnoty</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="317"/>
+        <location filename="../src/results_variable_tree.cpp" line="335"/>
         <source>Show graph values</source>
         <translation>Zobrazit hodnoty v grafu</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="325"/>
+        <location filename="../src/results_variable_tree.cpp" line="343"/>
         <source>Color scale</source>
         <translation>Barevná škála</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="339"/>
+        <location filename="../src/results_variable_tree.cpp" line="357"/>
         <source>Display value range</source>
         <translation>Zobrazit rozsah hodnot</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="356"/>
+        <location filename="../src/results_variable_tree.cpp" line="374"/>
         <source>Scale</source>
         <translation>Měřítko</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="372"/>
+        <location filename="../src/results_variable_tree.cpp" line="390"/>
         <source>Display on nodes</source>
         <translation>Zobrazit na uzlech</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="377"/>
+        <location filename="../src/results_variable_tree.cpp" line="395"/>
         <source>Remove variable</source>
         <translation>Odstranit proměnnou</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="477"/>
+        <location filename="../src/results_variable_tree.cpp" line="534"/>
         <source>Display on nodes?</source>
         <translation>Zobrazit na uzlech?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="478"/>
+        <location filename="../src/results_variable_tree.cpp" line="535"/>
         <source>Are you sure you want to change display from elements to nodes?</source>
         <translation>Opravdu změnit zobrazení z prvků na uzly?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="500"/>
+        <location filename="../src/results_variable_tree.cpp" line="557"/>
         <source>Remove variable?</source>
         <translation>Odstranit proměnnou?</translation>
     </message>
     <message>
-        <location filename="../src/results_variable_tree.cpp" line="501"/>
+        <location filename="../src/results_variable_tree.cpp" line="558"/>
         <source>Are you sure you want to remove selected variable?</source>
         <translation>Opravdu odstranit vybranou proměnnou?</translation>
     </message>
@@ -5099,19 +5109,19 @@ Průměrování snižuje špičkové hodnoty, porovnejte je s rozsahem prvků uv
         <translation>Je-li zaškrtnuto, entity vybrané ve stromu modelu jsou zvýrazněny ve 3D zobrazení.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="94"/>
+        <location filename="../src/sub_window.cpp" line="101"/>
         <source>Same face color</source>
         <translation>Stejná barva stran</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="95"/>
+        <location filename="../src/sub_window.cpp" line="102"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Je-li zaškrtnuto, obě strany plošných prvků mají stejnou barvu.
 Není-li zaškrtnuto, zadní strana se zobrazuje jinou barvou.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="105"/>
+        <location filename="../src/sub_window.cpp" line="112"/>
         <source>Display preferences.</source>
         <translation>Předvolby zobrazení.</translation>
     </message>

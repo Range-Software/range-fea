@@ -23,6 +23,8 @@
   3D view, in a card below the model card or next to it when both do not fit
 - New *Highlight selection* option below the 3D view, on by default, turning off the
   highlight of entities selected in the model tree
+- The window of a model selected in the model tree, or with a part of it selected, is
+  highlighted with an outline in the color of the model
 - Arrows and boundary condition symbols always have the same color on both sides,
   their back faces are no longer drawn silver
 - Model information and boundary conditions in the 3D view are shown in cards with
@@ -100,11 +102,19 @@
   of the OpenSSL tool and its configuration are hidden in the application settings.
   Configure with `-DRANGE_NATIVE_KEY_TOOL=OFF` to keep using the `openssl` tool
 
+#### Problem types
+
+- Problem types are now selected from tiles with an icon and a name, with the
+  description shown as a tooltip. Buttons in the problem type selector switch between
+  the tiles and the original list, and the last used view is remembered
+
 ### Bug fixes
 
 - Fixed results kept when generating a 3D mesh with *Keep computed results*. Some new
   nodes on the model boundary got values of unrelated nodes, which showed as spikes in
   the displaced shape, and surface elements got values of unrelated elements
+- Generating a 3D mesh no longer loses points and lines. Lines may be split by the new
+  mesh, and a line lying completely outside of the meshed volume is still removed
 - The orientation axis did not follow rotations made while it was hidden, so it could
   show a wrong orientation after being shown again
 - Arrow heads and cones of boundary condition symbols were drawn black, because their

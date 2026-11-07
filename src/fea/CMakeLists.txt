@@ -143,6 +143,7 @@ qt_add_executable(fea
     src/point_inside_surface_dialog.cpp
     src/position_widget.cpp
     src/problem_selector_dialog.cpp
+    src/problem_selector_tiles.cpp
     src/problem_selector_tree.cpp
     src/problem_task_dialog.cpp
     src/problem_task_tree.cpp
@@ -329,6 +330,7 @@ qt_add_executable(fea
     src/point_inside_surface_dialog.h
     src/position_widget.h
     src/problem_selector_dialog.h
+    src/problem_selector_tiles.h
     src/problem_selector_tree.h
     src/problem_task_dialog.h
     src/problem_task_tree.h
@@ -478,6 +480,8 @@ fea_add_icon_resources(icons-action "/icons/action"
         pixmaps/range-close.svg
         pixmaps/range-ok.svg
         pixmaps/range-remove.svg
+        pixmaps/range-view_list.svg
+        pixmaps/range-view_tiles.svg
         pixmaps/range-spin_down.svg
         pixmaps/range-spin_up.svg
         pixmaps/range-undo.svg
@@ -534,6 +538,18 @@ fea_add_icon_resources(icons-problem "/icons/problem"
         pixmaps/range-problem_matrix_solver.svg
         pixmaps/range-problem_monitoring_points.svg
         pixmaps/range-problem_reset.svg
+        pixmaps/range-problem_type_acoustics.svg
+        pixmaps/range-problem_type_electrostatics.svg
+        pixmaps/range-problem_type_fluid.svg
+        pixmaps/range-problem_type_fluid_heat.svg
+        pixmaps/range-problem_type_fluid_particle.svg
+        pixmaps/range-problem_type_heat.svg
+        pixmaps/range-problem_type_magnetostatics.svg
+        pixmaps/range-problem_type_mesh.svg
+        pixmaps/range-problem_type_potential.svg
+        pixmaps/range-problem_type_radiative_heat.svg
+        pixmaps/range-problem_type_stress.svg
+        pixmaps/range-problem_type_stress_modal.svg
 )
 
 fea_add_icon_resources(icons-solver "/icons/solver"

@@ -24,6 +24,7 @@ class ApplicationSettings : public RApplicationSettings
         static const QString solverPathKey;
         static const QString renderBackendKey;
         static const QString rhiApiKey;
+        static const QString problemSelectorTileViewKey;
 
     public:
 
@@ -76,6 +77,12 @@ class ApplicationSettings : public RApplicationSettings
         //! Set the graphics API the QRhi rendering backend should use.
         //! Takes effect the next time the application starts.
         void setRhiApi(RenderBackend::RhiApi rhiApi);
+
+        //! Return true if problem types should be shown as tiles in problem type selector.
+        bool getProblemSelectorTileView() const;
+
+        //! Set whether problem types should be shown as tiles in problem type selector.
+        void setProblemSelectorTileView(bool tileView);
 
         //! Return maximum number of Threads.
         static uint getMaxThreads();

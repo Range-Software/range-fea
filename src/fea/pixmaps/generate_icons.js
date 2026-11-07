@@ -240,6 +240,43 @@ I.problem_matrix_solver = P('M7 3.75H4.25v16.5H7M17 3.75h2.75v16.5H17', C.ink)
 I.problem_monitoring_points = circ(12, 12, 7, C.violet, C.violetL) + dot(12, 12, 2.25, C.violet)
   + P('M12 2.75v3.5M12 17.75v3.5M2.75 12h3.5M17.75 12h3.5', C.violet);
 I.problem_reset = P('M4.5 12a7.5 7.5 0 1 0 2.2-5.3', C.violet) + P('M6.2 3.2v3.8H10', C.violet) + dot(12, 12, 2, C.violet);
+// Problem types: violet = the physics, ink = neutral structure (walls, grains, supports).
+{
+  // Thermometer centered at x, tube from y=top down to the bulb.
+  const thermometer = (cx, top) => P(`M${cx - 2} ${top + 2}a2 2 0 0 1 4 0v${14.25 - top - 2 + 0.25}a3.75 3.75 0 1 1-4 0z`, C.violet, C.violetL)
+    + dot(cx, 17.5, 1.75, C.violet) + P(`M${cx} 9v8`, C.violet);
+  const waves = y => `M12 ${y}c1.5-1.75 3-1.75 4.5 0s3 1.75 4.5 0`;
+  const wavyUp = x => P(`M${x} 15c-1.5-1.5 1.5-2.5 0-4s1.5-2.5 0-4c-.4-.4-.3-1 0-1.5`, C.violet) + P(`M${x - 2} 6.25L${x} 4l2 2.25`, C.violet);
+  I.problem_type_acoustics = P('M3.25 9.25h3.5l5-4.25v14l-5-4.25h-3.5z', C.violet, C.violetL)
+    + P('M15 9.25a3.9 3.9 0 0 1 0 5.5M17.75 6.5a7.8 7.8 0 0 1 0 11', C.violet);
+  I.problem_type_electrostatics = P('M13.75 2.75L5.25 13.5h5.5l-1 7.75 9-11.25h-5.75z', C.violet, C.violetL);
+  I.problem_type_magnetostatics = P('M4.75 8.25h4.5V14a2.75 2.75 0 0 0 5.5 0V8.25h4.5V14a7.25 7.25 0 0 1-14.5 0z', C.violet, C.violetL)
+    + rect(4.75, 8.25, 4.5, 3.25, 0, C.violet, C.violet) + rect(14.75, 8.25, 4.5, 3.25, 0, C.violet, C.violet)
+    + P('M7 5.25a6 2.75 0 0 1 10 0', C.ink, 'none', dash);
+  I.problem_type_fluid = P('M3 4.25h18M3 19.75h18', C.ink)
+    + arrow(4, 8, 13.5, 8, C.violet) + arrow(4, 12, 19.5, 12, C.violet) + arrow(4, 16, 13.5, 16, C.violet);
+  I.problem_type_fluid_particle = F('M5.5 10.75L21 4.5v15L5.5 13.25z', C.violetL) + P('M5.5 10.75L21 4.5M5.5 13.25L21 19.5', C.violet, 'none', thin + dash)
+    + dot(5.25, 12, 2.5, C.violet) + dot(10.25, 12.5, 1.25, C.violet) + dot(13.25, 9.75, 1.1, C.violet) + dot(14.25, 14.5, 1.1, C.violet)
+    + dot(18, 7.75, 0.9, C.violet) + dot(18.25, 12, 0.9, C.violet) + dot(17.5, 16.5, 0.9, C.violet);
+  I.problem_type_fluid_heat = thermometer(6.5, 3) + P(waves(7) + waves(12) + waves(17), C.violet);
+  I.problem_type_heat = thermometer(10, 3) + P('M15.5 5.5h3.25M15.5 9h2M15.5 12.5h3.25', C.ink);
+  I.problem_type_radiative_heat = rect(3, 17.25, 18, 3.5, 1, C.violet, C.violetL) + wavyUp(6.5) + wavyUp(12) + wavyUp(17.5);
+  I.problem_type_stress = P('M3.5 3.75v16.5', C.ink) + P('M3.5 6l-1 1M3.5 10l-1 1M3.5 14l-1 1M3.5 18l-1 1', C.ink, 'none', thin)
+    + rect(3.5, 13.5, 17.5, 4.5, 1, C.violet, C.violetL) + arrow(17.5, 3.5, 17.5, 11, C.violet);
+  I.problem_type_stress_modal = P('M3 12h18', C.ink, 'none', thin)
+    + P('M3 12C7 1.5 8.5 1.5 12 12S17 22.5 21 12', C.violetM, 'none', dash) + P('M3 12C7 22.5 8.5 22.5 12 12S17 1.5 21 12', C.violet)
+    + node(3, 12, C.ink) + node(12, 12, C.ink) + node(21, 12, C.ink);
+  I.problem_type_potential = [[7, 5.25], [17, 5.25], [12, 13.25], [5, 18.75], [19, 18.75]].map(p => circ(p[0], p[1], 2.75, C.ink, C.paper)).join('')
+    + P('M3 12C6.5 12 8 7.75 12 7.75S17 12 20.75 12M18.5 10.1l2.25 1.9-2.25 1.9', C.violet);
+  {
+    const v = [[11, 3], [18, 7], [18, 15], [11, 19], [4, 15], [4, 7]];
+    I.problem_type_mesh = withBadge(P('M' + v.map(p => p.join(' ')).join('L') + 'Z', C.violet, C.violetL)
+      + P(v.map(p => `M11 11L${p[0]} ${p[1]}`).join(''), C.violet, 'none', thin) + dot(11, 11, 1.6, C.violet), 'update');
+  }
+}
+I.view_list = P('M8.5 6.5h12M8.5 12h12M8.5 17.5h12', C.ink) + dot(4.5, 6.5, 1.25, C.ink) + dot(4.5, 12, 1.25, C.ink) + dot(4.5, 17.5, 1.25, C.ink);
+I.view_tiles = rect(3.5, 3.5, 7.25, 7.25, 1.25, C.ink, C.paper) + rect(13.25, 3.5, 7.25, 7.25, 1.25, C.ink, C.paper)
+  + rect(3.5, 13.25, 7.25, 7.25, 1.25, C.ink, C.paper) + rect(13.25, 13.25, 7.25, 7.25, 1.25, C.ink, C.paper);
 I['solver-start'] = circ(12, 12, 8.75, C.green, C.greenL) + P('M10 8.25v7.5L16 12z', C.green, C.green);
 I['solver-stop'] = circ(12, 12, 8.75, C.amber, C.amberL) + rect(8.75, 8.75, 6.5, 6.5, 1, C.amber, C.amber);
 I['solver-kill'] = P('M8.4 3.3h7.2l5.1 5.1v7.2l-5.1 5.1H8.4l-5.1-5.1V8.4z', C.red, C.redL) + P('M9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6', C.red);

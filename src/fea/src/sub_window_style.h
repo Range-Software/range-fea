@@ -2,6 +2,7 @@
 #define SUB_WINDOW_STYLE_H
 
 #include <QColor>
+#include <QPen>
 #include <QProxyStyle>
 
 //! Flat title bar and frame of a model sub window. Moving and resizing remain handled by QMdiSubWindow.
@@ -14,11 +15,21 @@ class SubWindowStyle : public QProxyStyle
 
         //! Color distinguishing the model.
         QColor modelColor;
+        //! Window of a model selected in model tree is highlighted.
+        bool highlighted;
+
+    private:
+
+        //! Return pen for outline of the window.
+        QPen findOutlinePen(const QPalette &palette, bool active) const;
 
     public:
 
         //! Constructor.
         explicit SubWindowStyle(const QColor &modelColor);
+
+        //! Set whether the window should be highlighted.
+        void setHighlighted(bool highlighted);
 
         //! Return pixel metric.
         int pixelMetric(PixelMetric metric, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override;
