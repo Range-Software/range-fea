@@ -101,8 +101,8 @@ Results are applied in the **Results** tab to the entity selected in the **Model
 ### 9.1. Temperature and deformation of the volume
 
 1. In the **Model** tree check **Volumes** (and leave the surfaces unchecked), then select **Volume 1**.
-2. In the **Results** tab choose **Temperature - Scalar** in the drop-down list, check **Scalar** and **Display value range**. If the shown range does not match the results, click **Set default min/max values**.
-3. Choose **Displacement - Vector [3]** in the drop-down list, check **Displacement** and set **Scale** to **20** so that the deformation is visible (the computed displacements are only about 1.3 mm).
+2. In the **Results** tab choose **Temperature - Scalar** in the drop-down list, check **Color map** and **Show legend**. If the shown range does not match the results, click **Reset to data**.
+3. Choose **Displacement - Vector [3]** in the drop-down list, check **Deformed shape** and set **Deformation and arrow scale** to **20** so that the deformation is visible (the computed displacements are only about 1.3 mm).
 
 The temperature ranges from about 505 K to 620 K; the beam is hottest in the middle of its two outer sections, and it bends upwards because the fixed ends do not let it expand freely.
 
@@ -111,7 +111,7 @@ The temperature ranges from about 505 K to 620 K; the beam is hottest in the mid
 ### 9.2. Temperature on the vector field
 
 1. In the **Model** tree uncheck **Volumes**, check **Vector fields** and select **Electric field**.
-2. In the **Results** tab choose **Temperature - Scalar**, check **Scalar** and **Display value range**. The arrows are now colored by the temperature at their position.
+2. In the **Results** tab choose **Temperature - Scalar**, check **Color map** and **Show legend**. The arrows are now colored by the temperature at their position.
 3. In **Display properties** below the tree check **Arrow heads** to show the direction of the electric field.
 
 ![Applied temperature on vector field](image-Applied_temperature_on_vector_field.png)

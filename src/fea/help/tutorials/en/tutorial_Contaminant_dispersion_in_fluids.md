@@ -105,7 +105,7 @@ Click **OK** to create the vector field. It appears in the **Model** tree under 
 
 ![CFD - Create vector field entity](image-CFD-Create_vector.png)
 
-The arrows may be too short to be clearly visible, because their length is proportional to the flow velocity. To make them longer, select the vector field in the **Model** tree, open the **Results** tab and increase the value in the **Scale** section. The scale is the product of the **Scale** value and the power of ten set in **Factor**; in the example below **Scale** 1 and **Factor** 2 give a scale of `1 × 10^2 = 100`.
+The arrows may be too short to be clearly visible, because their length is proportional to the flow velocity. To make them longer, select the vector field in the **Model** tree, open the **Results** tab and increase the value in the **Deformation and arrow scale** section, for example to **100**. Type the value or drag the slider next to it.
 
 ![CFD - Scale vector field entity](image-CFD-Scale_vector.png)
 
@@ -175,9 +175,9 @@ The transient solver runs in the background, so results can be inspected while i
 
 1. In the **Model** tree expand **Cuts**, check **Cut 1** so that it is visible and select it.
 2. Open the **Results** tab and choose **Particle concentration - Scalar** in the drop-down list at the top.
-3. Under **Apply as ...** check **Scalar**. The cut is now colored by the contaminant concentration.
-4. Under **Value range and color scale** set **Maximum** to **1** and **Minimum** to **0** (type the value and press _Enter_). This matches the range of the inflow concentration, so the same colors mean the same concentration in every time-step.
-5. Check **Display value range** to show the color scale in the **3D model area**.
+3. Under **Show on selected entities** check **Color map**. The cut is now colored by the contaminant concentration.
+4. Under **Color range** set **Max** to **1** and **Min** to **0** (type the value and press _Enter_). This matches the range of the inflow concentration, so the same colors mean the same concentration in every time-step.
+5. Check **Show legend** to show the color scale in the **3D model area**.
 
 ![Particle concentration results](image-CFD-Particle_concentration_results.png)
 

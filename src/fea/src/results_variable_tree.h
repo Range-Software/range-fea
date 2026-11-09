@@ -8,6 +8,9 @@
 #include "value_scale.h"
 #include "session_entity_id.h"
 
+class QToolButton;
+class QVBoxLayout;
+
 class ResultsVariableTree : public QTreeWidget
 {
 
@@ -43,6 +46,13 @@ class ResultsVariableTree : public QTreeWidget
 
         //! Populate combo.
         void populate();
+
+        //! Add framed section with bold title and optional widget at the end of the title row.
+        //! Return layout for content of the section.
+        QVBoxLayout *addSection(const QString &title, QWidget *headerWidget = nullptr);
+
+        //! Create button which shows and hides fine adjustment.
+        static QToolButton *createFineAdjustButton(bool expanded);
 
         //! Process apply as states.
         void processApplyAsStates();

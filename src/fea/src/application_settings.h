@@ -25,6 +25,8 @@ class ApplicationSettings : public RApplicationSettings
         static const QString renderBackendKey;
         static const QString rhiApiKey;
         static const QString problemSelectorTileViewKey;
+        static const QString resultsRangeFineAdjustKey;
+        static const QString resultsScaleFineAdjustKey;
 
     public:
 
@@ -83,6 +85,18 @@ class ApplicationSettings : public RApplicationSettings
 
         //! Set whether problem types should be shown as tiles in problem type selector.
         void setProblemSelectorTileView(bool tileView);
+
+        //! Return true if fine adjustment of color range is expanded in results.
+        bool getResultsRangeFineAdjust() const;
+
+        //! Set whether fine adjustment of color range is expanded in results.
+        void setResultsRangeFineAdjust(bool expanded);
+
+        //! Return true if fine adjustment of deformation scale is expanded in results.
+        bool getResultsScaleFineAdjust() const;
+
+        //! Set whether fine adjustment of deformation scale is expanded in results.
+        void setResultsScaleFineAdjust(bool expanded);
 
         //! Return maximum number of Threads.
         static uint getMaxThreads();

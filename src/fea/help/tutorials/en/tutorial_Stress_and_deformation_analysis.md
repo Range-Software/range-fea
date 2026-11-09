@@ -102,13 +102,13 @@ After the solver process is successfully completed computed results should be lo
 
 ### 7.1. Displacement
 
-From drop-down menu select **Displacement** (if not already selected). **Displacement** is a vector variable; it can be applied as a **Scalar** (entity will be colored by its magnitude) and/or as a **Displacement** (entity will bend). This time select the **Displacement** check-box and set **Scale** to **500** to see the deformation.
+From drop-down menu select **Displacement** (if not already selected). **Displacement** is a vector variable; it can be shown as a **Color map** (entity will be colored by its magnitude) and/or as a **Deformed shape** (entity will bend). This time select the **Deformed shape** check-box and set **Deformation and arrow scale** to **500** to see the deformation.
 
 ![Applied displacement](image-Applied_displacement.png)
 
 ### 7.2. Von Mises Stress
 
-Similarly as **Displacement** apply **Von Mises Stress** on selected **Volume** model entity. Additionally select **Display value range** check-box to display value range in 3D area.
+Similarly as **Displacement** apply **Von Mises Stress** on selected **Volume** model entity. Additionally select **Show legend** check-box to display value range in 3D area.
 
 ![Applied stress](image-Applied_stress.png)
 

@@ -1,13 +1,15 @@
 #ifndef VALUE_SCALE_H
 #define VALUE_SCALE_H
 
+#include <QLabel>
 #include <QWidget>
 #include <QSlider>
 #include <QSpinBox>
-#include <QPushButton>
 
 #include "value_line_edit.h"
 
+//! Single row for entering a value, with optional units and logarithmic slider.
+//! Slider for the mantissa and spin box for the power of ten can be shown under the row.
 class ValueScale : public QWidget
 {
 
@@ -19,19 +21,21 @@ class ValueScale : public QWidget
         static const uint mantisSize;
         static const uint exponentSize;
 
-        //! Expandable.
-        bool expandable;
         //! Mantis.
         double mantis;
         //! Exponent.
         int exponent;
 
+        //! Title label.
+        QLabel *titleLabel;
         //! Scale edit.
         ValueLineEdit *scaleEdit;
-        //! Expand button.
-        QPushButton *expandButton;
-        //! Expandable widget.
-        QWidget *expandWidget;
+        //! Units label.
+        QLabel *unitsLabel;
+        //! Logarithmic slider.
+        QSlider *logSlider;
+        //! Widget with fine adjustment.
+        QWidget *fineAdjustWidget;
         //! Mantis slider.
         QSlider *mantisSlider;
         //! Mantis edit.
@@ -41,10 +45,12 @@ class ValueScale : public QWidget
 
         //! Setting scale allowed.
         bool setScaleAllowed;
+        //! Logarithmic slider is the source of the current change.
+        bool logSliderChanging;
 
     public:
 
-        //! Constructor.
+        //! Constructor. Empty title shows no label.
         explicit ValueScale(const QString &title, QWidget *parent = nullptr);
 
         //! Return scale;
@@ -52,6 +58,26 @@ class ValueScale : public QWidget
 
         //! Set value.
         void setValue(double value);
+
+        //! Set text shown after the value. Empty text shows no label.
+        void setUnits(const QString &units);
+
+        //! Show logarithmic slider after the value.
+        void setLogSliderVisible(bool visible);
+
+        //! Show or hide fine adjustment under the value.
+        void setFineAdjustVisible(bool visible);
+
+        //! Return width needed by the title.
+        int findTitleWidth() const;
+
+        //! Set width of the title, so that values of several rows are aligned.
+        void setTitleWidth(int width);
+
+    private:
+
+        //! Move logarithmic slider to given value.
+        void syncLogSlider(double value);
 
     signals:
 
@@ -63,8 +89,8 @@ class ValueScale : public QWidget
         //! Scale edit changed.
         void onScaleEditChanged(double value);
 
-        //! Expand button clicked.
-        void onExpandButtonClicked();
+        //! Logarithmic slider changed.
+        void onLogSliderChanged(int position);
 
         //! Mantis slider changed.
         void onMantisSliderChanged(int value);

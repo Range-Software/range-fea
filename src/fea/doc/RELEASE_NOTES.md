@@ -20,6 +20,17 @@
 - Incompatible problems, missing required problems and a missing problem selection are
   reported before the solver starts
 
+#### Results tab
+
+- Reorganized the **Results** tab into *Show on selected entities*, *Color range* and
+  *Deformation and arrow scale*, with **Graph** and **Remove** at the bottom
+- *Scalar* and *Displacement* are now called *Color map* and *Deformed shape*, and are
+  disabled until entities are selected in the model tree
+- Maximum, minimum and scale take one row each and values show their units. The sliders
+  and power of ten moved under *Fine adjust*, which is remembered
+- The deformation and arrow scale has a logarithmic slider
+- Settings which do not apply to a scalar variable are hidden
+
 #### 3D view
 
 - New *Boundary conditions* option in the entity **Display properties**, for

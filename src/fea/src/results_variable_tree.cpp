@@ -1,8 +1,13 @@
-#include <QGridLayout>
+#include <algorithm>
+
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QPushButton>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 #include <rgl_message_box.h>
 
@@ -62,6 +67,7 @@ void ResultsVariableTree::populate()
     uint nApplyAsDisplacement = 0;
     uint nApplyTotal = 0;
     QString appliesOnStr;
+    QString units;
 
     QList<SessionEntityID> selectedEntityIDs = Application::instance()->getSession()->getSelectedEntityIDs();
 
@@ -172,6 +178,7 @@ void ResultsVariableTree::populate()
                 maxValue = variableData.getMaxDisplayValue();
                 scaleValue = variableData.getScale();
                 rangeName = variableData.getValueRangeName();
+                units = rVariable.getUnits();
 
                 displayRangeState = variableData.getDisplayValueRange() ? Qt::Checked : Qt::Unchecked;
                 smoothDisplayState = model.getSmoothVariable(this->variableType) ? Qt::Checked : Qt::Unchecked;
@@ -221,15 +228,15 @@ void ResultsVariableTree::populate()
 
     if (appliesOnNode && appliesOnElement)
     {
-        appliesOnStr = tr("Results are displayed on nodes and elements");
+        appliesOnStr = tr("On nodes and elements");
     }
     else if (appliesOnNode && !appliesOnElement)
     {
-        appliesOnStr = tr("Results are displayed on nodes");
+        appliesOnStr = tr("On nodes");
     }
     else if (!appliesOnNode && appliesOnElement)
     {
-        appliesOnStr = tr("Results are displayed on elements");
+        appliesOnStr = tr("On elements");
     }
     else
     {
@@ -247,159 +254,229 @@ void ResultsVariableTree::populate()
         item->setForeground(RESULTS_VARIABLE_TREE_COLUMN_1,QBrush(Qt::red));
     }
 
-    // -----------------------------------------------------------------
-    // APPLY ON
+    ApplicationSettings *applicationSettings = Application::instance()->getApplicationSettings();
 
-    item = new QTreeWidgetItem(this);
-    item->setText(RESULTS_VARIABLE_TREE_COLUMN_1,appliesOnStr);
+    // -----------------------------------------------------------------
+    // WHERE RESULTS ARE STORED
+
+    QWidget *locationWidget = new QWidget;
+    QHBoxLayout *locationLayout = new QHBoxLayout;
+    locationLayout->setContentsMargins(4,2,4,2);
+    locationWidget->setLayout(locationLayout);
+
+    locationLayout->addWidget(new QLabel(appliesOnStr));
+    locationLayout->addStretch(1);
 
     // Display only, results stored on elements stay unchanged.
     const bool canSmooth = appliesOnElement && Model::canSmoothVariable(this->variableType);
     if (canSmooth)
     {
-        item = new QTreeWidgetItem(this);
         QCheckBox *smoothDisplayCheckBox = new QCheckBox(tr("Smooth display"));
         smoothDisplayCheckBox->setToolTip(tr("Averages element results at nodes for display only, results themselves stay unchanged.\nAveraging lowers peak values, compare them with the element range shown in the value range."));
         smoothDisplayCheckBox->setCheckState(smoothDisplayState);
-        this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,smoothDisplayCheckBox);
+        locationLayout->addWidget(smoothDisplayCheckBox);
         QObject::connect(smoothDisplayCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onSmoothDisplayStateChanged);
     }
-
-    // -----------------------------------------------------------------
-    // APPLY AS
+    else if (appliesOnElement)
+    {
+        QPushButton *applyOnNodeButton = new QPushButton(tr("Display on nodes"));
+        locationLayout->addWidget(applyOnNodeButton);
+        QObject::connect(applyOnNodeButton,&QPushButton::clicked,this,&ResultsVariableTree::onApplyOnNodeClicked);
+    }
 
     item = new QTreeWidgetItem(this);
-    QGroupBox *applyAsGroupBox= new QGroupBox(tr("Apply as ..."));
-    QGridLayout *applyAsLayout = new QGridLayout;
+    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,locationWidget);
 
-    uint crow = 0;
+    // -----------------------------------------------------------------
+    // SHOW ON SELECTED ENTITIES
 
-    this->applyAsScalarCheckBox = new QCheckBox(REntityGroupData::getVariableDisplayName(R_ENTITY_GROUP_VARIABLE_DISPLAY_SCALAR));
+    const bool hasSelectedEntities = !selectedEntityIDs.isEmpty();
+    const QString showToolTip = hasSelectedEntities ? QString() : tr("Select entities in the model tree first.");
+
+    QVBoxLayout *showLayout = this->addSection(tr("Show on selected entities") + " (" + QLocale().toString(selectedEntityIDs.size()) + ")");
+    QHBoxLayout *showRowLayout = new QHBoxLayout;
+    showLayout->addLayout(showRowLayout);
+
+    this->applyAsScalarCheckBox = new QCheckBox(tr("Color map"));
     this->applyAsScalarCheckBox->setCheckState(applyAsScalarState);
-    applyAsLayout->addWidget(this->applyAsScalarCheckBox,crow,0,1,1);
+    this->applyAsScalarCheckBox->setEnabled(hasSelectedEntities);
+    this->applyAsScalarCheckBox->setToolTip(showToolTip);
+    showRowLayout->addWidget(this->applyAsScalarCheckBox);
 
     QObject::connect(this->applyAsScalarCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onApplyAsScalarStateChanged);
 
-    crow++;
-
-    this->applyAsDisplacementCheckBox = new QCheckBox(REntityGroupData::getVariableDisplayName(R_ENTITY_GROUP_VARIABLE_DISPLAY_DISPLACEMENT));
+    this->applyAsDisplacementCheckBox = new QCheckBox(tr("Deformed shape"));
     this->applyAsDisplacementCheckBox->setCheckState(applyAsDisplacementState);
-    applyAsLayout->addWidget(this->applyAsDisplacementCheckBox,crow,0,1,1);
-
-    this->applyAsDisplacementCheckBox->setEnabled(isVector);
+    this->applyAsDisplacementCheckBox->setEnabled(hasSelectedEntities);
+    this->applyAsDisplacementCheckBox->setToolTip(showToolTip);
+    this->applyAsDisplacementCheckBox->setVisible(isVector);
+    showRowLayout->addWidget(this->applyAsDisplacementCheckBox);
+    showRowLayout->addStretch(1);
 
     QObject::connect(this->applyAsDisplacementCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onApplyAsDisplacementStateChanged);
 
-    crow++;
-
-    applyAsGroupBox->setLayout(applyAsLayout);
-
-    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,applyAsGroupBox);
-
     // -----------------------------------------------------------------
-    // Value range & color scale
+    // COLOR RANGE
 
-    item = new QTreeWidgetItem(this);
-    QGroupBox *rangeGroupBox= new QGroupBox(tr("Value range and color scale"));
-    QGridLayout *rangeLayout = new QGridLayout;
+    QPushButton *rangeAutoFillButton = new QPushButton(tr("Reset to data"));
+    rangeAutoFillButton->setToolTip(tr("Set the range back to the default computed from the results."));
+    QObject::connect(rangeAutoFillButton,&QPushButton::clicked,this,&ResultsVariableTree::onRangeAutofillClicked);
 
-    crow = 0;
+    QVBoxLayout *rangeLayout = this->addSection(tr("Color range"),rangeAutoFillButton);
+
+    const bool rangeFineAdjust = applicationSettings->getResultsRangeFineAdjust();
 
     // Maximum
-    this->maxValueScale = new ValueScale(tr("Maximum"));
+    this->maxValueScale = new ValueScale(tr("Max"));
     this->maxValueScale->setValue(maxValue);
-    rangeLayout->addWidget(this->maxValueScale,crow,0,1,2);
+    this->maxValueScale->setUnits(units);
+    this->maxValueScale->setFineAdjustVisible(rangeFineAdjust);
+    rangeLayout->addWidget(this->maxValueScale);
 
     QObject::connect(this->maxValueScale,&ValueScale::valueChanged,this,&ResultsVariableTree::onRangeMaxValueChanged);
 
-    crow++;
-
     // Minimum
-    this->minValueScale = new ValueScale(tr("Minimum"));
+    this->minValueScale = new ValueScale(tr("Min"));
     this->minValueScale->setValue(minValue);
-    rangeLayout->addWidget(this->minValueScale,crow,0,1,2);
+    this->minValueScale->setUnits(units);
+    this->minValueScale->setFineAdjustVisible(rangeFineAdjust);
+    rangeLayout->addWidget(this->minValueScale);
 
     QObject::connect(this->minValueScale,&ValueScale::valueChanged,this,&ResultsVariableTree::onRangeMinValueChanged);
 
-    crow++;
+    const int rangeTitleWidth = std::max(this->maxValueScale->findTitleWidth(),this->minValueScale->findTitleWidth());
+    this->maxValueScale->setTitleWidth(rangeTitleWidth);
+    this->minValueScale->setTitleWidth(rangeTitleWidth);
 
-    // Set default min max ranges.
-    QPushButton *rangeAutoFillButton = new QPushButton(tr("Set default min/max values"));
-    rangeLayout->addWidget(rangeAutoFillButton,crow,0,1,2);
+    QToolButton *rangeFineAdjustButton = ResultsVariableTree::createFineAdjustButton(rangeFineAdjust);
+    rangeLayout->addWidget(rangeFineAdjustButton);
 
-    QObject::connect(rangeAutoFillButton,&QPushButton::clicked,this,&ResultsVariableTree::onRangeAutofillClicked);
+    QObject::connect(rangeFineAdjustButton,&QToolButton::toggled,this,[this](bool checked)
+    {
+        Application::instance()->getApplicationSettings()->setResultsRangeFineAdjust(checked);
+        this->maxValueScale->setFineAdjustVisible(checked);
+        this->minValueScale->setFineAdjustVisible(checked);
+        QTimer::singleShot(0,this,[this](){ this->doItemsLayout(); });
+    });
 
-    crow++;
+    // Colors
+    QHBoxLayout *colorsLayout = new QHBoxLayout;
+    rangeLayout->addLayout(colorsLayout);
 
-    // Show graph of computed values.
-    QPushButton *rangeGraphButton = new QPushButton(tr("Show graph values"));
-    rangeLayout->addWidget(rangeGraphButton,crow,0,1,2);
-
-    QObject::connect(rangeGraphButton,&QPushButton::clicked,this,&ResultsVariableTree::onRangeGraphClicked);
-
-    crow++;
-
-    // Color-Scale name
-    QLabel *colorScaleLabelLabel = new QLabel(tr("Color scale") + ":");
-    rangeLayout->addWidget(colorScaleLabelLabel,crow,0,1,1);
+    colorsLayout->addWidget(new QLabel(tr("Colors")));
 
     this->colorScaleComboBox = new ColorScaleComboBox;
-    rangeLayout->addWidget(this->colorScaleComboBox,crow,1,1,1);
+    colorsLayout->addWidget(this->colorScaleComboBox,1);
 
     this->colorScaleComboBox->setColorScaleName(rangeName);
 
     this->connect(this->colorScaleComboBox,SIGNAL(currentIndexChanged(int)),SLOT(onColorScaleChanged(int)));
 
-    crow++;
-
-    // Display Value range.
-
-    QCheckBox *displayRangeCheckBox = new QCheckBox(tr("Display value range"));
+    // Legend
+    QCheckBox *displayRangeCheckBox = new QCheckBox(tr("Show legend"));
     displayRangeCheckBox->setCheckState(displayRangeState);
-    rangeLayout->addWidget(displayRangeCheckBox,crow,0,1,2);
+    rangeLayout->addWidget(displayRangeCheckBox);
 
     QObject::connect(displayRangeCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onRangeDisplayStateChanged);
 
-    crow++;
-
-    rangeGroupBox->setLayout(rangeLayout);
-
-    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,rangeGroupBox);
-
     // -----------------------------------------------------------------
-    // SCALE
+    // DEFORMATION AND ARROW SCALE
 
-    item = new QTreeWidgetItem(this);
+    if (isVector)
+    {
+        QVBoxLayout *scaleLayout = this->addSection(tr("Deformation and arrow scale"));
 
-    ValueScale *valueScale = new ValueScale(tr("Scale"));
-    valueScale->setValue(scaleValue);
-    valueScale->setEnabled(isVector);
-    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,valueScale);
+        const bool scaleFineAdjust = applicationSettings->getResultsScaleFineAdjust();
 
-    QObject::connect(valueScale,&ValueScale::valueChanged,this,&ResultsVariableTree::onVariableScaleChanged);
+        ValueScale *valueScale = new ValueScale(QString());
+        valueScale->setValue(scaleValue);
+        valueScale->setUnits(QStringLiteral("×"));
+        valueScale->setLogSliderVisible(true);
+        valueScale->setFineAdjustVisible(scaleFineAdjust);
+        valueScale->setToolTip(tr("Multiplies the deformation of deformed shapes and the length of vector field arrows."));
+        scaleLayout->addWidget(valueScale);
+
+        QObject::connect(valueScale,&ValueScale::valueChanged,this,&ResultsVariableTree::onVariableScaleChanged);
+
+        QToolButton *scaleFineAdjustButton = ResultsVariableTree::createFineAdjustButton(scaleFineAdjust);
+        scaleLayout->addWidget(scaleFineAdjustButton);
+
+        QObject::connect(scaleFineAdjustButton,&QToolButton::toggled,this,[this,valueScale](bool checked)
+        {
+            Application::instance()->getApplicationSettings()->setResultsScaleFineAdjust(checked);
+            valueScale->setFineAdjustVisible(checked);
+            QTimer::singleShot(0,this,[this](){ this->doItemsLayout(); });
+        });
+    }
 
     // -----------------------------------------------------------------
     // VARIABLE ACTIONS
 
-    item = new QTreeWidgetItem(this);
-    QGroupBox *actionsGroupBox= new QGroupBox("Actions");
-    QGridLayout *actionsLayout = new QGridLayout;
+    QWidget *actionsWidget = new QWidget;
+    QHBoxLayout *actionsLayout = new QHBoxLayout;
+    actionsLayout->setContentsMargins(4,2,4,2);
+    actionsWidget->setLayout(actionsLayout);
 
-    if (appliesOnElement && !canSmooth)
-    {
-        QPushButton *applyOnNodeButton = new QPushButton(tr("Display on nodes"));
-        actionsLayout->addWidget(applyOnNodeButton);
-        QObject::connect(applyOnNodeButton,&QPushButton::clicked,this,&ResultsVariableTree::onApplyOnNodeClicked);
-    }
+    QPushButton *rangeGraphButton = new QPushButton(tr("Graph") + QStringLiteral("…"));
+    rangeGraphButton->setToolTip(tr("Show distribution of values and set the color range on a graph."));
+    actionsLayout->addWidget(rangeGraphButton);
+    QObject::connect(rangeGraphButton,&QPushButton::clicked,this,&ResultsVariableTree::onRangeGraphClicked);
 
-    QPushButton *removeVariableButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg"),tr("Remove variable"));
+    actionsLayout->addStretch(1);
+
+    QPushButton *removeVariableButton = new QPushButton(RIcon::fromFile(":/icons/action/pixmaps/range-cancel.svg"),tr("Remove"));
+    removeVariableButton->setToolTip(tr("Remove this variable from the model."));
     actionsLayout->addWidget(removeVariableButton);
     QObject::connect(removeVariableButton,&QPushButton::clicked,this,&ResultsVariableTree::onRemoveVariableClicked);
 
-    actionsGroupBox->setLayout(actionsLayout);
-    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,actionsGroupBox);
+    item = new QTreeWidgetItem(this);
+    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,actionsWidget);
 
     this->blockSignals(false);
+}
+
+QVBoxLayout *ResultsVariableTree::addSection(const QString &title, QWidget *headerWidget)
+{
+    QGroupBox *groupBox = new QGroupBox;
+    QVBoxLayout *sectionLayout = new QVBoxLayout;
+    groupBox->setLayout(sectionLayout);
+
+    QHBoxLayout *headerLayout = new QHBoxLayout;
+    sectionLayout->addLayout(headerLayout);
+
+    QLabel *titleLabel = new QLabel(title);
+    QFont titleFont(titleLabel->font());
+    titleFont.setBold(true);
+    titleLabel->setFont(titleFont);
+    headerLayout->addWidget(titleLabel);
+    headerLayout->addStretch(1);
+    if (headerWidget)
+    {
+        headerLayout->addWidget(headerWidget);
+    }
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this);
+    this->setItemWidget(item,RESULTS_VARIABLE_TREE_COLUMN_1,groupBox);
+
+    return sectionLayout;
+}
+
+QToolButton *ResultsVariableTree::createFineAdjustButton(bool expanded)
+{
+    QToolButton *button = new QToolButton;
+    button->setText(tr("Fine adjust"));
+    button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    button->setAutoRaise(true);
+    button->setCheckable(true);
+    button->setChecked(expanded);
+    button->setArrowType(expanded ? Qt::DownArrow : Qt::RightArrow);
+
+    QObject::connect(button,&QToolButton::toggled,button,[button](bool checked)
+    {
+        button->setArrowType(checked ? Qt::DownArrow : Qt::RightArrow);
+    });
+
+    return button;
 }
 
 void ResultsVariableTree::processApplyAsStates()

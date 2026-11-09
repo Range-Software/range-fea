@@ -21,6 +21,8 @@ const QString ApplicationSettings::solverPathKey = "application/solverPath";
 const QString ApplicationSettings::renderBackendKey = "application/renderBackend";
 const QString ApplicationSettings::rhiApiKey = "application/rhiApi";
 const QString ApplicationSettings::problemSelectorTileViewKey = "application/problemSelectorTileView";
+const QString ApplicationSettings::resultsRangeFineAdjustKey = "application/resultsRangeFineAdjust";
+const QString ApplicationSettings::resultsScaleFineAdjustKey = "application/resultsScaleFineAdjust";
 
 ApplicationSettings::ApplicationSettings(QObject *parent)
     : RApplicationSettings{parent}
@@ -157,6 +159,26 @@ bool ApplicationSettings::getProblemSelectorTileView() const
 void ApplicationSettings::setProblemSelectorTileView(bool tileView)
 {
     this->setValue(ApplicationSettings::problemSelectorTileViewKey,tileView);
+}
+
+bool ApplicationSettings::getResultsRangeFineAdjust() const
+{
+    return this->value(ApplicationSettings::resultsRangeFineAdjustKey,false).toBool();
+}
+
+void ApplicationSettings::setResultsRangeFineAdjust(bool expanded)
+{
+    this->setValue(ApplicationSettings::resultsRangeFineAdjustKey,expanded);
+}
+
+bool ApplicationSettings::getResultsScaleFineAdjust() const
+{
+    return this->value(ApplicationSettings::resultsScaleFineAdjustKey,false).toBool();
+}
+
+void ApplicationSettings::setResultsScaleFineAdjust(bool expanded)
+{
+    this->setValue(ApplicationSettings::resultsScaleFineAdjustKey,expanded);
 }
 
 uint ApplicationSettings::getMaxThreads()
