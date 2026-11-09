@@ -123,6 +123,7 @@ qt_add_executable(fea
     src/model.cpp
     src/model_action.cpp
     src/model_action_input.cpp
+    src/model_color_tree.cpp
     src/model_entity_display_properties_tree.cpp
     src/model_entity_geometric_properties_tree.cpp
     src/model_io.cpp
@@ -309,6 +310,7 @@ qt_add_executable(fea
     src/model.h
     src/model_action.h
     src/model_action_input.h
+    src/model_color_tree.h
     src/model_entity_display_properties_tree.h
     src/model_entity_geometric_properties_tree.h
     src/model_io.h

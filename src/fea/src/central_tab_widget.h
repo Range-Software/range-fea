@@ -3,6 +3,7 @@
 
 #include <QTabWidget>
 #include <QMdiArea>
+#include <QMenu>
 #include <QToolButton>
 
 #include <rbl_message.h>
@@ -53,6 +54,10 @@ class CentralTabWidget : public QTabWidget
         QToolButton *tileWindowsButton;
         //! Windows can be tiled.
         bool tileWindowsAvailable;
+        //! Windows menu button.
+        QToolButton *windowsButton;
+        //! There are multiple windows to choose from.
+        bool windowListAvailable;
 
     public:
 
@@ -77,6 +82,17 @@ class CentralTabWidget : public QTabWidget
         //! Set whether windows can be tiled.
         void setTileWindowsAvailable(bool available);
 
+        //! Set whether there are multiple windows to choose from.
+        void setWindowListAvailable(bool available);
+
+    signals:
+
+        //! Tile windows button was clicked.
+        void tileWindowsClicked();
+
+        //! Windows menu is about to be shown.
+        void windowsMenuAboutToShow(QMenu *menu);
+
     protected:
 
         //! Change event.
@@ -84,8 +100,8 @@ class CentralTabWidget : public QTabWidget
 
     private:
 
-        //! Show tile windows button when windows can be tiled and model tab is displayed.
-        void updateTileWindowsButton();
+        //! Show window buttons when they can be used and model tab is displayed.
+        void updateWindowButtons();
 
         //! Set text and icon for given tab.
         void setTabTitle(CentralTabWidget::Type tabType, RMessage::Type messageType = RMessage::Type::None, const QString &additionalText = QString());

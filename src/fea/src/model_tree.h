@@ -1,13 +1,12 @@
 #ifndef MODEL_TREE_H
 #define MODEL_TREE_H
 
-#include <QTreeWidget>
-
 #include <rml_entity_group.h>
 
 #include "action_list.h"
+#include "model_color_tree.h"
 
-class ModelTree : public QTreeWidget
+class ModelTree : public ModelColorTree
 {
 
     Q_OBJECT
@@ -33,11 +32,8 @@ class ModelTree : public QTreeWidget
 
     protected:
 
-        //! Draw row, row of a model has a line in the color of the model at its top.
-        void drawRow(QPainter *painter, const QStyleOptionViewItem &options, const QModelIndex &index) const override;
-
-        //! Draw branches, branches of a model are moved below the line in the color of the model.
-        void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const override;
+        //! Return ID of the model in given top level row.
+        uint findRowModelID(const QModelIndex &index) const override;
 
         //! Return all items in the tree widget.
         QList<QTreeWidgetItem*> getAllItems(QTreeWidgetItem *parent = nullptr) const;

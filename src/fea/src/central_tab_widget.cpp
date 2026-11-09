@@ -2,6 +2,7 @@
 
 
 #include <QApplication>
+#include <QHBoxLayout>
 #include <QScrollBar>
 #include <QSpinBox>
 
@@ -73,9 +74,28 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
     this->tileWindowsButton->setIcon(RIcon::fromFile(":/icons/file/pixmaps/range-tile_windows.svg"));
     this->tileWindowsButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
     this->tileWindowsButton->setAutoRaise(true);
-    this->setCornerWidget(this->tileWindowsButton,Qt::BottomRightCorner);
     this->tileWindowsButton->hide();
-    QObject::connect(this->tileWindowsButton,&QToolButton::clicked,this->mdiArea,&QMdiArea::tileSubWindows);
+    QObject::connect(this->tileWindowsButton,&QToolButton::clicked,this,&CentralTabWidget::tileWindowsClicked);
+
+    QMenu *windowsMenu = new QMenu(this);
+    QObject::connect(windowsMenu,&QMenu::aboutToShow,this,[this,windowsMenu]() { emit this->windowsMenuAboutToShow(windowsMenu); });
+
+    this->windowListAvailable = false;
+    this->windowsButton = new QToolButton(this);
+    this->windowsButton->setText(tr("Windows"));
+    this->windowsButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+    this->windowsButton->setAutoRaise(true);
+    this->windowsButton->setMenu(windowsMenu);
+    this->windowsButton->setPopupMode(QToolButton::InstantPopup);
+    this->windowsButton->hide();
+
+    QWidget *windowButtons = new QWidget(this);
+    QHBoxLayout *windowButtonsLayout = new QHBoxLayout(windowButtons);
+    windowButtonsLayout->setContentsMargins(0,0,0,0);
+    windowButtonsLayout->setSpacing(0);
+    windowButtonsLayout->addWidget(this->tileWindowsButton);
+    windowButtonsLayout->addWidget(this->windowsButton);
+    this->setCornerWidget(windowButtons,Qt::BottomRightCorner);
 
     QObject::connect(this,&QTabWidget::currentChanged,this,&CentralTabWidget::onCurrentChanged);
 
@@ -99,12 +119,20 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
 void CentralTabWidget::setTileWindowsAvailable(bool available)
 {
     this->tileWindowsAvailable = available;
-    this->updateTileWindowsButton();
+    this->updateWindowButtons();
 }
 
-void CentralTabWidget::updateTileWindowsButton()
+void CentralTabWidget::setWindowListAvailable(bool available)
 {
-    this->tileWindowsButton->setVisible(this->tileWindowsAvailable && this->currentIndex() == this->modelTabPosition);
+    this->windowListAvailable = available;
+    this->updateWindowButtons();
+}
+
+void CentralTabWidget::updateWindowButtons()
+{
+    const bool modelTabShown = this->currentIndex() == this->modelTabPosition;
+    this->tileWindowsButton->setVisible(this->tileWindowsAvailable && modelTabShown);
+    this->windowsButton->setVisible(this->windowListAvailable && modelTabShown);
 }
 
 void CentralTabWidget::changeEvent(QEvent *event)
@@ -332,7 +360,7 @@ void CentralTabWidget::onProcessReadyStandardError(const QString &message)
 
 void CentralTabWidget::onCurrentChanged(int tabPosition)
 {
-    this->updateTileWindowsButton();
+    this->updateWindowButtons();
     if (useTabIcons)
     {
         this->setTabIcon(tabPosition,QIcon());

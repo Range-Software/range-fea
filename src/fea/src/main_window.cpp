@@ -633,7 +633,11 @@ void MainWindow::createCentralWidget()
     this->centralTabWidget = new CentralTabWidget(this);
     this->setCentralWidget(this->centralTabWidget);
     this->modelSubWindows = new SubWindowManager(this->centralTabWidget->getMdiArea(), this);
+    this->modelSubWindows->readLayout(this->applicationSettings);
     QObject::connect(this->modelSubWindows,&SubWindowManager::tilingAvailableChanged,this->centralTabWidget,&CentralTabWidget::setTileWindowsAvailable);
+    QObject::connect(this->modelSubWindows,&SubWindowManager::windowListAvailableChanged,this->centralTabWidget,&CentralTabWidget::setWindowListAvailable);
+    QObject::connect(this->centralTabWidget,&CentralTabWidget::tileWindowsClicked,this->modelSubWindows,&SubWindowManager::tileWindows);
+    QObject::connect(this->centralTabWidget,&CentralTabWidget::windowsMenuAboutToShow,this->modelSubWindows,&SubWindowManager::fillWindowsMenu);
 }
 
 QWidget *MainWindow::createModelTab()
@@ -828,6 +832,8 @@ void MainWindow::writeSettings() const
     // Main window
     this->applicationSettings->setValue("mainWindow/geometry", this->saveGeometry());
     this->applicationSettings->setValue("mainWindow/windowState", this->saveState());
+    // Model windows
+    this->modelSubWindows->writeLayout(this->applicationSettings);
     // Session
     QString sessionFileName = this->session->getFileName();
     if (sessionFileName.isEmpty())

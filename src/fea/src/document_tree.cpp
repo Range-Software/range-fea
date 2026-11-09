@@ -38,10 +38,9 @@ static int findDocumentCategory(const QString &filename)
 }
 
 DocumentTree::DocumentTree(QWidget *parent) :
-    QTreeWidget(parent)
+    ModelColorTree(parent)
 {
     R_LOG_TRACE;
-    this->setColumnCount(DOCUMENT_TREE_N_COLUMNS);
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
     this->setRootIsDecorated(true);
     this->setAutoScroll(true);
@@ -50,6 +49,9 @@ DocumentTree::DocumentTree(QWidget *parent) :
     headerItem->setText(DOCUMENT_TREE_COLUMN_NAME,QString(tr("File name")));
     headerItem->setIcon(DOCUMENT_TREE_COLUMN_NAME,RIcon::fromFile(":/icons/mime/pixmaps/range-file-document.svg"));
     this->setHeaderItem(headerItem);
+
+    // Header item defines number of columns, so this must follow it.
+    this->setColumnCount(DOCUMENT_TREE_N_COLUMNS);
 
     this->setColumnHidden(DOCUMENT_TREE_COLUMN_FILENAME,true);
     this->setColumnHidden(DOCUMENT_TREE_COLUMN_MODEL_ID,true);
@@ -87,6 +89,11 @@ DocumentTree::DocumentTree(QWidget *parent) :
                      this,
                      &DocumentTree::updateDocuments);
     timer->start(1000);
+}
+
+uint DocumentTree::findRowModelID(const QModelIndex &index) const
+{
+    return index.siblingAtColumn(DOCUMENT_TREE_COLUMN_MODEL_ID).data(Qt::UserRole).toUInt();
 }
 
 void DocumentTree::addDocument(QTreeWidgetItem *item, uint modelID, const QString &filename)

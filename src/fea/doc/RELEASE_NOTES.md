@@ -35,9 +35,12 @@
 
 - Files of a model are grouped into *Documents*, *Videos* and *Images*
 - The **Records** tab is shown only when there are records
+- Models in the tree are separated by a line in the color of the model, as in the model
+  tree
 
 #### 3D view
 
+- Position, size and order of model windows are restored after restarting the application
 - New *Boundary conditions* option in the entity **Display properties**, for
   points, lines, surfaces and volumes. When it is on, symbols of the boundary
   conditions applied to the entity are drawn on it, as long as the entity is
@@ -108,7 +111,11 @@
   tree and of its window title bar. Models in the model tree are separated by a small
   gap
 - New *Tile windows* button next to the tabs below the 3D view, shown when several
-  model windows are open and none of them is maximized
+  model windows are open. Clicking it again moves the windows one position clockwise
+- Windows are tiled automatically when a model is opened while another window is maximized
+  or the windows are tiled
+- New *Windows* menu next to *Tile windows* lists the open model windows, and clicking one
+  maximizes it
 
 #### Model files
 

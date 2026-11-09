@@ -1,9 +1,9 @@
 #ifndef DOCUMENT_TREE_H
 #define DOCUMENT_TREE_H
 
-#include <QTreeWidget>
+#include "model_color_tree.h"
 
-class DocumentTree : public QTreeWidget
+class DocumentTree : public ModelColorTree
 {
 
     Q_OBJECT
@@ -12,6 +12,11 @@ class DocumentTree : public QTreeWidget
 
         //! Constructor.
         explicit DocumentTree(QWidget *parent = nullptr);
+
+    protected:
+
+        //! Return ID of the model in given top level row.
+        uint findRowModelID(const QModelIndex &index) const override;
 
     private:
 
