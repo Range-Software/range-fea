@@ -43,7 +43,22 @@ class ProblemTaskTree : public QWidget
         //! Return problem task tree.
         RProblemTaskItem getProblemTaskTree() const;
 
+        //! Replace content with given problem task tree.
+        void setProblemTaskTree(const RProblemTaskItem &rTaskTree);
+
+        //! Add given problem types not yet present, each before the tasks which use its results.
+        void addProblemTypes(RProblemTypeMask problemTypeMask);
+
+        //! Remove all tasks of given problem types.
+        void removeProblemTypes(RProblemTypeMask problemTypeMask);
+
     protected:
+
+        //! Return problem types of given item and of all items below it.
+        static RProblemTypeMask findItemTypeMask(const QTreeWidgetItem *item);
+
+        //! Remove tasks whose required problem types are no longer present.
+        void removeTasksWithoutRequiredTypes();
 
         //! Add item to tree widget.
         void addTaskItemToWidget(QTreeWidgetItem *parent, const RProblemTaskItem &taskItem);
@@ -82,9 +97,6 @@ class ProblemTaskTree : public QWidget
 
         //! Delete button clicked.
         void onDeleteButtonClicked();
-
-        //! Add problem type button clicked.
-        void onAddProblemButtonClicked();
 
     signals:
 

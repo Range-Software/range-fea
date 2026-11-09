@@ -560,8 +560,8 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Incompressible viscous flow** - "Steady-state and
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Incompressible viscous flow** - "Steady-state and
 transient flow of newtonian fluids".
 
 A flow task belongs inside a **task group**, which carries the two values that
@@ -609,7 +609,7 @@ dispersion setup* group box is described in the
 [Contaminant dispersion](theory_fluid_particle.md) manual.
 Everything else is assigned per entity in the condition tabs, and the iteration
 count - which matters more here than anywhere else in Range FEA - lives in the
-problem task flow dialog rather than on this tab.
+**Select problem** dialog rather than on this tab.
 
 ### 2.3 Material tab
 
@@ -728,12 +728,11 @@ entities so that conditions can be assigned to them.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a **task group** and set its **# of iterations** to `2000` by
-   double-clicking the value.
-3. Leave its **Convergence** at the default `1e-5`.
-4. Add an **Incompressible viscous flow** task inside the group.
-5. Confirm with `OK`.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Incompressible viscous flow**.
+   **Maximum iterations** is set to `2000`.
+3. Leave **Convergence** at the default `1e-5`.
+4. Confirm with `OK`.
 
 The two values are the whole point of this step. The run takes up to 2000
 passes and stops as soon as the field settles below `1e-5` - see 1.6. Set the

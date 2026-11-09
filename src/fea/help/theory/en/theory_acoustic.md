@@ -356,8 +356,8 @@ Everything acoustic-related lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the acoustics problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Acoustics** - "Customized wave equation for solving
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Acoustics** - "Customized wave equation for solving
 acoustic problems".
 
 Acoustics is mutually exclusive with **Wave - general** and with **Modal
@@ -494,8 +494,8 @@ it - the *Draw cube* tutorial covers this ground.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Acoustics**.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Acoustics**.
 3. Confirm with `OK`.
 
 The `Problem` tab of the Solver dock now shows the *Time-solver* and *Acoustic
@@ -591,7 +591,7 @@ sound pressure level map at each frequency.
 
 ### Step 1 - select the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`), add a task, select **Acoustics**.
+`Problem` -> `Select problem` (`Ctrl+P`), select **Acoustics**.
 
 ### Step 2 - assign the material
 

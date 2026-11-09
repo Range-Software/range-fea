@@ -320,8 +320,8 @@ hold nothing for this problem type.
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Magneto-statics** - "Calculate magnetic field".
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Magneto-statics** - "Calculate magnetic field".
 
 **Electro-statics is ticked for you.** The selector enforces the dependency of
 1.6 in both directions: ticking *Magneto-statics* ticks *Electro-statics*, and
@@ -419,7 +419,7 @@ the task flow changes.
 
 ### Step 1 - select the problems
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
+1. `Problem` -> `Select problem` (`Ctrl+P`).
 2. Tick **Magneto-statics**. Watch **Electro-statics** tick itself.
 3. Confirm with `OK`.
 

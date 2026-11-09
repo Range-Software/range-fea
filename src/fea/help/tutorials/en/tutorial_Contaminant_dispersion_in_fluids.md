@@ -18,20 +18,17 @@ Because the flow problem is nonlinear, it is solved iteratively. The simulation 
 
 In the **Open model** dialog select **Channel.tmsh** and click **Open**.
 
-The model consists of three surface entities - **Walls**, **Inflow** and **Outflow**. Since no problem type is assigned to the model yet, the **Problem task flow** dialog opens automatically once loading is complete.
+The model consists of three surface entities - **Walls**, **Inflow** and **Outflow**. Since no problem type is assigned to the model yet, the **Select problem** dialog opens automatically once loading is complete.
 
-## 2. Problem task flow (stage 1 - steady-state flow)
+## 2. Select problem (stage 1 - steady-state flow)
 
 For the first stage only the flow is solved, using many nonlinear iterations so that it can converge.
 
-1. In the **Problem task flow** dialog click **Add problem type**.
-2. In the **Problem type selector** check **Incompressible viscous flow** and click **OK**.
-3. Double-click the value **1** next to **# of iterations:**, type **2000** and press _Enter_.
-4. Click **OK** to close the dialog.
+1. In the **Select problem** dialog click **Incompressible viscous flow**.
+2. Keep **Maximum iterations** at **2000**, which is the default for a steady-state flow.
+3. Click **OK** to close the dialog.
 
-The dialog can be opened again at any time with the **Problem(s) task flow** button in the toolbar. It should now look like this:
-
-![CFD - Problem task flow steady](image-CFD-Problem_task_flow_steady.png)
+The dialog can be opened again at any time with the **Select problem** button in the toolbar.
 
 ## 3. Generate the volume mesh
 
@@ -112,19 +109,17 @@ The arrows may be too short to be clearly visible, because their length is propo
 
 ![CFD - Scale vector field entity](image-CFD-Scale_vector.png)
 
-## 9. Problem task flow (stage 2 - transient)
+## 9. Select problem (stage 2 - transient)
 
 With a converged flow field available, the **transient** simulation including **Contaminant dispersion** can be configured.
 
-In a transient simulation the problems are solved once per time-step. **Incompressible viscous flow** is still nonlinear, so it needs its own nonlinear iterations inside every time-step, while **Contaminant dispersion** is solved once per time-step after the flow. Open the **Problem task flow** dialog again (toolbar button **Problem(s) task flow**) and set it up as follows:
+In a transient simulation the problems are solved once per time-step. **Incompressible viscous flow** is still nonlinear, so it needs its own nonlinear iterations inside every time-step, while **Contaminant dispersion** is solved once per time-step after the flow. Open the **Select problem** dialog again (toolbar button **Select problem**) and set it up as follows:
 
-1. Select **Incompressible viscous flow** and click the **>** button. This moves it into a new, nested iteration group.
-2. Double-click the value of the outer **# of iterations:** and change it from **2000** to **1**. Then change the inner (nested) **# of iterations:** from **1** to **10**.
-3. Click **Add problem type**, check **Contaminant dispersion** and click **OK**. **Incompressible viscous flow** is checked automatically as well, because contaminant dispersion needs a flow field. If a second **Incompressible viscous flow** entry is added at the outer level, select it and click **Remove**.
+1. Click **Contaminant dispersion**, and then click **Customize...** to show the task flow.
+2. Select **Incompressible viscous flow** and click the **>** button. This moves it into a new, nested iteration group.
+3. Double-click the value of the outer **# of iterations:** and change it from **2000** to **1**. Then change the inner (nested) **# of iterations:** from **1** to **10**.
 
-The task flow should look like the screenshot below. Click **OK** to accept.
-
-![CFD - Problem task flow](image-CFD-Problem_task_flow.png)
+Click **OK** to accept.
 
 ## 10. Time solver setup
 

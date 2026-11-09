@@ -16,20 +16,13 @@ Each problem uses the results of the previous one, so the order of the problems 
 
 In the **Open model** dialog select **Beam.tmsh** and click **Open**.
 
-Since no problem type is assigned to the model yet, the **Problem task flow** dialog opens automatically once loading is complete.
+Since no problem type is assigned to the model yet, the **Select problem** dialog opens automatically once loading is complete.
 
-## 2. Problem task flow
+## 2. Select problems
 
-1. In the **Problem task flow** dialog click **Add problem type**.
-2. In the **Problem type selector** check **Electro-statics**, **Heat transfer** and **Stress analysis** and click **OK**.
+In the **Select problem** dialog click **Electro-statics**, **Heat transfer** and **Stress analysis**. The dialog shows the **Solve order** below the tiles: Electro-statics, Heat transfer, Stress analysis. Click **OK** to accept.
 
-![Problem type selector - Multi](image-Problem_type_selector-Multi.png)
-
-The **Problem task flow** should now list the three problems in one iteration group, in the order shown below. If the order is different, or there are extra entries, select an entry and use the **Up**, **Down** and **Remove** buttons to fix it. Click **OK** to accept.
-
-![Problem task flow - Multi](image-Problem_task_flow-Multi.png)
-
-The dialog can be opened again at any time with the **Problem(s) task flow** button in the toolbar.
+The dialog can be opened again at any time with the **Select problem** button in the toolbar.
 
 ## 3. Generate 3D mesh
 

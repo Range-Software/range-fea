@@ -33,7 +33,13 @@ class SolverSetupChecker
         //! Perform check.
         void perform(QStringList &warnings,QStringList &errors) const;
 
+        //! Check that problem tasks can be solved together and in given order.
+        static void checkProblemTaskTree(const RProblemTaskItem &taskTree, QStringList &warnings, QStringList &errors);
+
     private:
+
+        //! Append problem types of given task and of all tasks below it, in order of solving.
+        static void collectProblemTypes(const RProblemTaskItem &taskItem, std::vector<RProblemType> &problemTypes);
 
         //! Check elements.
         void checkElements(QStringList &warnings,QStringList &errors) const;

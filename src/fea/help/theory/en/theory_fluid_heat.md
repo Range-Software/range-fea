@@ -151,7 +151,7 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
 dialog. The combinations worth knowing:
 
 - *Incompressible viscous flow* and *Heat transfer in fluids* in one group - a

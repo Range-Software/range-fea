@@ -23,10 +23,10 @@ class ProblemSelectorTree : public QTreeWidget
         explicit ProblemSelectorTree(QWidget *parent = nullptr);
 
         //! Return problem mask for model id.
-        RProblemTypeMask findProblemTypeMask();
+        RProblemTypeMask findProblemTypeMask() const;
 
-        //! Check if some problem type is selected.
-        bool checkProblemIsChecked() const;
+        //! Check exactly the given problem types.
+        void setProblemTypeMask(RProblemTypeMask problemTypeMask);
 
         //! Return listed problem types in order in which they are listed.
         std::vector<RProblemType> getProblemTypes() const;
@@ -34,10 +34,25 @@ class ProblemSelectorTree : public QTreeWidget
         //! Return true if given problem type is checked.
         bool isProblemTypeChecked(RProblemType problemType) const;
 
+        //! Return false if given problem type can not be selected with currently checked ones.
+        bool isProblemTypeAvailable(RProblemType problemType) const;
+
+        //! Return short note about state of given problem type, empty if there is nothing to tell.
+        QString findProblemTypeNote(RProblemType problemType) const;
+
+        //! Return description of given problem type including reason of its state.
+        QString findProblemTypeToolTip(RProblemType problemType) const;
+
         //! Check or uncheck given problem type. Rules for required and excluded problem types are applied.
         void setProblemTypeChecked(RProblemType problemType, bool checked);
 
     protected:
+
+        //! Return item of given problem type.
+        QTreeWidgetItem *findItem(RProblemType problemType) const;
+
+        //! Update availability, notes and tool tips of all items from currently checked ones.
+        void updateItemStates();
 
         //! Sort problem types so that each is listed directly after the problem types it depends on.
         static std::vector<RProblemType> sortTypesByDependency(const std::vector<RProblemType> &problemTypes);
@@ -45,11 +60,11 @@ class ProblemSelectorTree : public QTreeWidget
         //! Append problem type followed by its dependent problem types.
         static void appendTypeWithDependents(const std::vector<RProblemType> &problemTypes, RProblemType problemType, std::vector<RProblemType> &sortedTypes, RProblemTypeMask &listedMask);
 
-        //! Check checked item.
+        //! Check problem types required by checked item.
         void checkCheckedTreeWidgetItem(QTreeWidgetItem *item);
 
-        //! Check unchecked item.
-        void checkUncheckedTreeWidgetItem(QTreeWidgetItem *item);
+        //! Uncheck problem types whose required problem types are not checked.
+        void uncheckTypesWithoutRequiredTypes();
 
     protected slots:
 

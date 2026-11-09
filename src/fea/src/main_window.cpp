@@ -103,27 +103,27 @@ MainWindow::MainWindow(Session *session,
     solverDock->setTitleBarWidget(new QWidget(solverDock));
     this->addDockWidget(Qt::RightDockWidgetArea, solverDock);
 
-    QTabWidget *solverDockTabWidget = new QTabWidget;
-    solverDockTabWidget->setTabPosition(QTabWidget::East);
-    solverDock->setWidget(solverDockTabWidget);
+    this->solverDockTabWidget = new QTabWidget;
+    this->solverDockTabWidget->setTabPosition(QTabWidget::East);
+    solverDock->setWidget(this->solverDockTabWidget);
 
     this->problemTab = this->createProblemTab();
-    solverDockTabWidget->addTab(this->problemTab,tr("Problem"));
+    this->solverDockTabWidget->addTab(this->problemTab,tr("Problem"));
 
     this->bcTab = this->createBcTab();
-    solverDockTabWidget->addTab(this->bcTab,tr("Boundary conditions"));
+    this->solverDockTabWidget->addTab(this->bcTab,tr("Boundary conditions"));
 
     this->icTab = this->createIcTab();
-    solverDockTabWidget->addTab(this->icTab,tr("Initial conditions"));
+    this->solverDockTabWidget->addTab(this->icTab,tr("Initial conditions"));
 
     this->ecTab = this->createEcTab();
-    solverDockTabWidget->addTab(this->ecTab,tr("Environment conditions"));
+    this->solverDockTabWidget->addTab(this->ecTab,tr("Environment conditions"));
 
     this->materialTab = this->createMaterialTab();
-    solverDockTabWidget->addTab(this->materialTab,tr("Material"));
+    this->solverDockTabWidget->addTab(this->materialTab,tr("Material"));
 
     this->resultsTab = this->createResultsTab();
-    solverDockTabWidget->addTab(this->resultsTab,tr("Results"));
+    this->solverDockTabWidget->addTab(this->resultsTab,tr("Results"));
 
     if (this->isFirstRun || !this->restoreGeometry(this->applicationSettings->value("mainWindow/geometry").toByteArray()))
     {
@@ -1006,6 +1006,12 @@ void MainWindow::onJobBlocking(bool blocking)
 void MainWindow::onJobStarted()
 {
     R_LOG_TRACE;
+}
+
+void MainWindow::showProblemSetupTab(RProblemTypeMask problemTypeMask)
+{
+    R_LOG_TRACE;
+    this->solverDockTabWidget->setCurrentWidget(ProblemTree::hasSettings(problemTypeMask) ? this->problemTab : this->bcTab);
 }
 
 void MainWindow::onJobEnded()

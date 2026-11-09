@@ -5,6 +5,7 @@
 #include <QToolBar>
 #include <QMainWindow>
 #include <QLabel>
+#include <QTabWidget>
 
 #include <rcl_cloud_session_manager.h>
 
@@ -57,6 +58,8 @@ class MainWindow : public QMainWindow
         QWidget *materialTab;
         //! Results manager tab.
         QWidget *resultsTab;
+        //! Tab widget holding problem setup tabs.
+        QTabWidget *solverDockTabWidget;
         //! Central tab widget.
         CentralTabWidget *centralTabWidget;
         //! Model manager.
@@ -74,6 +77,9 @@ class MainWindow : public QMainWindow
                             RApplicationSettings *applicationSettings,
                             ActionList *actionList,
                             QWidget *parent = nullptr);
+
+        //! Show first tab which needs input after given problem types were selected.
+        void showProblemSetupTab(RProblemTypeMask problemTypeMask);
 
         //! Show transform geometry dock widget.
         void showTransformGeometryWidget();

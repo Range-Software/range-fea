@@ -2,6 +2,24 @@
 
 ### Improvements
 
+#### Problem selection
+
+- New **Select problem** dialog replaces the *Problem(s) task flow* and *Problem type
+  selector* dialogs. Problem types are selected directly and the task flow is built
+  automatically, in the order the problems need each other's results
+- Maximum iterations and convergence are shown only for selections with a flow or
+  radiation. Flow starts at 2000 iterations, or 20 per time step, and values left at
+  their default follow the time solver
+- The task flow tree remains available under **Customize**
+- Double-clicking a tile selects it and closes the dialog
+- Tiles show the problem types which are required or incompatible, with the reason in
+  the tool tip, instead of warning after the click
+- The dialog opened for a new model can be closed with **Skip for now**, and the
+  **Problem** tab then offers a **Select problem** button
+- After selecting a problem the first tab which needs input is shown
+- Incompatible problems, missing required problems and a missing problem selection are
+  reported before the solver starts
+
 #### 3D view
 
 - New *Boundary conditions* option in the entity **Display properties**, for

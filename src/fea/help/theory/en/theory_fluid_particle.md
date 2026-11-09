@@ -295,10 +295,10 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Put a **Contaminant dispersion** task in the same task group as an
-**Incompressible viscous flow** task - dispersion on the flow, the classic
-transient pairing. The problem type requires the flow task to be present.
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Contaminant dispersion**, which also selects **Incompressible
+viscous flow** - dispersion on the flow, the classic transient pairing. Both are
+solved in one task group.
 
 The task group values - **# of iterations** and **Convergence** - drive the
 non-linear iteration of the flow and are described in the
@@ -411,10 +411,9 @@ time steps developing the flow field rather than transporting anything.
 
 ### Step 2 - add the dispersion task
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Keep the task group and the **Incompressible viscous flow** task.
-3. Add a **Contaminant dispersion** task inside the same group.
-4. Reduce the group's **# of iterations** to something like `20` - these are now
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Keep **Incompressible viscous flow** selected and select **Contaminant dispersion**.
+3. Set **Maximum iterations** to something like `20` - these are now
    the non-linear iterations *per time step*, not the iterations of a
    steady-state solve. Leave the **Convergence** value alone; most steps will
    settle before the twentieth pass and end early, and the ones that do not are

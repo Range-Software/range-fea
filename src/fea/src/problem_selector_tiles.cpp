@@ -20,7 +20,22 @@ constexpr int tileMinimumWidth = 136;
 constexpr int tileMargin = 4;
 constexpr int tilePadding = 10;
 constexpr int tileIconTextSpacing = 8;
+constexpr int tileNoteSpacing = 2;
 constexpr int tileColumns = 4;
+
+//! Role of item data holding short note shown under name of a problem type.
+constexpr int tileNoteRole = Qt::UserRole + 1;
+
+//! Return font used to draw a note.
+QFont findTileNoteFont(const QFont &font)
+{
+    QFont noteFont(font);
+    if (noteFont.pointSizeF() > 0.0)
+    {
+        noteFont.setPointSizeF(noteFont.pointSizeF()*0.85);
+    }
+    return noteFont;
+}
 
 //! Flags used to draw name of a problem type.
 constexpr int tileTextFlags = Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap;
@@ -57,11 +72,16 @@ class ProblemTileDelegate : public QStyledItemDelegate
         void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
         {
             const bool checked = (index.data(Qt::CheckStateRole).toInt() == Qt::Checked);
-            const bool hovered = option.state.testFlag(QStyle::State_MouseOver);
+            const bool enabled = index.flags().testFlag(Qt::ItemIsEnabled);
+            const bool hovered = enabled && option.state.testFlag(QStyle::State_MouseOver);
             const bool keyboardFocus = option.state.testFlag(QStyle::State_HasFocus) && option.state.testFlag(QStyle::State_KeyboardFocusChange);
 
             const QColor accentColor(option.palette.color(QPalette::Active,QPalette::Highlight));
-            const QColor textColor(option.palette.color(QPalette::Active,QPalette::Text));
+            QColor textColor(option.palette.color(QPalette::Active,QPalette::Text));
+            if (!enabled)
+            {
+                textColor.setAlphaF(0.45f);
+            }
 
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
@@ -89,12 +109,27 @@ class ProblemTileDelegate : public QStyledItemDelegate
             // Icon.
             const QRect contentRect = option.rect.adjusted(tileMargin+tilePadding,tileMargin+tilePadding,-tileMargin-tilePadding,-tileMargin-tilePadding);
             const QRect iconRect(contentRect.center().x()-tileIconSize/2+1,contentRect.top(),tileIconSize,tileIconSize);
-            index.data(Qt::DecorationRole).value<QIcon>().paint(painter,iconRect);
+            index.data(Qt::DecorationRole).value<QIcon>().paint(painter,iconRect,Qt::AlignCenter,enabled ? QIcon::Normal : QIcon::Disabled);
 
             // Name.
             painter->setPen(textColor);
             painter->setFont(option.font);
             painter->drawText(contentRect.adjusted(0,tileIconSize+tileIconTextSpacing,0,0),tileTextFlags,index.data(Qt::DisplayRole).toString());
+
+            // Note.
+            const QString note(index.data(tileNoteRole).toString());
+            if (!note.isEmpty())
+            {
+                const QFont noteFont(findTileNoteFont(option.font));
+                const QFontMetrics noteMetrics(noteFont);
+                QColor noteColor(option.palette.color(QPalette::Active,QPalette::Text));
+                noteColor.setAlphaF(0.65f);
+                painter->setPen(noteColor);
+                painter->setFont(noteFont);
+                painter->drawText(contentRect.adjusted(0,contentRect.height()-noteMetrics.height(),0,0),
+                                  Qt::AlignHCenter | Qt::AlignBottom,
+                                  noteMetrics.elidedText(note,Qt::ElideRight,contentRect.width()));
+            }
 
             // Check mark.
             const qreal markRadius = 8.0;
@@ -120,6 +155,11 @@ class ProblemTileDelegate : public QStyledItemDelegate
                 painter->setBrush(Qt::NoBrush);
                 painter->setPen(QPen(markColor,1.25));
                 painter->drawEllipse(markCenter,markRadius-0.5,markRadius-0.5);
+                if (!enabled)
+                {
+                    const qreal slash = (markRadius-0.5)*0.7071;
+                    painter->drawLine(markCenter+QPointF(-slash,-slash),markCenter+QPointF(slash,slash));
+                }
             }
 
             painter->restore();
@@ -160,20 +200,28 @@ ProblemSelectorTiles::ProblemSelectorTiles(ProblemSelectorTree *problemTree, QWi
     {
         textHeight = std::max(textHeight,this->fontMetrics().boundingRect(QRect(0,0,textWidth,10000),tileTextFlags,RProblem::getName(problemType)).height());
     }
+    const int noteHeight = QFontMetrics(findTileNoteFont(this->font())).height() + tileNoteSpacing;
     const int inset = 2*(tileMargin+tilePadding);
-    this->setGridSize(QSize(textWidth+inset,tileIconSize+tileIconTextSpacing+textHeight+inset));
+    this->setGridSize(QSize(textWidth+inset,tileIconSize+tileIconTextSpacing+textHeight+noteHeight+inset));
 
     for (RProblemType problemType : problemTypes)
     {
         QListWidgetItem *item = new QListWidgetItem(RIcon::fromFile(findProblemTypeIconFile(problemType)),RProblem::getName(problemType),this);
         item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
         item->setData(Qt::UserRole,QVariant(int(problemType)));
-        item->setToolTip(RProblem::getDesc(problemType));
         item->setSizeHint(this->gridSize());
     }
     this->onProblemTreeChanged();
 
     QObject::connect(this,&QListWidget::itemClicked,this,&ProblemSelectorTiles::toggleItem);
+    QObject::connect(this,&QListWidget::itemDoubleClicked,this,[this](QListWidgetItem *item)
+    {
+        if (item->flags().testFlag(Qt::ItemIsEnabled))
+        {
+            this->problemTree->setProblemTypeChecked(RProblemType(item->data(Qt::UserRole).toInt()),true);
+            emit this->confirmed();
+        }
+    });
     QObject::connect(this->problemTree,&ProblemSelectorTree::changed,this,&ProblemSelectorTiles::onProblemTreeChanged);
 }
 
@@ -199,6 +247,10 @@ void ProblemSelectorTiles::keyPressEvent(QKeyEvent *event)
 
 void ProblemSelectorTiles::toggleItem(QListWidgetItem *item)
 {
+    if (!item->flags().testFlag(Qt::ItemIsEnabled))
+    {
+        return;
+    }
     this->problemTree->setProblemTypeChecked(RProblemType(item->data(Qt::UserRole).toInt()),item->checkState() != Qt::Checked);
 }
 
@@ -207,6 +259,10 @@ void ProblemSelectorTiles::onProblemTreeChanged()
     for (int i=0;i<this->count();i++)
     {
         QListWidgetItem *item = this->item(i);
-        item->setCheckState(this->problemTree->isProblemTypeChecked(RProblemType(item->data(Qt::UserRole).toInt())) ? Qt::Checked : Qt::Unchecked);
+        const RProblemType problemType = RProblemType(item->data(Qt::UserRole).toInt());
+        item->setFlags(this->problemTree->isProblemTypeAvailable(problemType) ? (item->flags() | Qt::ItemIsEnabled) : (item->flags() & ~Qt::ItemIsEnabled));
+        item->setCheckState(this->problemTree->isProblemTypeChecked(problemType) ? Qt::Checked : Qt::Unchecked);
+        item->setData(tileNoteRole,this->problemTree->findProblemTypeNote(problemType));
+        item->setToolTip(this->problemTree->findProblemTypeToolTip(problemType));
     }
 }

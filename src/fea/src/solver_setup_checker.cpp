@@ -36,9 +36,68 @@ void SolverSetupChecker::perform(QStringList &warnings, QStringList &errors) con
     warnings.clear();
     errors.clear();
 
+    if (this->rModel.getProblemTaskTree().getProblemTypeMask() == R_PROBLEM_NONE)
+    {
+        errors.append(QObject::tr("No problem is selected. Use Problem - Select problem."));
+        return;
+    }
+
+    SolverSetupChecker::checkProblemTaskTree(this->rModel.getProblemTaskTree(),warnings,errors);
     this->checkElements(warnings,errors);
     this->checkMaterials(warnings,errors);
     this->checkBoundaryConditions(warnings,errors);
+}
+
+void SolverSetupChecker::collectProblemTypes(const RProblemTaskItem &taskItem, std::vector<RProblemType> &problemTypes)
+{
+    if (taskItem.getProblemType() != R_PROBLEM_NONE)
+    {
+        problemTypes.push_back(taskItem.getProblemType());
+    }
+    for (uint i=0;i<taskItem.getNChildren();i++)
+    {
+        SolverSetupChecker::collectProblemTypes(taskItem.getChild(i),problemTypes);
+    }
+}
+
+void SolverSetupChecker::checkProblemTaskTree(const RProblemTaskItem &taskTree, QStringList &warnings, QStringList &errors)
+{
+    std::vector<RProblemType> problemTypes;
+    SolverSetupChecker::collectProblemTypes(taskTree,problemTypes);
+
+    const RProblemTypeMask problemTypeMask = taskTree.getProblemTypeMask();
+
+    const std::vector<RProblemType> uniqueTypes = RProblem::getTypes(problemTypeMask);
+    for (std::size_t i=0;i<uniqueTypes.size();i++)
+    {
+        for (std::size_t j=i+1;j<uniqueTypes.size();j++)
+        {
+            if ((RProblem::getExcludedProblemTypeMask(uniqueTypes[i]) & uniqueTypes[j]) ||
+                (RProblem::getExcludedProblemTypeMask(uniqueTypes[j]) & uniqueTypes[i]))
+            {
+                errors.append("<b>" + RProblem::getName(uniqueTypes[i]) + "</b> " + QObject::tr("can not be solved together with") + " <b>" + RProblem::getName(uniqueTypes[j]) + "</b>.");
+            }
+        }
+    }
+
+    RProblemTypeMask solvedTypeMask = R_PROBLEM_NONE;
+
+    for (RProblemType problemType : problemTypes)
+    {
+        const QString name = "<b>" + RProblem::getName(problemType) + "</b>";
+
+        const RProblemTypeMask requiredTypeMask = RProblem::getRequiredProblemTypeMask(problemType);
+
+        for (RProblemType requiredType : RProblem::getTypes(requiredTypeMask & ~problemTypeMask))
+        {
+            errors.append(name + " " + QObject::tr("requires") + " <b>" + RProblem::getName(requiredType) + "</b>.");
+        }
+        for (RProblemType requiredType : RProblem::getTypes(requiredTypeMask & problemTypeMask & ~solvedTypeMask))
+        {
+            warnings.append(name + " " + QObject::tr("should be solved after") + " <b>" + RProblem::getName(requiredType) + "</b>.");
+        }
+        solvedTypeMask |= problemType;
+    }
 }
 
 void SolverSetupChecker::checkElements(QStringList &warnings, QStringList &errors) const

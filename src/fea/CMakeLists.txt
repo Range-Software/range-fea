@@ -142,7 +142,6 @@ qt_add_executable(fea
     src/pick_value.cpp
     src/point_inside_surface_dialog.cpp
     src/position_widget.cpp
-    src/problem_selector_dialog.cpp
     src/problem_selector_tiles.cpp
     src/problem_selector_tree.cpp
     src/problem_task_dialog.cpp
@@ -329,7 +328,6 @@ qt_add_executable(fea
     src/pick_value.h
     src/point_inside_surface_dialog.h
     src/position_widget.h
-    src/problem_selector_dialog.h
     src/problem_selector_tiles.h
     src/problem_selector_tree.h
     src/problem_task_dialog.h

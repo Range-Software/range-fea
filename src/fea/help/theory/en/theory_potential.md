@@ -357,8 +357,8 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Flow through porous media**.
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Flow through porous media**.
 
 The problem type cannot be combined with *Incompressible viscous flow* or with
 *Modal analysis*. Placing a *Heat transfer* task before it makes the material
@@ -466,8 +466,8 @@ cross section.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Flow through porous media**.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Flow through porous media**.
 3. Confirm with `OK`.
 
 Leave the *Time-solver* unchecked - the answer is a single steady state.

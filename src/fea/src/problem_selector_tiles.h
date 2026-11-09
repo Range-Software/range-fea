@@ -38,6 +38,11 @@ class ProblemSelectorTiles : public QListWidget
         //! Update tiles from selection in problem selector tree.
         void onProblemTreeChanged();
 
+    signals:
+
+        //! Tile was double-clicked, which selects it and confirms the selection.
+        void confirmed();
+
 };
 
 #endif // PROBLEM_SELECTOR_TILES_H

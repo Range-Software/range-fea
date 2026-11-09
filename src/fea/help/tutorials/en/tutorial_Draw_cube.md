@@ -8,17 +8,11 @@ This tutorial will show how to draw/generate a simple geometry such as cube.
 
 ![New model](image-New_model.png)
 
-Enter **Cube** as the model name and click **OK**. A new empty model named **Cube** will be created. Since the newly created model has no problem assigned, a **Problem task flow** dialog will pop up.
+Enter **Cube** as the model name and click **OK**. A new empty model named **Cube** will be created. Since the newly created model has no problem assigned, a **Select problem** dialog will pop up.
 
 ### 1.1 Assign problem type
 
-![Problem task flow](image-Problem_task_flow.png)
-
-To assign a problem type click on **Add problem type** button and in **Problem type selector** dialog select **Heat transfer**.
-
-![Problem type selector](image-Problem_type_selector.png)
-
-Click the **OK** button to close the **Problem type selector** dialog and then again the **OK** button to close the **Problem task flow** dialog.
+To assign a problem type click **Heat transfer** and then click the **OK** button.
 
 ## 2. Draw a cube
 

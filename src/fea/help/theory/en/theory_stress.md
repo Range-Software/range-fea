@@ -572,8 +572,8 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick either:
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select either:
 
 - **Stress analysis** - "Stress and linear elasto-dynamics analysis including
   modal analysis";
@@ -759,8 +759,8 @@ boundary conditions can be assigned to them.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Stress analysis**.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Stress analysis**.
 3. Confirm with `OK`.
 
 ### Step 2 - assign the material
@@ -859,7 +859,7 @@ solver and adds the thermal expansion term automatically.
 
 ### Step 1 - select the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`), add a task, select
+`Problem` -> `Select problem` (`Ctrl+P`), select
 **Modal analysis**.
 
 Modal analysis cannot be combined with other physics, with the single exception

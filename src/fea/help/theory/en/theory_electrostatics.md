@@ -412,8 +412,8 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Electro-statics** - "Calculate electric field,
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Electro-statics** - "Calculate electric field,
 current density and generated Joule's heat".
 
 Electro-statics combines freely with every other physics except *Modal analysis*.
@@ -538,8 +538,8 @@ makes the hand calculations at the end easy to follow.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Electro-statics**.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Electro-statics**.
 3. Confirm with `OK`.
 
 The `Problem` tab stays empty - there is nothing to set up.
@@ -647,10 +647,9 @@ the bar, by chaining an electrostatics task and a heat task.
 
 ### Step 1 - build the task flow
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add an **Electro-statics** task.
-3. Add a **Heat transfer** task **after** it.
-4. Confirm with `OK`.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Electro-statics** and **Heat transfer**. The solve order is set for you.
+3. Confirm with `OK`.
 
 The order matters: the heat solver reads the Joule heat the electrostatics solver
 left behind, so the electrostatics task has to run first. No condition and no

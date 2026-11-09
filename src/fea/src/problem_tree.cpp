@@ -1,9 +1,15 @@
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "problem_tree.h"
 #include "acoustic_setup_widget.h"
 #include "application.h"
+#include "main_window.h"
 #include "mesh_setup_widget.h"
 #include "modal_setup_widget.h"
 #include "particle_setup_widget.h"
+#include "problem_task_dialog.h"
 #include "radiation_setup_widget.h"
 #include "stress_setup_widget.h"
 #include "time_solver_setup_widget.h"
@@ -68,6 +74,12 @@ void ProblemTree::populate()
 
     const Model &rModel = Application::instance()->getSession()->getModel(modelIDs[0]);
 
+    if (rModel.getProblemTaskTree().getProblemTypeMask() == R_PROBLEM_NONE)
+    {
+        this->populateNoProblem(modelIDs[0]);
+        return;
+    }
+
     if (RProblem::getTimeSolverEnabled(rModel.getProblemTaskTree().getProblemTypeMask()))
     {
         QTreeWidgetItem *itemTimeSolver = new QTreeWidgetItem(this);
@@ -130,6 +142,36 @@ void ProblemTree::populate()
     }
 }
 
+bool ProblemTree::hasSettings(RProblemTypeMask problemTypeMask)
+{
+    return RProblem::getTimeSolverEnabled(problemTypeMask) ||
+           (problemTypeMask & (R_PROBLEM_STRESS_MODAL | R_PROBLEM_ACOUSTICS | R_PROBLEM_FLUID_PARTICLE | R_PROBLEM_RADIATIVE_HEAT | R_PROBLEM_MESH));
+}
+
+void ProblemTree::populateNoProblem(uint modelID)
+{
+    QWidget *widget = new QWidget;
+    QVBoxLayout *layout = new QVBoxLayout;
+    widget->setLayout(layout);
+
+    QLabel *label = new QLabel(tr("No problem is selected for this model."));
+    label->setWordWrap(true);
+    layout->addWidget(label);
+
+    QPushButton *button = new QPushButton(tr("Select problem"));
+    layout->addWidget(button);
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(this);
+    this->setItemWidget(item,PROBLEM_TREE_COLUMN_1,widget);
+
+    // Queued because accepting the dialog repopulates this tree, which removes the button.
+    QObject::connect(button,&QPushButton::clicked,this,[this,modelID]()
+    {
+        ProblemTaskDialog problemTaskDialog(modelID,Application::instance()->getMainWindow());
+        problemTaskDialog.exec();
+    },Qt::QueuedConnection);
+}
+
 void ProblemTree::onModelChanged(uint)
 {
     this->populate();
@@ -156,7 +198,22 @@ void ProblemTree::onTimeSolverChanged(const RTimeSolver &timeSolver)
 
     for (int i=0;i<modelIDs.size();i++)
     {
-        Application::instance()->getSession()->getModel(modelIDs[i]).setTimeSolver(timeSolver);
+        Model &rModel = Application::instance()->getSession()->getModel(modelIDs[i]);
+        const bool wasTransient = rModel.getTimeSolver().getEnabled();
+
+        rModel.setTimeSolver(timeSolver);
+
+        // Iterations left at their default follow the time solver: steady-state
+        // solve takes many of them, a time step only few.
+        RProblemTaskItem &rTaskTree = rModel.getProblemTaskTree();
+        const RProblemTypeMask problemTypeMask = rTaskTree.getProblemTypeMask();
+        if (wasTransient != timeSolver.getEnabled() &&
+            rTaskTree.hasDefaultLayout() &&
+            rTaskTree.getNIterations() == RProblemTaskItem::getDefaultNIterations(problemTypeMask,wasTransient))
+        {
+            rTaskTree.setNIterations(RProblemTaskItem::getDefaultNIterations(problemTypeMask,timeSolver.getEnabled()));
+        }
+
         Application::instance()->getSession()->setProblemChanged(modelIDs[i]);
     }
 }

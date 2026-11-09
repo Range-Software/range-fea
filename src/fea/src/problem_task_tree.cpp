@@ -2,7 +2,6 @@
 #include <QVBoxLayout>
 #include <QTreeWidgetItemIterator>
 
-#include "problem_selector_dialog.h"
 #include "problem_task_tree.h"
 
 ProblemTaskTree::ProblemTaskTree(const RProblemTaskItem &rTaskTree, QWidget *parent)
@@ -66,11 +65,6 @@ ProblemTaskTree::ProblemTaskTree(const RProblemTaskItem &rTaskTree, QWidget *par
     buttonsLayout->addWidget(this->deleteButton);
 
     QObject::connect(this->deleteButton,&QPushButton::clicked,this,&ProblemTaskTree::onDeleteButtonClicked);
-
-    QPushButton *addProblem = new QPushButton(tr("Add problem type"));
-    mainLayout->addWidget(addProblem,1,0,1,2);
-
-    QObject::connect(addProblem,&QPushButton::clicked,this,&ProblemTaskTree::onAddProblemButtonClicked);
 }
 
 RProblemTaskItem ProblemTaskTree::getProblemTaskTree() const
@@ -80,6 +74,112 @@ RProblemTaskItem ProblemTaskTree::getProblemTaskTree() const
     ProblemTaskTree::addWidgetItemToTree(taskTree,this->treeWidget->topLevelItem(0));
 
     return taskTree.getChild(0);
+}
+
+void ProblemTaskTree::setProblemTaskTree(const RProblemTaskItem &rTaskTree)
+{
+    const bool signalsWereBlocked = this->treeWidget->blockSignals(true);
+
+    this->treeWidget->clear();
+    this->addTaskItemToWidget(nullptr,rTaskTree);
+    this->treeWidget->expandAll();
+
+    this->treeWidget->blockSignals(signalsWereBlocked);
+
+    this->resizeColumns();
+    this->onItemSelectionChanged();
+}
+
+void ProblemTaskTree::addProblemTypes(RProblemTypeMask problemTypeMask)
+{
+    const bool signalsWereBlocked = this->treeWidget->blockSignals(true);
+
+    QTreeWidgetItem *rootItem = this->treeWidget->topLevelItem(0);
+
+    std::vector<RProblemType> problemTypes = RProblem::getTypes(problemTypeMask);
+    RProblem::sortTypesByDependency(problemTypes);
+
+    for (RProblemType problemType : problemTypes)
+    {
+        if (ProblemTaskTree::findItemTypeMask(rootItem) & problemType)
+        {
+            continue;
+        }
+
+        // Goes in front of the first task which uses its results.
+        int position = rootItem->childCount();
+        for (int i=0;i<rootItem->childCount() && position == rootItem->childCount();i++)
+        {
+            const RProblemTypeMask childTypeMask = ProblemTaskTree::findItemTypeMask(rootItem->child(i));
+            if ((RProblem::getRequiredProblemTypeMask(childTypeMask) | RProblem::getSolveAfterProblemTypeMask(childTypeMask)) & problemType)
+            {
+                position = i;
+            }
+        }
+
+        this->addTaskItemToWidget(rootItem,RProblemTaskItem(problemType));
+
+        QTreeWidgetItem *item = rootItem->takeChild(rootItem->childCount()-1);
+        rootItem->insertChild(position,item);
+        item->setFirstColumnSpanned(true);
+    }
+
+    this->treeWidget->blockSignals(signalsWereBlocked);
+
+    this->resizeColumns();
+}
+
+void ProblemTaskTree::removeProblemTypes(RProblemTypeMask problemTypeMask)
+{
+    bool found = true;
+    while (found)
+    {
+        found = false;
+        for (QTreeWidgetItemIterator it(this->treeWidget); *it; ++it)
+        {
+            if (RProblemType((*it)->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt()) & problemTypeMask)
+            {
+                this->removeItem(*it);
+                found = true;
+                break;
+            }
+        }
+    }
+
+    this->resizeColumns();
+    this->onItemSelectionChanged();
+}
+
+RProblemTypeMask ProblemTaskTree::findItemTypeMask(const QTreeWidgetItem *item)
+{
+    RProblemTypeMask typeMask = RProblemTypeMask(item->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt());
+
+    for (int i=0;i<item->childCount();i++)
+    {
+        typeMask |= ProblemTaskTree::findItemTypeMask(item->child(i));
+    }
+
+    return typeMask;
+}
+
+void ProblemTaskTree::removeTasksWithoutRequiredTypes()
+{
+    bool found = true;
+    while (found)
+    {
+        found = false;
+        const RProblemTypeMask typeMask = ProblemTaskTree::findItemTypeMask(this->treeWidget->topLevelItem(0));
+
+        for (QTreeWidgetItemIterator it(this->treeWidget); *it; ++it)
+        {
+            if (RProblem::getRequiredProblemTypeMask((*it)->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt()) & ~typeMask)
+            {
+                this->removeItem(*it);
+                found = true;
+                break;
+            }
+        }
+    }
 }
 
 void ProblemTaskTree::addTaskItemToWidget(QTreeWidgetItem *parent, const RProblemTaskItem &taskItem)
@@ -478,33 +578,7 @@ void ProblemTaskTree::onDeleteButtonClicked()
     }
 
     this->removeItem(selectedItems[0]);
+    this->removeTasksWithoutRequiredTypes();
 
     emit this->changed();
-}
-
-void ProblemTaskTree::onAddProblemButtonClicked()
-{
-    ProblemSelectorDialog problemSelectorDialog(this);
-    RProblemTypeMask problemTypeMask = problemSelectorDialog.exec();
-
-    QTreeWidgetItem *item = this->treeWidget->topLevelItem(this->treeWidget->topLevelItemCount()-1);
-
-    // Problem types already present in the task flow, the selector adds required types too.
-    RProblemTypeMask existingTypeMask = R_PROBLEM_NONE;
-    for (QTreeWidgetItemIterator it(this->treeWidget); *it; ++it)
-    {
-        existingTypeMask |= RProblemTypeMask((*it)->data(ProblemTaskTree::C_NAME,Qt::UserRole).toInt());
-    }
-
-    std::vector<RProblemType> problemTypes = RProblem::getTypes(problemTypeMask);
-    RProblem::sortTypesByDependency(problemTypes);
-    for (uint i=0;i<problemTypes.size();i++)
-    {
-        if (existingTypeMask & problemTypes[i])
-        {
-            continue;
-        }
-        RProblemTaskItem taskItem(problemTypes[i]);
-        this->addTaskItemToWidget(item,taskItem);
-    }
 }

@@ -25,6 +25,14 @@ class ProblemTree : public QTreeWidget
         //! Constructor.
         explicit ProblemTree(QWidget *parent = nullptr);
 
+        //! Return true if the tree shows any settings for given problem types.
+        static bool hasSettings(RProblemTypeMask problemTypeMask);
+
+    protected:
+
+        //! Show button for selecting a problem for given model.
+        void populateNoProblem(uint modelID);
+
     protected slots:
 
         //! Populate.

@@ -1,7 +1,9 @@
-#include <rgl_message_box.h>
 #include <rml_problem.h>
 
 #include "problem_selector_tree.h"
+
+//! Role of item data holding short note about its state.
+static constexpr int problemNoteRole = Qt::UserRole + 1;
 
 typedef enum _ProblemSelectorTreeColumn
 {
@@ -43,6 +45,8 @@ ProblemSelectorTree::ProblemSelectorTree(QWidget *parent)
     {
         this->resizeColumnToContents(i);
     }
+
+    this->updateItemStates();
 
     QObject::connect(this,&QTreeWidget::itemChanged,this,&ProblemSelectorTree::onTreeWidgetItemChanged);
 }
@@ -93,7 +97,7 @@ void ProblemSelectorTree::appendTypeWithDependents(const std::vector<RProblemTyp
     }
 }
 
-RProblemTypeMask ProblemSelectorTree::findProblemTypeMask()
+RProblemTypeMask ProblemSelectorTree::findProblemTypeMask() const
 {
     RProblemTypeMask prbTypeMask = R_PROBLEM_NONE;
     int nItems = this->topLevelItemCount();
@@ -109,18 +113,20 @@ RProblemTypeMask ProblemSelectorTree::findProblemTypeMask()
     return prbTypeMask;
 }
 
-bool ProblemSelectorTree::checkProblemIsChecked() const
+void ProblemSelectorTree::setProblemTypeMask(RProblemTypeMask problemTypeMask)
 {
+    const bool signalsWereBlocked = this->blockSignals(true);
     for (int i=0;i<this->topLevelItemCount();i++)
     {
-        QTreeWidgetItem *topItem = this->topLevelItem(i);
-        Qt::CheckState checkState = topItem->checkState(PROBLEM_TREE_COLUMN_NAME);
-        if (checkState == Qt::Checked || checkState == Qt::PartiallyChecked)
-        {
-            return true;
-        }
+        QTreeWidgetItem *item = this->topLevelItem(i);
+        const bool checked = (item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt() & problemTypeMask) != 0;
+        item->setCheckState(PROBLEM_TREE_COLUMN_NAME,checked ? Qt::Checked : Qt::Unchecked);
     }
-    return false;
+    this->blockSignals(signalsWereBlocked);
+
+    this->updateItemStates();
+
+    emit this->changed();
 }
 
 std::vector<RProblemType> ProblemSelectorTree::getProblemTypes() const
@@ -135,117 +141,160 @@ std::vector<RProblemType> ProblemSelectorTree::getProblemTypes() const
 
 bool ProblemSelectorTree::isProblemTypeChecked(RProblemType problemType) const
 {
-    for (int i=0;i<this->topLevelItemCount();i++)
-    {
-        const QTreeWidgetItem *item = this->topLevelItem(i);
-        if (RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt()) == problemType)
-        {
-            return item->checkState(PROBLEM_TREE_COLUMN_NAME) != Qt::Unchecked;
-        }
-    }
-    return false;
+    const QTreeWidgetItem *item = this->findItem(problemType);
+    return item && item->checkState(PROBLEM_TREE_COLUMN_NAME) != Qt::Unchecked;
+}
+
+bool ProblemSelectorTree::isProblemTypeAvailable(RProblemType problemType) const
+{
+    const QTreeWidgetItem *item = this->findItem(problemType);
+    return item && (item->flags() & Qt::ItemIsEnabled);
+}
+
+QString ProblemSelectorTree::findProblemTypeNote(RProblemType problemType) const
+{
+    const QTreeWidgetItem *item = this->findItem(problemType);
+    return item ? item->data(PROBLEM_TREE_COLUMN_NAME,problemNoteRole).toString() : QString();
+}
+
+QString ProblemSelectorTree::findProblemTypeToolTip(RProblemType problemType) const
+{
+    const QTreeWidgetItem *item = this->findItem(problemType);
+    return item ? item->toolTip(PROBLEM_TREE_COLUMN_NAME) : QString();
 }
 
 void ProblemSelectorTree::setProblemTypeChecked(RProblemType problemType, bool checked)
+{
+    QTreeWidgetItem *item = this->findItem(problemType);
+    if (item && (!checked || (item->flags() & Qt::ItemIsEnabled)))
+    {
+        item->setCheckState(PROBLEM_TREE_COLUMN_NAME,checked ? Qt::Checked : Qt::Unchecked);
+    }
+}
+
+QTreeWidgetItem *ProblemSelectorTree::findItem(RProblemType problemType) const
 {
     for (int i=0;i<this->topLevelItemCount();i++)
     {
         QTreeWidgetItem *item = this->topLevelItem(i);
         if (RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt()) == problemType)
         {
-            item->setCheckState(PROBLEM_TREE_COLUMN_NAME,checked ? Qt::Checked : Qt::Unchecked);
-            return;
+            return item;
         }
     }
+    return nullptr;
+}
+
+void ProblemSelectorTree::updateItemStates()
+{
+    const RProblemTypeMask checkedTypeMask = this->findProblemTypeMask();
+    const std::vector<RProblemType> checkedTypes = RProblem::getTypes(checkedTypeMask);
+
+    const bool signalsWereBlocked = this->blockSignals(true);
+
+    for (int i=0;i<this->topLevelItemCount();i++)
+    {
+        QTreeWidgetItem *item = this->topLevelItem(i);
+        const RProblemType problemType = RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
+        const bool checked = (checkedTypeMask & problemType) != 0;
+
+        // Selecting a problem type also selects those it requires.
+        const RProblemTypeMask selectedTogetherMask = problemType | RProblem::getRequiredProblemTypeMask(problemType);
+
+        QStringList requiredBy;
+        QStringList incompatibleWith;
+        for (RProblemType checkedType : checkedTypes)
+        {
+            if (RProblem::getRequiredProblemTypeMask(checkedType) & problemType)
+            {
+                requiredBy.append(RProblem::getName(checkedType));
+            }
+            if ((RProblem::getExcludedProblemTypeMask(selectedTogetherMask) & checkedType) ||
+                (RProblem::getExcludedProblemTypeMask(checkedType) & selectedTogetherMask))
+            {
+                incompatibleWith.append(RProblem::getName(checkedType));
+            }
+        }
+
+        // A checked item stays enabled, so that a conflict can always be resolved.
+        const bool available = checked || incompatibleWith.isEmpty();
+
+        QString note;
+        QString toolTip = RProblem::getDesc(problemType);
+        if (!incompatibleWith.isEmpty())
+        {
+            note = tr("Incompatible");
+            toolTip += "\n\n" + tr("Incompatible with") + ": " + incompatibleWith.join(", ");
+        }
+        else if (!requiredBy.isEmpty())
+        {
+            note = tr("Required");
+            toolTip += "\n\n" + tr("Required by") + ": " + requiredBy.join(", ");
+        }
+
+        item->setFlags(available ? (item->flags() | Qt::ItemIsEnabled) : (item->flags() & ~Qt::ItemIsEnabled));
+        item->setData(PROBLEM_TREE_COLUMN_NAME,problemNoteRole,note);
+        item->setToolTip(PROBLEM_TREE_COLUMN_NAME,toolTip);
+        item->setToolTip(PROBLEM_TREE_COLUMN_DESC,toolTip);
+    }
+
+    this->blockSignals(signalsWereBlocked);
 }
 
 void ProblemSelectorTree::checkCheckedTreeWidgetItem(QTreeWidgetItem *item)
 {
-    RProblemType problemType = RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
+    const RProblemTypeMask requiredProblemTypeMask = RProblem::getRequiredProblemTypeMask(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
 
-    RProblemTypeMask excludedProblemTypeMask = RProblem::getExcludedProblemTypeMask(problemType);
-    RProblemTypeMask requiredProblemTypeMask = RProblem::getRequiredProblemTypeMask(problemType);
-
-    QList<RProblemType> excludedProblemTypes;
-
-    int nItems = this->topLevelItemCount();
-
-    for (int i=0;i<nItems;i++)
-    {
-        QTreeWidgetItem *topItem = this->topLevelItem(i);
-        Qt::CheckState checkState = topItem->checkState(PROBLEM_TREE_COLUMN_NAME);
-        if (checkState == Qt::Checked || checkState == Qt::PartiallyChecked)
-        {
-            RProblemType selectedProblemType = RProblemType(topItem->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
-            if (selectedProblemType & excludedProblemTypeMask)
-            {
-                excludedProblemTypes.append(selectedProblemType);
-            }
-        }
-        else
-        {
-            RProblemType unselectedProblemType = RProblemType(topItem->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
-            if (unselectedProblemType & requiredProblemTypeMask)
-            {
-                this->blockSignals(true);
-                topItem->setCheckState(PROBLEM_TREE_COLUMN_NAME,Qt::Checked);
-                this->blockSignals(false);
-            }
-        }
-    }
-
-    if (excludedProblemTypes.size() > 0)
-    {
-        QString message;
-
-        message += tr("Problem type")
-                + " <b>" + RProblem::getName(problemType)  + "</b> "
-                + tr("is incompatible with following selected problem types") + ":";
-        for (int i=0;i<excludedProblemTypes.size();i++)
-        {
-            message += "<br/>- <b>" + RProblem::getName(excludedProblemTypes[i]) + "</b>";
-        }
-
-        RMessageBox::warning(this,tr("Incompatible problems selected"),message);
-        this->blockSignals(true);
-        item->setCheckState(PROBLEM_TREE_COLUMN_NAME,Qt::Unchecked);
-        this->blockSignals(false);
-
-        return;
-    }
-}
-
-void ProblemSelectorTree::checkUncheckedTreeWidgetItem(QTreeWidgetItem *item)
-{
-    RProblemType problemType = RProblemType(item->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
-
+    const bool signalsWereBlocked = this->blockSignals(true);
     for (int i=0;i<this->topLevelItemCount();i++)
     {
         QTreeWidgetItem *topItem = this->topLevelItem(i);
-        Qt::CheckState checkState = topItem->checkState(PROBLEM_TREE_COLUMN_NAME);
-        if (checkState == Qt::Checked || checkState == Qt::PartiallyChecked)
+        if (topItem->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt() & requiredProblemTypeMask)
         {
-            RProblemType selectedProblemType = RProblemType(topItem->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt());
-            RProblemTypeMask requiredProblemTypeMask = RProblem::getRequiredProblemTypeMask(selectedProblemType);
+            topItem->setCheckState(PROBLEM_TREE_COLUMN_NAME,Qt::Checked);
+        }
+    }
+    this->blockSignals(signalsWereBlocked);
+}
 
-            if (problemType & requiredProblemTypeMask)
+void ProblemSelectorTree::uncheckTypesWithoutRequiredTypes()
+{
+    const bool signalsWereBlocked = this->blockSignals(true);
+
+    bool found = true;
+    while (found)
+    {
+        found = false;
+        const RProblemTypeMask checkedTypeMask = this->findProblemTypeMask();
+
+        for (int i=0;i<this->topLevelItemCount();i++)
+        {
+            QTreeWidgetItem *topItem = this->topLevelItem(i);
+            const RProblemTypeMask problemType = topItem->data(PROBLEM_TREE_COLUMN_NAME,Qt::UserRole).toInt();
+
+            if ((checkedTypeMask & problemType) && (RProblem::getRequiredProblemTypeMask(problemType) & ~checkedTypeMask))
             {
                 topItem->setCheckState(PROBLEM_TREE_COLUMN_NAME,Qt::Unchecked);
+                found = true;
             }
         }
     }
+
+    this->blockSignals(signalsWereBlocked);
 }
 
 void ProblemSelectorTree::onTreeWidgetItemChanged(QTreeWidgetItem *item)
 {
     if (item->checkState(PROBLEM_TREE_COLUMN_NAME) == Qt::Unchecked)
     {
-        this->checkUncheckedTreeWidgetItem(item);
+        this->uncheckTypesWithoutRequiredTypes();
     }
     else
     {
         this->checkCheckedTreeWidgetItem(item);
     }
+
+    this->updateItemStates();
 
     emit this->changed();
 }

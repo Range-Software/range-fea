@@ -8,17 +8,9 @@ This tutorial will demonstrate how to set up and solve a **Stress analysis** pro
 
 This will show an **Open model** dialog. Select file **Beam.tmsh** and click **Open** to load the model.
 
-Since there is no physical problem assigned to this model, a **Problem task flow** dialog window will appear soon after loading of the model is complete.
+Since there is no physical problem assigned to this model, a **Select problem** dialog window will appear soon after loading of the model is complete.
 
-![Problem task flow - empty](image-Problem_task_flow-empty.png)
-
-Click **Add problem type** button and **Problem type selector** dialog window will be displayed. Find and check **Stress analysis** and click **OK** button to accept.
-
-![Problem type selector - Stress](image-Problem_type_selector-Stress.png)
-
-**Problem task flow** should now display 1 iteration of **Stress analysis**. Click **OK** to accept.
-
-![Problem task flow - Stress](image-Problem_task_flow-Stress.png)
+Click **Stress analysis** and click **OK** to accept.
 
 ## 2. Generate 3D mesh
 

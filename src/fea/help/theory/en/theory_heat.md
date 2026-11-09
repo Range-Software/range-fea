@@ -527,8 +527,8 @@ Everything relevant lives in the **Solver** dock (`Problem`,
 
 ### 2.1 Selecting the problem
 
-`Problem` -> `Problem(s) task flow` (`Ctrl+P`) opens the problem task flow
-dialog. Add a task and pick **Heat transfer** - "Steady-state and transient
+`Problem` -> `Select problem` (`Ctrl+P`) opens the problem selection
+dialog. Select **Heat transfer** - "Steady-state and transient
 Heat-transfer".
 
 Heat transfer combines freely with every other physics except *Modal analysis*.
@@ -539,7 +539,7 @@ The chains worth knowing are:
   conduction plus enclosure radiation;
 - *Electro-statics* then *Heat transfer* - resistive heating.
 
-To iterate a coupled pair, add a task group and set its number of iterations;
+To iterate a coupled pair, use **Customize** to put it in a task group and set the number of iterations;
 the group stops early when every task in it reports convergence.
 
 ### 2.2 Problem tab
@@ -668,8 +668,8 @@ that conditions can be assigned to them.
 
 ### Step 1 - select the problem
 
-1. `Problem` -> `Problem(s) task flow` (`Ctrl+P`).
-2. Add a task and select **Heat transfer**.
+1. `Problem` -> `Select problem` (`Ctrl+P`).
+2. Select **Heat transfer**.
 3. Confirm with `OK`.
 
 ### Step 2 - assign the material
