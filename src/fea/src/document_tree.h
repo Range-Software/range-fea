@@ -17,6 +17,9 @@ class DocumentTree : public QTreeWidget
 
         //! Add document.
         void addDocument(QTreeWidgetItem *item, uint modelID, const QString &filename);
+
+        //! Return item of given category under given model item, it is created if needed.
+        QTreeWidgetItem *findCategoryItem(QTreeWidgetItem *item, uint modelID, int category);
         
     protected slots:
 

@@ -123,10 +123,19 @@ ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
                      &ModelRecordsTree::recordCountChanged,
                      this,
                      &ModelRecordsSelector::updateRecordRange);
+    QObject::connect(this->tree,
+                     &ModelRecordsTree::recordCountChanged,
+                     this,
+                     &ModelRecordsSelector::recordCountChanged);
     this->updateRecordRange();
     highlightRange();
 
     QObject::connect(this,&ModelRecordsSelector::recordFinished,this,&ModelRecordsSelector::onRecordFinished);
+}
+
+bool ModelRecordsSelector::hasRecords() const
+{
+    return this->tree->hasRecords();
 }
 
 void ModelRecordsSelector::createAnimation(uint modelID)

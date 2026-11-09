@@ -97,6 +97,14 @@ MainWindow::MainWindow(Session *session,
     this->recordsTab = this->createRecordsTab();
     modelDockTabWidget->addTab(this->recordsTab,tr("Records"));
 
+    ModelRecordsSelector *recordsSelector = static_cast<ModelRecordsSelector*>(this->recordsTab);
+    auto updateRecordsTabVisibility = [this,modelDockTabWidget,recordsSelector]()
+    {
+        modelDockTabWidget->setTabVisible(modelDockTabWidget->indexOf(this->recordsTab),recordsSelector->hasRecords());
+    };
+    QObject::connect(recordsSelector,&ModelRecordsSelector::recordCountChanged,this,updateRecordsTabVisibility);
+    updateRecordsTabVisibility();
+
     QDockWidget *solverDock = new QDockWidget(this);
     solverDock->setObjectName(QString::fromUtf8("solverDock"));
     solverDock->setWindowTitle(tr("Solver"));

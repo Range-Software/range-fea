@@ -39,6 +39,9 @@ class ModelRecordsSelector : public QWidget
         //! Constructor.
         explicit ModelRecordsSelector(QWidget *parent = nullptr);
 
+        //! Return true if any model has a record.
+        bool hasRecords() const;
+
     protected:
 
         //! Create animation from screenshots.
@@ -77,7 +80,10 @@ class ModelRecordsSelector : public QWidget
 
         //! Signal to load next record.
         void recordFinished();
-    
+
+        //! List of records has changed.
+        void recordCountChanged();
+
 };
 
 #endif // MODEL_RECORDS_SELECTOR_H

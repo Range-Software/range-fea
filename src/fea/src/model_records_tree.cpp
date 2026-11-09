@@ -143,6 +143,18 @@ ModelRecordsTree::ModelRecordsTree(QWidget *parent)
                      &ModelRecordsTree::onDirectoryChanged);
 }
 
+bool ModelRecordsTree::hasRecords() const
+{
+    for (int i=0;i<this->topLevelItemCount();i++)
+    {
+        if (this->topLevelItem(i)->childCount() > 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ModelRecordsTree::isFirst()
 {
     R_LOG_TRACE;

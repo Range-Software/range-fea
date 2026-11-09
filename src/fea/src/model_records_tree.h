@@ -32,6 +32,9 @@ class ModelRecordsTree : public QTreeWidget
         //! Constructor.
         explicit ModelRecordsTree(QWidget *parent = nullptr);
 
+        //! Return true if any model has a record.
+        bool hasRecords() const;
+
         //! Return true if marked record is first.
         bool isFirst();
 

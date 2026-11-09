@@ -14,6 +14,29 @@ typedef enum _DocumentTreeColumn
     DOCUMENT_TREE_N_COLUMNS
 } DocumentTreeColumn;
 
+typedef enum _DocumentTreeCategory
+{
+    DOCUMENT_TREE_CATEGORY_DOCUMENTS = 0,
+    DOCUMENT_TREE_CATEGORY_VIDEOS,
+    DOCUMENT_TREE_CATEGORY_IMAGES
+} DocumentTreeCategory;
+
+//! Return category of given file.
+static int findDocumentCategory(const QString &filename)
+{
+    const QString suffix(QFileInfo(filename).suffix());
+
+    if (ApplicationSettings::getSupportedImageFormats().contains(suffix,Qt::CaseInsensitive))
+    {
+        return DOCUMENT_TREE_CATEGORY_IMAGES;
+    }
+    if (ApplicationSettings::getSupportedVideoFormats().contains(suffix,Qt::CaseInsensitive))
+    {
+        return DOCUMENT_TREE_CATEGORY_VIDEOS;
+    }
+    return DOCUMENT_TREE_CATEGORY_DOCUMENTS;
+}
+
 DocumentTree::DocumentTree(QWidget *parent) :
     QTreeWidget(parent)
 {
@@ -71,12 +94,67 @@ void DocumentTree::addDocument(QTreeWidgetItem *item, uint modelID, const QStrin
     R_LOG_TRACE;
     QFileInfo fi(filename);
 
-    QTreeWidgetItem *childItem = new QTreeWidgetItem(item);
+    const int category = findDocumentCategory(filename);
+    QTreeWidgetItem *categoryItem = this->findCategoryItem(item,modelID,category);
+
+    QTreeWidgetItem *childItem = new QTreeWidgetItem;
 
     childItem->setText(DOCUMENT_TREE_COLUMN_NAME,fi.fileName());
     childItem->setText(DOCUMENT_TREE_COLUMN_FILENAME,filename);
     childItem->setData(DOCUMENT_TREE_COLUMN_MODEL_ID,Qt::UserRole,QVariant(modelID));
     childItem->setData(DOCUMENT_TREE_COLUMN_IS_DOCUMENT,Qt::UserRole,QVariant(true));
+
+    // Files are usually added in order, so the search starts at the end.
+    int position = categoryItem->childCount();
+    while (position > 0 && fi.fileName().compare(categoryItem->child(position-1)->text(DOCUMENT_TREE_COLUMN_NAME),Qt::CaseInsensitive) < 0)
+    {
+        position--;
+    }
+    categoryItem->insertChild(position,childItem);
+
+    if (categoryItem->childCount() == 1)
+    {
+        categoryItem->setExpanded(true);
+    }
+}
+
+QTreeWidgetItem *DocumentTree::findCategoryItem(QTreeWidgetItem *item, uint modelID, int category)
+{
+    int position = 0;
+    for (;position<item->childCount();position++)
+    {
+        const int childCategory = item->child(position)->data(DOCUMENT_TREE_COLUMN_NAME,Qt::UserRole).toInt();
+        if (childCategory == category)
+        {
+            return item->child(position);
+        }
+        if (childCategory > category)
+        {
+            break;
+        }
+    }
+
+    QTreeWidgetItem *categoryItem = new QTreeWidgetItem;
+
+    switch (category)
+    {
+        case DOCUMENT_TREE_CATEGORY_IMAGES:
+            categoryItem->setText(DOCUMENT_TREE_COLUMN_NAME,tr("Images"));
+            break;
+        case DOCUMENT_TREE_CATEGORY_VIDEOS:
+            categoryItem->setText(DOCUMENT_TREE_COLUMN_NAME,tr("Videos"));
+            break;
+        default:
+            categoryItem->setText(DOCUMENT_TREE_COLUMN_NAME,tr("Documents"));
+            break;
+    }
+    categoryItem->setData(DOCUMENT_TREE_COLUMN_NAME,Qt::UserRole,QVariant(category));
+    categoryItem->setData(DOCUMENT_TREE_COLUMN_MODEL_ID,Qt::UserRole,QVariant(modelID));
+    categoryItem->setData(DOCUMENT_TREE_COLUMN_IS_DOCUMENT,Qt::UserRole,QVariant(false));
+
+    item->insertChild(position,categoryItem);
+
+    return categoryItem;
 }
 
 void DocumentTree::populate()
@@ -113,24 +191,30 @@ void DocumentTree::updateDocuments()
         QVector<bool> documentExistenceBook;
         documentExistenceBook.fill(false,documentFiles.size());
 
-        int j = item->childCount() - 1;
-        while (j >= 0)
+        for (int g=item->childCount()-1;g>=0;g--)
         {
-            QTreeWidgetItem *childItem = item->child(j);
+            QTreeWidgetItem *categoryItem = item->child(g);
 
-            int documentFilePosition = documentFiles.indexOf(childItem->text(DOCUMENT_TREE_COLUMN_FILENAME));
-            if (documentFilePosition >= 0)
+            for (int c=categoryItem->childCount()-1;c>=0;c--)
             {
-                documentExistenceBook[documentFilePosition] = true;
+                int documentFilePosition = documentFiles.indexOf(categoryItem->child(c)->text(DOCUMENT_TREE_COLUMN_FILENAME));
+                if (documentFilePosition >= 0)
+                {
+                    documentExistenceBook[documentFilePosition] = true;
+                }
+                else
+                {
+                    delete categoryItem->takeChild(c);
+                }
             }
-            else
+
+            if (categoryItem->childCount() == 0)
             {
-                item->takeChild(j);
+                delete item->takeChild(g);
             }
-            j --;
         }
 
-        for (j=0;j<documentFiles.size();j++)
+        for (int j=0;j<documentFiles.size();j++)
         {
             if (!documentExistenceBook[j])
             {

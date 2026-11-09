@@ -31,6 +31,11 @@
 - The deformation and arrow scale has a logarithmic slider
 - Settings which do not apply to a scalar variable are hidden
 
+#### Documents tab
+
+- Files of a model are grouped into *Documents*, *Videos* and *Images*
+- The **Records** tab is shown only when there are records
+
 #### 3D view
 
 - New *Boundary conditions* option in the entity **Display properties**, for
