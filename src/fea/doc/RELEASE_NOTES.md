@@ -115,7 +115,7 @@
 - Windows are tiled automatically when a model is opened while another window is maximized
   or the windows are tiled
 - New *Windows* menu next to *Tile windows* lists the open model windows, and clicking one
-  maximizes it
+  maximizes it. The maximized window is marked with a dot
 
 #### Model files
 

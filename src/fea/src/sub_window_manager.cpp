@@ -1,4 +1,6 @@
 #include <QEvent>
+#include <QPainter>
+#include <QPixmap>
 
 #include <algorithm>
 #include <cmath>
@@ -29,6 +31,26 @@ static QList<int> findClockwiseOrder(const QList<QRect> &rects)
     std::iota(order.begin(),order.end(),0);
     std::sort(order.begin(),order.end(),[&angles](int a, int b) { return angles[a] < angles[b]; });
     return order;
+}
+
+// Return icon for item of given menu with a dot in given color, invalid color gives an empty icon.
+static QIcon createMenuDotIcon(const QMenu *menu, const QColor &color)
+{
+    const qreal ratio = menu->devicePixelRatioF();
+    QPixmap pixmap(QSize(16,16)*ratio);
+    pixmap.setDevicePixelRatio(ratio);
+    pixmap.fill(Qt::transparent);
+
+    if (color.isValid())
+    {
+        QPainter painter(&pixmap);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(color);
+        painter.drawEllipse(QPointF(8.0,8.0),4.0,4.0);
+    }
+
+    return QIcon(pixmap);
 }
 
 SubWindowManager::SubWindowManager(QMdiArea *mdiArea, QObject *parent) : QObject(parent)
@@ -155,11 +177,18 @@ void SubWindowManager::fillWindowsMenu(QMenu *menu)
 {
     R_LOG_TRACE_IN;
     menu->clear();
+
+    // Items without the dot have an empty icon to keep names aligned.
+    const QIcon dotIcon = createMenuDotIcon(menu,menu->palette().color(QPalette::WindowText));
+    const QIcon emptyIcon = createMenuDotIcon(menu,QColor());
+
     for (SubWindow *subWindow : std::as_const(this->subWindows))
     {
         // Name is taken from the model, title of a window does not follow renaming.
         QString name = Application::instance()->getSession()->getModel(subWindow->getModelID()).getName();
         QAction *action = menu->addAction(name.replace("&","&&"));
+        action->setIcon(subWindow->isMaximized() ? dotIcon : emptyIcon);
+        action->setIconVisibleInMenu(true);
         QObject::connect(action,&QAction::triggered,subWindow,[this,subWindow]()
         {
             subWindow->showMaximized();
