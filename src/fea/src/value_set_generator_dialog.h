@@ -2,7 +2,6 @@
 #define VALUE_SET_GENERATOR_DIALOG_H
 
 #include <QDialog>
-#include <QPushButton>
 #include <QComboBox>
 
 #include <rbl_value_table.h>

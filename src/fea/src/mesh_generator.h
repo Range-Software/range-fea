@@ -2,8 +2,6 @@
 #define MESH_GENERATOR_H
 
 
-#include <QObject>
-
 #include <rbl_job.h>
 
 class MeshGenerator : public RJob

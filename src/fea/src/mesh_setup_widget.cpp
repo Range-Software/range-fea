@@ -5,7 +5,6 @@
 #include <QLabel>
 
 #include "mesh_setup_widget.h"
-#include "application.h"
 
 MeshSetupWidget::MeshSetupWidget(const RMeshSetup &meshSetup,
                                  const std::vector<RVariableType> &variableTypes,

@@ -4,7 +4,6 @@
 #include <QPushButton>
 #include <QCheckBox>
 #include <QStackedLayout>
-#include <QTextEdit>
 
 #include "draw_input_tree.h"
 #include "local_direction_widget.h"

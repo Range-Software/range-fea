@@ -9,6 +9,8 @@
 #include "bool_difference_dialog.h"
 #include "model_action.h"
 #include "application.h"
+#include "model.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 BoolDifferenceDialog::BoolDifferenceDialog(uint modelID, const QList<SessionEntityID> &entityIDs, QWidget *parent) :

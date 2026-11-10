@@ -1,6 +1,10 @@
 #include "application.h"
 #include "color_combo_box.h"
 #include "model_entity_display_properties_tree.h"
+#include "session.h"
+#include "session_entity_id.h"
+#include "model.h"
+#include <rml_entity_group.h>
 
 typedef enum _DisplayPropertyType
 {

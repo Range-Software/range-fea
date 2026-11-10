@@ -3,8 +3,9 @@
 
 #include <rml_entity_group.h>
 
-#include "action_list.h"
 #include "model_color_tree.h"
+
+class ActionList;
 
 class ModelTree : public ModelColorTree
 {

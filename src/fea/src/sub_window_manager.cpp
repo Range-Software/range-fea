@@ -5,9 +5,11 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <rbl_logger.h>
 
 #include "application.h"
 #include "sub_window_manager.h"
+#include "session.h"
 
 // Return positions of given rectangles ordered clockwise around their center.
 static QList<int> findClockwiseOrder(const QList<QRect> &rects)

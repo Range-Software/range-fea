@@ -2,7 +2,6 @@
 #define VIDEO_SETTINGS_H
 
 #include <QList>
-#include <QString>
 #include <QMediaFormat>
 
 class VideoSettings

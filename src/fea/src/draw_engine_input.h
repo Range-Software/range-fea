@@ -4,7 +4,6 @@
 #include <cfloat>
 
 #include <rbl_local_direction.h>
-#include <rbl_utils.h>
 
 typedef struct _DrawEngineInputDataType
 {

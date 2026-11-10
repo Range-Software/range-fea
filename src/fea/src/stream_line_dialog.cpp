@@ -6,7 +6,11 @@
 
 #include "application.h"
 #include "stream_line_dialog.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_stream_line.h>
+#include <rbl_logger.h>
 
 StreamLineDialog::StreamLineDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

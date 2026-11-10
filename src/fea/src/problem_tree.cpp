@@ -5,7 +5,6 @@
 #include "problem_tree.h"
 #include "acoustic_setup_widget.h"
 #include "application.h"
-#include "main_window.h"
 #include "mesh_setup_widget.h"
 #include "modal_setup_widget.h"
 #include "particle_setup_widget.h"
@@ -13,6 +12,9 @@
 #include "radiation_setup_widget.h"
 #include "stress_setup_widget.h"
 #include "time_solver_setup_widget.h"
+#include "session.h"
+#include "model.h"
+#include "main_window.h"
 
 typedef enum _ProblemTreeColumn
 {

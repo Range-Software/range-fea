@@ -7,10 +7,16 @@
 #include <rbl_job_manager.h>
 #include <rml_file_utils.h>
 #include <rgl_message_box.h>
+#include <rml_view_factor_matrix.h>
+#include <rml_view_factor_matrix_header.h>
+#include <rbl_logger.h>
 
 #include "application.h"
 #include "model_action.h"
 #include "radiation_setup_widget.h"
+#include "session.h"
+#include "model.h"
+#include "main_window.h"
 
 RadiationSetupWidget::RadiationSetupWidget(const RRadiationSetup &radiationSetup, const QString &defaultViewFactorFileName, QWidget *parent)
     : QWidget(parent)

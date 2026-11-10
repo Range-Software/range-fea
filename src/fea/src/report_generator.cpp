@@ -1,10 +1,23 @@
 #include <QTextCursor>
-#include <QStyleFactory>
 
 #include <rbl_logger.h>
+#include <rml_problem_type.h>
+#include <rml_problem.h>
+#include <rml_element_group.h>
+#include <rml_boundary_condition.h>
+#include <rml_condition_component.h>
+#include <rml_initial_condition.h>
+#include <rml_environment_condition.h>
+#include <rml_material.h>
+#include <rml_material_property.h>
+#include <rml_variable.h>
+#include <rbl_statistics.h>
 
 #include "report_generator.h"
 #include "application.h"
+#include "model.h"
+#include "application_settings.h"
+#include "session.h"
 
 ReportGenerator::ReportGenerator(uint modelID)
     : modelID(modelID)

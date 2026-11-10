@@ -8,12 +8,18 @@
 #include <QMenu>
 #include <QAction>
 #include <QFile>
+#include <QTimer>
 
 #include <rgl_message_box.h>
 
 #include "model_records_tree.h"
 #include "application.h"
+#include "session.h"
+#include "application_settings.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rbl_logger.h>
+#include <rml_problem_type.h>
 
 namespace
 {

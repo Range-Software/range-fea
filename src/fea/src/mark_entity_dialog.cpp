@@ -1,6 +1,5 @@
 #include <QVBoxLayout>
 #include <QFormLayout>
-#include <QLabel>
 #include <QPushButton>
 #include <QDialogButtonBox>
 
@@ -11,7 +10,11 @@
 #include "application.h"
 #include "mark_entity_dialog.h"
 #include "model_action.h"
+#include "gl_acion_event.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rml_element_group.h>
+#include <rbl_logger.h>
 
 double MarkEntityDialog::separationAngle = 45.0;
 

@@ -3,9 +3,14 @@
 
 #include <rml_file_utils.h>
 #include <rgl_message_box.h>
+#include <rbl_logger.h>
+#include <rml_model.h>
+#include <rml_model_msh.h>
 
 #include "model_io.h"
 #include "application.h"
+#include "session.h"
+#include "model.h"
 
 ModelIO::ModelIO(ModelIOType type, const QString &fileName, Model *pModel)
 {

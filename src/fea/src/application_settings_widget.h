@@ -3,9 +3,7 @@
 
 #include <QWidget>
 #include <QSpinBox>
-#include <QCheckBox>
 #include <QComboBox>
-#include <QGroupBox>
 
 #include <rgl_application_settings_widget.h>
 #include <rgl_file_chooser_button.h>

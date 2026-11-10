@@ -1,9 +1,9 @@
-#include "gl_functions.h"
 #include "gl_interpolated_entity.h"
 #include "gl_interpolated_element.h"
 #include "gl_state_cache.h"
 #include "gl_widget.h"
 #include "application.h"
+#include "session.h"
 
 
 void GLInterpolatedEntity::_init(const GLInterpolatedEntity *pGLInterpolatedEntity)

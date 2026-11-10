@@ -1,4 +1,3 @@
-#include "gl_functions.h"
 #include "gl_element_base.h"
 #include "gl_state_cache.h"
 

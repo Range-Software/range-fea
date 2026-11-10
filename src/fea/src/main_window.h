@@ -7,18 +7,17 @@
 #include <QLabel>
 #include <QTabWidget>
 
-#include <rcl_cloud_session_manager.h>
-
 #include <rgl_progress_bar.h>
 #include <rgl_application_settings.h>
-#include <rgl_action_list.h>
+#include <rml_entity_group.h>
 
-#include "action_list.h"
 #include "central_tab_widget.h"
-#include "model_tree.h"
-#include "session.h"
-#include "sub_window_manager.h"
 
+class ActionList;
+class ModelTree;
+class RCloudSessionManager;
+class Session;
+class SubWindowManager;
 class RProgressBar;
 
 class MainWindow : public QMainWindow

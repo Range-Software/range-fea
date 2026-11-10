@@ -1,9 +1,14 @@
 #include <QDesktopServices>
 #include <QFileInfo>
+#include <QTimer>
 
 #include "document_tree.h"
 #include "application.h"
+#include "application_settings.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rbl_logger.h>
 
 typedef enum _DocumentTreeColumn
 {

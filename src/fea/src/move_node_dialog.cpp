@@ -5,6 +5,8 @@
 #include "move_node_dialog.h"
 #include "position_widget.h"
 #include "application.h"
+#include "model.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 MoveNodeDialog::MoveNodeDialog(uint modelID, const QList<uint> &nodeIDs, QWidget *parent) :

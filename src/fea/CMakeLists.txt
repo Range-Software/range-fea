@@ -370,7 +370,6 @@ qt_add_executable(fea
     src/value_scale.h
     src/value_set_generator_dialog.h
     src/value_table.h
-    src/variable_data.h
     src/variable_selector.h
     src/variable_value_edit.h
     src/vector_field_dialog.h

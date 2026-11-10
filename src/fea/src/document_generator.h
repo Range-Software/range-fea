@@ -1,12 +1,10 @@
 #ifndef DOCUMENT_GENERATOR_H
 #define DOCUMENT_GENERATOR_H
 
-#include <QObject>
 #include <QMap>
 #include <QTextDocument>
 #include <QPrinter>
 #include <QTextCharFormat>
-#include <QScopedPointer>
 
 #include <rbl_job.h>
 

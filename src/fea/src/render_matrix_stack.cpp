@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include "render_backend.h"
 #include "render_matrix_stack.h"

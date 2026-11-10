@@ -1,11 +1,4 @@
 #include <QVBoxLayout>
-#include <QGroupBox>
-#include <QLineEdit>
-#include <QFileDialog>
-#include <QSpinBox>
-#include <QLabel>
-#include <QTabWidget>
-#include <QTreeWidget>
 #include <QDialogButtonBox>
 
 #include "application_settings_dialog.h"

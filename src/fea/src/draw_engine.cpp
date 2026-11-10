@@ -2,6 +2,7 @@
 
 #include "draw_engine.h"
 #include "application.h"
+#include "session.h"
 
 DrawEngine::DrawEngine(QObject *parent) :
     QObject(parent)

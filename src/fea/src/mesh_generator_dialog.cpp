@@ -9,7 +9,10 @@
 #include "mesh_generator_dialog.h"
 #include "mesh_generator.h"
 #include "application.h"
+#include "model.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rml_variable.h>
 
 MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

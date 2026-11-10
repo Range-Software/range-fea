@@ -6,7 +6,11 @@
 
 #include "application.h"
 #include "vector_field_dialog.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_vector_field.h>
+#include <rbl_logger.h>
 
 VectorFieldDialog::VectorFieldDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

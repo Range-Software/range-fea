@@ -1,7 +1,7 @@
 #ifndef GL_VECTOR_FIELD_H
 #define GL_VECTOR_FIELD_H
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include <rml_vector_field.h>
 

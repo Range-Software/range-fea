@@ -5,6 +5,9 @@
 #include <rml_file_utils.h>
 
 #include <rsolver.h>
+#include <rbl_logger.h>
+#include <rml_model.h>
+#include <rml_matrix_solver_conf.h>
 
 #include "solver_task.h"
 

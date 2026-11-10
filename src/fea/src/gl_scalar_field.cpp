@@ -1,11 +1,13 @@
 #include <cmath>
-#include <omp.h>
 
 #include "gl_functions.h"
 #include "gl_scalar_field.h"
 #include "gl_point.h"
 #include "gl_state_cache.h"
 #include "application.h"
+#include "session.h"
+#include "gl_entity_list.h"
+#include "gl_widget.h"
 
 class ScalarFieldItem
 {

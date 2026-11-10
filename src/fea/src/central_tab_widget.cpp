@@ -12,6 +12,8 @@
 #include "central_tab_widget.h"
 #include "application.h"
 #include "solver_manager.h"
+#include "session.h"
+#include "pick_list.h"
 #include <rgl_icon.h>
 
 const QString CentralTabWidget::informationIconFile(":/icons/file/pixmaps/range-information.svg");

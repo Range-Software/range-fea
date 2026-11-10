@@ -3,6 +3,7 @@
 #include "application.h"
 #include "merge_entity_dialog.h"
 #include "solver_manager.h"
+#include "session.h"
 
 ActionList::ActionList(const QList<RAction::Definition> &definitions, QObject *parent)
     : RActionList{definitions,parent}

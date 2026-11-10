@@ -1,12 +1,9 @@
 #include <QtGui/QCloseEvent>
-#include <QApplication>
 #include <QMenuBar>
 #include <QMenu>
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QSplitter>
-#include <QScrollBar>
-#include <QHBoxLayout>
 #include <QScreen>
 #include <QTimer>
 
@@ -40,6 +37,9 @@
 #include "main_window.h"
 #include "session.h"
 #include "geometry_transform_widget.h"
+#include "action_list.h"
+#include "sub_window_manager.h"
+#include "model_tree.h"
 #include <rgl_icon.h>
 
 MainWindow::MainWindow(Session *session,

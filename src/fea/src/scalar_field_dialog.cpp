@@ -7,7 +7,11 @@
 
 #include "application.h"
 #include "scalar_field_dialog.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_scalar_field.h>
+#include <rbl_logger.h>
 
 ScalarFieldDialog::ScalarFieldDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

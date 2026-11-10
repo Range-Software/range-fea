@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QString>
 
 #include "graph_data.h"
 

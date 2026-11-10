@@ -5,7 +5,10 @@
 
 #include "model_statistics_dialog.h"
 #include "application.h"
+#include "model.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rbl_statistics.h>
 
 ModelStatisticsDialog::ModelStatisticsDialog(uint modelID, QWidget *parent)
     : QDialog(parent)

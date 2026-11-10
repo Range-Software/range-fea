@@ -5,7 +5,9 @@
 
 #include "application.h"
 #include "matrix_solver_config_dialog.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rml_matrix_solver_conf.h>
 
 MatrixSolverConfigDialog::MatrixSolverConfigDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

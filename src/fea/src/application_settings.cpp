@@ -2,12 +2,8 @@
 
 #include <QApplication>
 #include <QDir>
-#include <QDesktopServices>
-#include <QImageWriter>
-#include <QStandardPaths>
 
 #include <rbl_logger.h>
-#include <rbl_utils.h>
 #include <rbl_job.h>
 #include <rbl_job_settings.h>
 

@@ -1,4 +1,3 @@
-#include <QAbstractItemModel>
 #include <QFileDialog>
 #include <QVector2D>
 #include <QTextStream>
@@ -11,6 +10,8 @@
 #include "graph_dialog.h"
 #include "graph_object.h"
 #include "value_set_generator_dialog.h"
+#include "application_settings.h"
+#include "main_window.h"
 #include <rgl_icon.h>
 
 namespace ValueTableTreeTypes

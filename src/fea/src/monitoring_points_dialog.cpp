@@ -1,13 +1,18 @@
 #include <QVBoxLayout>
-#include <QLabel>
-#include <QComboBox>
 #include <QPushButton>
 #include <QDialogButtonBox>
 
 #include "monitoring_points_dialog.h"
 #include "application.h"
 #include "variable_selector.h"
+#include "session.h"
+#include "pick_list.h"
+#include "pick_item.h"
+#include "session_entity_id.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_monitoring_point_manager.h>
+#include <rml_problem.h>
 
 MonitoringPointsDialog::MonitoringPointsDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

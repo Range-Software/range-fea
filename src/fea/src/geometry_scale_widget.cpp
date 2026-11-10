@@ -5,6 +5,7 @@
 
 #include "geometry_scale_widget.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 GeometryScaleWidget::GeometryScaleWidget(const RR3Vector &center, const RR3Vector &scale, QWidget *parent)

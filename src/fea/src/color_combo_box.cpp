@@ -1,5 +1,3 @@
-#include <QAbstractItemModel>
-#include <QStandardItemModel>
 #include <QColorDialog>
 
 #include "color.h"

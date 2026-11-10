@@ -2,8 +2,6 @@
 #include <QTextCursor>
 #include <QtPrintSupport/QPrinter>
 #include <QTextDocumentWriter>
-#include <QTextTable>
-#include <QHostInfo>
 #include <QPainter>
 #include <QPageSize>
 #include <QMarginsF>

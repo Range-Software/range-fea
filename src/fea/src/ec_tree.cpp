@@ -1,10 +1,9 @@
-#include <QStandardItemModel>
-#include <QLineEdit>
-#include <QPushButton>
-
 #include "application.h"
 #include "ec_tree.h"
 #include "variable_value_edit.h"
+#include "session_entity_id.h"
+#include "session.h"
+#include <rml_entity_group.h>
 
 typedef enum _ECTreeColumn
 {

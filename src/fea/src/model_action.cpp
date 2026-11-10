@@ -1,9 +1,9 @@
-#include <QtAlgorithms>
-
 #include <rhemicube.h>
 
 #include "model_action.h"
 #include "application.h"
+#include "session.h"
+#include "model.h"
 
 ModelAction::ModelAction()
 {

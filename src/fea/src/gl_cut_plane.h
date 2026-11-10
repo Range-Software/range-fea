@@ -1,7 +1,7 @@
 #ifndef GL_CUT_PLANE_H
 #define GL_CUT_PLANE_H
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include <rbl_plane.h>
 

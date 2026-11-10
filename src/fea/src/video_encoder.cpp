@@ -1,4 +1,3 @@
-#include <rbl_error.h>
 #include <rbl_logger.h>
 
 #include <QMediaRecorder>

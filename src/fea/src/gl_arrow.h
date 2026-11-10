@@ -1,7 +1,7 @@
 #ifndef GL_ARROW_H
 #define GL_ARROW_H
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include <rbl_r3vector.h>
 

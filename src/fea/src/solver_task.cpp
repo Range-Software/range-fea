@@ -1,10 +1,14 @@
 #include <QFileInfo>
 
 #include <rml_file_utils.h>
+#include <rbl_logger.h>
+#include <rbl_error.h>
 
 #include "model_io.h"
 #include "solver_task.h"
 #include "application.h"
+#include "session.h"
+#include "model.h"
 
 SolverTask::SolverTask(const ApplicationSettings *applicationSettings, uint modelID)
     : applicationSettings{applicationSettings}

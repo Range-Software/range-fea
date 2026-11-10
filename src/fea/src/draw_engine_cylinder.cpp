@@ -1,5 +1,4 @@
 #include <cmath>
-#include <algorithm>
 
 #include "draw_engine_cylinder.h"
 

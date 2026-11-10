@@ -1,7 +1,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTabWidget>
-#include <QCheckBox>
 #include <QScrollArea>
 
 #include <rbl_job_manager.h>
@@ -9,6 +8,7 @@
 #include "geometry_transform_widget.h"
 #include "model_action.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 GeometryTransformWidget::GeometryTransformWidget(QWidget *parent) :

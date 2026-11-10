@@ -13,7 +13,6 @@
 #include <QWidget>
 
 #include <QColor>
-#include <QMatrix4x4>
 #include <QVector4D>
 
 #include "gl_display_properties.h"

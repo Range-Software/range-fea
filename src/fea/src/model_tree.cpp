@@ -4,6 +4,10 @@
 #include "model_tree.h"
 #include "action.h"
 #include "application.h"
+#include "action_list.h"
+#include "session.h"
+#include "model.h"
+#include "session_entity_id.h"
 #include <rgl_icon.h>
 
 typedef enum _ModelTreeEntity

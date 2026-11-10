@@ -1,5 +1,7 @@
 #include "application.h"
 #include "usage_info.h"
+#include "session.h"
+#include "application_settings.h"
 
 UsageInfo &UsageInfo::getInstance()
 {

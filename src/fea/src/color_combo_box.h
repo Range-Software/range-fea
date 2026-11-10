@@ -2,7 +2,6 @@
 #define COLOR_COMBO_BOX_H
 
 #include <QComboBox>
-#include <QTreeWidgetItem>
 #include <QColor>
 
 class ColorComboBox : public QComboBox

@@ -5,7 +5,9 @@
 
 #include "geometry_rotate_widget.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rbl_utils.h>
 
 const RR3Vector GeometryRotateWidget::defaultAngles = RR3Vector(0.0,0.0,0.0);
 

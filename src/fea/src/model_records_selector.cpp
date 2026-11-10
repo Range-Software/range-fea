@@ -1,10 +1,8 @@
 #include <QAction>
-#include <QIcon>
 #include <QVBoxLayout>
 #include <QToolBar>
-#include <QCheckBox>
-#include <QLabel>
 #include <QSpinBox>
+#include <QTimer>
 
 #include <rbl_job_manager.h>
 #include <rbl_progress.h>
@@ -16,7 +14,11 @@
 #include "application.h"
 #include "video_settings_dialog.h"
 #include "video_encoder.h"
+#include "session.h"
+#include "model.h"
+#include "main_window.h"
 #include <rgl_icon.h>
+#include <rbl_logger.h>
 
 ModelRecordsSelector::ModelRecordsSelector(QWidget *parent)
     : QWidget(parent)

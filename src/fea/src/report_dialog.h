@@ -3,7 +3,6 @@
 
 #include <QDialog>
 #include <QGroupBox>
-#include <QRadioButton>
 
 #include <rgl_file_chooser_button.h>
 

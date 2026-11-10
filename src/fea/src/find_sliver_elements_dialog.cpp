@@ -9,6 +9,8 @@
 #include "find_sliver_elements_dialog.h"
 #include "application.h"
 #include "model_action.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
 
 FindSliverElementsDialog::FindSliverElementsDialog(uint modelID, QWidget *parent)

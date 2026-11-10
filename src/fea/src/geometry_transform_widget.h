@@ -5,7 +5,6 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QGroupBox>
-#include <QCheckBox>
 #include <QSpinBox>
 
 #include "geometry_transform_input.h"

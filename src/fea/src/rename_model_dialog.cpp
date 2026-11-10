@@ -5,6 +5,7 @@
 
 #include "rename_model_dialog.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 RenameModelDialog::RenameModelDialog(uint modelId, QWidget *parent)

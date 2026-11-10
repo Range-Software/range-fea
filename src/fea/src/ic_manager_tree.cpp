@@ -1,9 +1,9 @@
-#include <vector>
 #include <QList>
-#include <QMessageBox>
 
 #include "application.h"
 #include "ic_manager_tree.h"
+#include "session.h"
+#include "model.h"
 
 typedef enum _InitialConditionTreeColumn
 {

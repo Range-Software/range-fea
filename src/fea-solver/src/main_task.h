@@ -2,7 +2,6 @@
 #define MAIN_TASK_H
 
 #include <QObject>
-#include <QThread>
 
 class MainTask : public QObject
 {

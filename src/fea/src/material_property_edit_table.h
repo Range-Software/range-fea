@@ -1,8 +1,6 @@
 #ifndef MATERIAL_PROPERTY_EDIT_TABLE_H
 #define MATERIAL_PROPERTY_EDIT_TABLE_H
 
-#include <QTableWidget>
-
 #include <rml_material_property.h>
 
 #include "value_table.h"

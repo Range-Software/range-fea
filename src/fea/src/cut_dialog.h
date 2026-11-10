@@ -2,7 +2,6 @@
 #define CUT_DIALOG_H
 
 #include <QDialog>
-#include <QDoubleSpinBox>
 
 #include <rbl_plane.h>
 

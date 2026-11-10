@@ -1,5 +1,9 @@
 #include "draw_input_tree.h"
 #include "application.h"
+#include "session.h"
+#include "draw_engine.h"
+#include "draw_engine_object.h"
+#include "draw_engine_input.h"
 
 typedef enum _DrawInputTreeColumn
 {

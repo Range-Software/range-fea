@@ -13,6 +13,8 @@
 #include "model_action.h"
 #include <rbl_job_manager.h>
 #include "application.h"
+#include "model.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 static uint mid = RConstants::eod;

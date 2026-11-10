@@ -11,6 +11,7 @@
 #include "application.h"
 #include "report_dialog.h"
 #include "report_generator.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 bool ReportDialog::htmlFileEnabled = true;

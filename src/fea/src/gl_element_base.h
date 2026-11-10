@@ -1,7 +1,7 @@
 #ifndef GL_ELEMENT_BASE_H
 #define GL_ELEMENT_BASE_H
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include "gl_object.h"
 #include "model.h"

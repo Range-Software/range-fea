@@ -1,5 +1,9 @@
 #include "application.h"
 #include "model_entity_geometric_properties_tree.h"
+#include "session.h"
+#include "session_entity_id.h"
+#include <rml_entity_group.h>
+#include <rml_variable.h>
 
 typedef enum _GeometricPropertyType
 {

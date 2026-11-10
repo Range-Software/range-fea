@@ -1,5 +1,6 @@
 #include "application.h"
 #include "solver_manager.h"
+#include <rbl_logger.h>
 
 SolverManager::SolverManager(QObject *parent)
     : RJobManager(parent)

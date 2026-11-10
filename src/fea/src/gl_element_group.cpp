@@ -10,6 +10,7 @@
 #include "gl_widget.h"
 #include "model.h"
 #include "application.h"
+#include "session.h"
 
 void GLElementGroup::_init(const GLElementGroup *pGlElementGroup)
 {

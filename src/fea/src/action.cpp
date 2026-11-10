@@ -59,6 +59,15 @@
 #include "solver_manager.h"
 #include "scalar_field_dialog.h"
 #include "vector_field_dialog.h"
+#include "session.h"
+#include "model.h"
+#include "draw_engine_point.h"
+#include "draw_engine_line.h"
+#include "draw_engine_triangle.h"
+#include "draw_engine_quadrilateral.h"
+#include "draw_engine_circle.h"
+#include "draw_engine_ellipse.h"
+#include "draw_engine_tetrahedron.h"
 
 Action::Action(RAction::Definition definition, QObject *parent)
     : RAction{definition,parent}

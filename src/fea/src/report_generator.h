@@ -1,12 +1,6 @@
 #ifndef REPORT_GENERATOR_H
 #define REPORT_GENERATOR_H
 
-#include <QObject>
-#include <QMap>
-#include <QTextDocument>
-#include <QPrinter>
-#include <QTextCharFormat>
-
 #include "document_generator.h"
 
 class ReportGenerator : public DocumentGenerator

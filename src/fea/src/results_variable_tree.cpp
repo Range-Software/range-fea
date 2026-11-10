@@ -18,6 +18,10 @@
 #include "model_action.h"
 #include <rbl_job_manager.h>
 #include "value_scale.h"
+#include "session.h"
+#include "model.h"
+#include "application_settings.h"
+#include "main_window.h"
 #include <rgl_icon.h>
 
 typedef enum _ResultsVariableTreeColumn

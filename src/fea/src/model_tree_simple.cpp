@@ -1,5 +1,7 @@
 #include "model_tree_simple.h"
 #include "application.h"
+#include "model.h"
+#include "session.h"
 
 typedef enum _ModelTreeSimpleEntity
 {

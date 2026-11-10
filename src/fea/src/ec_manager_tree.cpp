@@ -1,8 +1,9 @@
 #include <QList>
-#include <QMessageBox>
 
 #include "application.h"
 #include "ec_manager_tree.h"
+#include "session.h"
+#include "model.h"
 
 typedef enum _EnvironmentConditionTreeColumn
 {

@@ -2,6 +2,8 @@
 
 #include "application.h"
 #include "mesh_generator.h"
+#include "session.h"
+#include "model.h"
 
 MeshGenerator::MeshGenerator(uint modelID)
     : modelID(modelID)

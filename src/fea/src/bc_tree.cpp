@@ -1,13 +1,20 @@
-#include <QStandardItemModel>
-#include <QLineEdit>
-#include <QPushButton>
-
 #include "component_edit_dialog.h"
 #include "application.h"
 #include "bc_tree.h"
 #include "direction_widget.h"
 #include "variable_value_edit.h"
 #include "push_button.h"
+#include "session.h"
+#include "session_entity_id.h"
+#include "model.h"
+#include "main_window.h"
+#include <rml_entity_group.h>
+#include <rml_point.h>
+#include <rml_element.h>
+#include <rml_line.h>
+#include <rml_segment.h>
+#include <rml_surface.h>
+#include <rml_node.h>
 
 typedef enum _BCTreeColumn
 {

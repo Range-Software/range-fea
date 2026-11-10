@@ -5,6 +5,7 @@
 
 #include "geometry_translate_widget.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 const RR3Vector GeometryTranslateWidget::defaultTranslation = RR3Vector(0.0,0.0,0.0);

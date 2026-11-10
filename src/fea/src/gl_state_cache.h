@@ -5,7 +5,7 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 // Forward declaration — avoids pulling in gl_shader_program.h everywhere.
 class GLShaderProgram;

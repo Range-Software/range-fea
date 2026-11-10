@@ -4,7 +4,7 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 #include "gl_frustum.h"
 #include "render_matrix_stack.h"

@@ -10,7 +10,11 @@
 
 #include "material_manager_tree.h"
 #include "application.h"
+#include "session.h"
+#include "application_settings.h"
+#include "session_entity_id.h"
 #include <rgl_icon.h>
+#include <rml_entity_group.h>
 
 MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     : QWidget{parent}

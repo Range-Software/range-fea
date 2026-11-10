@@ -6,6 +6,7 @@
 
 #include "draw_input_widget.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
 
 DrawInputWidget::DrawInputWidget(QWidget *parent) :

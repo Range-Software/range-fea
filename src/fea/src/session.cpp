@@ -10,6 +10,7 @@
 #include "session.h"
 #include "application.h"
 #include "model_io.h"
+#include "main_window.h"
 
 Session::Session(QObject *parent)
     : QObject{parent}

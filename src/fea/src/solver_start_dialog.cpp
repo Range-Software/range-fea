@@ -1,11 +1,7 @@
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGroupBox>
 #include <QLabel>
 #include <QIcon>
-#include <QLineEdit>
 #include <QTextBrowser>
-#include <QScrollBar>
 #include <QScrollArea>
 #include <QPushButton>
 #include <QDialogButtonBox>
@@ -15,6 +11,8 @@
 #include "solver_setup_checker.h"
 #include "solver_start_dialog.h"
 #include "solver_task.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
 
 SolverStartDialog::SolverStartDialog(uint modelID, QWidget *parent)

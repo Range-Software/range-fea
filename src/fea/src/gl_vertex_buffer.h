@@ -7,7 +7,7 @@
 #define GL_SILENCE_DEPRECATION
 #endif
 
-#include <QtOpenGL>
+#include <qopengl.h>
 
 struct RhiBufferData;
 

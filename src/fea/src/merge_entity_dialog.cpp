@@ -9,6 +9,8 @@
 #include "merge_entity_dialog.h"
 #include "application.h"
 #include "model_action.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
 
 MergeEntityDialog::MergeEntityDialog(REntityGroupTypeMask entityTypeMask, QWidget *parent) :

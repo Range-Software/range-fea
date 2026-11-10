@@ -1,5 +1,8 @@
 #include "results_variable_selector.h"
 #include "application.h"
+#include "session.h"
+#include "model.h"
+#include <rbl_logger.h>
 
 ResultsVariableSelector::ResultsVariableSelector(QWidget *parent) :
     VariableSelector(std::vector<RVariableType>(),parent)

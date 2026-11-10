@@ -1,5 +1,3 @@
-#include <omp.h>
-
 #include <rbl_r3vector.h>
 #include <rml_shape_generator.h>
 #include <rml_triangle.h>
@@ -9,6 +7,9 @@
 #include "gl_state_cache.h"
 #include "gl_texture.h"
 #include "application.h"
+#include "session.h"
+#include "gl_entity_list.h"
+#include "gl_widget.h"
 
 class VectorFieldItem
 {

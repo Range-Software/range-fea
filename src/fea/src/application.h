@@ -2,12 +2,11 @@
 #define APPLICATION_H
 
 #include <rgl_application.h>
-#include <rgl_application_settings.h>
 
-#include "application_settings.h"
-#include "action_list.h"
-#include "main_window.h"
-#include "session.h"
+class ActionList;
+class ApplicationSettings;
+class MainWindow;
+class Session;
 
 class Application : public RApplication
 {

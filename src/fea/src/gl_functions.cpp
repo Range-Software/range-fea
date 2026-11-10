@@ -1,5 +1,4 @@
 #include <QOpenGLContext>
-#include <QOpenGLExtraFunctions>
 
 #include "gl_functions.h"
 #include "gl_vertex_buffer.h"

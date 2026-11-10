@@ -1,7 +1,15 @@
-#include <QHBoxLayout>
-
 #include "pick_details_tree.h"
 #include "application.h"
+#include "session.h"
+#include "pick_item.h"
+#include "model.h"
+#include "session_entity_id.h"
+#include <rbl_logger.h>
+#include <rml_entity_group.h>
+#include <rml_element.h>
+#include <rml_node.h>
+#include <rml_interpolated_element.h>
+#include <rml_interpolated_node.h>
 
 typedef enum _PickDetailsTreeColumn
 {

@@ -14,11 +14,14 @@
 #include <QVBoxLayout>
 
 #include "application.h"
-#include "main_window.h"
 #include "problem_selector_tiles.h"
 #include "problem_selector_tree.h"
 #include "problem_task_dialog.h"
 #include "solver_setup_checker.h"
+#include "model.h"
+#include "application_settings.h"
+#include "session.h"
+#include "main_window.h"
 #include <rgl_icon.h>
 #include <rgl_message_box.h>
 

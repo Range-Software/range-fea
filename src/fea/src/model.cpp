@@ -1,4 +1,5 @@
 #include <QString>
+#include <QRandomGenerator>
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -23,6 +24,9 @@
 #include "gl_scalar_field.h"
 #include "gl_widget.h"
 #include "application.h"
+#include "session.h"
+#include "pick_list.h"
+#include "application_settings.h"
 
 const int Model::ConsolidateActionAll = Model::ConsolidateSurfaceNeighbors |
                                         Model::ConsolidateVolumeNeighbors |

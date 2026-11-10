@@ -1,13 +1,12 @@
 #ifndef MODEL_IO_H
 #define MODEL_IO_H
 
-#include <QObject>
 #include <QString>
 
 #include "application_settings.h"
 #include <rbl_job.h>
 
-#include "model.h"
+class Model;
 
 typedef enum _ModelIOType
 {

@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <cmath>
 
-#include <QApplication>
 #include <QFileDialog>
 #include <QHash>
 #include <QLocale>
@@ -10,7 +9,6 @@
 #include <QPainterPath>
 #include <QGuiApplication>
 //#include <QDesktopWidget>
-#include <QScreen>
 
 #include <rbl_stop_watch.h>
 #include <rgl_icon.h>
@@ -37,6 +35,9 @@
 #include "pick_list.h"
 #include "application.h"
 #include "application_settings.h"
+#include "main_window.h"
+#include "session.h"
+#include "draw_engine.h"
 
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D

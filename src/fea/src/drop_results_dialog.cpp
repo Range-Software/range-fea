@@ -6,7 +6,9 @@
 
 #include "drop_results_dialog.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rbl_logger.h>
 
 static bool clearResults = true;
 static bool deleteResults = false;

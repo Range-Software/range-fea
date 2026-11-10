@@ -4,6 +4,8 @@
 
 #include "bc_manager_tree.h"
 #include "application.h"
+#include "session.h"
+#include "model.h"
 
 typedef enum _BoundaryConditionTreeColumn
 {

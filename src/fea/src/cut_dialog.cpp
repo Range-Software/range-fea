@@ -1,8 +1,5 @@
-#include <cmath>
-
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QGroupBox>
 #include <QPushButton>
 #include <QDialogButtonBox>
 
@@ -10,7 +7,11 @@
 #include "cut_dialog.h"
 #include "direction_widget.h"
 #include "position_widget.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_cut.h>
+#include <rbl_logger.h>
 
 CutDialog::CutDialog(uint modelID, uint entityID, QWidget *parent)
     : QDialog(parent)

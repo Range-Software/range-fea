@@ -1,7 +1,6 @@
 #ifndef APPLICATION_SETTINGS_H
 #define APPLICATION_SETTINGS_H
 
-#include <QSettings>
 #include <QString>
 
 #include <rbl_version.h>

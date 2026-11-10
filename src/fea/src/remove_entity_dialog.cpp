@@ -7,6 +7,8 @@
 #include "remove_entity_dialog.h"
 #include "application.h"
 #include "model_action.h"
+#include "session.h"
+#include "model.h"
 #include <rbl_job_manager.h>
 #include <rgl_icon.h>
 

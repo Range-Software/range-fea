@@ -6,7 +6,9 @@
 
 #include "component_edit_dialog.h"
 #include "application.h"
+#include "session.h"
 #include <rgl_icon.h>
+#include <rml_time_solver.h>
 
 ComponentEditDialog::ComponentEditDialog(RConditionComponent &component, QWidget *parent) :
     QDialog(parent),

@@ -1,9 +1,7 @@
 #ifndef GRAPH_DATA_H
 #define GRAPH_DATA_H
 
-#include <QObject>
 #include <QString>
-#include <QVector>
 #include <QMap>
 
 #include <rbl_rvector.h>

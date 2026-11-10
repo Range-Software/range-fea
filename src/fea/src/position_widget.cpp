@@ -1,4 +1,3 @@
-#include <cmath>
 #include <float.h>
 
 #include <QGridLayout>
@@ -6,6 +5,11 @@
 
 #include "position_widget.h"
 #include "application.h"
+#include "session.h"
+#include "pick_list.h"
+#include "pick_item.h"
+#include "session_entity_id.h"
+#include "model.h"
 #include <rgl_icon.h>
 
 #define MINIMUM_VALUE (-DBL_MAX*0.1)

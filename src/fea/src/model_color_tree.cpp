@@ -3,6 +3,7 @@
 
 #include "model_color_tree.h"
 #include "application.h"
+#include "session.h"
 
 // Space at the top of a model row taken by the line in the color of the model and its padding.
 static const int modelLineHeight = 2;

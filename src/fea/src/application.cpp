@@ -1,11 +1,18 @@
 #include <rml_file_utils.h>
 
 #include <rgl_message_box.h>
+#include <rbl_job_settings.h>
+#include <rbl_job.h>
+#include <rbl_logger.h>
+#include <rgl_cloud_connection_handler.h>
 
 #include "application.h"
 #include "action.h"
 #include "render_backend.h"
-#include "solver_manager.h"
+#include "application_settings.h"
+#include "session.h"
+#include "action_list.h"
+#include "main_window.h"
 
 Application::Application(int &argc, char **argv)
     : RApplication{argc,argv,false}

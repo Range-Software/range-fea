@@ -6,7 +6,11 @@
 
 #include "application.h"
 #include "iso_dialog.h"
+#include "session.h"
+#include "model.h"
 #include <rgl_icon.h>
+#include <rml_iso.h>
+#include <rbl_logger.h>
 
 IsoDialog::IsoDialog(uint modelID, QWidget *parent) :
     QDialog(parent),

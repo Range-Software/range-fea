@@ -8,6 +8,7 @@
 #include "merge_near_nodes_dialog.h"
 #include "application.h"
 #include "model_action.h"
+#include "session.h"
 #include <rbl_job_manager.h>
 #include <rgl_icon.h>
 

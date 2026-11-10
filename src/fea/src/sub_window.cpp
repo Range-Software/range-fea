@@ -1,4 +1,3 @@
-#include <QFileDialog>
 #include <QGridLayout>
 
 #include "sub_window.h"
@@ -6,7 +5,11 @@
 #include "application.h"
 #include "gl_display_properties_dialog.h"
 #include "clipping_plane_widget.h"
+#include "session.h"
+#include "application_settings.h"
+#include "main_window.h"
 #include <rgl_icon.h>
+#include <rbl_logger.h>
 
 SubWindow::SubWindow (uint modelID, QWidget *parent)
     : QMdiSubWindow(parent)
