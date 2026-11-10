@@ -3,9 +3,11 @@
 #include <QMenu>
 #include <QGridLayout>
 #include <QStatusBar>
+#include <QSignalBlocker>
 #include <QSplitter>
 #include <QScreen>
 #include <QTimer>
+#include <QVBoxLayout>
 
 #include <rbl_error.h>
 #include <rbl_job_manager.h>
@@ -13,6 +15,8 @@
 #include <rgl_first_run_dialog.h>
 #include <rgl_progress_handler.h>
 #include <rgl_message_box.h>
+#include <rgl_ribbon_bar.h>
+#include <rgl_split_tool_button.h>
 
 #include "action.h"
 #include "application.h"
@@ -41,6 +45,9 @@
 #include "sub_window_manager.h"
 #include "model_tree.h"
 #include <rgl_icon.h>
+
+//! Version of tool bar arrangement. Increase it when tool bars change, to place them anew for existing users.
+static constexpr int toolBarsVersion = 3;
 
 MainWindow::MainWindow(Session *session,
                        RCloudSessionManager *cloudSession,
@@ -75,7 +82,20 @@ MainWindow::MainWindow(Session *session,
 
     this->createMenus();
     this->createToolBars();
+    this->createRibbon();
     this->createStatusBar();
+
+    // Shortcut of an action works only while a widget holding the action is visible,
+    // which buttons on other pages of the ribbon are not.
+    for (uint i=0;i<this->actionList->getNActions();i++)
+    {
+        RAction *action = this->actionList->getAction(i);
+        if (action && !action->isSeparator())
+        {
+            this->addAction(action);
+        }
+    }
+
     this->createCentralWidget();
 
     QDockWidget *modelDock = new QDockWidget(this);
@@ -145,6 +165,28 @@ MainWindow::MainWindow(Session *session,
         }
     }
     this->restoreState(this->applicationSettings->value("mainWindow/windowState").toByteArray());
+
+    // Stored state knows only tool bars of the time it was saved. Docks are left as they were.
+    if (this->applicationSettings->value("mainWindow/toolBarsVersion",1).toInt() != toolBarsVersion)
+    {
+        this->placeToolBars();
+        this->applicationSettings->setValue("mainWindow/toolBarsVersion",toolBarsVersion);
+    }
+
+    for (RSplitToolButton *button : std::as_const(this->toolBarSplitButtons))
+    {
+        button->setLastUsedPosition(this->applicationSettings->value("mainWindow/" + button->objectName(),0).toInt());
+    }
+
+    // Must follow restoring of the state, which brings back visibility of tool bars.
+    const bool ribbonLayout = this->applicationSettings->value("mainWindow/ribbonLayout",false).toBool();
+    {
+        const QSignalBlocker ribbonLayoutActionBlocker(this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
+        this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT)->setChecked(ribbonLayout);
+    }
+    this->setRibbonLayout(ribbonLayout);
+    this->ribbonBar->setCollapsed(this->applicationSettings->value("mainWindow/ribbonCollapsed",false).toBool());
+    this->ribbonBar->setCurrentPage(this->applicationSettings->value("mainWindow/ribbonPage",0).toInt());
 
     // Toolbar icon size changed signal
     QObject::connect(this->applicationSettings,&RApplicationSettings::toolbarIconSizeChanged,this,&MainWindow::onToolbarIconSizeChanged);
@@ -304,14 +346,10 @@ void MainWindow::hideCustomDockWidget(const QString &name)
     }
 }
 
-void MainWindow::createMenus()
+QMenu *MainWindow::createFileMenu(QWidget *parent)
 {
     R_LOG_TRACE_IN;
-    QMenuBar *menuBar = new QMenuBar(this);
-    menuBar->setNativeMenuBar(!this->applicationSettings->getDontUseNativeMenuBar());
-    this->setMenuBar(menuBar);
-
-    QMenu *menuFile = new QMenu(menuBar);
+    QMenu *menuFile = new QMenu(parent);
     menuFile->setTitle(tr("File"));
     QMenu *menuFileSession = new QMenu(menuFile);
     menuFileSession->setTitle(tr("Session"));
@@ -353,10 +391,75 @@ void MainWindow::createMenus()
     menuFileFolders->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_FOLDER_TMP));
     menuFile->addAction(menuFileFolders->menuAction());
     menuFile->addSeparator();
+    menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
     menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
-    menuBar->addAction(menuFile->menuAction());
+    R_LOG_TRACE_OUT;
+    return menuFile;
+}
+
+QMenu *MainWindow::createSpecialToolsMenu(QWidget *parent)
+{
+    R_LOG_TRACE_IN;
+    QMenu *menuGeometryDevelopement = new QMenu(parent);
+    menuGeometryDevelopement->setTitle(tr("Special tools"));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_SLIVER_ELEMENTS));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_INTERSECTED_ELEMENTS));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_PURGE_UNUSED_NODES));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_PURGE_UNUSED_ELEMENTS));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_REMOVE_DUPLICATE_NODES));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_REMOVE_DUPLICATE_ELEMENTS));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_POINT_INSIDE_SURFACE));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_TETRAHEDRALIZE_SURFACE));
+    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_CONSOLIDATE));
+    R_LOG_TRACE_OUT;
+    return menuGeometryDevelopement;
+}
+
+QMenu *MainWindow::createCloudMenu(QWidget *parent)
+{
+    R_LOG_TRACE_IN;
+    QMenu *menuCloud = new QMenu(parent);
+    menuCloud->setTitle(tr("Cloud"));
+    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_SESSION_MANAGER));
+    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
+    R_LOG_TRACE_OUT;
+    return menuCloud;
+}
+
+QMenu *MainWindow::createHelpMenu(QWidget *parent)
+{
+    R_LOG_TRACE_IN;
+    QMenu *menuHelp = new QMenu(parent);
+    menuHelp->setTitle(tr("Help"));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_UPDATE));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT_QT));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_LICENSE));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_PRIVACY_POLICY));
+    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RELEASE_NOTES));
+    R_LOG_TRACE_OUT;
+    return menuHelp;
+}
+
+void MainWindow::createMenus()
+{
+    R_LOG_TRACE_IN;
+    // Menu bar and ribbon share the place above the tool bars, only one of them is visible at a time.
+    QWidget *menuWidget = new QWidget(this);
+    QVBoxLayout *menuWidgetLayout = new QVBoxLayout(menuWidget);
+    menuWidgetLayout->setContentsMargins(0,0,0,0);
+    menuWidgetLayout->setSpacing(0);
+    this->setMenuWidget(menuWidget);
+
+    QMenuBar *menuBar = new QMenuBar(menuWidget);
+    menuBar->setNativeMenuBar(!this->applicationSettings->getDontUseNativeMenuBar());
+    menuWidgetLayout->addWidget(menuBar);
+    this->classicMenuBar = menuBar;
+
+    menuBar->addAction(this->createFileMenu(menuBar)->menuAction());
 
     QMenu *menuGeometry = new QMenu(menuBar);
     menuGeometry->setTitle(tr("Geometry"));
@@ -461,18 +564,7 @@ void MainWindow::createMenus()
     menuGeometry->addSeparator();
     menuGeometry->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_TRANSFORM));
     menuGeometry->addSeparator();
-    QMenu *menuGeometryDevelopement = new QMenu(menuGeometry);
-    menuGeometryDevelopement->setTitle(tr("Special tools"));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_SLIVER_ELEMENTS));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_EXPORT_INTERSECTED_ELEMENTS));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_PURGE_UNUSED_NODES));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_PURGE_UNUSED_ELEMENTS));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_REMOVE_DUPLICATE_NODES));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_REMOVE_DUPLICATE_ELEMENTS));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_POINT_INSIDE_SURFACE));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_TETRAHEDRALIZE_SURFACE));
-    menuGeometryDevelopement->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DEV_CONSOLIDATE));
-    menuGeometry->addAction(menuGeometryDevelopement->menuAction());
+    menuGeometry->addAction(this->createSpecialToolsMenu(menuGeometry)->menuAction());
     menuBar->addAction(menuGeometry->menuAction());
 
     QMenu *menuProblem = new QMenu(menuBar);
@@ -501,22 +593,8 @@ void MainWindow::createMenus()
     menuReport->addAction(this->actionList->getAction(Action::ACTION_REPORT_CREATE_REPORT));
     menuBar->addAction(menuReport->menuAction());
 
-    QMenu *menuCloud = new QMenu(menuBar);
-    menuCloud->setTitle(tr("Cloud"));
-    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_SESSION_MANAGER));
-    menuCloud->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
-    menuBar->addAction(menuCloud->menuAction());
-
-    QMenu *menuHelp = new QMenu(menuBar);
-    menuHelp->setTitle(tr("Help"));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_UPDATE));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT_QT));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_LICENSE));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_PRIVACY_POLICY));
-    menuHelp->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RELEASE_NOTES));
-    menuBar->addAction(menuHelp->menuAction());
+    menuBar->addAction(this->createCloudMenu(menuBar)->menuAction());
+    menuBar->addAction(this->createHelpMenu(menuBar)->menuAction());
     R_LOG_TRACE_OUT;
 }
 
@@ -524,83 +602,291 @@ void MainWindow::createToolBars()
 {
     R_LOG_TRACE_IN;
 
-    QToolBar *mainToolBar = new QToolBar(this);
-    mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
-    mainToolBar->setWindowTitle(tr("Main toolbar"));
-    this->addToolBar(Qt::TopToolBarArea, mainToolBar);
+    auto action = [this](Action::Type type) -> QAction* { return this->actionList->getAction(type); };
 
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_NEW));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_OPEN));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_SAVE));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_CLOSE));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_UNDO));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_REDO));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_TRANSFORM));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_PROBLEM_TASK_FLOW));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_START));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_STOP));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_SOLVER_KILL));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_REPORT_CONVERGENCE_GRAPH));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_REPORT_CREATE_REPORT));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_MODEL_RELOAD_RESULTS));
+    QToolBar *fileToolBar = this->createToolBar("mainToolBar",tr("File and edit toolbar"));
+    fileToolBar->addAction(action(Action::ACTION_MODEL_NEW));
+    fileToolBar->addAction(action(Action::ACTION_MODEL_OPEN));
+    fileToolBar->addAction(action(Action::ACTION_MODEL_SAVE));
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(action(Action::ACTION_GEOMETRY_UNDO));
+    fileToolBar->addAction(action(Action::ACTION_GEOMETRY_REDO));
 
-    QWidget* spacer = new QWidget();
+    QToolBar *workflowToolBar = this->createToolBar("workflowToolBar",tr("Workflow toolbar"));
+    workflowToolBar->addAction(action(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA));
+    workflowToolBar->addAction(action(Action::ACTION_PROBLEM_TASK_FLOW));
+    workflowToolBar->addSeparator();
+    workflowToolBar->addAction(action(Action::ACTION_SOLVER_START));
+    this->addToolBarSplitButton(workflowToolBar,"solverStopSplitButton",{action(Action::ACTION_SOLVER_STOP),action(Action::ACTION_SOLVER_KILL)},false);
+    workflowToolBar->addSeparator();
+    workflowToolBar->addAction(action(Action::ACTION_REPORT_CONVERGENCE_GRAPH));
+    workflowToolBar->addAction(action(Action::ACTION_MODEL_RELOAD_RESULTS));
+    workflowToolBar->addAction(action(Action::ACTION_REPORT_CREATE_REPORT));
+
+    QToolBar *applicationToolBar = this->createToolBar("applicationToolBar",tr("Application toolbar"));
+
+    // Last tool bar of a row takes the remaining width, this pushes its buttons to the right edge of the window.
+    QWidget *spacer = new QWidget(applicationToolBar);
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    mainToolBar->addWidget(spacer);
+    applicationToolBar->addWidget(spacer);
 
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_CLOUD_FILE_MANAGER));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
-    mainToolBar->addSeparator();
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_HELP));
-    mainToolBar->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_ABOUT));
+    applicationToolBar->addAction(action(Action::ACTION_CLOUD_FILE_MANAGER));
+    applicationToolBar->addSeparator();
+    applicationToolBar->addAction(action(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
+    applicationToolBar->addAction(action(Action::ACTION_APPLICATION_SETTINGS));
+    applicationToolBar->addSeparator();
+    applicationToolBar->addAction(action(Action::ACTION_APPLICATION_HELP));
 
-    this->addToolBarBreak();
+    QToolBar *geometryToolBar = this->createToolBar("geometryToolBar",tr("Geometry toolbar"));
+    this->addToolBarSplitButton(geometryToolBar,"drawSplitButton",{action(Action::ACTION_GEOMETRY_DRAW_POINT),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_LINE),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_TRIANGLE),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_QUADRILATERAL),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_CIRCLE),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_ELLIPSE),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_TETRAHEDRON),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_HEXAHEDRON),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_CYLINDER),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_SPHERE),
+                                                                   action(Action::ACTION_GEOMETRY_DRAW_RAW)},true);
+    this->addToolBarSplitButton(geometryToolBar,"booleanSplitButton",{action(Action::ACTION_GEOMETRY_BOOL_UNION),
+                                                                      action(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE),
+                                                                      action(Action::ACTION_GEOMETRY_BOOL_INTERSECTION)},true);
+    geometryToolBar->addAction(action(Action::ACTION_GEOMETRY_TRANSFORM));
 
-    QToolBar *drawToolBar = new QToolBar(this);
-    drawToolBar->setObjectName(QString::fromUtf8("drawToolBar"));
-    drawToolBar->setWindowTitle(tr("Draw toolbar"));
-    this->addToolBar(Qt::TopToolBarArea, drawToolBar);
+    QToolBar *meshToolBar = this->createToolBar("meshToolBar",tr("Mesh toolbar"));
+    meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_MARK));
+    this->addToolBarSplitButton(meshToolBar,"normalsSplitButton",{action(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL),
+                                                                  action(Action::ACTION_GEOMETRY_SURFACE_SWAP_NORMALS),
+                                                                  action(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS)},true);
+    meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
+    meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_COARSEN));
+    meshToolBar->addSeparator();
+    // Finding has to come before repairing, so these always start with finding.
+    this->addToolBarSplitButton(meshToolBar,"intersectedSplitButton",{action(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS),
+                                                                      action(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS)},false);
+    this->addToolBarSplitButton(meshToolBar,"sliversSplitButton",{action(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS),
+                                                                  action(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS)},false);
 
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_POINT));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_LINE));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_TRIANGLE));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_QUADRILATERAL));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_CIRCLE));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_ELLIPSE));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_TETRAHEDRON));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_HEXAHEDRON));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_CYLINDER));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_SPHERE));
-    drawToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_DRAW_RAW));
+    QToolBar *resultsToolBar = this->createToolBar("resultsToolBar",tr("Results toolbar"));
+    this->addToolBarSplitButton(resultsToolBar,"cutSplitButton",{action(Action::ACTION_GEOMETRY_CUT_CREATE),action(Action::ACTION_GEOMETRY_CUT_EDIT)},false);
+    this->addToolBarSplitButton(resultsToolBar,"isoSplitButton",{action(Action::ACTION_GEOMETRY_ISO_CREATE),action(Action::ACTION_GEOMETRY_ISO_EDIT)},false);
+    this->addToolBarSplitButton(resultsToolBar,"streamLineSplitButton",{action(Action::ACTION_GEOMETRY_STREAM_LINE_CREATE),action(Action::ACTION_GEOMETRY_STREAM_LINE_EDIT)},false);
+    this->addToolBarSplitButton(resultsToolBar,"scalarFieldSplitButton",{action(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE),action(Action::ACTION_GEOMETRY_SCALAR_FIELD_EDIT)},false);
+    this->addToolBarSplitButton(resultsToolBar,"vectorFieldSplitButton",{action(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE),action(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT)},false);
 
-    QToolBar *surfaceToolBar = new QToolBar(this);
-    surfaceToolBar->setObjectName(QString::fromUtf8("surfaceToolBar"));
-    surfaceToolBar->setWindowTitle(tr("Surface toolbar"));
-    this->addToolBar(Qt::TopToolBarArea, surfaceToolBar);
+    // Tool bars are placed in this order.
+    this->toolBars = { fileToolBar, geometryToolBar, meshToolBar, workflowToolBar, resultsToolBar, applicationToolBar };
+    this->placeToolBars();
 
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_MARK));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SWAP_NORMALS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_COARSEN));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS));
-    surfaceToolBar->addSeparator();
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_INTERSECTION));
-    surfaceToolBar->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BOOL_UNION));
+    R_LOG_TRACE_OUT;
+}
 
+QToolBar *MainWindow::createToolBar(const QString &name, const QString &title)
+{
+    R_LOG_TRACE;
+    QToolBar *toolBar = new QToolBar(this);
+    toolBar->setObjectName(name);
+    toolBar->setWindowTitle(title);
+    return toolBar;
+}
+
+void MainWindow::addToolBarSplitButton(QToolBar *toolBar, const QString &name, const QList<QAction*> &actions, bool rememberLastUsed)
+{
+    R_LOG_TRACE_IN;
+    RSplitToolButton *button = new RSplitToolButton(actions,rememberLastUsed,toolBar);
+    button->setObjectName(name);
+    button->setIconSize(toolBar->iconSize());
+    // Tool bar keeps in sync only buttons it has created itself.
+    QObject::connect(toolBar,&QToolBar::iconSizeChanged,button,&QToolButton::setIconSize);
+    toolBar->addWidget(button);
+    this->toolBarSplitButtons.append(button);
+    R_LOG_TRACE_OUT;
+}
+
+void MainWindow::placeToolBars()
+{
+    R_LOG_TRACE_IN;
+    for (QToolBar *toolBar : std::as_const(this->toolBars))
+    {
+        this->removeToolBar(toolBar);
+    }
+    for (QToolBar *toolBar : std::as_const(this->toolBars))
+    {
+        this->addToolBar(Qt::TopToolBarArea,toolBar);
+        // Removing a tool bar hides it.
+        toolBar->show();
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void MainWindow::createRibbon()
+{
+    R_LOG_TRACE_IN;
+    this->ribbonBar = new RRibbonBar(this->menuWidget());
+    this->menuWidget()->layout()->addWidget(this->ribbonBar);
+    this->ribbonBar->setIconSize(this->applicationSettings->getToolbarIconSize());
+
+    auto action = [this](Action::Type type) -> QAction* { return this->actionList->getAction(type); };
+
+    // Line with tabs
+    this->ribbonBar->addLeadingMenu(tr("File"),this->createFileMenu(this->ribbonBar));
+    this->ribbonBar->addLeadingAction(action(Action::ACTION_MODEL_SAVE));
+    this->ribbonBar->addLeadingAction(action(Action::ACTION_GEOMETRY_UNDO));
+    this->ribbonBar->addLeadingAction(action(Action::ACTION_GEOMETRY_REDO));
+
+    this->ribbonBar->addTrailingMenu(tr("Cloud"),action(Action::ACTION_CLOUD_FILE_MANAGER)->icon(),this->createCloudMenu(this->ribbonBar));
+    this->ribbonBar->addTrailingAction(action(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
+    this->ribbonBar->addTrailingAction(action(Action::ACTION_APPLICATION_SETTINGS));
+    this->ribbonBar->addTrailingMenu(tr("Help"),action(Action::ACTION_APPLICATION_HELP)->icon(),this->createHelpMenu(this->ribbonBar));
+
+    RRibbonGroup *group = nullptr;
+
+    // Geometry
+    const int geometryPage = this->ribbonBar->addPage(tr("Geometry"));
+
+    group = this->ribbonBar->addGroup(geometryPage,tr("Draw"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_POINT),tr("Point"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_LINE),tr("Line"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_TRIANGLE),tr("Triangle"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_QUADRILATERAL),tr("Quadrilateral"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_CIRCLE),tr("Circle"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_ELLIPSE),tr("Ellipse"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_TETRAHEDRON),tr("Tetrahedron"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_HEXAHEDRON),tr("Hexahedron"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_CYLINDER),tr("Cylinder"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_SPHERE),tr("Sphere"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_DRAW_RAW),tr("RAW object"));
+
+    group = this->ribbonBar->addGroup(geometryPage,tr("Boolean"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_BOOL_UNION));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_BOOL_DIFFERENCE));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_BOOL_INTERSECTION));
+
+    group = this->ribbonBar->addGroup(geometryPage,tr("Modify"));
+    group->addLargeAction(action(Action::ACTION_GEOMETRY_TRANSFORM),tr("Transform"));
+
+    group = this->ribbonBar->addGroup(geometryPage,tr("Entities"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_LINE_GENERATE_FROM_EDGES),tr("Line from edges"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_ENTITY_MERGE),tr("Merge"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_ENTITY_REMOVE),tr("Remove"));
+
+    // Mesh
+    const int meshPage = this->ribbonBar->addPage(tr("Mesh"));
+
+    group = this->ribbonBar->addGroup(meshPage,tr("Generate"));
+    group->addLargeAction(action(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA),tr("Tetrahedra"));
+    group->addLargeAction(action(Action::ACTION_GEOMETRY_SURFACE_COARSEN),tr("Coarsen"));
+
+    group = this->ribbonBar->addGroup(meshPage,tr("Surface"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_MARK),tr("Mark"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_SWAP_ELEMENT_NORMAL));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_SWAP_NORMALS));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS),tr("Sync normals"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
+
+    group = this->ribbonBar->addGroup(meshPage,tr("Check and repair"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS),tr("Find intersected"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS),tr("Break intersected"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_FIND_SLIVER_ELEMENTS),tr("Find slivers"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_FIX_SLIVER_ELEMENTS),tr("Fix slivers"));
+
+    group = this->ribbonBar->addGroup(meshPage,tr("Nodes"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_MERGE_NEAR_NODES),tr("Merge near"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_MERGE_NODES),tr("Merge"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_MOVE_NODE),tr("Move"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_REMOVE_NODE),tr("Remove"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_REMOVE_NODE_AND_CLOSE_HOLE),tr("Remove and close hole"));
+
+    group = this->ribbonBar->addGroup(meshPage,tr("Elements"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_CREATE_ELEMENT),tr("Create"));
+    group->addSmallAction(action(Action::ACTION_GEOMETRY_REMOVE_ELEMENT),tr("Remove"));
+    group->addSmallMenu(tr("Special tools"),QIcon(),this->createSpecialToolsMenu(this->ribbonBar));
+
+    // Problem
+    const int problemPage = this->ribbonBar->addPage(tr("Problem"));
+
+    group = this->ribbonBar->addGroup(problemPage,tr("Setup"));
+    group->addLargeAction(action(Action::ACTION_PROBLEM_TASK_FLOW));
+    group->addLargeAction(action(Action::ACTION_PROBLEM_SOLVER_SETUP),tr("Matrix solver"));
+    group->addLargeAction(action(Action::ACTION_PROBLEM_DEFINE_MONITORING_POINTS),tr("Monitoring points"));
+
+    auto addSolverDockTabAction = [this](RRibbonGroup *group, const QString &iconFile, const QString &label, const QString &toolTip, QWidget *MainWindow::*tab)
+    {
+        QAction *tabAction = new QAction(RIcon::fromFile(iconFile),label,this->ribbonBar);
+        tabAction->setToolTip(toolTip);
+        QObject::connect(tabAction,&QAction::triggered,this,[this,tab]() { this->showSolverDockTab(this->*tab); });
+        group->addLargeAction(tabAction);
+    };
+
+    group = this->ribbonBar->addGroup(problemPage,tr("Conditions"));
+    addSolverDockTabAction(group,":/icons/application/pixmaps/range-condition_boundary.svg",tr("Boundary"),tr("Show boundary conditions."),&MainWindow::bcTab);
+    addSolverDockTabAction(group,":/icons/application/pixmaps/range-condition_initial.svg",tr("Initial"),tr("Show initial conditions."),&MainWindow::icTab);
+    addSolverDockTabAction(group,":/icons/application/pixmaps/range-condition_environment.svg",tr("Environment"),tr("Show environment conditions."),&MainWindow::ecTab);
+    addSolverDockTabAction(group,":/icons/application/pixmaps/range-condition_material.svg",tr("Material"),tr("Show materials."),&MainWindow::materialTab);
+
+    group = this->ribbonBar->addGroup(problemPage,tr("Reset"));
+    group->addLargeAction(action(Action::ACTION_PROBLEM_RESET));
+
+    // Solve
+    const int solvePage = this->ribbonBar->addPage(tr("Solve"));
+
+    group = this->ribbonBar->addGroup(solvePage,tr("Run"));
+    group->addLargeAction(action(Action::ACTION_SOLVER_START),tr("Start"));
+    group->addLargeAction(action(Action::ACTION_SOLVER_STOP),tr("Stop"));
+    group->addLargeAction(action(Action::ACTION_SOLVER_KILL),tr("Kill"));
+
+    group = this->ribbonBar->addGroup(solvePage,tr("Monitor"));
+    group->addLargeAction(action(Action::ACTION_REPORT_CONVERGENCE_GRAPH),tr("Convergence"));
+    group->addLargeAction(action(Action::ACTION_REPORT_SOLVER_LOG),tr("Solver log"));
+
+    group = this->ribbonBar->addGroup(solvePage,tr("Data"));
+    group->addLargeAction(action(Action::ACTION_MODEL_RELOAD_RESULTS));
+    group->addLargeAction(action(Action::ACTION_MODEL_DROP_RESULTS));
+
+    // Results
+    const int resultsPage = this->ribbonBar->addPage(tr("Results"));
+
+    group = this->ribbonBar->addGroup(resultsPage,tr("Visualize"));
+    group->addLargeSplitAction(action(Action::ACTION_GEOMETRY_CUT_CREATE),{action(Action::ACTION_GEOMETRY_CUT_CREATE),action(Action::ACTION_GEOMETRY_CUT_EDIT)},tr("Cut"));
+    group->addLargeSplitAction(action(Action::ACTION_GEOMETRY_ISO_CREATE),{action(Action::ACTION_GEOMETRY_ISO_CREATE),action(Action::ACTION_GEOMETRY_ISO_EDIT)},tr("Iso"));
+    group->addLargeSplitAction(action(Action::ACTION_GEOMETRY_STREAM_LINE_CREATE),{action(Action::ACTION_GEOMETRY_STREAM_LINE_CREATE),action(Action::ACTION_GEOMETRY_STREAM_LINE_EDIT)},tr("Stream line"));
+    group->addLargeSplitAction(action(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE),{action(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE),action(Action::ACTION_GEOMETRY_SCALAR_FIELD_EDIT)},tr("Scalar field"));
+    group->addLargeSplitAction(action(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE),{action(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE),action(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT)},tr("Vector field"));
+
+    group = this->ribbonBar->addGroup(resultsPage,tr("Graphs"));
+    group->addLargeAction(action(Action::ACTION_REPORT_MONITORING_POINT_GRAPH));
+
+    group = this->ribbonBar->addGroup(resultsPage,tr("Report"));
+    group->addLargeAction(action(Action::ACTION_REPORT_MODEL_STATISTICS),tr("Statistics"));
+    group->addLargeAction(action(Action::ACTION_REPORT_CREATE_REPORT));
+
+    R_LOG_TRACE_OUT;
+}
+
+void MainWindow::showSolverDockTab(QWidget *tab)
+{
+    R_LOG_TRACE;
+    QDockWidget *solverDock = this->findCustomDockWidget(QString::fromUtf8("solverDock"));
+    solverDock->show();
+    solverDock->raise();
+    this->solverDockTabWidget->setCurrentWidget(tab);
+}
+
+void MainWindow::setRibbonLayout(bool ribbonLayout)
+{
+    R_LOG_TRACE_IN;
+    this->classicMenuBar->setVisible(!ribbonLayout);
+    this->ribbonBar->setVisible(ribbonLayout);
+
+    for (QToolBar *toolBar : std::as_const(this->toolBars))
+    {
+        toolBar->setVisible(!ribbonLayout);
+        // Otherwise context menu could bring tool bars back to the ribbon layout.
+        toolBar->toggleViewAction()->setVisible(!ribbonLayout);
+    }
+
+    this->applicationSettings->setValue("mainWindow/ribbonLayout",ribbonLayout);
     R_LOG_TRACE_OUT;
 }
 
@@ -832,6 +1118,15 @@ void MainWindow::writeSettings() const
     // Main window
     this->applicationSettings->setValue("mainWindow/geometry", this->saveGeometry());
     this->applicationSettings->setValue("mainWindow/windowState", this->saveState());
+    this->applicationSettings->setValue("mainWindow/ribbonCollapsed", this->ribbonBar->isCollapsed());
+    this->applicationSettings->setValue("mainWindow/ribbonPage", this->ribbonBar->getCurrentPage());
+    for (const RSplitToolButton *button : std::as_const(this->toolBarSplitButtons))
+    {
+        if (button->getRememberLastUsed())
+        {
+            this->applicationSettings->setValue("mainWindow/" + button->objectName(), button->getLastUsedPosition());
+        }
+    }
     // Model windows
     this->modelSubWindows->writeLayout(this->applicationSettings);
     // Session
@@ -1123,4 +1418,5 @@ void MainWindow::onToolbarIconSizeChanged(int toolbarIconSize)
 {
     R_LOG_TRACE;
     this->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
+    this->ribbonBar->setIconSize(toolbarIconSize);
 }

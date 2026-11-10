@@ -143,6 +143,7 @@ class Action : public RAction
             ACTION_APPLICATION_FOLDER_SESSION,
             ACTION_APPLICATION_FOLDER_TMP,
             ACTION_APPLICATION_SETTINGS,
+            ACTION_APPLICATION_RIBBON_LAYOUT,
             ACTION_APPLICATION_UPDATE,
             ACTION_APPLICATION_ABOUT,
             ACTION_APPLICATION_ABOUT_QT,
@@ -492,6 +493,9 @@ class Action : public RAction
 
         //! Application settings.
         void onApplicationSettings();
+
+        //! Switch between ribbon layout and layout with menus and tool bars.
+        void onApplicationRibbonLayout(bool checked);
 
         //! Check for update.
         void onUpdate();

@@ -15,7 +15,10 @@
 
 class ActionList;
 class ModelTree;
+class QMenuBar;
 class RCloudSessionManager;
+class RRibbonBar;
+class RSplitToolButton;
 class Session;
 class SubWindowManager;
 class RProgressBar;
@@ -39,6 +42,12 @@ class MainWindow : public QMainWindow
         SubWindowManager *modelSubWindows;
         //! List of toolbars containing action types.
         QList<QToolBar*> toolBars;
+        //! Drop-down buttons on tool bars.
+        QList<RSplitToolButton*> toolBarSplitButtons;
+        //! Menu bar shown in the layout with menus and tool bars.
+        QMenuBar *classicMenuBar;
+        //! Ribbon shown in the ribbon layout.
+        RRibbonBar *ribbonBar;
         //! Model manager tab.
         QWidget *modelsTab;
         //! Document manager tab.
@@ -80,6 +89,9 @@ class MainWindow : public QMainWindow
         //! Show first tab which needs input after given problem types were selected.
         void showProblemSetupTab(RProblemTypeMask problemTypeMask);
 
+        //! Switch between ribbon layout and layout with menus and tool bars and remember the choice.
+        void setRibbonLayout(bool ribbonLayout);
+
         //! Show transform geometry dock widget.
         void showTransformGeometryWidget();
 
@@ -117,8 +129,35 @@ class MainWindow : public QMainWindow
         //! Create all menu items.
         void createMenus();
 
+        //! Create file menu.
+        QMenu *createFileMenu(QWidget *parent);
+
+        //! Create menu of special geometry tools.
+        QMenu *createSpecialToolsMenu(QWidget *parent);
+
+        //! Create cloud menu.
+        QMenu *createCloudMenu(QWidget *parent);
+
+        //! Create help menu.
+        QMenu *createHelpMenu(QWidget *parent);
+
         //! Create all tool bars.
         void createToolBars();
+
+        //! Create tool bar.
+        QToolBar *createToolBar(const QString &name, const QString &title);
+
+        //! Add drop-down button with given actions to given tool bar.
+        void addToolBarSplitButton(QToolBar *toolBar, const QString &name, const QList<QAction*> &actions, bool rememberLastUsed);
+
+        //! Place tool bars to their default positions.
+        void placeToolBars();
+
+        //! Create ribbon.
+        void createRibbon();
+
+        //! Show given tab of the panel with problem setup.
+        void showSolverDockTab(QWidget *tab);
 
         //! Create status bar.
         void createStatusBar();

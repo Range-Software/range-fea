@@ -31,6 +31,28 @@
 - The deformation and arrow scale has a logarithmic slider
 - Settings which do not apply to a scalar variable are hidden
 
+#### Ribbon layout
+
+- New optional ribbon replaces menus and tool bars when **Ribbon layout** is switched on
+  in the **File** menu, the tool bar or the ribbon. The last used layout is remembered
+- Commands are ordered by workflow on the *Geometry*, *Mesh*, *Problem*, *Solve* and
+  *Results* tabs. Cut, iso, stream line and field tools are found under *Results*
+- Buttons on the *Problem* tab open boundary conditions, initial conditions, environment
+  conditions and materials in the panel on the right
+- The ribbon can be collapsed with its arrow or by double-clicking a tab. The collapsed
+  state and the last tab are remembered
+
+#### Tool bars
+
+- Tool bars of the classic layout are reorganized into a single row of *File and edit*,
+  *Geometry*, *Mesh*, *Workflow*, *Results* and application buttons. Their positions are
+  reset once after the update
+- Related commands share drop-down buttons. *Draw*, *Boolean* and *Normals* remember the
+  last used command
+- Cut, iso, stream line and field tools are available from the new *Results* tool bar
+- **Kill solver** moved under the drop-down of **Stop solver**. **Close model**, **Quit**
+  and **About** are available from the menus only
+
 #### Documents tab
 
 - Files of a model are grouped into *Documents*, *Videos* and *Images*
