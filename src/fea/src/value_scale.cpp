@@ -35,8 +35,9 @@ ValueScale::ValueScale(const QString &title, QWidget *parent)
     mainLayout->addLayout(editLayout);
 
     this->titleLabel = new QLabel(title);
-    this->titleLabel->setVisible(!title.isEmpty());
+    // Widget shown before it has a parent would open as a separate window.
     editLayout->addWidget(this->titleLabel);
+    this->titleLabel->setVisible(!title.isEmpty());
 
     this->scaleEdit = new ValueLineEdit(-ValueScale::mantisScale*std::pow(10,ValueScale::exponentSize),ValueScale::mantisScale*std::pow(10,ValueScale::exponentSize));
     this->scaleEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);

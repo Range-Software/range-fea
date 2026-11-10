@@ -313,8 +313,9 @@ void ResultsVariableTree::populate()
     this->applyAsDisplacementCheckBox->setCheckState(applyAsDisplacementState);
     this->applyAsDisplacementCheckBox->setEnabled(hasSelectedEntities);
     this->applyAsDisplacementCheckBox->setToolTip(showToolTip);
-    this->applyAsDisplacementCheckBox->setVisible(isVector);
+    // Widget shown before it has a parent would open as a separate window.
     showRowLayout->addWidget(this->applyAsDisplacementCheckBox);
+    this->applyAsDisplacementCheckBox->setVisible(isVector);
     showRowLayout->addStretch(1);
 
     QObject::connect(this->applyAsDisplacementCheckBox,&QCheckBox::checkStateChanged,this,&ResultsVariableTree::onApplyAsDisplacementStateChanged);
