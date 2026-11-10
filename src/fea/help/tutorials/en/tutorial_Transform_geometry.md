@@ -16,17 +16,17 @@ Once model is ready its geometry (whole or part) can be modified (transformed).
 
 **Menu:** _Geometry -> Scale, translate, rotate_
 
-Once the menu item is activated, a **Transform geometry** panel will be shown on the right side of the main window with three tabs: **Scale**, **Rotate**, and **Translate**.
+Once the menu item is activated, a **Transform geometry** panel will be shown on the right side of the main window with three tabs: **Scale**, **Rotate**, and **Translate**. The **Apply to** group below the tabs decides which part of the model is transformed.
 
 ![Transform geometry](image-Transform_geometry.png)
 
-In this tutorial all transformations will be applied consecutively on one side of the cube.
+In this tutorial all transformations will be applied consecutively on one side of the cube. Click **Cancel** to close the panel for now.
 
 At this moment all sides of the **Cube** model are grouped in the same **surface entity**. Therefore, one side needs to be **marked** as a separate **surface entity** so the transformations can be applied only to this side and not to the others. This can be done with the menu action **_Mark surface_**. But first, the cube side needs to be picked.
 
 ## 3. Pick a side
 
-Press and hold the **_Ctrl_** key (**_⌘ Cmd_** on macOS) and click with the **_Left mouse button_** on one side of the cube. This will highlight the picked element. Since the **Cube** model consists of 6 rectangular (Quadrilateral) elements, one element corresponds to one side of the **Cube**.
+Press and hold the **_Ctrl_** key (**_⌘ Cmd_** on macOS) and click with the **_Left mouse button_** on the side of the cube facing the **Y** axis. This will highlight the picked element and list it under **Picked entities** in the overlay in the top left corner of the 3D area. Since the **Cube** model consists of 6 rectangular (Quadrilateral) elements, one element corresponds to one side of the **Cube**.
 
 ## 4. Mark a surface
 
@@ -34,7 +34,7 @@ Press and hold the **_Ctrl_** key (**_⌘ Cmd_** on macOS) and click with the **
 
 ![Mark surface dialog](image-Mark_surface_dialog.png)
 
-This action will show the **Mark entity (surface)** dialog. Because in the previous step one element was **picked**, the option **_Mark only selected and related elements_** is preselected. By clicking the **Ok** button, one side of the **Cube** model will be marked as a separate **Surface entity**.
+This action will show the **Mark entity (surface)** dialog. Because in the previous step one element was **picked**, the option **_Mark only selected and related elements_** is preselected. By clicking the **Ok** button, one side of the **Cube** model will be marked as a separate **Surface entity** named **Surface 2**.
 
 _**Note:** Any entity can be renamed by **double-clicking** with **Left mouse button** on entity name in the **Model tree** on the left side of the main window._
 
@@ -46,17 +46,17 @@ Pick the marked surface (**_Ctrl_** / **_⌘ Cmd_** + **_Left mouse button_**) a
 
 **Menu:** _Geometry -> Scale, translate, rotate_
 
-1. Check **Same scale in all directions**
+1. On the **Scale** tab keep **Same scale in all directions** checked.
 2. Set **Scale** value to 0.5 (use the decimal separator of your system, e.g. 0,5).
-3. Click on **Set from picked element/node** button.
+3. Click on **Set from picked element/node** button. The **Scale center** is set to the center of the picked side (0.5, 1, 0.5).
 4. In **Apply to** group select **Picked entities**.
-5. Make sure **Include shared nodes** is checked as well as its **all** child check-boxes.
+5. Make sure **Include shared nodes** is checked as well as all its child check-boxes.
 
 Proper setup can be seen in the following screenshot.
 
 ![Transform geometry - scale](image-Transform_geometry-scale.png)
 
-Click **Ok**. The result can be seen in the following screenshot.
+Click **Ok**. The picked side is scaled to half of its size, and the gap between the scaled side and the rest of the cube is filled with a new surface entity (**Surface 3**). The result can be seen in the following screenshot.
 
 ![Scaled surface](image-Scaled_surface.png)
 
@@ -77,6 +77,6 @@ _Note: **Sweep steps: 6** will result in six new segments._
 
 ![Transform geometry - rotate](image-Transform_geometry-rotate.png)
 
-Click **Ok**. The result can be seen in the following screenshot.
+Click **Ok**. The swept segments are added as a new surface entity (**Surface 4**). The result can be seen in the following screenshot.
 
 ![Rotated surface](image-Rotated_surface.png)

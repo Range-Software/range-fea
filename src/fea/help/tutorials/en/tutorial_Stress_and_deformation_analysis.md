@@ -6,11 +6,13 @@ This tutorial will demonstrate how to set up and solve a **Stress analysis** pro
 
 **Menu:** _File -> Open model_
 
-This will show an **Open model** dialog. Select file **Beam.tmsh** and click **Open** to load the model.
+This will show an **Open model** dialog. Select file **Beam.rbm** and click **Open** to load the model.
 
 Since there is no physical problem assigned to this model, a **Select problem** dialog window will appear soon after loading of the model is complete.
 
-Click **Stress analysis** and click **OK** to accept.
+Click the **Stress analysis** tile and click **OK** to accept.
+
+![Select problem - stress analysis](image-Select_problem-Stress.png)
 
 ## 2. Generate 3D mesh
 
@@ -85,18 +87,18 @@ Once the problem is correctly configured it can be solved.
 
 **Menu:** _Solution -> Start solver_
 
-The model must be saved before the solver can start. If it has not been saved yet, a **Save model** dialog will be shown first; click **Save** to accept (if a file with the same name already exists, confirm replacing it). Then the **Start solver** dialog will be shown.
+The model must be saved before the solver can start. The **Beam** model was opened from a file, so it is saved there automatically; a model that has never been saved shows a **Save model** dialog first (click **Save** to accept, and if a file with the same name already exists, confirm replacing it). Then the **Start solver** dialog will be shown.
 
 ![Start solver](image-Start_solver.png)
 
 Click **OK** button to start the solver process.
 
-Solver process is running in the background and all its output is displayed in the **Process output** tab as it can be seen on the screenshot below.
+Solver process is running in the background and all its output is displayed in the **Process output** tab below the 3D area, as it can be seen on the screenshot below. The run is finished when the output ends with **SOLVER - END**.
 ![Process output](image-Process_output.png)
 
 ## 7. Apply computed results
 
-After the solver process is successfully completed computed results should be loaded automatically. To display these results they need to be applied on model entities. This is done in the **Results** tab. Results are applied to the selected model entities. For this purpose hide all surface entities and show only **Volumes**.
+After the solver process is successfully completed computed results should be loaded automatically. To display these results they need to be applied on model entities. This is done in the **Results** tab. Results are applied to the selected model entities. For this purpose return to the **Model** tab below the 3D area, hide all surface entities, show only **Volumes** and select **Volume 1** in the **Model tree**.
 
 ![Selected volume entity](image-Selected_volume_entity.png)
 
@@ -106,9 +108,11 @@ From drop-down menu select **Displacement** (if not already selected). **Displac
 
 ![Applied displacement](image-Applied_displacement.png)
 
-### 7.2. Von Mises Stress
+### 7.2. Von Mises stress
 
-Similarly as **Displacement** apply **Von Mises Stress** on selected **Volume** model entity. Additionally select **Show legend** check-box to display value range in 3D area.
+Similarly as **Displacement** apply **Von Mises stress** on selected **Volume** model entity: choose **Von Mises stress - Scalar** in the drop-down menu and check **Color map**. The deformed shape set up for **Displacement** stays visible. Additionally select **Show legend** check-box to display value range in 3D area.
+
+**Von Mises stress** is computed on elements, so each element is drawn with one color. Check **Smooth display** to average the element values at nodes for a continuous picture; this changes only the display, not the results.
 
 ![Applied stress](image-Applied_stress.png)
 
@@ -126,7 +130,7 @@ Once the report is generated, a message **Documents have been generated.** will 
 
 ![Report generated](image-Create_report-done.png)
 
-Generated documents are not displayed automatically. To do so navigate to **Documents** tree and double click on the document you would like to view.
+Generated documents are not displayed automatically. To view them open the **Documents** tab on the left side of the main window, where they are listed under the model name (**Beam**): the report under **Documents** and the image of the 3D area used in the report under **Images**. Double click on the document you would like to view.
 
 ![Document tree](image-Document_tree.png)
 

@@ -1,82 +1,82 @@
 # Transformovať geometriu
 
-Tento návod nadväzuje na návod **Kresliť kocku** a ukáže, ako škálovať, otáčať a posúvať celú geometriu alebo len jej časti.
+Tento tutoriál nadväzuje na tutoriál **Kresliť kocku** a ukáže, ako škálovať, otáčať a presúvať celú geometriu alebo len jej časti.
 
 ## 1. Načítať model
 
-Ak model **Cube** ešte nie je načítaný, otvorte ho akciou menu **_Otvoriť model_**.
+Ak model **Cube** ešte nie je načítaný, možno to urobiť akciou **_Otvoriť model_**.
 
 **Menu:** _Súbor -> Otvoriť model_
 
-Zobrazí sa dialóg **Otvoriť model**. Vyberte súbor **Cube.rbm** a kliknite na **Otvoriť**.
+Zobrazí sa dialóg **Otvoriť model**. Vyberte súbor **Cube.rbm** a kliknite na **Open** (Otvoriť).
 
-Keď je model načítaný, jeho geometriu (celú alebo jej časť) možno upravovať (transformovať).
+Keď je model pripravený, jeho geometriu (celú alebo časť) možno upraviť (transformovať).
 
 ## 2. Príprava
 
 **Menu:** _Geometria -> Škálovať, presunúť, otočiť_
 
-Po aktivovaní položky menu sa na pravej strane hlavného okna zobrazí panel **Transformovať geometriu** s troma záložkami: **Mierka**, **Otočiť** a **Presunúť**.
+Po spustení akcie sa na pravej strane hlavného okna zobrazí panel **Transformovať geometriu** s tromi záložkami: **Mierka**, **Otočiť** a **Presunúť**. Skupina **Použiť na** pod záložkami určuje, ktorá časť modelu sa transformuje.
 
 ![Transformovať geometriu](image-Transform_geometry.png)
 
-V tomto návode sa všetky transformácie postupne použijú na jednu stranu kocky.
+V tomto tutoriáli sa všetky transformácie postupne použijú na jednu stenu kocky. Panel zatiaľ zatvorte kliknutím na **Zrušiť**.
 
-Momentálne sú všetky strany modelu **Cube** zoskupené v jednom **celku povrchu**. Preto treba jednu stranu **označiť** ako samostatný **celok povrchu**, aby sa transformácie použili iba na túto stranu a nie na ostatné. Slúži na to akcia menu **_Označiť povrch_**. Najprv však treba stranu kocky vyznačiť.
+V tejto chvíli sú všetky steny modelu **Cube** zoskupené v jednom **celku povrchu**. Preto treba jednu stenu **označiť** ako samostatný **celok povrchu**, aby sa transformácie použili iba na túto stenu a nie na ostatné. Na to slúži akcia **_Označiť povrch_**. Najprv však treba stenu kocky vybrať.
 
-## 3. Vyznačiť stranu
+## 3. Vybrať stenu
 
-Stlačte a podržte kláves **_Ctrl_** (na macOS **_⌘ Cmd_**) a kliknite **_ľavým tlačidlom myši_** na jednu stranu kocky. Vyznačený prvok sa zvýrazní. Keďže model **Cube** pozostáva zo 6 obdĺžnikových (štvoruholníkových) prvkov, jeden prvok zodpovedá jednej strane kocky.
+Stlačte a podržte kláves **_Ctrl_** (na macOS **_⌘ Cmd_**) a kliknite **_ľavým tlačidlom myši_** na stenu kocky, ktorá smeruje k osi **Y**. Vybraný prvok sa zvýrazní a zobrazí sa v sekcii **Picked entities** v prehľade v ľavom hornom rohu 3D oblasti. Keďže sa model **Cube** skladá zo 6 obdĺžnikových (štvoruholníkových) prvkov, jeden prvok zodpovedá jednej stene kocky.
 
 ## 4. Označiť povrch
 
 **Menu:** _Geometria -> Povrch -> Označiť povrch_
 
-![Dialóg označenia povrchu](image-Mark_surface_dialog.png)
+![Dialóg Označiť povrch](image-Mark_surface_dialog.png)
 
-Táto akcia zobrazí dialóg **Označiť celok**. Keďže v predchádzajúcom kroku bol vyznačený jeden prvok, je predvolene vybraná možnosť **_Označiť iba vybrané a súvisiace prvky_**. Kliknutím na tlačidlo **Ok** sa jedna strana modelu **Cube** označí ako samostatný **celok povrchu**.
+Táto akcia zobrazí dialóg **Mark entity (surface)**. Keďže bol v predchádzajúcom kroku jeden prvok **vybraný**, je predvolená možnosť **_Označiť iba vybrané a súvisiace prvky_**. Kliknutím na tlačidlo **Ok** sa jedna stena modelu **Cube** označí ako samostatný **celok povrchu** s názvom **Surface 2**.
 
-_**Poznámka:** Akýkoľvek celok možno premenovať **dvojitým kliknutím** **ľavým tlačidlom myši** na jeho názov v strome **Model** na ľavej strane hlavného okna._
+_**Poznámka:** Každý celok možno premenovať **dvojklikom** **ľavým tlačidlom myši** na názov celku v **strome modelu** na ľavej strane hlavného okna._
 
 ![Označený povrch](image-Marked_surface.png)
 
-## 5. Škálovať vyznačený celok (stranu kocky)
+## 5. Škálovať vybraný celok (stenu kocky)
 
-Vyznačte označený povrch (**_Ctrl_** / **_⌘ Cmd_** + **_ľavé tlačidlo myši_**) a otvorte panel **Transformovať geometriu**.
+Vyberte označený povrch (**_Ctrl_** / **_⌘ Cmd_** + **_ľavé tlačidlo myši_**) a otvorte panel **Transformovať geometriu**.
 
 **Menu:** _Geometria -> Škálovať, presunúť, otočiť_
 
-1. Zaškrtnite **Rovnaká mierka vo všetkých smeroch**.
-2. Hodnotu **Mierka** nastavte na 0,5 (použite desatinný oddeľovač vášho systému, napr. 0,5 alebo 0.5).
-3. Kliknite na tlačidlo **Nastaviť z vyznačeného prvku/uzlu**.
+1. Na záložke **Mierka** ponechajte zaškrtnuté **Rovnaká mierka vo všetkých smeroch**.
+2. Nastavte hodnotu **Mierka** na 0,5 (použite desatinný oddeľovač vášho systému, napr. 0,5 alebo 0.5).
+3. Kliknite na tlačidlo **Nastaviť z vyznačeného prvku/uzlu**. **Stred škálovania** sa nastaví do stredu vybranej steny (0,5; 1; 0,5).
 4. V skupine **Použiť na** vyberte **Označené celky**.
-5. Skontrolujte, že je zaškrtnutá možnosť **Zahrnúť zdieľané uzly** a **všetky** jej podriadené zaškrtávacie políčka.
+5. Uistite sa, že je zaškrtnuté **Zahrnúť zdieľané uzly** aj všetky jeho podriadené zaškrtávacie políčka.
 
-Správne nastavenie je zobrazené na nasledujúcej snímke obrazovky.
+Správne nastavenie je vidieť na nasledujúcej snímke obrazovky.
 
 ![Transformovať geometriu – mierka](image-Transform_geometry-scale.png)
 
-Kliknite na **Ok**. Výsledok je zobrazený na nasledujúcej snímke obrazovky.
+Kliknite na **Ok**. Vybraná stena sa zmenší na polovicu a medzera medzi zmenšenou stenou a zvyškom kocky sa vyplní novým celkom povrchu (**Surface 3**). Výsledok je vidieť na nasledujúcej snímke obrazovky.
 
-![Škálovaný povrch](image-Scaled_surface.png)
+![Zmenšený povrch](image-Scaled_surface.png)
 
-## 6. Otočiť vyznačený celok (škálovanú stranu kocky)
+## 6. Otočiť vybraný celok (zmenšenú stenu kocky)
 
-Otočením vyznačeného povrchu možno vytvoriť vytiahnutý povrch. Otvorte panel **Transformovať geometriu**.
+Otočením vybraného povrchu možno vytvoriť natiahnutý povrch. Otvorte panel **Transformovať geometriu**.
 
 **Menu:** _Geometria -> Škálovať, presunúť, otočiť_
 
-Prepnite sa na záložku **Otočiť** a zadajte hodnoty podľa nasledujúcej snímky obrazovky:
+Prepnite na záložku **Otočiť** a zadajte hodnoty podľa nasledujúcej snímky obrazovky:
 
-1. V **Uhly rotácie** nastavte **X** na -90.
-2. Kliknite na tlačidlo **Nastaviť z vyznačeného prvku/uzlu** a potom v **Stred rotácie** zmeňte **Z** na 0.
+1. Nastavte **Uhly rotácie** **X** na -90.
+2. Kliknite na tlačidlo **Nastaviť z vyznačeného prvku/uzlu** a potom zmeňte **Stred rotácie** **Z** na 0.
 3. V skupine **Použiť na** vyberte **Označené celky**.
-4. Skontrolujte, že sú zaškrtnuté možnosti **Zahrnúť zdieľané uzly**, **Rozpojiť/rozdeliť zdieľané uzly** a **Natiahnuť uzly**, a **Počet krokov natiahnutia** nastavte na 6.
+4. Uistite sa, že sú zaškrtnuté **Zahrnúť zdieľané uzly**, **Rozpojiť/rozdeliť zdieľané uzly** a **Natiahnuť uzly**, a nastavte **Počet krokov natiahnutia** na 6.
 
 _Poznámka: **Počet krokov natiahnutia: 6** vytvorí šesť nových segmentov._
 
 ![Transformovať geometriu – otočenie](image-Transform_geometry-rotate.png)
 
-Kliknite na **Ok**. Výsledok je zobrazený na nasledujúcej snímke obrazovky.
+Kliknite na **Ok**. Natiahnuté segmenty sa pridajú ako nový celok povrchu (**Surface 4**). Výsledok je vidieť na nasledujúcej snímke obrazovky.
 
 ![Otočený povrch](image-Rotated_surface.png)

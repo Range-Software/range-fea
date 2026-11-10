@@ -4,39 +4,39 @@ Ce tutoriel fait suite au tutoriel **Dessiner un cube** et montre comment mettre
 
 ## 1. Charger le modèle
 
-Si le modèle **Cube** n'est pas encore chargé, vous pouvez le faire avec l'action de menu **_Ouvrir un modèle_**.
+Si le modèle **Cube** n'est pas encore chargé, utilisez l'action **_Ouvrir un modèle_**.
 
 **Menu :** _Fichier -> Ouvrir un modèle_
 
-La fenêtre **Ouvrir un modèle** s'ouvre. Sélectionnez le fichier **Cube.rbm** et cliquez sur **Ouvrir**.
+La boîte de dialogue **Ouvrir un modèle** s'affiche. Sélectionnez le fichier **Cube.rbm** et cliquez sur **Open** (Ouvrir).
 
-Une fois le modèle prêt, sa géométrie (entière ou en partie) peut être modifiée (transformée).
+Une fois le modèle prêt, sa géométrie (en tout ou en partie) peut être modifiée (transformée).
 
 ## 2. Préparation
 
 **Menu :** _Géométrie -> Mettre à l'échelle, translater, pivoter_
 
-Une fois l'élément de menu activé, le panneau **Transformer la géométrie** s'affiche sur le côté droit de la fenêtre principale, avec trois onglets : **Échelle**, **Pivoter** et **Translater**.
+Une fois l'élément de menu activé, le panneau **Transformer la géométrie** s'affiche à droite de la fenêtre principale avec trois onglets : **Échelle**, **Pivoter** et **Translater**. Le groupe **Appliquer à** sous les onglets détermine quelle partie du modèle est transformée.
 
 ![Transformer la géométrie](image-Transform_geometry.png)
 
-Dans ce tutoriel, toutes les transformations sont appliquées successivement à une face du cube.
+Dans ce tutoriel, toutes les transformations sont appliquées successivement à une face du cube. Fermez le panneau pour l'instant en cliquant sur **Annuler**.
 
-Pour l'instant, toutes les faces du modèle **Cube** sont regroupées dans la même **entité surface**. Une face doit donc être **marquée** comme **entité surface** distincte, afin que les transformations s'appliquent à cette face seulement et non aux autres. Cela se fait avec l'action de menu **_Marquer la surface_**. Mais il faut d'abord pointer la face du cube.
+Pour le moment, toutes les faces du modèle **Cube** sont regroupées dans la même **entité surfacique**. Il faut donc **marquer** une face comme **entité surfacique** distincte afin que les transformations ne s'appliquent qu'à cette face et non aux autres. C'est le rôle de l'action **_Marquer la surface_**. Mais il faut d'abord pointer la face du cube.
 
 ## 3. Pointer une face
 
-Maintenez la touche **_Ctrl_** (**_⌘ Cmd_** sous macOS) enfoncée et cliquez avec le **_bouton gauche de la souris_** sur une face du cube. L'élément pointé est mis en évidence. Comme le modèle **Cube** est composé de 6 éléments rectangulaires (quadrilatères), un élément correspond à une face du cube.
+Maintenez la touche **_Ctrl_** (**_⌘ Cmd_** sous macOS) enfoncée et cliquez avec le **_bouton gauche de la souris_** sur la face du cube orientée vers l'axe **Y**. L'élément pointé est mis en évidence et listé sous **Picked entities** dans l'encart en haut à gauche de la zone 3D. Comme le modèle **Cube** est composé de 6 éléments rectangulaires (quadrilatères), un élément correspond à une face du **Cube**.
 
 ## 4. Marquer une surface
 
 **Menu :** _Géométrie -> Surface -> Marquer la surface_
 
-![Fenêtre Marquer la surface](image-Mark_surface_dialog.png)
+![Boîte de dialogue Marquer la surface](image-Mark_surface_dialog.png)
 
-Cette action ouvre la fenêtre **Marquer l'entité (surface)**. Comme un élément a été **pointé** à l'étape précédente, l'option **_Marquer uniquement les éléments sélectionnés et associés_** est présélectionnée. En cliquant sur **Ok**, une face du modèle **Cube** est marquée comme **entité surface** distincte.
+Cette action affiche la boîte de dialogue **Mark entity (surface)**. Comme un élément a été **pointé** à l'étape précédente, l'option **_Marquer uniquement les éléments sélectionnés et associés_** est présélectionnée. En cliquant sur le bouton **Ok**, une face du modèle **Cube** est marquée comme **entité surfacique** distincte nommée **Surface 2**.
 
-_**Remarque :** toute entité peut être renommée par un **double-clic** du **bouton gauche de la souris** sur son nom dans l'**arbre du modèle**, sur le côté gauche de la fenêtre principale._
+_**Remarque :** toute entité peut être renommée par un **double-clic** du **bouton gauche de la souris** sur son nom dans l'**arbre du modèle**, à gauche de la fenêtre principale._
 
 ![Surface marquée](image-Marked_surface.png)
 
@@ -46,21 +46,21 @@ Pointez la surface marquée (**_Ctrl_** / **_⌘ Cmd_** + **_bouton gauche de la
 
 **Menu :** _Géométrie -> Mettre à l'échelle, translater, pivoter_
 
-1. Cochez **Même échelle dans toutes les directions**.
-2. Réglez la valeur **Échelle** sur 0.5 (utilisez le séparateur décimal de votre système, par ex. 0,5).
-3. Cliquez sur le bouton **Définir à partir de l'élément/nœud pointé**.
-4. Dans le groupe **Appliquer à**, choisissez **Entités pointées**.
-5. Vérifiez que **Inclure les nœuds partagés** est coché, ainsi que **toutes** ses cases subordonnées.
+1. Sur l'onglet **Échelle**, laissez **Même échelle dans toutes les directions** coché.
+2. Réglez la valeur **Échelle** sur 0,5 (utilisez le séparateur décimal de votre système, p. ex. 0,5 ou 0.5).
+3. Cliquez sur le bouton **Définir à partir de l'élément/nœud pointé**. Le **Centre de mise à l'échelle** est placé au centre de la face pointée (0,5 ; 1 ; 0,5).
+4. Dans le groupe **Appliquer à**, sélectionnez **Entités pointées**.
+5. Vérifiez que **Inclure les nœuds partagés** est coché ainsi que toutes ses cases filles.
 
-La configuration correcte est visible sur la capture d'écran suivante.
+Le réglage correct est visible sur la capture d'écran suivante.
 
 ![Transformer la géométrie – échelle](image-Transform_geometry-scale.png)
 
-Cliquez sur **Ok**. Le résultat est visible sur la capture d'écran suivante.
+Cliquez sur **Ok**. La face pointée est réduite de moitié et l'espace entre la face réduite et le reste du cube est rempli par une nouvelle entité surfacique (**Surface 3**). Le résultat est visible sur la capture d'écran suivante.
 
 ![Surface mise à l'échelle](image-Scaled_surface.png)
 
-## 6. Faire pivoter l'entité pointée (face du cube mise à l'échelle)
+## 6. Faire pivoter l'entité pointée (face réduite du cube)
 
 En faisant pivoter la surface pointée, on peut créer une surface extrudée. Ouvrez le panneau **Transformer la géométrie**.
 
@@ -68,15 +68,15 @@ En faisant pivoter la surface pointée, on peut créer une surface extrudée. Ou
 
 Passez à l'onglet **Pivoter** et saisissez les valeurs comme sur la capture d'écran suivante :
 
-1. Dans **Angles de rotation**, réglez **X** sur -90.
-2. Cliquez sur le bouton **Définir à partir de l'élément/nœud pointé**, puis changez **Z** du **Centre de rotation** en 0.
-3. Dans le groupe **Appliquer à**, choisissez **Entités pointées**.
-4. Vérifiez que **Inclure les nœuds partagés**, **Détacher/séparer les nœuds partagés** et **Extruder les nœuds** sont cochés, et réglez **Pas d'extrusion** sur 6.
+1. Réglez **Angles de rotation** **X** sur -90.
+2. Cliquez sur le bouton **Définir à partir de l'élément/nœud pointé**, puis remplacez **Centre de rotation** **Z** par 0.
+3. Dans le groupe **Appliquer à**, sélectionnez **Entités pointées**.
+4. Vérifiez que **Inclure les nœuds partagés**, **Détacher/séparer les nœuds partagés** et **Extruder les nœuds** sont cochés et réglez **Pas d'extrusion** sur 6.
 
 _Remarque : **Pas d'extrusion : 6** produit six nouveaux segments._
 
 ![Transformer la géométrie – rotation](image-Transform_geometry-rotate.png)
 
-Cliquez sur **Ok**. Le résultat est visible sur la capture d'écran suivante.
+Cliquez sur **Ok**. Les segments extrudés sont ajoutés sous forme d'une nouvelle entité surfacique (**Surface 4**). Le résultat est visible sur la capture d'écran suivante.
 
 ![Surface pivotée](image-Rotated_surface.png)

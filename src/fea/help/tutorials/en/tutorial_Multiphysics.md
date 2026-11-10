@@ -1,4 +1,4 @@
-# Multi physics
+# Multiphysics
 
 This tutorial shows how to solve several coupled problems on one model. The **Beam** model from the **Stress and deformation analysis** tutorial is used again. This time an electric current flows through the beam, the current heats the beam up (Joule heating) and the heat makes the beam expand and deform.
 
@@ -14,13 +14,15 @@ Each problem uses the results of the previous one, so the order of the problems 
 
 **Menu:** _File -> Open model_
 
-In the **Open model** dialog select **Beam.tmsh** and click **Open**.
+In the **Open model** dialog select **Beam.rbm** and click **Open**.
 
 Since no problem type is assigned to the model yet, the **Select problem** dialog opens automatically once loading is complete.
 
 ## 2. Select problems
 
-In the **Select problem** dialog click **Electro-statics**, **Heat transfer** and **Stress analysis**. The dialog shows the **Solve order** below the tiles: Electro-statics, Heat transfer, Stress analysis. Click **OK** to accept.
+In the **Select problem** dialog click the **Electro-statics**, **Heat transfer** and **Stress analysis** tiles. The dialog shows the **Solve order** below the tiles: Electro-statics → Heat transfer → Stress analysis. **Modal analysis** is marked **Incompatible**, because it cannot be combined with other problem types. Click **OK** to accept.
+
+![Select problem - multiphysics](image-Select_problem-Multi.png)
 
 The dialog can be opened again at any time with the **Select problem** button in the toolbar.
 
@@ -36,7 +38,7 @@ The prefilled values in the **Generate 3D mesh** dialog are sufficient. Click **
 
 All model entities must have a material assigned. The material must provide the properties needed by all three problems; **Iron** does.
 
-1. In the **Model** tree click **Surface** and then _Shift_-click **Volume 1** to select all entities.
+1. In the **Model** tree expand **Volumes**, click **Surface** and then _Shift_-click **Volume 1** to select all entities.
 2. Open the **Material** tab on the right side of the main window.
 3. Check **Iron**.
 
@@ -50,13 +52,13 @@ Because several problem types are selected, the **Boundary conditions** tab now 
         - Fluid temperature = 293.15 `[K]`
 2. **Load** (the face in the middle of the beam)
     - _Electric potential_
-        - Electric potential = 0.4 `[V]`
+        - Electric potential = 0.04 `[V]`
     - _Simple convection_ (values as for **Surface**)
 3. **Left** and **Right** (the faces at both ends of the beam)
     - _Displacement_
         - Displacement in X, Y and Z direction = 0 `[m]`
     - _Electric potential_
-        - Electric potential = -0.4 `[V]`
+        - Electric potential = -0.04 `[V]`
     - _Simple convection_ (values as for **Surface**)
 
 The current therefore flows from the middle of the beam to both ends, and all faces lose heat to the surrounding air by convection.
@@ -76,9 +78,9 @@ Environment conditions apply to the whole model and are not checked like boundar
 
 **Menu:** _Solution -> Start solver_
 
-The model must be saved before the solver can start. If it has not been saved yet, a **Save model** dialog is shown first; click **Save** to accept (if a file with the same name already exists, confirm replacing it). Then the **Start solver** dialog is shown.
+The model must be saved before the solver can start. The **Beam** model was opened from a file, so it is saved there automatically; a model that has never been saved shows a **Save model** dialog first. Then the **Start solver** dialog is shown.
 
-The dialog lists a few warnings, such as **Heat transfer: No explicit boundary condition assigned.** They are expected for this setup and can be ignored. Click **OK** to start the solver.
+The dialog lists three warnings: **Electro-statics: No implicit boundary condition assigned.**, **Heat transfer: No explicit boundary condition assigned.** and **Stress analysis: No implicit boundary condition assigned.** They are expected for this setup and can be ignored. Click **OK** to start the solver.
 
 The solver runs in the background and its output is shown in the **Process output** tab. The problems are solved one after another in the order of the task flow; the run is finished when the output ends with **SOLVER - END**.
 
@@ -88,11 +90,11 @@ A **vector field** is a display entity that draws a vector variable as arrows. H
 
 **Menu:** _Geometry -> Vector field -> Create vector field_
 
-In the **Vector field editor** dialog select **Volume 1** in the **Model** list and **Electric field** in the **Variables** list, and leave **3D vector field** checked.
+In the **Vector field editor** dialog select **Volume 1** in the **Model** list and **Electric field** in the **Variables** list, and leave **3D vector field** checked. The **Variables** list shows the vector variables computed for the selected entity (**Electric field**, **Current density**, **Heat flux**, **Displacement** and **Force**).
 
 ![Create vector field](image-Create_vector_field.png)
 
-Click **OK** to create the vector field. It is added to the **Model** tree under **Vector fields**, and computed results can be applied to it like to any other model entity.
+Click **OK** to create the vector field. It is added to the **Model** tree under **Vector fields** with the name **Electric field**, and computed results can be applied to it like to any other model entity.
 
 ## 9. Apply results
 
@@ -102,16 +104,17 @@ Results are applied in the **Results** tab to the entity selected in the **Model
 
 1. In the **Model** tree check **Volumes** (and leave the surfaces unchecked), then select **Volume 1**.
 2. In the **Results** tab choose **Temperature - Scalar** in the drop-down list, check **Color map** and **Show legend**. If the shown range does not match the results, click **Reset to data**.
-3. Choose **Displacement - Vector [3]** in the drop-down list, check **Deformed shape** and set **Deformation and arrow scale** to **20** so that the deformation is visible (the computed displacements are only about 1.3 mm).
+3. Choose **Displacement - Vector [3]** in the drop-down list, check **Deformed shape** and set **Deformation and arrow scale** to **20** so that the deformation is visible (the computed displacements are only about 1.2 mm).
+4. Choose **Temperature - Scalar** again so that the legend shows the temperature.
 
-The temperature ranges from about 505 K to 620 K; the beam is hottest in the middle of its two outer sections, and it bends upwards because the fixed ends do not let it expand freely.
+The temperature ranges from about 468 K to 558 K; the beam is hottest in the middle of its two outer sections, and it bends upwards because the fixed ends do not let it expand freely.
 
 ![Applied temperature on volume](image-Applied_temperature_on_volume.png)
 
 ### 9.2. Temperature on the vector field
 
 1. In the **Model** tree uncheck **Volumes**, check **Vector fields** and select **Electric field**.
-2. In the **Results** tab choose **Temperature - Scalar**, check **Color map** and **Show legend**. The arrows are now colored by the temperature at their position.
-3. In **Display properties** below the tree check **Arrow heads** to show the direction of the electric field.
+2. In the **Results** tab choose **Temperature - Scalar**, check **Color map** and **Show legend** (if not checked already). The arrows are now colored by the temperature at their position.
+3. In **Display properties** below the tree check **Arrow heads** to show the direction of the electric field. The electric field points from the middle of the beam (higher potential) towards both ends.
 
 ![Applied temperature on vector field](image-Applied_temperature_on_vector_field.png)

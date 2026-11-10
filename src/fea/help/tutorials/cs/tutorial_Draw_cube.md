@@ -1,43 +1,37 @@
 # Nakreslit krychli
 
-Tento návod ukáže, jak nakreslit/vygenerovat jednoduchou geometrii, například krychli.
+Tento návod ukáže, jak nakreslit (vygenerovat) jednoduchou geometrii, například krychli.
 
 ## 1. Vytvořit nový model
 
-**Nabídka:** _Soubor -> Nový model_
+**Menu:** _Soubor -> Nový model_
 
 ![Nový model](image-New_model.png)
 
-Jako název modelu zadejte **Cube** a klikněte na **OK**. Vytvoří se nový prázdný model s názvem **Cube**. Protože nově vytvořený model nemá přiřazenou žádnou úlohu, zobrazí se dialog **Pořadí kroků úlohy**.
+Zadejte **Cube** jako název modelu (popis je nepovinný) a klikněte na **OK**. Vytvoří se nový prázdný model s názvem **Cube**. Protože nově vytvořený model nemá přiřazenou žádnou úlohu, zobrazí se dialog **Vybrat úlohu**.
 
 ### 1.1 Přiřadit typ úlohy
 
-![Pořadí kroků úlohy](image-Problem_task_flow.png)
-
-Typ úlohy přiřadíte kliknutím na tlačítko **Přidat typ úlohy**. V dialogu **Výběr typu úlohy** vyberte **Heat transfer** (přenos tepla).
-
-![Výběr typu úlohy](image-Problem_type_selector.png)
-
-Kliknutím na **OK** zavřete dialog **Výběr typu úlohy** a poté opět kliknutím na **OK** zavřete dialog **Pořadí kroků úlohy**.
+Pro přiřazení typu úlohy klikněte na dlaždici **Heat transfer** a potom na tlačítko **OK**.
 
 ## 2. Nakreslit krychli
 
-**Nabídka:** _Geometrie -> Kreslit -> Nakreslit kvádr_
+**Menu:** _Geometrie -> Kreslit -> Nakreslit kvádr_
 
-Po aktivaci položky nabídky se na pravé straně hlavního okna zobrazí panel **Kreslit objekt**, ve kterém lze změnit polohu, velikost a dělení objektu v jednotlivých osách.
+Po spuštění akce se na pravé straně hlavního okna zobrazí panel **Kreslit objekt**, ve kterém lze změnit polohu a velikost objektu a počet dělení ve směru X, Y a Z. Výchozím objektem je krychle o hraně 1 `[m]` umístěná v počátku.
 
 ![Nakreslit kvádr](image-Draw_hexahedron.png)
 
-Zobrazený objekt se mění současně se změnou hodnot v panelu **Kreslit objekt**. Kliknutím na tlačítko **OK** se objekt přidá do modelu. Zobrazí se potvrzovací dialog se seznamem vybraných modelů, do kterých bude objekt přidán.
+Zobrazený objekt se mění současně se změnou hodnot v panelu **Kreslit objekt**. Ponechte zaškrtnuté **Sloučit blízké uzly** a kliknutím na tlačítko **OK** objekt přidejte do modelu. Zobrazí se potvrzovací dialog **Draw objects(s)?** se seznamem vybraných modelů, do kterých bude objekt přidán.
 
 ![Přidat připravené objekty](image-Draw_hexahedron-confirm.png)
 
-Potvrďte kliknutím na **OK** a krychle se přidá do modelu **Cube**.
+Potvrďte kliknutím na **Yes** (Ano) a krychle se přidá do modelu **Cube** jako jedna entita **Povrch**.
 
 ## 3. Uložit model
 
-Model uložíte následující akcí.
+Model uložíte touto akcí.
 
-**Nabídka:** _Soubor -> Uložit model_
+**Menu:** _Soubor -> Uložit model_
 
-Pokud model ještě nebyl uložen, program zobrazí dialog **Uložit model** s navrženým názvem souboru a cestou, kam ho uložit. Potvrďte kliknutím na **Uložit**.
+Pokud model ještě nebyl uložen, program zobrazí dialog **Uložit model** s navrženým názvem souboru (**Cube.rbm**) a složkou, kam se uloží. Potvrďte kliknutím na **Save** (Uložit).

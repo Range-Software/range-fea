@@ -1,6 +1,6 @@
 # Dessiner un cube
 
-Ce tutoriel montre comment dessiner/générer une géométrie simple telle qu'un cube.
+Ce tutoriel montre comment dessiner (générer) une géométrie simple, par exemple un cube.
 
 ## 1. Créer un nouveau modèle
 
@@ -8,36 +8,30 @@ Ce tutoriel montre comment dessiner/générer une géométrie simple telle qu'un
 
 ![Nouveau modèle](image-New_model.png)
 
-Saisissez **Cube** comme nom du modèle et cliquez sur **OK**. Un nouveau modèle vide nommé **Cube** est créé. Comme aucun problème n'est affecté au modèle nouvellement créé, la fenêtre **Enchaînement des tâches du problème** s'ouvre.
+Saisissez **Cube** comme nom de modèle (la description est facultative) et cliquez sur **OK**. Un nouveau modèle vide nommé **Cube** est créé. Comme aucun problème n'est affecté au nouveau modèle, la boîte de dialogue **Sélectionner le problème** s'affiche.
 
-### 1.1 Affecter le type de problème
+### 1.1 Affecter un type de problème
 
-![Enchaînement des tâches du problème](image-Problem_task_flow.png)
-
-Pour affecter un type de problème, cliquez sur le bouton **Ajouter un type de problème** et, dans la fenêtre **Sélecteur de type de problème**, choisissez **Heat transfer** (transfert de chaleur).
-
-![Sélecteur de type de problème](image-Problem_type_selector.png)
-
-Cliquez sur **OK** pour fermer la fenêtre **Sélecteur de type de problème**, puis de nouveau sur **OK** pour fermer la fenêtre **Enchaînement des tâches du problème**.
+Pour affecter un type de problème, cliquez sur la tuile **Heat transfer**, puis sur le bouton **OK**.
 
 ## 2. Dessiner un cube
 
 **Menu :** _Géométrie -> Dessiner -> Dessiner un hexaèdre_
 
-Une fois l'élément de menu activé, le panneau **Dessiner un objet** s'affiche sur le côté droit de la fenêtre principale ; il permet de modifier la position, la taille et les divisions axiales de l'objet.
+Une fois l'élément de menu activé, le panneau **Dessiner un objet** s'affiche à droite de la fenêtre principale ; il permet de modifier la position et la taille de l'objet ainsi que le nombre de divisions dans les directions X, Y et Z. L'objet par défaut est un cube de 1 `[m]` de côté placé à l'origine.
 
 ![Dessiner un hexaèdre](image-Draw_hexahedron.png)
 
-L'objet affiché change en même temps que les valeurs modifiées dans le panneau **Dessiner un objet**. Cliquez sur **OK** pour ajouter l'objet au modèle. Une fenêtre de confirmation s'ouvre avec la liste des modèles sélectionnés auxquels l'objet sera ajouté.
+L'objet affiché change en même temps que les valeurs du panneau **Dessiner un objet**. Laissez **Fusionner les nœuds proches** coché et cliquez sur le bouton **OK** pour ajouter l'objet au modèle. Une boîte de confirmation **Draw objects(s)?** listant les modèles sélectionnés auxquels l'objet sera ajouté s'affiche.
 
 ![Ajouter les objets préparés](image-Draw_hexahedron-confirm.png)
 
-Confirmez avec **OK** et le cube est ajouté au modèle **Cube**.
+Cliquez sur **Yes** (Oui) pour confirmer ; le cube est ajouté au modèle **Cube** sous la forme d'une entité **Surface**.
 
 ## 3. Enregistrer le modèle
 
-Pour enregistrer le modèle, il suffit d'exécuter l'action suivante.
+Pour enregistrer le modèle, exécutez l'action suivante.
 
 **Menu :** _Fichier -> Enregistrer le modèle_
 
-Si le modèle n'a jamais été enregistré, le programme affiche la fenêtre **Enregistrer le modèle** avec un nom de fichier et un emplacement proposés. Cliquez sur **Enregistrer** pour confirmer.
+Si le modèle n'a jamais été enregistré, le programme affiche la boîte de dialogue **Enregistrer le modèle** proposant un nom de fichier (**Cube.rbm**) et un dossier. Cliquez sur **Save** (Enregistrer) pour valider.

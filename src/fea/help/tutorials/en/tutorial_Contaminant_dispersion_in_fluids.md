@@ -16,17 +16,19 @@ Because the flow problem is nonlinear, it is solved iteratively. The simulation 
 
 **Menu:** _File -> Open model_
 
-In the **Open model** dialog select **Channel.tmsh** and click **Open**.
+In the **Open model** dialog select **Channel.rbm** and click **Open**.
 
-The model consists of three surface entities - **Walls**, **Inflow** and **Outflow**. Since no problem type is assigned to the model yet, the **Select problem** dialog opens automatically once loading is complete.
+The model consists of one point entity - **Source** - and three surface entities - **Walls**, **Inflow** and **Outflow**. Since no problem type is assigned to the model yet, the **Select problem** dialog opens automatically once loading is complete.
 
 ## 2. Select problem (stage 1 - steady-state flow)
 
 For the first stage only the flow is solved, using many nonlinear iterations so that it can converge.
 
-1. In the **Select problem** dialog click **Incompressible viscous flow**.
-2. Keep **Maximum iterations** at **2000**, which is the default for a steady-state flow.
+1. In the **Select problem** dialog click the **Incompressible viscous flow** tile.
+2. Keep **Maximum iterations** at **2000** and **Convergence** at **1e-05**, which are the defaults for a steady-state flow.
 3. Click **OK** to close the dialog.
+
+![CFD - Select problem](image-CFD-Select_problem.png)
 
 The dialog can be opened again at any time with the **Select problem** button in the toolbar.
 
@@ -42,9 +44,9 @@ The prefilled values in the **Generate 3D mesh** dialog are sufficient. Click **
 
 All model entities must have a material assigned.
 
-1. In the **Model** tree click **Walls** and then _Shift_-click **Volume 1** to select all entities.
+1. In the **Model** tree expand **Volumes**, click **Source** and then _Shift_-click **Volume 1** to select all entities.
 2. Open the **Material** tab on the right side of the main window.
-3. Check **Water**.
+3. Check **Water** (it is at the end of the list).
 
 ## 5. Boundary conditions (stage 1)
 
@@ -65,7 +67,7 @@ For each entity: select it in the **Model** tree, check the condition in the **B
 
 **Menu:** _Solution -> Start solver_
 
-If the model has not been saved yet, a **Save model** dialog is shown first. Click **Save** to accept the offered file name (**Channel.rbm**), then click **OK** in the **Start solver** dialog.
+The **Channel** model was opened from a file, so it is saved there automatically. Click **OK** in the **Start solver** dialog. If the dialog lists an error such as **Entity Source has no material assigned.**, the **OK** button is disabled; assign the material to that entity first.
 
 The solver runs in the background and its output is shown in the **Process output** tab. Computing all 2000 iterations takes a few minutes; the run is finished when the output ends with **SOLVER - END**. The convergence of the solution can be checked at any time with:
 
@@ -83,7 +85,7 @@ In the **Cut editor** dialog:
 
 1. Select **Volume 1** in the **Model** list. The cut will be created through this volume.
 2. **Plane position** sets a point the cut plane passes through. The default values place it in the center of the model (**X** = 7.5, **Y** = 2.5, **Z** = 1.5 `[m]`); keep them.
-3. **Plane normal** sets the orientation of the plane. The default normal (**X** = 1) gives a vertical plane; change it to **X** = 0, **Y** = 0, **Z** = 1 to get a horizontal plane cutting through the mid-height of the channel.
+3. **Plane normal** sets the orientation of the plane. The default normal (**X** = 1) gives a vertical plane; change it to **X** = 0, **Y** = 0, **Z** = 1 to get a horizontal plane cutting through the mid-height of the channel. Move between the fields with _Tab_: pressing _Enter_ confirms the whole dialog.
 
 The cut plane is previewed in the **3D model area** while the values are being changed. Click **OK** to create the cut. A new entity **Cut 1** appears in the **Model** tree under **Cuts**.
 
@@ -101,7 +103,7 @@ In the **Vector field editor** dialog:
 2. Select **Velocity** in the **Variables** list.
 3. Leave **3D vector field** checked. The arrows then show the full velocity vector. When unchecked, each arrow is projected onto the cut plane and only the in-plane part of the flow is shown.
 
-Click **OK** to create the vector field. It appears in the **Model** tree under **Vector fields**. Uncheck **Volumes** so that the solid volume does not hide the arrows.
+Click **OK** to create the vector field. It appears in the **Model** tree under **Vector fields** with the name **Velocity**. Uncheck **Volumes** so that the solid volume does not hide the arrows, and check **Vector fields**.
 
 ![CFD - Create vector field entity](image-CFD-Create_vector.png)
 
@@ -115,15 +117,17 @@ With a converged flow field available, the **transient** simulation including **
 
 In a transient simulation the problems are solved once per time-step. **Incompressible viscous flow** is still nonlinear, so it needs its own nonlinear iterations inside every time-step, while **Contaminant dispersion** is solved once per time-step after the flow. Open the **Select problem** dialog again (toolbar button **Select problem**) and set it up as follows:
 
-1. Click **Contaminant dispersion**, and then click **Customize...** to show the task flow.
+1. Click the **Contaminant dispersion** tile (**Incompressible viscous flow** stays selected and is marked **Required**), and then click **Customize...** to show the task flow.
 2. Select **Incompressible viscous flow** and click the **>** button. This moves it into a new, nested iteration group.
 3. Double-click the value of the outer **# of iterations:** and change it from **2000** to **1**. Then change the inner (nested) **# of iterations:** from **1** to **10**.
+
+![CFD - Task flow](image-CFD-Problem_task_flow.png)
 
 Click **OK** to accept.
 
 ## 10. Time solver setup
 
-Open the **Problem** tab on the right side of the main window and set:
+Open the **Problem** tab on the right side of the main window and set (move between the fields with _Tab_):
 
 1. Check **Time-solver**.
 2. **Approximation**: **Backward difference (stable)**.
@@ -169,12 +173,12 @@ A warning **Contaminant dispersion: No implicit boundary condition assigned.** i
 
 ## 13. Display results while the solver runs
 
-The transient solver runs in the background, so results can be inspected while it is still computing. Further display entities such as cuts, isos, stream lines, vector fields or scalar fields can be created at any time, and computed results can be displayed on them. Here the cut and the vector field from steps 7 and 8 are reused.
+The transient solver runs in the background, so results can be inspected while it is still computing. As soon as the first records are written, a **Records** tab appears on the left side of the main window. The results of the transient run are shown only after a record is loaded: open the **Records** tab, double-click the latest record and return to the **Model** tab (see step 14 for more about records). Further display entities such as cuts, isos, stream lines, vector fields or scalar fields can be created at any time, and computed results can be displayed on them. Here the cut and the vector field from steps 7 and 8 are reused.
 
 ### 13.1 Contaminant concentration on the cut
 
 1. In the **Model** tree expand **Cuts**, check **Cut 1** so that it is visible and select it.
-2. Open the **Results** tab and choose **Particle concentration - Scalar** in the drop-down list at the top.
+2. Open the **Results** tab and choose **Particle concentration - Scalar** in the drop-down list at the top. If the list offers only **Velocity** and **Pressure**, no record of the transient run has been loaded yet.
 3. Under **Show on selected entities** check **Color map**. The cut is now colored by the contaminant concentration.
 4. Under **Color range** set **Max** to **1** and **Min** to **0** (type the value and press _Enter_). This matches the range of the inflow concentration, so the same colors mean the same concentration in every time-step.
 5. Check **Show legend** to show the color scale in the **3D model area**.
@@ -185,7 +189,7 @@ The transient solver runs in the background, so results can be inspected while i
 
 To make the flow direction easier to read on top of the colored cut, draw the arrows with heads and in white:
 
-1. Select the vector field (**Velocity** under **Vector fields**) in the **Model** tree.
+1. Check **Vector fields** and select the vector field (**Velocity** under **Vector fields**) in the **Model** tree.
 2. In **Display properties** below the tree check **Arrow heads**.
 3. Click the color selector below the check-boxes and choose white (**#ffffffff**).
 
@@ -195,11 +199,13 @@ The other display properties control whether all arrows have the same length (**
 
 ## 14. Model records (results in time)
 
-Every 10th time-step (the **Output frequency**) the solver writes a model record containing the solution for that time. The records are listed in the **Records** tab on the left side of the main window; the **Record** column shows the time-step number (record **500** holds the solution at 500 × 0.01 s = 5 s). Double-click a record to load the results for its time-step; results applied in the **Results** tab are kept and redrawn for the loaded record.
+Every 10th time-step (the **Output frequency**) the solver writes a model record containing the solution for that time. The records are listed in the **Records** tab on the left side of the main window; the **Record** column shows the time-step number (record **500** holds the solution at 500 × 0.01 s = 5 s). Double-click a record to load the results for its time-step; the loaded record is marked with an arrow, and results applied in the **Results** tab are kept and redrawn for it. The legend in the **3D model area** shows the time-step and time of the loaded record (e.g. **Time-step 520 · 5,19 s**). The buttons at the bottom of the tab play the records one after another.
 
 Computing all 2000 time-steps takes a while (about 20 minutes on a current computer). The solver can be stopped at any time and the records written so far are kept:
 
 **Menu:** _Solution -> Stop solver_ (confirm with **Yes**)
+
+When the solver stops, the last written record is loaded.
 
 ## 15. Record a video
 
@@ -207,12 +213,12 @@ A video is made from what is currently shown in the **3D model area**, so first 
 
 ![CFD - Model records](image-CFD-Model_records.png)
 
-The **Video settings** dialog appears, where the video codec, file format, frames per second and frames per record can be set; the estimated video length is shown below. With 202 records, 24 frames per second and 1 frame per record the video is about 8.4 seconds long. Click **OK** to start recording.
+The **Video settings** dialog appears, where the video codec, file format, frames per second and frames per record can be set; the estimated video length and the number of records are shown below. With 98 records (the solver was stopped at about 9.8 s), 24 frames per second and 1 frame per record the video is about 4.1 seconds long; all 200 records of a complete run give about 8.3 seconds. Click **OK** to start recording.
 
 ![CFD - Video settings](image-CFD-Video_settings.png)
 
 Recording can take some time, because each model record is loaded in turn and a screenshot of the **3D model area** is taken as a video frame.
 
-The video and all frames (one PNG image per record) can be found in the **Documents** tab under **Channel**; the video **Channel.mp4** is at the end of the list. Double-click it to play the video.
+The video and all frames (one PNG image per record) can be found in the **Documents** tab under **Channel**: the video **Channel.mp4** under **Videos** and the frames under **Images**. Double-click the video to play it.
 
 ![CFD - Documents](image-CFD-Documents.png)
