@@ -41,6 +41,8 @@
   conditions and materials in the panel on the right
 - The ribbon can be collapsed with its arrow or by double-clicking a tab. The collapsed
   state and the last tab are remembered
+- **Compact ribbon** keeps the same tabs and commands in less vertical space, with smaller
+  buttons in two rows and no group titles. The choice is remembered
 
 #### Tool bars
 

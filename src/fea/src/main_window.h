@@ -92,6 +92,9 @@ class MainWindow : public QMainWindow
         //! Switch between ribbon layout and layout with menus and tool bars and remember the choice.
         void setRibbonLayout(bool ribbonLayout);
 
+        //! Switch between compact and regular ribbon and remember the choice.
+        void setRibbonCompact(bool ribbonCompact);
+
         //! Show transform geometry dock widget.
         void showTransformGeometryWidget();
 

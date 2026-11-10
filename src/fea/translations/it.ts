@@ -72,260 +72,260 @@
 <context>
     <name>Action</name>
     <message>
-        <location filename="../src/action.cpp" line="243"/>
-        <location filename="../src/action.cpp" line="387"/>
-        <location filename="../src/action.cpp" line="468"/>
+        <location filename="../src/action.cpp" line="244"/>
+        <location filename="../src/action.cpp" line="389"/>
+        <location filename="../src/action.cpp" line="470"/>
         <source>Close session</source>
         <translation>Chiudi sessione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="388"/>
-        <location filename="../src/action.cpp" line="469"/>
+        <location filename="../src/action.cpp" line="390"/>
+        <location filename="../src/action.cpp" line="471"/>
         <source>Are you sure you want to close the current session?</source>
         <translation>Chiudere la sessione corrente?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="240"/>
-        <location filename="../src/action.cpp" line="403"/>
+        <location filename="../src/action.cpp" line="241"/>
+        <location filename="../src/action.cpp" line="405"/>
         <source>Open session</source>
         <translation>Apri sessione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="241"/>
-        <location filename="../src/action.cpp" line="431"/>
-        <location filename="../src/action.cpp" line="454"/>
+        <location filename="../src/action.cpp" line="242"/>
+        <location filename="../src/action.cpp" line="433"/>
+        <location filename="../src/action.cpp" line="456"/>
         <source>Save session</source>
         <translation>Salva sessione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="245"/>
-        <location filename="../src/action.cpp" line="497"/>
+        <location filename="../src/action.cpp" line="246"/>
+        <location filename="../src/action.cpp" line="499"/>
         <source>Open model</source>
         <translation>Apri modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="582"/>
+        <location filename="../src/action.cpp" line="584"/>
         <source>Export model to MSH file</source>
         <translation>Esporta modello in file MSH</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="603"/>
+        <location filename="../src/action.cpp" line="605"/>
         <source>Export model to RAW file</source>
         <translation>Esporta modello in file RAW</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="624"/>
+        <location filename="../src/action.cpp" line="626"/>
         <source>Export model to STL (ASCII) file</source>
         <translation>Esporta modello in file STL (ASCII)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="645"/>
+        <location filename="../src/action.cpp" line="647"/>
         <source>Export model to STL (binary) file</source>
         <translation>Esporta modello in file STL (binario)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="666"/>
+        <location filename="../src/action.cpp" line="668"/>
         <source>Export model to STEP file</source>
         <translation>Esporta modello in file STEP</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="681"/>
+        <location filename="../src/action.cpp" line="683"/>
         <source>Close model?</source>
         <translation>Chiudere il modello?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="682"/>
+        <location filename="../src/action.cpp" line="684"/>
         <source>Are you sure you want to close selected models?</source>
         <translation>Chiudere i modelli selezionati?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="270"/>
-        <location filename="../src/action.cpp" line="850"/>
-        <location filename="../src/action.cpp" line="915"/>
+        <location filename="../src/action.cpp" line="271"/>
+        <location filename="../src/action.cpp" line="852"/>
+        <location filename="../src/action.cpp" line="917"/>
         <source>Create element</source>
         <translation>Crea elemento</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="239"/>
+        <location filename="../src/action.cpp" line="240"/>
         <source>New session</source>
         <translation>Nuova sessione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="242"/>
+        <location filename="../src/action.cpp" line="243"/>
         <source>Save session as</source>
         <translation>Salva sessione con nome</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="244"/>
+        <location filename="../src/action.cpp" line="245"/>
         <source>New model</source>
         <translation>Nuovo modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="246"/>
+        <location filename="../src/action.cpp" line="247"/>
         <source>Save model</source>
         <translation>Salva modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="246"/>
+        <location filename="../src/action.cpp" line="247"/>
         <source>Save selected model.</source>
         <translation>Salva il modello selezionato.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="247"/>
+        <location filename="../src/action.cpp" line="248"/>
         <source>Save model as</source>
         <translation>Salva modello con nome</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="253"/>
+        <location filename="../src/action.cpp" line="254"/>
         <source>Close model</source>
         <translation>Chiudi modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="254"/>
+        <location filename="../src/action.cpp" line="255"/>
         <source>Reload results</source>
         <translation>Ricarica risultati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="255"/>
+        <location filename="../src/action.cpp" line="256"/>
         <source>Drop results</source>
         <translation>Elimina risultati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="256"/>
+        <location filename="../src/action.cpp" line="257"/>
         <source>Rename model</source>
         <translation>Rinomina modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="314"/>
+        <location filename="../src/action.cpp" line="315"/>
         <source>Select problem</source>
         <translation>Seleziona problema</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="851"/>
-        <location filename="../src/action.cpp" line="1254"/>
-        <location filename="../src/action.cpp" line="1298"/>
-        <location filename="../src/action.cpp" line="1351"/>
+        <location filename="../src/action.cpp" line="853"/>
+        <location filename="../src/action.cpp" line="1256"/>
+        <location filename="../src/action.cpp" line="1300"/>
+        <location filename="../src/action.cpp" line="1353"/>
         <source>No node selected.</source>
         <translation>Nessun nodo selezionato.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="892"/>
+        <location filename="../src/action.cpp" line="894"/>
         <source>Quadrilateral</source>
         <translation>Quadrilatero</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="893"/>
+        <location filename="../src/action.cpp" line="895"/>
         <source>Tetrahedra</source>
         <translation>Tetraedri</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="895"/>
+        <location filename="../src/action.cpp" line="897"/>
         <source>Choose element type</source>
         <translation>Scegli il tipo di elemento</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="897"/>
+        <location filename="../src/action.cpp" line="899"/>
         <source>Which element type to create?</source>
         <translation>Quale tipo di elemento creare?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="916"/>
+        <location filename="../src/action.cpp" line="918"/>
         <source>Too many nodes selected.</source>
         <translation>Troppi nodi selezionati.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1049"/>
-        <location filename="../src/action.cpp" line="1096"/>
-        <location filename="../src/action.cpp" line="1143"/>
-        <location filename="../src/action.cpp" line="1936"/>
-        <location filename="../src/action.cpp" line="1981"/>
+        <location filename="../src/action.cpp" line="1051"/>
+        <location filename="../src/action.cpp" line="1098"/>
+        <location filename="../src/action.cpp" line="1145"/>
+        <location filename="../src/action.cpp" line="1938"/>
+        <location filename="../src/action.cpp" line="1983"/>
         <source>Too few surfaces selected</source>
         <translation>Troppo poche superfici selezionate</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1050"/>
+        <location filename="../src/action.cpp" line="1052"/>
         <source>To perform union boolean operation at least two surfaces must be selected.</source>
         <translation>Per eseguire l&apos;operazione booleana di unione devono essere selezionate almeno due superfici.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1061"/>
-        <location filename="../src/action.cpp" line="1108"/>
-        <location filename="../src/action.cpp" line="1155"/>
+        <location filename="../src/action.cpp" line="1063"/>
+        <location filename="../src/action.cpp" line="1110"/>
+        <location filename="../src/action.cpp" line="1157"/>
         <source>Surface is not closed</source>
         <translation>La superficie non è chiusa</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1062"/>
-        <location filename="../src/action.cpp" line="1109"/>
-        <location filename="../src/action.cpp" line="1156"/>
+        <location filename="../src/action.cpp" line="1064"/>
+        <location filename="../src/action.cpp" line="1111"/>
+        <location filename="../src/action.cpp" line="1158"/>
         <source>Surface</source>
         <translation>Superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1063"/>
+        <location filename="../src/action.cpp" line="1065"/>
         <source>To perform union boolean operation all selected surfaces must be closed.</source>
         <translation>Per eseguire l&apos;operazione booleana di unione tutte le superfici selezionate devono essere chiuse.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1097"/>
+        <location filename="../src/action.cpp" line="1099"/>
         <source>To perform difference boolean operation at least two surfaces must be selected.</source>
         <translation>Per eseguire l&apos;operazione booleana di differenza devono essere selezionate almeno due superfici.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1110"/>
+        <location filename="../src/action.cpp" line="1112"/>
         <source>To perform difference boolean operation all selected surfaces must be closed.</source>
         <translation>Per eseguire l&apos;operazione booleana di differenza tutte le superfici selezionate devono essere chiuse.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1144"/>
+        <location filename="../src/action.cpp" line="1146"/>
         <source>To perform intersection boolean operation at least two surfaces must be selected.</source>
         <translation>Per eseguire l&apos;operazione booleana di intersezione devono essere selezionate almeno due superfici.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1157"/>
+        <location filename="../src/action.cpp" line="1159"/>
         <source>To perform intersection boolean operation all selected surfaces must be closed.</source>
         <translation>Per eseguire l&apos;operazione booleana di intersezione tutte le superfici selezionate devono essere chiuse.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="280"/>
-        <location filename="../src/action.cpp" line="1253"/>
+        <location filename="../src/action.cpp" line="281"/>
+        <location filename="../src/action.cpp" line="1255"/>
         <source>Move node</source>
         <translation>Sposta nodo</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1297"/>
-        <location filename="../src/action.cpp" line="1303"/>
-        <location filename="../src/action.cpp" line="1350"/>
-        <location filename="../src/action.cpp" line="1356"/>
+        <location filename="../src/action.cpp" line="1299"/>
+        <location filename="../src/action.cpp" line="1305"/>
+        <location filename="../src/action.cpp" line="1352"/>
+        <location filename="../src/action.cpp" line="1358"/>
         <source>Remove nodes</source>
         <translation>Rimuovi nodi</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1304"/>
-        <location filename="../src/action.cpp" line="1357"/>
+        <location filename="../src/action.cpp" line="1306"/>
+        <location filename="../src/action.cpp" line="1359"/>
         <source>Are you sure you want to remove picked nodes?</source>
         <translation>Rimuovere i nodi selezionati?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1403"/>
-        <location filename="../src/action.cpp" line="1409"/>
+        <location filename="../src/action.cpp" line="1405"/>
+        <location filename="../src/action.cpp" line="1411"/>
         <source>Remove elements</source>
         <translation>Rimuovi elementi</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1404"/>
-        <location filename="../src/action.cpp" line="1482"/>
+        <location filename="../src/action.cpp" line="1406"/>
+        <location filename="../src/action.cpp" line="1484"/>
         <source>No element selected.</source>
         <translation>Nessun elemento selezionato.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1410"/>
+        <location filename="../src/action.cpp" line="1412"/>
         <source>Are you sure you want to remove picked elements?</source>
         <translation>Rimuovere gli elementi selezionati?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="286"/>
-        <location filename="../src/action.cpp" line="1481"/>
+        <location filename="../src/action.cpp" line="287"/>
+        <location filename="../src/action.cpp" line="1483"/>
         <source>Swap element normal</source>
         <translation>Inverti normale dell&apos;elemento</translation>
     </message>
@@ -370,651 +370,661 @@
         <translation>Applicazione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="239"/>
+        <location filename="../src/action.cpp" line="240"/>
         <source>Create a new session.</source>
         <translation>Crea una nuova sessione.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="240"/>
+        <location filename="../src/action.cpp" line="241"/>
         <source>Open previously saved session.</source>
         <translation>Apri una sessione salvata in precedenza.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="241"/>
+        <location filename="../src/action.cpp" line="242"/>
         <source>Save current session.</source>
         <translation>Salva la sessione corrente.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="242"/>
+        <location filename="../src/action.cpp" line="243"/>
         <source>Save current session under different filename.</source>
         <translation>Salva la sessione corrente con un nome file diverso.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="243"/>
+        <location filename="../src/action.cpp" line="244"/>
         <source>Close current session.</source>
         <translation>Chiudi la sessione corrente.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="244"/>
+        <location filename="../src/action.cpp" line="245"/>
         <source>Create a new empty model.</source>
         <translation>Crea un nuovo modello vuoto.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="245"/>
+        <location filename="../src/action.cpp" line="246"/>
         <source>Open previously saved model.</source>
         <translation>Apri un modello salvato in precedenza.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="247"/>
+        <location filename="../src/action.cpp" line="248"/>
         <source>Save selected model under a different filename.</source>
         <translation>Salva il modello selezionato con un nome file diverso.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="248"/>
+        <location filename="../src/action.cpp" line="249"/>
         <source>Export MSH model</source>
         <translation>Esporta modello MSH</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="249"/>
+        <location filename="../src/action.cpp" line="250"/>
         <source>Export RAW model</source>
         <translation>Esporta modello RAW</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="250"/>
+        <location filename="../src/action.cpp" line="251"/>
         <source>Export STL model (ASCII)</source>
         <translation>Esporta modello STL (ASCII)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="251"/>
+        <location filename="../src/action.cpp" line="252"/>
         <source>Export STL model (binary)</source>
         <translation>Esporta modello STL (binario)</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="252"/>
+        <location filename="../src/action.cpp" line="253"/>
         <source>Export STEP model</source>
         <translation>Esporta modello STEP</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="257"/>
+        <location filename="../src/action.cpp" line="258"/>
         <source>Undo</source>
         <translation>Annulla</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="258"/>
+        <location filename="../src/action.cpp" line="259"/>
         <source>Redo</source>
         <translation>Ripeti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="259"/>
+        <location filename="../src/action.cpp" line="260"/>
         <source>Draw point</source>
         <translation>Disegna punto</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="260"/>
+        <location filename="../src/action.cpp" line="261"/>
         <source>Draw line</source>
         <translation>Disegna linea</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="261"/>
+        <location filename="../src/action.cpp" line="262"/>
         <source>Draw triangle</source>
         <translation>Disegna triangolo</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="262"/>
+        <location filename="../src/action.cpp" line="263"/>
         <source>Draw quadrilateral</source>
         <translation>Disegna quadrilatero</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="263"/>
+        <location filename="../src/action.cpp" line="264"/>
         <source>Draw circle</source>
         <translation>Disegna cerchio</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="264"/>
+        <location filename="../src/action.cpp" line="265"/>
         <source>Draw ellipse</source>
         <translation>Disegna ellisse</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="265"/>
+        <location filename="../src/action.cpp" line="266"/>
         <source>Draw tetrahedron</source>
         <translation>Disegna tetraedro</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="266"/>
+        <location filename="../src/action.cpp" line="267"/>
         <source>Draw hexahedron</source>
         <translation>Disegna esaedro</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="267"/>
+        <location filename="../src/action.cpp" line="268"/>
         <source>Draw cylinder</source>
         <translation>Disegna cilindro</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="268"/>
+        <location filename="../src/action.cpp" line="269"/>
         <source>Draw sphere</source>
         <translation>Disegna sfera</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="269"/>
+        <location filename="../src/action.cpp" line="270"/>
         <source>Draw RAW object</source>
         <translation>Disegna oggetto RAW</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="271"/>
+        <location filename="../src/action.cpp" line="272"/>
         <source>Find sliver elements</source>
         <translation>Trova elementi degeneri</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="272"/>
+        <location filename="../src/action.cpp" line="273"/>
         <source>Fix sliver elements</source>
         <translation>Correggi elementi degeneri</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="273"/>
+        <location filename="../src/action.cpp" line="274"/>
         <source>Find intersected elements</source>
         <translation>Trova elementi intersecanti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="274"/>
+        <location filename="../src/action.cpp" line="275"/>
         <source>Break intersected elements</source>
         <translation>Separa elementi intersecanti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="275"/>
+        <location filename="../src/action.cpp" line="276"/>
         <source>Union</source>
         <translation>Unione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="276"/>
+        <location filename="../src/action.cpp" line="277"/>
         <source>Difference</source>
         <translation>Differenza</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="277"/>
+        <location filename="../src/action.cpp" line="278"/>
         <source>Intersection</source>
         <translation>Intersezione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="278"/>
+        <location filename="../src/action.cpp" line="279"/>
         <source>Merge near nodes</source>
         <translation>Unisci nodi vicini</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="279"/>
-        <location filename="../src/action.cpp" line="1239"/>
+        <location filename="../src/action.cpp" line="280"/>
+        <location filename="../src/action.cpp" line="1241"/>
         <source>Merge nodes</source>
         <translation>Unisci nodi</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="281"/>
+        <location filename="../src/action.cpp" line="282"/>
         <source>Remove node</source>
         <translation>Rimuovi nodo</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="282"/>
+        <location filename="../src/action.cpp" line="283"/>
         <source>Remove node and close hole</source>
         <translation>Rimuovi nodo e chiudi foro</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="283"/>
+        <location filename="../src/action.cpp" line="284"/>
         <source>Remove element</source>
         <translation>Rimuovi elemento</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="284"/>
+        <location filename="../src/action.cpp" line="285"/>
         <source>Generate line(s) from surface edges</source>
         <translation>Genera linea/e dai bordi della superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="285"/>
+        <location filename="../src/action.cpp" line="286"/>
         <source>Mark surface</source>
         <translation>Marca superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="287"/>
+        <location filename="../src/action.cpp" line="288"/>
         <source>Swap normals</source>
         <translation>Inverti normali</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="288"/>
+        <location filename="../src/action.cpp" line="289"/>
         <source>Synchronize normals</source>
         <translation>Sincronizza normali</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="289"/>
+        <location filename="../src/action.cpp" line="290"/>
         <source>Close hole</source>
         <translation>Chiudi foro</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="290"/>
+        <location filename="../src/action.cpp" line="291"/>
         <source>Coarsen surface</source>
         <translation>Semplifica superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="291"/>
+        <location filename="../src/action.cpp" line="292"/>
         <source>Generate tetrahedral mesh</source>
         <translation>Genera mesh tetraedrica</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="292"/>
+        <location filename="../src/action.cpp" line="293"/>
         <source>Create vector field</source>
         <translation>Crea campo vettoriale</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="293"/>
+        <location filename="../src/action.cpp" line="294"/>
         <source>Edit vector field</source>
         <translation>Modifica campo vettoriale</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="294"/>
+        <location filename="../src/action.cpp" line="295"/>
         <source>Create scalar field</source>
         <translation>Crea campo scalare</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="295"/>
+        <location filename="../src/action.cpp" line="296"/>
         <source>Edit scalar field</source>
         <translation>Modifica campo scalare</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="296"/>
+        <location filename="../src/action.cpp" line="297"/>
         <source>Create stream line</source>
         <translation>Crea linea di flusso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="297"/>
+        <location filename="../src/action.cpp" line="298"/>
         <source>Edit stream line</source>
         <translation>Modifica linea di flusso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="298"/>
+        <location filename="../src/action.cpp" line="299"/>
         <source>Create cut</source>
         <translation>Crea sezione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="299"/>
+        <location filename="../src/action.cpp" line="300"/>
         <source>Edit cut</source>
         <translation>Modifica sezione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="300"/>
+        <location filename="../src/action.cpp" line="301"/>
         <source>Create iso</source>
         <translation>Crea iso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="301"/>
+        <location filename="../src/action.cpp" line="302"/>
         <source>Edit iso</source>
         <translation>Modifica iso</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="302"/>
+        <location filename="../src/action.cpp" line="303"/>
         <source>Merge selected entities</source>
         <translation>Unisci entità selezionate</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="303"/>
+        <location filename="../src/action.cpp" line="304"/>
         <source>Remove selected entities</source>
         <translation>Rimuovi entità selezionate</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="304"/>
+        <location filename="../src/action.cpp" line="305"/>
         <source>Scale, translate, rotate</source>
         <translation>Scala, trasla, ruota</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="305"/>
+        <location filename="../src/action.cpp" line="306"/>
         <source>Export sliver elements</source>
         <translation>Esporta elementi degeneri</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="306"/>
+        <location filename="../src/action.cpp" line="307"/>
         <source>Export intersected elements</source>
         <translation>Esporta elementi intersecanti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="307"/>
+        <location filename="../src/action.cpp" line="308"/>
         <source>Purge unused nodes</source>
         <translation>Elimina nodi inutilizzati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="308"/>
+        <location filename="../src/action.cpp" line="309"/>
         <source>Purge unused elements</source>
         <translation>Elimina elementi inutilizzati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="309"/>
+        <location filename="../src/action.cpp" line="310"/>
         <source>Remove duplicate nodes</source>
         <translation>Rimuovi nodi duplicati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="310"/>
+        <location filename="../src/action.cpp" line="311"/>
         <source>Remove duplicate elements</source>
         <translation>Rimuovi elementi duplicati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="311"/>
+        <location filename="../src/action.cpp" line="312"/>
         <source>Check if point is inside surface</source>
         <translation>Verifica se il punto è all&apos;interno della superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="312"/>
+        <location filename="../src/action.cpp" line="313"/>
         <source>Tetrahedralize surface</source>
         <translation>Tetraedrizza superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="313"/>
+        <location filename="../src/action.cpp" line="314"/>
         <source>Consolidate geometry</source>
         <translation>Consolida geometria</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="315"/>
+        <location filename="../src/action.cpp" line="316"/>
         <source>Setup Problem(s) matrix solver</source>
         <translation>Configura il solutore matriciale dei problemi</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="316"/>
+        <location filename="../src/action.cpp" line="317"/>
         <source>Define monitoring points</source>
         <translation>Definisci punti di monitoraggio</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="317"/>
+        <location filename="../src/action.cpp" line="318"/>
         <source>Reset setup</source>
         <translation>Reimposta configurazione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="318"/>
+        <location filename="../src/action.cpp" line="319"/>
         <source>Start solver</source>
         <translation>Avvia solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="321"/>
+        <location filename="../src/action.cpp" line="322"/>
         <source>Model statistics</source>
         <translation>Statistiche del modello</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="322"/>
+        <location filename="../src/action.cpp" line="323"/>
         <source>Solver log file</source>
         <translation>File di log del solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="323"/>
+        <location filename="../src/action.cpp" line="324"/>
         <source>Solver convergence</source>
         <translation>Convergenza del solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="324"/>
+        <location filename="../src/action.cpp" line="325"/>
         <source>Monitoring points</source>
         <translation>Punti di monitoraggio</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="325"/>
+        <location filename="../src/action.cpp" line="326"/>
         <source>Create report</source>
         <translation>Crea report</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="326"/>
+        <location filename="../src/action.cpp" line="327"/>
         <source>Certificates</source>
         <translation>Certificati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="326"/>
+        <location filename="../src/action.cpp" line="327"/>
         <source>Open certificates folder in file browser.</source>
         <translation>Apre la cartella dei certificati nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="327"/>
+        <location filename="../src/action.cpp" line="328"/>
         <source>Data</source>
         <translation>Dati</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="327"/>
+        <location filename="../src/action.cpp" line="328"/>
         <source>Open data folder in file browser.</source>
         <translation>Apre la cartella dei dati nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="328"/>
+        <location filename="../src/action.cpp" line="329"/>
         <source>Documents</source>
         <translation>Documenti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="328"/>
+        <location filename="../src/action.cpp" line="329"/>
         <source>Open documents folder in file browser.</source>
         <translation>Apre la cartella dei documenti nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="329"/>
+        <location filename="../src/action.cpp" line="330"/>
         <source>Logs</source>
         <translation>Log</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="329"/>
+        <location filename="../src/action.cpp" line="330"/>
         <source>Open log folder in file browser.</source>
         <translation>Apre la cartella dei log nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="330"/>
+        <location filename="../src/action.cpp" line="331"/>
         <source>Materials</source>
         <translation>Materiali</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="330"/>
+        <location filename="../src/action.cpp" line="331"/>
         <source>Open materials folder in file browser.</source>
         <translation>Apre la cartella dei materiali nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="331"/>
+        <location filename="../src/action.cpp" line="332"/>
         <source>Sessions</source>
         <translation>Sessioni</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="331"/>
+        <location filename="../src/action.cpp" line="332"/>
         <source>Open session folder in file browser.</source>
         <translation>Apre la cartella delle sessioni nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="332"/>
+        <location filename="../src/action.cpp" line="333"/>
         <source>Temporary files</source>
         <translation>File temporanei</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="332"/>
+        <location filename="../src/action.cpp" line="333"/>
         <source>Open temporary files folder in file browser.</source>
         <translation>Apre la cartella dei file temporanei nel gestore file.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="333"/>
+        <location filename="../src/action.cpp" line="334"/>
         <source>Application settings</source>
         <translation>Impostazioni dell&apos;applicazione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="334"/>
+        <location filename="../src/action.cpp" line="335"/>
         <source>Ribbon layout</source>
         <translation>Layout a barra multifunzione</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="334"/>
+        <location filename="../src/action.cpp" line="335"/>
         <source>Show commands in a ribbon instead of menus and tool bars.</source>
         <translation>Mostra i comandi in una barra multifunzione anziché in menu e barre degli strumenti.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="335"/>
+        <location filename="../src/action.cpp" line="336"/>
+        <source>Compact ribbon</source>
+        <translation>Barra multifunzione compatta</translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="336"/>
+        <source>Show the ribbon in less vertical space, with smaller buttons and no group titles.</source>
+        <translation>Mostra la barra multifunzione con altezza ridotta, pulsanti più piccoli e senza titoli dei gruppi.</translation>
+    </message>
+    <message>
+        <location filename="../src/action.cpp" line="337"/>
         <source>Check for updates</source>
         <translation>Verifica aggiornamenti</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="341"/>
-        <location filename="../src/action.cpp" line="2306"/>
+        <location filename="../src/action.cpp" line="343"/>
+        <location filename="../src/action.cpp" line="2308"/>
         <source>Help</source>
         <translation>Guida</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="342"/>
+        <location filename="../src/action.cpp" line="344"/>
         <source>Quit</source>
         <translation>Esci</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="343"/>
+        <location filename="../src/action.cpp" line="345"/>
         <source>Cloud session manager</source>
         <translation>Gestione sessioni cloud</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="344"/>
+        <location filename="../src/action.cpp" line="346"/>
         <source>Cloud file manager</source>
         <translation>Gestione file cloud</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="378"/>
-        <location filename="../src/action.cpp" line="379"/>
+        <location filename="../src/action.cpp" line="380"/>
+        <location filename="../src/action.cpp" line="381"/>
         <source>Failed to open folder</source>
         <translation>Impossibile aprire la cartella</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1240"/>
+        <location filename="../src/action.cpp" line="1242"/>
         <source>At least two nodes of one model must be selected.</source>
         <translation>Devono essere selezionati almeno due nodi dello stesso modello.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1571"/>
+        <location filename="../src/action.cpp" line="1573"/>
         <source>Close surface hole</source>
         <translation>Chiudi foro della superficie</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1572"/>
+        <location filename="../src/action.cpp" line="1574"/>
         <source>No edge selected.</source>
         <translation>Nessun bordo selezionato.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1937"/>
-        <location filename="../src/action.cpp" line="1982"/>
+        <location filename="../src/action.cpp" line="1939"/>
+        <location filename="../src/action.cpp" line="1984"/>
         <source>To perform point inside check at least one surface must be selected.</source>
         <translation>Per eseguire la verifica del punto interno deve essere selezionata almeno una superficie.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1946"/>
-        <location filename="../src/action.cpp" line="1991"/>
+        <location filename="../src/action.cpp" line="1948"/>
+        <location filename="../src/action.cpp" line="1993"/>
         <source>Unclosed surfaces</source>
         <translation>Superfici non chiuse</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1947"/>
-        <location filename="../src/action.cpp" line="1992"/>
+        <location filename="../src/action.cpp" line="1949"/>
+        <location filename="../src/action.cpp" line="1994"/>
         <source>Selected surfaces do not form closed surface.</source>
         <translation>Le superfici selezionate non formano una superficie chiusa.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2069"/>
+        <location filename="../src/action.cpp" line="2071"/>
         <source>Reset problem setup</source>
         <translation>Reimposta configurazione del problema</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2080"/>
+        <location filename="../src/action.cpp" line="2082"/>
         <source>Problem reset</source>
         <translation>Reimpostazione del problema</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2301"/>
+        <location filename="../src/action.cpp" line="2303"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2302"/>
+        <location filename="../src/action.cpp" line="2304"/>
         <source>Tutorials</source>
         <translation>Tutorial</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2303"/>
+        <location filename="../src/action.cpp" line="2305"/>
         <source>Theory</source>
         <translation>Teoria</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="319"/>
-        <location filename="../src/action.cpp" line="2115"/>
+        <location filename="../src/action.cpp" line="320"/>
+        <location filename="../src/action.cpp" line="2117"/>
         <source>Stop solver</source>
         <translation>Arresta solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2116"/>
+        <location filename="../src/action.cpp" line="2118"/>
         <source>Are you sure you want to stop all running solvers?</source>
         <translation>Arrestare tutti i solutori in esecuzione?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="320"/>
-        <location filename="../src/action.cpp" line="2138"/>
+        <location filename="../src/action.cpp" line="321"/>
+        <location filename="../src/action.cpp" line="2140"/>
         <source>Kill solver</source>
         <translation>Termina solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="1062"/>
-        <location filename="../src/action.cpp" line="1109"/>
-        <location filename="../src/action.cpp" line="1156"/>
+        <location filename="../src/action.cpp" line="1064"/>
+        <location filename="../src/action.cpp" line="1111"/>
+        <location filename="../src/action.cpp" line="1158"/>
         <source>is not closed.</source>
         <translation>non è chiusa.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2070"/>
+        <location filename="../src/action.cpp" line="2072"/>
         <source>Are you sure you want to reset the problem setup including boundary, initial and environment conditions?</source>
         <translation>Reimpostare la configurazione del problema, comprese le condizioni al contorno, iniziali e ambientali?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2139"/>
+        <location filename="../src/action.cpp" line="2141"/>
         <source>Are you sure you want to kill all running solvers?</source>
         <translation>Terminare forzatamente tutti i solutori in esecuzione?</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2180"/>
+        <location filename="../src/action.cpp" line="2182"/>
         <source>No solver log file</source>
         <translation>Nessun file di log del solutore</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2180"/>
+        <location filename="../src/action.cpp" line="2182"/>
         <source>There is no file containing solver log.</source>
         <translation>Non esiste alcun file con il log del solutore.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2249"/>
+        <location filename="../src/action.cpp" line="2251"/>
         <source>No convergence file</source>
         <translation>Nessun file di convergenza</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2249"/>
+        <location filename="../src/action.cpp" line="2251"/>
         <source>There is no file containing convergence values.</source>
         <translation>Non esiste alcun file con i valori di convergenza.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2271"/>
+        <location filename="../src/action.cpp" line="2273"/>
         <source>No monitoring file</source>
         <translation>Nessun file di monitoraggio</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="2271"/>
+        <location filename="../src/action.cpp" line="2273"/>
         <source>There is no file containing monitoring points.</source>
         <translation>Non esiste alcun file con i punti di monitoraggio.</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="336"/>
-        <location filename="../src/action.cpp" line="2395"/>
+        <location filename="../src/action.cpp" line="338"/>
+        <location filename="../src/action.cpp" line="2404"/>
         <source>About</source>
         <translation>Informazioni</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="337"/>
-        <location filename="../src/action.cpp" line="2410"/>
+        <location filename="../src/action.cpp" line="339"/>
+        <location filename="../src/action.cpp" line="2419"/>
         <source>About Qt</source>
         <translation>Informazioni su Qt</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="338"/>
-        <location filename="../src/action.cpp" line="2429"/>
+        <location filename="../src/action.cpp" line="340"/>
+        <location filename="../src/action.cpp" line="2438"/>
         <source>License</source>
         <translation>Licenza</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="339"/>
-        <location filename="../src/action.cpp" line="2460"/>
+        <location filename="../src/action.cpp" line="341"/>
+        <location filename="../src/action.cpp" line="2469"/>
         <source>Privacy policy</source>
         <translation>Informativa sulla privacy</translation>
     </message>
     <message>
-        <location filename="../src/action.cpp" line="340"/>
+        <location filename="../src/action.cpp" line="342"/>
         <source>Release notes</source>
         <translation>Note di rilascio</translation>
     </message>
@@ -2758,8 +2768,8 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="139"/>
-        <location filename="../src/main_window.cpp" line="571"/>
-        <location filename="../src/main_window.cpp" line="807"/>
+        <location filename="../src/main_window.cpp" line="580"/>
+        <location filename="../src/main_window.cpp" line="817"/>
         <source>Problem</source>
         <translation>Problema</translation>
     </message>
@@ -2780,465 +2790,465 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="151"/>
-        <location filename="../src/main_window.cpp" line="826"/>
+        <location filename="../src/main_window.cpp" line="836"/>
         <source>Material</source>
         <translation>Materiale</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="154"/>
-        <location filename="../src/main_window.cpp" line="848"/>
+        <location filename="../src/main_window.cpp" line="858"/>
         <source>Results</source>
         <translation>Risultati</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="259"/>
+        <location filename="../src/main_window.cpp" line="267"/>
         <source>Transform geometry</source>
         <translation>Trasforma geometria</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="278"/>
+        <location filename="../src/main_window.cpp" line="286"/>
         <source>Draw object</source>
         <translation>Disegna oggetto</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="353"/>
-        <location filename="../src/main_window.cpp" line="733"/>
+        <location filename="../src/main_window.cpp" line="361"/>
+        <location filename="../src/main_window.cpp" line="742"/>
         <source>File</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="355"/>
+        <location filename="../src/main_window.cpp" line="363"/>
         <source>Session</source>
         <translation>Sessione</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="368"/>
+        <location filename="../src/main_window.cpp" line="376"/>
         <source>Export</source>
         <translation>Esporta</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="383"/>
+        <location filename="../src/main_window.cpp" line="391"/>
         <source>Folders</source>
         <translation>Cartelle</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="465"/>
-        <location filename="../src/main_window.cpp" line="746"/>
+        <location filename="../src/main_window.cpp" line="474"/>
+        <location filename="../src/main_window.cpp" line="756"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="470"/>
-        <location filename="../src/main_window.cpp" line="748"/>
+        <location filename="../src/main_window.cpp" line="479"/>
+        <location filename="../src/main_window.cpp" line="758"/>
         <source>Draw</source>
         <translation>Disegna</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="490"/>
-        <location filename="../src/main_window.cpp" line="750"/>
+        <location filename="../src/main_window.cpp" line="499"/>
+        <location filename="../src/main_window.cpp" line="760"/>
         <source>Line</source>
         <translation>Linea</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="495"/>
-        <location filename="../src/main_window.cpp" line="781"/>
+        <location filename="../src/main_window.cpp" line="504"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>Surface</source>
         <translation>Superficie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="507"/>
+        <location filename="../src/main_window.cpp" line="516"/>
         <source>Boolean operations</source>
         <translation>Operazioni booleane</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="515"/>
+        <location filename="../src/main_window.cpp" line="524"/>
         <source>Volume</source>
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="521"/>
-        <location filename="../src/main_window.cpp" line="851"/>
+        <location filename="../src/main_window.cpp" line="530"/>
+        <location filename="../src/main_window.cpp" line="861"/>
         <source>Cut</source>
         <translation>Sezione</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="527"/>
-        <location filename="../src/main_window.cpp" line="852"/>
+        <location filename="../src/main_window.cpp" line="536"/>
+        <location filename="../src/main_window.cpp" line="862"/>
         <source>Iso</source>
         <translation>Iso</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="533"/>
-        <location filename="../src/main_window.cpp" line="853"/>
+        <location filename="../src/main_window.cpp" line="542"/>
+        <location filename="../src/main_window.cpp" line="863"/>
         <source>Stream line</source>
         <translation>Linea di flusso</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="539"/>
-        <location filename="../src/main_window.cpp" line="854"/>
+        <location filename="../src/main_window.cpp" line="548"/>
+        <location filename="../src/main_window.cpp" line="864"/>
         <source>Scalar field</source>
         <translation>Campo scalare</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="545"/>
-        <location filename="../src/main_window.cpp" line="855"/>
+        <location filename="../src/main_window.cpp" line="554"/>
+        <location filename="../src/main_window.cpp" line="865"/>
         <source>Vector field</source>
         <translation>Campo vettoriale</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="607"/>
+        <location filename="../src/main_window.cpp" line="616"/>
         <source>File and edit toolbar</source>
         <translation>Barra file e modifica</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="615"/>
+        <location filename="../src/main_window.cpp" line="624"/>
         <source>Workflow toolbar</source>
         <translation>Barra del flusso di lavoro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="626"/>
+        <location filename="../src/main_window.cpp" line="635"/>
         <source>Application toolbar</source>
         <translation>Barra dell&apos;applicazione</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="640"/>
+        <location filename="../src/main_window.cpp" line="649"/>
         <source>Geometry toolbar</source>
         <translation>Barra della geometria</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="657"/>
+        <location filename="../src/main_window.cpp" line="666"/>
         <source>Mesh toolbar</source>
         <translation>Barra della mesh</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="671"/>
+        <location filename="../src/main_window.cpp" line="680"/>
         <source>Results toolbar</source>
         <translation>Barra dei risultati</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="749"/>
+        <location filename="../src/main_window.cpp" line="759"/>
         <source>Point</source>
         <translation>Punto</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="751"/>
+        <location filename="../src/main_window.cpp" line="761"/>
         <source>Triangle</source>
         <translation>Triangolo</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="752"/>
+        <location filename="../src/main_window.cpp" line="762"/>
         <source>Quadrilateral</source>
         <translation>Quadrilatero</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="753"/>
+        <location filename="../src/main_window.cpp" line="763"/>
         <source>Circle</source>
         <translation>Cerchio</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="754"/>
+        <location filename="../src/main_window.cpp" line="764"/>
         <source>Ellipse</source>
         <translation>Ellisse</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="755"/>
+        <location filename="../src/main_window.cpp" line="765"/>
         <source>Tetrahedron</source>
         <translation>Tetraedro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="756"/>
+        <location filename="../src/main_window.cpp" line="766"/>
         <source>Hexahedron</source>
         <translation>Esaedro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="757"/>
+        <location filename="../src/main_window.cpp" line="767"/>
         <source>Cylinder</source>
         <translation>Cilindro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="758"/>
+        <location filename="../src/main_window.cpp" line="768"/>
         <source>Sphere</source>
         <translation>Sfera</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="759"/>
+        <location filename="../src/main_window.cpp" line="769"/>
         <source>RAW object</source>
         <translation>Oggetto RAW</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="761"/>
+        <location filename="../src/main_window.cpp" line="771"/>
         <source>Boolean</source>
         <translation>Operazioni booleane</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="766"/>
+        <location filename="../src/main_window.cpp" line="776"/>
         <source>Modify</source>
         <translation>Modifica</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="767"/>
+        <location filename="../src/main_window.cpp" line="777"/>
         <source>Transform</source>
         <translation>Trasforma</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="769"/>
+        <location filename="../src/main_window.cpp" line="779"/>
         <source>Entities</source>
         <translation>Entità</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="770"/>
+        <location filename="../src/main_window.cpp" line="780"/>
         <source>Line from edges</source>
         <translation>Linea dagli spigoli</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="771"/>
-        <location filename="../src/main_window.cpp" line="796"/>
+        <location filename="../src/main_window.cpp" line="781"/>
+        <location filename="../src/main_window.cpp" line="806"/>
         <source>Merge</source>
         <translation>Unisci</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="772"/>
-        <location filename="../src/main_window.cpp" line="798"/>
-        <location filename="../src/main_window.cpp" line="803"/>
+        <location filename="../src/main_window.cpp" line="782"/>
+        <location filename="../src/main_window.cpp" line="808"/>
+        <location filename="../src/main_window.cpp" line="813"/>
         <source>Remove</source>
         <translation>Rimuovi</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="775"/>
+        <location filename="../src/main_window.cpp" line="785"/>
         <source>Mesh</source>
         <translation>Mesh</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="777"/>
+        <location filename="../src/main_window.cpp" line="787"/>
         <source>Generate</source>
         <translation>Genera</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="778"/>
+        <location filename="../src/main_window.cpp" line="788"/>
         <source>Tetrahedra</source>
         <translation>Tetraedri</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="779"/>
+        <location filename="../src/main_window.cpp" line="789"/>
         <source>Coarsen</source>
         <translation>Semplifica</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="782"/>
+        <location filename="../src/main_window.cpp" line="792"/>
         <source>Mark</source>
         <translation>Marca</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="795"/>
         <source>Sync normals</source>
         <translation>Sincronizza normali</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="788"/>
+        <location filename="../src/main_window.cpp" line="798"/>
         <source>Check and repair</source>
         <translation>Controlla e correggi</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="799"/>
         <source>Find intersected</source>
         <translation>Trova intersecanti</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="790"/>
+        <location filename="../src/main_window.cpp" line="800"/>
         <source>Break intersected</source>
         <translation>Separa intersecanti</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="791"/>
+        <location filename="../src/main_window.cpp" line="801"/>
         <source>Find slivers</source>
         <translation>Trova degeneri</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="792"/>
+        <location filename="../src/main_window.cpp" line="802"/>
         <source>Fix slivers</source>
         <translation>Correggi degeneri</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="794"/>
+        <location filename="../src/main_window.cpp" line="804"/>
         <source>Nodes</source>
         <translation>Nodi</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="805"/>
         <source>Merge near</source>
         <translation>Unisci vicini</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="797"/>
+        <location filename="../src/main_window.cpp" line="807"/>
         <source>Move</source>
         <translation>Sposta</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="799"/>
+        <location filename="../src/main_window.cpp" line="809"/>
         <source>Remove and close hole</source>
         <translation>Rimuovi e chiudi foro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="801"/>
+        <location filename="../src/main_window.cpp" line="811"/>
         <source>Elements</source>
         <translation>Elementi</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="802"/>
+        <location filename="../src/main_window.cpp" line="812"/>
         <source>Create</source>
         <translation>Crea</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="809"/>
+        <location filename="../src/main_window.cpp" line="819"/>
         <source>Setup</source>
         <translation>Configurazione</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="811"/>
+        <location filename="../src/main_window.cpp" line="821"/>
         <source>Matrix solver</source>
         <translation>Solutore matriciale</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="822"/>
         <source>Monitoring points</source>
         <translation>Punti di monitoraggio</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="822"/>
+        <location filename="../src/main_window.cpp" line="832"/>
         <source>Conditions</source>
         <translation>Condizioni</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="823"/>
+        <location filename="../src/main_window.cpp" line="833"/>
         <source>Boundary</source>
         <translation>Al contorno</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="823"/>
+        <location filename="../src/main_window.cpp" line="833"/>
         <source>Show boundary conditions.</source>
         <translation>Mostra le condizioni al contorno.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="824"/>
+        <location filename="../src/main_window.cpp" line="834"/>
         <source>Initial</source>
         <translation>Iniziali</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="824"/>
+        <location filename="../src/main_window.cpp" line="834"/>
         <source>Show initial conditions.</source>
         <translation>Mostra le condizioni iniziali.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="825"/>
+        <location filename="../src/main_window.cpp" line="835"/>
         <source>Environment</source>
         <translation>Ambientali</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="825"/>
+        <location filename="../src/main_window.cpp" line="835"/>
         <source>Show environment conditions.</source>
         <translation>Mostra le condizioni ambientali.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="826"/>
+        <location filename="../src/main_window.cpp" line="836"/>
         <source>Show materials.</source>
         <translation>Mostra i materiali.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="828"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Reset</source>
         <translation>Reimposta</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="832"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Solve</source>
         <translation>Risolvi</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="844"/>
         <source>Run</source>
         <translation>Esegui</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="845"/>
         <source>Start</source>
         <translation>Avvia</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="846"/>
         <source>Stop</source>
         <translation>Arresta</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="837"/>
+        <location filename="../src/main_window.cpp" line="847"/>
         <source>Kill</source>
         <translation>Termina</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="839"/>
+        <location filename="../src/main_window.cpp" line="849"/>
         <source>Monitor</source>
         <translation>Monitoraggio</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="840"/>
+        <location filename="../src/main_window.cpp" line="850"/>
         <source>Convergence</source>
         <translation>Convergenza</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="841"/>
+        <location filename="../src/main_window.cpp" line="851"/>
         <source>Solver log</source>
         <translation>Log del solutore</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="843"/>
+        <location filename="../src/main_window.cpp" line="853"/>
         <source>Data</source>
         <translation>Dati</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="850"/>
+        <location filename="../src/main_window.cpp" line="860"/>
         <source>Visualize</source>
         <translation>Visualizza</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="857"/>
+        <location filename="../src/main_window.cpp" line="867"/>
         <source>Graphs</source>
         <translation>Grafici</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="861"/>
+        <location filename="../src/main_window.cpp" line="871"/>
         <source>Statistics</source>
         <translation>Statistiche</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="406"/>
-        <location filename="../src/main_window.cpp" line="804"/>
+        <location filename="../src/main_window.cpp" line="415"/>
+        <location filename="../src/main_window.cpp" line="814"/>
         <source>Special tools</source>
         <translation>Strumenti speciali</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="580"/>
+        <location filename="../src/main_window.cpp" line="589"/>
         <source>Solution</source>
         <translation>Soluzione</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="588"/>
-        <location filename="../src/main_window.cpp" line="860"/>
+        <location filename="../src/main_window.cpp" line="597"/>
+        <location filename="../src/main_window.cpp" line="870"/>
         <source>Report</source>
         <translation>Report</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="424"/>
-        <location filename="../src/main_window.cpp" line="738"/>
+        <location filename="../src/main_window.cpp" line="433"/>
+        <location filename="../src/main_window.cpp" line="747"/>
         <source>Cloud</source>
         <translation>Cloud</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="435"/>
-        <location filename="../src/main_window.cpp" line="741"/>
+        <location filename="../src/main_window.cpp" line="444"/>
+        <location filename="../src/main_window.cpp" line="751"/>
         <source>Help</source>
         <translation>Guida</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="1169"/>
+        <location filename="../src/main_window.cpp" line="1193"/>
         <source>If you quit now solver will continue executing in the background.</source>
         <translation>Se esci ora, il solutore continuerà l&apos;esecuzione in background.</translation>
     </message>

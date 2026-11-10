@@ -185,6 +185,14 @@ MainWindow::MainWindow(Session *session,
         this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT)->setChecked(ribbonLayout);
     }
     this->setRibbonLayout(ribbonLayout);
+
+    const bool ribbonCompact = this->applicationSettings->value("mainWindow/ribbonCompact",false).toBool();
+    {
+        const QSignalBlocker ribbonCompactActionBlocker(this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_COMPACT));
+        this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_COMPACT)->setChecked(ribbonCompact);
+    }
+    this->ribbonBar->setCompact(ribbonCompact);
+
     this->ribbonBar->setCollapsed(this->applicationSettings->value("mainWindow/ribbonCollapsed",false).toBool());
     this->ribbonBar->setCurrentPage(this->applicationSettings->value("mainWindow/ribbonPage",0).toInt());
 
@@ -392,6 +400,7 @@ QMenu *MainWindow::createFileMenu(QWidget *parent)
     menuFile->addAction(menuFileFolders->menuAction());
     menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
+    menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_COMPACT));
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_SETTINGS));
     menuFile->addSeparator();
     menuFile->addAction(this->actionList->getAction(Action::ACTION_APPLICATION_QUIT));
@@ -737,6 +746,7 @@ void MainWindow::createRibbon()
 
     this->ribbonBar->addTrailingMenu(tr("Cloud"),action(Action::ACTION_CLOUD_FILE_MANAGER)->icon(),this->createCloudMenu(this->ribbonBar));
     this->ribbonBar->addTrailingAction(action(Action::ACTION_APPLICATION_RIBBON_LAYOUT));
+    this->ribbonBar->addTrailingAction(action(Action::ACTION_APPLICATION_RIBBON_COMPACT));
     this->ribbonBar->addTrailingAction(action(Action::ACTION_APPLICATION_SETTINGS));
     this->ribbonBar->addTrailingMenu(tr("Help"),action(Action::ACTION_APPLICATION_HELP)->icon(),this->createHelpMenu(this->ribbonBar));
 
@@ -887,6 +897,20 @@ void MainWindow::setRibbonLayout(bool ribbonLayout)
     }
 
     this->applicationSettings->setValue("mainWindow/ribbonLayout",ribbonLayout);
+    R_LOG_TRACE_OUT;
+}
+
+void MainWindow::setRibbonCompact(bool ribbonCompact)
+{
+    R_LOG_TRACE_IN;
+    this->ribbonBar->setCompact(ribbonCompact);
+    this->applicationSettings->setValue("mainWindow/ribbonCompact",ribbonCompact);
+
+    // Asking for compact ribbon from the classic layout means asking for the ribbon as well.
+    if (ribbonCompact)
+    {
+        this->actionList->getAction(Action::ACTION_APPLICATION_RIBBON_LAYOUT)->setChecked(true);
+    }
     R_LOG_TRACE_OUT;
 }
 

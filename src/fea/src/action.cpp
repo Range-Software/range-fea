@@ -199,6 +199,7 @@ QString Action::getName(Type type)
         case ACTION_APPLICATION_FOLDER_TMP:                   return "application-folder_tmp";
         case ACTION_APPLICATION_SETTINGS:                     return "application-settings";
         case ACTION_APPLICATION_RIBBON_LAYOUT:                return "application-ribbon_layout";
+        case ACTION_APPLICATION_RIBBON_COMPACT:               return "application-ribbon_compact";
         case ACTION_APPLICATION_UPDATE:                       return "application-update";
         case ACTION_APPLICATION_ABOUT:                        return "application-about";
         case ACTION_APPLICATION_ABOUT_QT:                     return "application-about_qt";
@@ -332,6 +333,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_FOLDER_TMP, tr("Temporary files"), tr("Open temporary files folder in file browser."), "", ":/icons/file/pixmaps/range-open.svg",static_cast<PointerToMemberTrigger>(&Action::onFolderTmp));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_SETTINGS, tr("Application settings"), "", "Ctrl+A", ":/icons/application/pixmaps/range-application_settings.svg",static_cast<PointerToMemberTrigger>(&Action::onApplicationSettings), QAction::PreferencesRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_RIBBON_LAYOUT, tr("Ribbon layout"), tr("Show commands in a ribbon instead of menus and tool bars."), "", ":/icons/application/pixmaps/range-ribbon_layout.svg",static_cast<PointerToMemberToggle>(&Action::onApplicationRibbonLayout));
+    Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_RIBBON_COMPACT, tr("Compact ribbon"), tr("Show the ribbon in less vertical space, with smaller buttons and no group titles."), "", ":/icons/application/pixmaps/range-ribbon_compact.svg",static_cast<PointerToMemberToggle>(&Action::onApplicationRibbonCompact));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_UPDATE, tr("Check for updates"), "", "", ":/icons/file/pixmaps/range-download.svg",static_cast<PointerToMemberTrigger>(&Action::onUpdate));
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT, tr("About"), "", "F1", ":/icons/application/pixmaps/range-about.svg",static_cast<PointerToMemberTrigger>(&Action::onAbout), QAction::AboutRole);
     Action::regDef(actionDef, ACTION_GROUP_APPLICATION, ACTION_APPLICATION_ABOUT_QT, tr("About Qt"), "", "", ":/icons/application/pixmaps/range-qt.svg",static_cast<PointerToMemberTrigger>(&Action::onAboutQt), QAction::AboutQtRole);
@@ -2378,6 +2380,13 @@ void Action::onApplicationRibbonLayout(bool checked)
 {
     R_LOG_TRACE_IN;
     Application::instance()->getMainWindow()->setRibbonLayout(checked);
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onApplicationRibbonCompact(bool checked)
+{
+    R_LOG_TRACE_IN;
+    Application::instance()->getMainWindow()->setRibbonCompact(checked);
     R_LOG_TRACE_OUT;
 }
 
