@@ -125,7 +125,7 @@ Niekedy je potrebné vytvoriť správu, v ktorej sa vypočítané výsledky publ
 
 ![Vytvoriť správu](image-Create_report.png)
 
-Softvér vie vytvárať správy vo viacerých formátoch (HTML, Markdown, ODF a PDF), všetky sú predvolene zaškrtnuté. Tentoraz stačí vytvoriť iba dokument **PDF**, preto zrušte zaškrtnutie všetkých formátov okrem **Portable Document Format(PDF)** a kliknite na tlačidlo **Ok**.
+Softvér vie vytvárať správy vo viacerých formátoch (HTML, Markdown, ODT a PDF), všetky sú predvolene zaškrtnuté. Tentoraz stačí vytvoriť iba dokument **PDF**, preto zrušte zaškrtnutie všetkých formátov okrem **Portable Document Format(PDF)** a kliknite na tlačidlo **Ok**.
 
 Po vytvorení správy sa zobrazí hlásenie **Documents have been generated.** (Dokumenty boli vytvorené). Zatvorte ho kliknutím na **OK**.
 

@@ -4186,6 +4186,224 @@
         <source>Model size</source>
         <translation>Taille du modèle</translation>
     </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <source>Results</source>
+        <translation>Résultats</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <source>No results are available.</source>
+        <translation>Aucun résultat n&apos;est disponible.</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
+        <source>Support reactions</source>
+        <translation>Réactions d&apos;appui</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Moyenne pondérée par l&apos;aire</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Norme moyenne pondérée par l&apos;aire</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Moyenne</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Norme moyenne</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Norme moyenne des valeurs des éléments</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Norme moyenne des valeurs nodales</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Moyenne des valeurs des éléments</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Moyenne des valeurs nodales</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Temps de calcul</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Norme constante</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Valeur constante</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Élément</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Fréquence</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Ici il vaut %1 % de la charge appliquée totale.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Déséquilibre</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Le déséquilibre est la somme de la réaction totale et de la charge appliquée totale, à l&apos;équilibre il est nul.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>Dans une analyse dynamique il contient aussi les forces d&apos;inertie et d&apos;amortissement.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Les forces d&apos;inertie et d&apos;amortissement ne sont pas incluses.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Moyenne pondérée par la longueur</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Norme moyenne pondérée par la longueur</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Maximum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Norme maximale</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Minimum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Norme minimale</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Nœud</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Autres résultats</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Appui</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Pas de temps</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Charge appliquée totale</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Réaction totale</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Moyenne pondérée par le volume</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Norme moyenne pondérée par le volume</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Le reste provient de la tolérance de convergence du solveur matriciel.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>ligne</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>point</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>surface</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>volume</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="359"/>
+        <source>No results are available.</source>
+        <translation>Aucun résultat n&apos;est disponible.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="441"/>
+        <source>Support reactions</source>
+        <translation>Réactions d&apos;appui</translation>
+    </message>
 </context>
 <context>
     <name>ModelTree</name>
@@ -5007,8 +5225,8 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="78"/>
-        <source>OpenDocument Format</source>
-        <translation>OpenDocument Format</translation>
+        <source>OpenDocument Text</source>
+        <translation>Texte OpenDocument</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="93"/>

@@ -125,7 +125,7 @@ A veces es necesario crear un informe para publicar los resultados calculados.
 
 ![Crear informe](image-Create_report.png)
 
-El programa puede crear informes en varios formatos (HTML, Markdown, ODF y PDF), todos marcados de forma predeterminada. Esta vez basta con crear solo un documento **PDF**, así que desmarque todos los formatos excepto **Portable Document Format(PDF)** y haga clic en el botón **Aceptar**.
+El programa puede crear informes en varios formatos (HTML, Markdown, ODT y PDF), todos marcados de forma predeterminada. Esta vez basta con crear solo un documento **PDF**, así que desmarque todos los formatos excepto **Portable Document Format(PDF)** y haga clic en el botón **Aceptar**.
 
 Una vez creado el informe, se mostrará el mensaje **Documents have been generated.** (Se han generado los documentos). Ciérrelo haciendo clic en **Aceptar**.
 

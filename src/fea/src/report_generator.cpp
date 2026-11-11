@@ -1,4 +1,7 @@
 #include <QTextCursor>
+#include <QFileInfo>
+#include <QTextImageFormat>
+#include <QUrl>
 
 #include <rbl_logger.h>
 #include <rml_problem_type.h>
@@ -352,24 +355,57 @@ void ReportGenerator::generateResultsChapter()
 
     this->insertH1(cursor,tr("Results"));
 
-    this->insertBold(cursor,tr("Time-solver") + ":");
-    this->insertText(cursor," " + tr(rModel.getTimeSolver().getEnabled() ? "enabled" : "disabled"),true);
+    ResultsStatistics resultsStatistics(rModel);
 
-    if (rModel.getTimeSolver().getEnabled())
+    if (!resultsStatistics.hasResults())
     {
-        this->insertBold(cursor,tr("Current time step") + ":");
-        this->insertText(cursor," " + QLocale().toString(rModel.getTimeSolver().getCurrentTimeStep()+1),true);
-        this->insertBold(cursor,tr("Current computational time") + ":");
-        this->insertText(cursor," " + QLocale().toString(rModel.getTimeSolver().getCurrentTime()) + " [" + RVariable::getUnits(R_VARIABLE_TIME) + "]",true);
+        this->insertText(cursor,ResultsStatistics::tr("No results are available."));
     }
     else
     {
-        if (rModel.getProblemTaskTree().getProblemTypeMask() & R_PROBLEM_STRESS_MODAL)
+        // State of the solution the results belong to.
+        for (const ResultsStatistics::Row &row : resultsStatistics.getSolutionState())
         {
-            this->insertBold(cursor,tr("Current mode") + ":");
-            this->insertText(cursor," " + QLocale().toString(rModel.getProblemSetup().getModalSetup().getMode()+1),true);
-            this->insertBold(cursor,tr("Current frequency") + ":");
-            this->insertText(cursor," " + QLocale().toString(rModel.getProblemSetup().getModalSetup().getFrequency()) + " [" + RVariable::getUnits(R_VARIABLE_FREQUENCY) + "]",true);
+            this->insertBold(cursor,row.label + ":");
+            this->insertText(cursor," " + row.value,true);
+        }
+
+        QTextBlockFormat rightAlignment;
+        rightAlignment.setAlignment(Qt::AlignRight);
+
+        QTextTableFormat tableFormat;
+        tableFormat.setCellPadding(4);
+        tableFormat.setCellSpacing(0);
+        tableFormat.setBorder(0.0);
+        tableFormat.setHeaderRowCount(0);
+        tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_None);
+        tableFormat.setAlignment(Qt::AlignLeft);
+        tableFormat.setLeftMargin(30.0);
+
+        for (const ResultsStatistics::Section &section : resultsStatistics.getSections())
+        {
+            this->insertH2(cursor,section.title);
+
+            for (const ResultsStatistics::Variable &variable : section.variables)
+            {
+                this->insertH4(cursor,variable.title);
+
+                // Label, value and where the value occurs.
+                cursor.insertTable(int(variable.rows.size()),3,tableFormat);
+                for (const ResultsStatistics::Row &row : variable.rows)
+                {
+                    this->insertText(cursor,row.label,true);
+                    cursor.movePosition(QTextCursor::NextCell);
+                    cursor.setBlockFormat(rightAlignment);
+                    this->insertText(cursor,row.value,true);
+                    cursor.movePosition(QTextCursor::NextCell);
+                    this->insertText(cursor,row.location,true);
+                    cursor.movePosition(QTextCursor::NextCell);
+                }
+                cursor.movePosition(QTextCursor::NextBlock);
+            }
+
+            this->generateSupportReactions(cursor,section.supportReactions);
         }
     }
 
@@ -386,98 +422,103 @@ void ReportGenerator::generateResultsChapter()
 //        }
 //    }
 
-    this->insertH2(cursor,tr("Variables"));
-
-    for (uint i=0;i<rModel.getNVariables();i++)
-    {
-        const RVariable &rVariable = rModel.getVariable(i);
-        this->insertH3(cursor,rVariable.getName());
-
-        QTextBlockFormat blockFormat;
-        blockFormat.setIndent(2);
-
-        QTextBlockFormat rightAlignment;
-        rightAlignment.setAlignment(Qt::AlignRight);
-
-        QTextTableFormat tableFormat;
-        tableFormat.setCellPadding(1);
-        tableFormat.setCellSpacing(0);
-        tableFormat.setBorder(0.0);
-        tableFormat.setHeaderRowCount(0);
-        tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_None);
-        tableFormat.setAlignment(Qt::AlignCenter);
-
-        RStatistics stat(rVariable.getValues(),100,true);
-
-        cursor.insertTable(8,2,tableFormat);
-
-        this->insertBold(cursor,tr("Variable type") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,tr(rVariable.getNVectors() == 1 ? "Scalar" : "Vector"),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Units") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,rVariable.getUnits(),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Minimum") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getMin()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Maximum") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getMax()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Average") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getAvg()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Median") + ":",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getMed()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Percentile") + " 5:",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getP05()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        this->insertBold(cursor,tr("Percentile") + " 95:",true);
-        cursor.movePosition(QTextCursor::NextCell);
-        cursor.setBlockFormat(rightAlignment);
-        this->insertText(cursor,QLocale().toString(stat.getP95()),true);
-        cursor.movePosition(QTextCursor::NextCell);
-
-        cursor.movePosition(QTextCursor::NextBlock);
-    }
-
     this->insertH2(cursor,tr("Screenshot"));
 
     QTextBlockFormat blockFormat;
     blockFormat.setAlignment(Qt::AlignCenter);
     cursor.insertBlock(blockFormat);
-    QImage modelScreenShotImage(this->takeModelScreenshot());
-    QRect pageRect(this->printer->pageLayout().paintRectPixels(this->printer->resolution()));
-    cursor.insertImage(modelScreenShotImage.scaledToWidth(qCeil(double(pageRect.width())*0.9),Qt::SmoothTransformation));
+    QString screenShotFileName;
+    QImage modelScreenShotImage(this->takeModelScreenshot(screenShotFileName));
+    if (!modelScreenShotImage.isNull())
+    {
+        QRect pageRect(this->printer->pageLayout().paintRectPixels(this->printer->resolution()));
+        QImage image(modelScreenShotImage.scaledToWidth(qCeil(double(pageRect.width())*0.9),Qt::SmoothTransformation));
+        // Named after the screenshot file, so that HTML and Markdown can refer
+        // to it as a file next to the document.
+        QTextImageFormat imageFormat;
+        imageFormat.setName(QFileInfo(screenShotFileName).fileName());
+        imageFormat.setWidth(image.width());
+        imageFormat.setHeight(image.height());
+        this->docBody->addResource(QTextDocument::ImageResource,QUrl(imageFormat.name()),image);
+        cursor.insertImage(imageFormat);
+    }
 }
 
-QImage ReportGenerator::takeModelScreenshot() const
+void ReportGenerator::generateSupportReactions(QTextCursor &cursor, const ResultsStatistics::SupportReactions &supportReactions)
+{
+    R_LOG_TRACE;
+
+    if (supportReactions.rows.empty())
+    {
+        return;
+    }
+
+    this->insertH4(cursor,ResultsStatistics::tr("Support reactions"));
+
+    QTextBlockFormat rightAlignment;
+    rightAlignment.setAlignment(Qt::AlignRight);
+
+    QTextTableFormat tableFormat;
+    tableFormat.setCellPadding(4);
+    tableFormat.setCellSpacing(0);
+    tableFormat.setBorder(0.0);
+    tableFormat.setHeaderRowCount(1);
+    tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_None);
+    tableFormat.setAlignment(Qt::AlignLeft);
+    tableFormat.setLeftMargin(30.0);
+
+    cursor.insertTable(int(supportReactions.rows.size())+1,int(supportReactions.headers.size()),tableFormat);
+
+    for (int i=0;i<supportReactions.headers.size();i++)
+    {
+        if (i > 0)
+        {
+            cursor.setBlockFormat(rightAlignment);
+        }
+        this->insertBold(cursor,supportReactions.headers.at(i),true);
+        cursor.movePosition(QTextCursor::NextCell);
+    }
+
+    for (const ResultsStatistics::ForceRow &row : supportReactions.rows)
+    {
+        if (row.total)
+        {
+            this->insertBold(cursor,row.label,true);
+        }
+        else
+        {
+            this->insertText(cursor,row.label,true);
+        }
+        for (double value : {row.force[0],row.force[1],row.force[2],row.force.length()})
+        {
+            cursor.movePosition(QTextCursor::NextCell);
+            cursor.setBlockFormat(rightAlignment);
+            this->insertText(cursor,ResultsStatistics::realToString(value),true);
+        }
+        cursor.movePosition(QTextCursor::NextCell);
+    }
+    cursor.movePosition(QTextCursor::NextBlock);
+
+    // What the imbalance means and how large it is.
+    QTextBlockFormat noteFormat;
+    noteFormat.setAlignment(Qt::AlignLeft);
+    noteFormat.setLeftMargin(30.0);
+    QTextCharFormat italicFormat = DocumentGenerator::getTextFormat();
+    italicFormat.setFontPointSize(italicFormat.fontPointSize() * this->fontSizeScale);
+    italicFormat.setFontItalic(true);
+    for (const QString &note : supportReactions.notes)
+    {
+        cursor.insertBlock(noteFormat,QTextCharFormat());
+        cursor.insertText(note,italicFormat);
+    }
+}
+
+QImage ReportGenerator::takeModelScreenshot(QString &screenShotFile) const
 {
     R_LOG_TRACE;
 
     const Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
-    QString screenShotFile(rModel.buildScreenShotFileName());
+    screenShotFile = rModel.buildScreenShotFileName();
 
     Application::instance()->getSession()->setTakeScreenShot(this->modelID,screenShotFile,true);
 

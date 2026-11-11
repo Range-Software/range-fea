@@ -4186,6 +4186,224 @@
         <source>Model size</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <source>No results are available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
+        <source>Support reactions</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="359"/>
+        <source>No results are available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="441"/>
+        <source>Support reactions</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelTree</name>
@@ -5007,7 +5225,7 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="78"/>
-        <source>OpenDocument Format</source>
+        <source>OpenDocument Text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -1,7 +1,10 @@
 #ifndef REPORT_GENERATOR_H
 #define REPORT_GENERATOR_H
 
+#include <QTextCursor>
+
 #include "document_generator.h"
+#include "results_statistics.h"
 
 class ReportGenerator : public DocumentGenerator
 {
@@ -34,8 +37,11 @@ class ReportGenerator : public DocumentGenerator
         //! Generate results chapter.
         void generateResultsChapter();
 
+        //! Generate table of support reactions, if there are any.
+        void generateSupportReactions(QTextCursor &cursor, const ResultsStatistics::SupportReactions &supportReactions);
+
         //! Take model screenshot.
-        QImage takeModelScreenshot() const;
+        QImage takeModelScreenshot(QString &screenShotFile) const;
 
 };
 

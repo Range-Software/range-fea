@@ -125,7 +125,7 @@ A volte è necessario creare un report per pubblicare i risultati calcolati.
 
 ![Crea report](image-Create_report.png)
 
-Il programma può produrre report in più formati (HTML, Markdown, ODF e PDF), tutti selezionati per impostazione predefinita. Questa volta basta produrre solo un documento **PDF**: deselezionare tutti i formati tranne **Portable Document Format(PDF)** e fare clic sul pulsante **Ok**.
+Il programma può produrre report in più formati (HTML, Markdown, ODT e PDF), tutti selezionati per impostazione predefinita. Questa volta basta produrre solo un documento **PDF**: deselezionare tutti i formati tranne **Portable Document Format(PDF)** e fare clic sul pulsante **Ok**.
 
 Una volta creato il report, viene mostrato il messaggio **Documents have been generated.** (I documenti sono stati generati). Chiuderlo facendo clic su **OK**.
 

@@ -4187,6 +4187,224 @@
         <source>Model size</source>
         <translation>Розмір моделі</translation>
     </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <source>Results</source>
+        <translation>Результати</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <source>No results are available.</source>
+        <translation>Результати відсутні.</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
+        <source>Support reactions</source>
+        <translation>Реакції опор</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Середнє, зважене за площею</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Середня величина, зважена за площею</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Середній</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Середня величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Середня величина значень елементів</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Середня величина вузлових значень</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Середнє значень елементів</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Середнє вузлових значень</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Розрахунковий час</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Стала величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Стале значення</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Елемент</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Частота</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Тут це %1 % сумарного прикладеного навантаження.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Незбалансованість</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Незбалансованість — це сума сумарної реакції та сумарного прикладеного навантаження, у рівновазі вона дорівнює нулю.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>У динамічному аналізі вона містить також сили інерції та демпфування.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Сили інерції та демпфування не враховано.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Середнє, зважене за довжиною</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Середня величина, зважена за довжиною</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Максимум</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Максимальна величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Мінімум</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Мінімальна величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Мода</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Вузол</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Інші результати</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Опора</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Часовий крок</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Сумарне прикладене навантаження</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Сумарна реакція</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Середнє, зважене за об&apos;ємом</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Середня величина, зважена за об&apos;ємом</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Залишок зумовлений допуском збіжності матричного розв&apos;язувача.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>лінія</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>точка</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>поверхня</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>об&apos;єм</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="359"/>
+        <source>No results are available.</source>
+        <translation>Результати відсутні.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="441"/>
+        <source>Support reactions</source>
+        <translation>Реакції опор</translation>
+    </message>
 </context>
 <context>
     <name>ModelTree</name>
@@ -5008,8 +5226,8 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="78"/>
-        <source>OpenDocument Format</source>
-        <translation>Формат OpenDocument</translation>
+        <source>OpenDocument Text</source>
+        <translation>Текст OpenDocument</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="93"/>

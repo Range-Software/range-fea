@@ -125,7 +125,7 @@ Il est parfois nécessaire de créer un rapport pour publier les résultats calc
 
 ![Créer un rapport](image-Create_report.png)
 
-Le logiciel peut produire des rapports dans plusieurs formats (HTML, Markdown, ODF et PDF), tous cochés par défaut. Cette fois, un document **PDF** suffit : décochez tous les formats sauf **Portable Document Format(PDF)** et cliquez sur le bouton **Ok**.
+Le logiciel peut produire des rapports dans plusieurs formats (HTML, Markdown, ODT et PDF), tous cochés par défaut. Cette fois, un document **PDF** suffit : décochez tous les formats sauf **Portable Document Format(PDF)** et cliquez sur le bouton **Ok**.
 
 Une fois le rapport créé, le message **Documents have been generated.** (Les documents ont été créés) s'affiche. Fermez-le en cliquant sur **OK**.
 

@@ -4186,6 +4186,224 @@
         <source>Model size</source>
         <translation>Modellgröße</translation>
     </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <source>Results</source>
+        <translation>Ergebnisse</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <source>No results are available.</source>
+        <translation>Es sind keine Ergebnisse verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
+        <source>Support reactions</source>
+        <translation>Auflagerreaktionen</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Flächengewichteter Mittelwert</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Flächengewichteter mittlerer Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Mittelwert</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Mittlerer Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Mittlerer Betrag der Elementwerte</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Mittlerer Betrag der Knotenwerte</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Mittelwert der Elementwerte</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Mittelwert der Knotenwerte</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Rechenzeit</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Konstanter Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Konstanter Wert</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Element</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Frequenz</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Hier beträgt es %1 % der gesamten aufgebrachten Last.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Ungleichgewicht</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Das Ungleichgewicht ist die Summe aus Gesamtreaktion und gesamter aufgebrachter Last, im Gleichgewicht ist es null.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>In einer dynamischen Analyse enthält es auch die Trägheits- und Dämpfungskräfte.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Trägheits- und Dämpfungskräfte sind nicht enthalten.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Längengewichteter Mittelwert</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Längengewichteter mittlerer Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Maximum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Maximaler Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Minimum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Minimaler Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Mode</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Knoten</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Weitere Ergebnisse</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Auflager</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Zeitschritt</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Gesamte aufgebrachte Last</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Gesamtreaktion</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Volumengewichteter Mittelwert</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Volumengewichteter mittlerer Betrag</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Der Rest stammt aus der Konvergenztoleranz des Matrixlösers.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>Linie</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>Punkt</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>Fläche</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>Volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="359"/>
+        <source>No results are available.</source>
+        <translation>Es sind keine Ergebnisse verfügbar.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="441"/>
+        <source>Support reactions</source>
+        <translation>Auflagerreaktionen</translation>
+    </message>
 </context>
 <context>
     <name>ModelTree</name>
@@ -5007,8 +5225,8 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="78"/>
-        <source>OpenDocument Format</source>
-        <translation>OpenDocument Format</translation>
+        <source>OpenDocument Text</source>
+        <translation>OpenDocument-Text</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="93"/>

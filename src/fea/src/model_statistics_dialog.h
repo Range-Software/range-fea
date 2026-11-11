@@ -4,6 +4,10 @@
 #include <QDialog>
 #include <QTextBrowser>
 
+#include "results_statistics.h"
+
+class Model;
+
 class ModelStatisticsDialog : public QDialog
 {
 
@@ -22,8 +26,17 @@ class ModelStatisticsDialog : public QDialog
         //! Produce statistics.
         void produceStatistics(uint modelID, QTextBrowser *textBrowser);
 
+        //! Produce results chapter.
+        static QString produceResults(const Model &rModel);
+
+        //! Produce table of support reactions.
+        static QString produceSupportReactions(const ResultsStatistics::SupportReactions &supportReactions);
+
         //! Produce standard table row.
         static QString generateTableRow(const QString &label, const QString &value);
+
+        //! Produce table row with a value and where it occurs.
+        static QString generateTableRow(const QString &label, const QString &value, const QString &location);
 
 };
 

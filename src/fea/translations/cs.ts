@@ -4187,6 +4187,224 @@
         <source>Model size</source>
         <translation>Velikost modelu</translation>
     </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <source>Results</source>
+        <translation>Výsledky</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <source>No results are available.</source>
+        <translation>Nejsou k dispozici žádné výsledky.</translation>
+    </message>
+    <message>
+        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
+        <source>Support reactions</source>
+        <translation>Reakce podpor</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Plošně vážený průměr</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Plošně vážená průměrná velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Průměr</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Průměrná velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Průměrná velikost hodnot prvků</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Průměrná velikost hodnot v uzlech</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Průměr hodnot prvků</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Průměr hodnot v uzlech</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Výpočetní čas</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Konstantní velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Konstantní hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Prvek</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Frekvence</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Zde je to %1 % celkového působícího zatížení.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Nerovnováha</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Nerovnováha je součet celkové reakce a celkového působícího zatížení, v rovnováze je nulová.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>V dynamické analýze obsahuje i setrvačné a tlumicí síly.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Setrvačné a tlumicí síly nejsou zahrnuty.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Délkově vážený průměr</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Délkově vážená průměrná velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Maximum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Maximální velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Minimum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Minimální velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Mód</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Uzel</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Ostatní výsledky</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Podpora</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Časový krok</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Celkové působící zatížení</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Celková reakce</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Objemově vážený průměr</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Objemově vážená průměrná velikost</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Zbytek pochází z tolerance konvergence maticového řešiče.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>čára</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>bod</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>plocha</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>objem</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="359"/>
+        <source>No results are available.</source>
+        <translation>Nejsou k dispozici žádné výsledky.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="441"/>
+        <source>Support reactions</source>
+        <translation>Reakce podpor</translation>
+    </message>
 </context>
 <context>
     <name>ModelTree</name>
@@ -5008,8 +5226,8 @@
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="78"/>
-        <source>OpenDocument Format</source>
-        <translation>OpenDocument Format</translation>
+        <source>OpenDocument Text</source>
+        <translation>Text OpenDocument</translation>
     </message>
     <message>
         <location filename="../src/report_dialog.cpp" line="93"/>

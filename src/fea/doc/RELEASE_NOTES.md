@@ -147,6 +147,46 @@
   whether to load it anyway, as it may not load correctly. This applies to
   *Open model*, models given on the command line or restored with the session,
   *Reload results* and selecting a result record
+- Support reactions are saved with the results, at the end of the model file,
+  whose format stays at 1.5.0; models saved before read without them
+
+#### Support reactions
+
+- After a stress solution the log lists the total reaction force of every support,
+  that is every entity with a *Displacement*, *Normal displacement* or *Roller*
+  boundary condition, followed by the total reaction and the total applied load so
+  that equilibrium can be checked. Reactions are correct on nodes which are both
+  loaded and held, and a node held by several supports shares each held direction
+  among the supports which hold it. Inertia and damping forces of a dynamic
+  analysis are not included
+- The *Results* chapter of generated reports shows the same statistics as the
+  **Model statistics** dialog, grouped by problem type: located minimum and
+  maximum, weighted averages and the support reactions with the imbalance. Both
+  use one implementation, so they always agree
+
+#### Model statistics
+
+- The **Model statistics** dialog has a new *Results* chapter. It shows the time
+  step and time, or the mode and frequency, of the results, and for each solved
+  problem type the minimum, maximum and average of every result it computes, with
+  the node or element and entity where the minimum and maximum occur. Averages are
+  weighted by element volume, area or length, with a separate average for each
+  kind of element present, so they do not depend on how fine the mesh is. Results
+  on nodes are integrated over the elements, which gives their exact average over
+  the body for the linear elements in use. A result without elements to weight it
+  by shows the plain *average of node values* or *of element values*.
+  Vectors are described by their magnitude. Element results of the body, such as
+  stress or heat flux, leave out the elements the solver computes no values on:
+  point elements, entities whose material lacks the properties the problem type
+  needs, and surfaces without a thickness or lines without a cross area, such as
+  the boundary surface of a solid. Boundary results, such as heat radiation, keep
+  the boundary surfaces. A result which is the same everywhere is shown as one
+  value. Stress analysis
+  adds the support reactions, the total applied load and the imbalance between
+  them, with a note on what the imbalance means and how large it is relative to
+  the applied load. All real values in the dialog are shown in scientific format,
+  such as `4,000000e-02` Results which belong to no solved problem type are listed under *Other
+  results*
 
 #### Cloud
 
@@ -175,6 +215,33 @@
 
 ### Bug fixes
 
+- PDF reports came out wrong when the display scaling was not 100 %: pages were
+  drawn too large, so their right part was cut off, the bottom of each page with
+  the page footer was lost and content was missing between pages. The page size
+  was taken at the printer resolution while the text was laid out at the screen
+  resolution; both now use the resolution of the PDF page
+- Reports exported to OpenDocument had no title page, header, footer or page
+  setup, every table had a grid and stretched or squeezed columns, text used a
+  different font, and the screenshot ran over the page edge. They now look like
+  the PDF: A4 page with its margins, title page, header with the logo, footer with
+  page numbers, tables sized and placed as printed, and the same font
+- The report format is now called *OpenDocument Text (ODT)*, and the file gets
+  the extension `.odt`. It was offered as ODF with the extension `.odf`, which is
+  for OpenDocument formulas and may open in a formula editor
+- Report files always get the extension of their format: a name without it gets
+  it appended, and `.odf` is replaced by `.odt`
+- The **Documents** tab listed `.odf` files and missed the `.odt` reports
+- The help of *Create report* lists Markdown among the supported formats
+- HTML and Markdown reports referred to a screenshot file which did not exist.
+  The screenshot is now saved next to the report under the name it refers to
+- PDF reports generated with the dark style active had white text on the white
+  page. Reports are now always printed black on white
+- Models saved in the ASCII format (`.ram`) could not be opened again: yes/no
+  settings were saved as control characters and read back inverted, which made
+  the rest of the file fail to load. They are saved as `0` and `1` now, and
+  `.ram` files saved by older versions are read with the correct values
+- Some yes/no settings of models, environment conditions and initial conditions
+  were saved with undefined values. They are now always saved as yes or no
 - Fixed results kept when generating a 3D mesh with *Keep computed results*. Some new
   nodes on the model boundary got values of unrelated nodes, which showed as spikes in
   the displaced shape, and surface elements got values of unrelated elements
@@ -198,6 +265,7 @@
 - range-cloud-lib @ v1.3.0
 - range-gui-lib @ v1.3.1
 - range-model-lib @ v1.3.0
+- range-solver-lib @ v1.2.1
 
 ---
 

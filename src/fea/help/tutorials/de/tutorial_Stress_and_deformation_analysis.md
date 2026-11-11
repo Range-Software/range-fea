@@ -125,7 +125,7 @@ Manchmal ist es nötig, einen Bericht zu erstellen, um die berechneten Ergebniss
 
 ![Bericht erstellen](image-Create_report.png)
 
-Das Programm kann Berichte in mehreren Formaten erstellen (HTML, Markdown, ODF und PDF); alle sind standardmäßig aktiviert. Diesmal genügt ein **PDF**-Dokument, deaktivieren Sie daher alle Formate außer **Portable Document Format(PDF)** und klicken Sie auf **Ok**.
+Das Programm kann Berichte in mehreren Formaten erstellen (HTML, Markdown, ODT und PDF); alle sind standardmäßig aktiviert. Diesmal genügt ein **PDF**-Dokument, deaktivieren Sie daher alle Formate außer **Portable Document Format(PDF)** und klicken Sie auf **Ok**.
 
 Nach dem Erstellen des Berichts wird die Meldung **Documents have been generated.** (Dokumente wurden erstellt) angezeigt. Schließen Sie sie mit **OK**.
 

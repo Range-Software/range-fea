@@ -124,7 +124,7 @@ Sometimes it is necessary to produce a report to publish computed results.
 
 ![Create report](image-Create_report.png)
 
-Software can produce reports in multiple formats (HTML, Markdown, ODF and PDF), all of them are checked by default. This time it is enough to produce only **PDF** document, so uncheck all formats except **Portable Document Format(PDF)** and click **Ok** button.
+Software can produce reports in multiple formats (HTML, Markdown, ODT and PDF), all of them are checked by default. This time it is enough to produce only **PDF** document, so uncheck all formats except **Portable Document Format(PDF)** and click **Ok** button.
 
 Once the report is generated, a message **Documents have been generated.** will be shown. Click **OK** to close it.
 

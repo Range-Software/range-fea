@@ -2,6 +2,7 @@
 #define DOCUMENT_GENERATOR_H
 
 #include <QMap>
+#include <QStringList>
 #include <QTextDocument>
 #include <QPrinter>
 #include <QTextCharFormat>
@@ -19,7 +20,7 @@ class DocumentGenerator : public RJob
             PlainText = 1 << 0,
             HTML      = 1 << 1,
             Markdown  = 1 << 2,
-            ODF       = 1 << 3,
+            ODT       = 1 << 3,
             PDF       = 1 << 4
         };
 
@@ -55,6 +56,14 @@ class DocumentGenerator : public RJob
         QTextDocument *docBody;
         //! Printer.
         QPrinter *printer;
+        //! Printer resolution the documents were laid out at. Painting to a
+        //! device of another resolution has to be scaled by the ratio.
+        int layoutResolution;
+
+        //! Header logo.
+        static const QString logoFileName;
+        //! Size of the header logo in layout pixels.
+        static const double logoSize;
 
     public:
 
@@ -67,8 +76,16 @@ class DocumentGenerator : public RJob
         //! Set font size scale.
         void setFontSizeScale(double fontSizeScale);
 
-        //! Add export type.
+        //! Add export type. The file name gets the extension of the format
+        //! if it has none of its extensions.
         void addExportType(DocumentGenerator::Type type, const QString &fileName);
+
+        //! Return file extensions of the format, the default one first.
+        static QStringList getFileExtensions(DocumentGenerator::Type type);
+
+        //! Return file name with an extension of the format: kept if it has
+        //! one, .odf replaced by .odt, otherwise the default one appended.
+        static QString ensureFileExtension(DocumentGenerator::Type type, const QString &fileName);
 
     protected:
 
@@ -102,8 +119,12 @@ class DocumentGenerator : public RJob
         //! Export to Markdown file.
         void exportToMarkdown(const QString &fileName) const;
 
-        //! Export to ODF file.
-        void exportToODF(const QString &fileName) const;
+        //! Save the images of the body next to the exported file, where the
+        //! file refers to them.
+        void exportImages(const QString &fileName) const;
+
+        //! Export to ODT file.
+        void exportToODT(const QString &fileName) const;
 
         //! Export to PDF file.
         void exportToPDF(const QString &fileName) const;

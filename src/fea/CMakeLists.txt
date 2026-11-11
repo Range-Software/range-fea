@@ -136,6 +136,7 @@ qt_add_executable(fea
     src/monitoring_points_dialog.cpp
     src/move_node_dialog.cpp
     src/new_model_dialog.cpp
+    src/odf_document_writer.cpp
     src/particle_setup_widget.cpp
     src/pick_details_tree.cpp
     src/pick_item.cpp
@@ -157,6 +158,7 @@ qt_add_executable(fea
     src/rename_model_dialog.cpp
     src/report_dialog.cpp
     src/report_generator.cpp
+    src/results_statistics.cpp
     src/results_variable_selector.cpp
     src/results_variable_tree.cpp
     src/rhi_render_surface.cpp
@@ -323,6 +325,7 @@ qt_add_executable(fea
     src/monitoring_points_dialog.h
     src/move_node_dialog.h
     src/new_model_dialog.h
+    src/odf_document_writer.h
     src/particle_setup_widget.h
     src/pick_details_tree.h
     src/pick_item.h
@@ -345,6 +348,7 @@ qt_add_executable(fea
     src/rename_model_dialog.h
     src/report_dialog.h
     src/report_generator.h
+    src/results_statistics.h
     src/results_variable_selector.h
     src/results_variable_tree.h
     src/rhi_render_surface.h

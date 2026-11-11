@@ -17,7 +17,7 @@
 bool ReportDialog::htmlFileEnabled = true;
 bool ReportDialog::markdownFileEnabled = true;
 bool ReportDialog::pdfFileEnabled = true;
-bool ReportDialog::odfFileEnabled = true;
+bool ReportDialog::odtFileEnabled = true;
 
 ReportDialog::ReportDialog(uint modelID, QWidget *parent)
     : QDialog(parent)
@@ -42,7 +42,8 @@ ReportDialog::ReportDialog(uint modelID, QWidget *parent)
 
     QString htmlFileName = Application::instance()->getSession()->getModel(this->modelID).buildDocFileName("html");
     QString markDownFileName = Application::instance()->getSession()->getModel(this->modelID).buildDocFileName("md");
-    QString odfFileName = Application::instance()->getSession()->getModel(this->modelID).buildDocFileName("odf");
+    // An OpenDocument text is .odt - .odf would be an OpenDocument formula.
+    QString odtFileName = Application::instance()->getSession()->getModel(this->modelID).buildDocFileName("odt");
     QString pdfFileName = Application::instance()->getSession()->getModel(this->modelID).buildDocFileName("pdf");
 
     this->htmlGroupBox = new QGroupBox(tr("HyperText Markup Language") + " (HTML)");
@@ -75,20 +76,20 @@ ReportDialog::ReportDialog(uint modelID, QWidget *parent)
                                                              "Markdown " + tr("files") + " (*.md);;" + tr("Any files") + " (*)");
     markDownFileLayout->addWidget(this->markdownFileChooserButton);
 
-    this->odfGroupBox = new QGroupBox(tr("OpenDocument Format") + " (ODF)");
-    this->odfGroupBox->setCheckable(true);
-    this->odfGroupBox->setChecked(ReportDialog::odfFileEnabled);
-    fileLayout->addWidget(this->odfGroupBox);
+    this->odtGroupBox = new QGroupBox(tr("OpenDocument Text") + " (ODT)");
+    this->odtGroupBox->setCheckable(true);
+    this->odtGroupBox->setChecked(ReportDialog::odtFileEnabled);
+    fileLayout->addWidget(this->odtGroupBox);
 
-    QVBoxLayout *odfFileLayout = new QVBoxLayout;
-    this->odfGroupBox->setLayout(odfFileLayout);
+    QVBoxLayout *odtFileLayout = new QVBoxLayout;
+    this->odtGroupBox->setLayout(odtFileLayout);
 
-    this->odfFileChooserButton = new RFileChooserButton(tr("Report file") + ":",
+    this->odtFileChooserButton = new RFileChooserButton(tr("Report file") + ":",
                                                         RFileChooserButton::SaveFile,
                                                         tr("Select file"),
-                                                        odfFileName,
-                                                        "ODF " + tr("files") + " (*.odf);;" + tr("Any files") + " (*)");
-    odfFileLayout->addWidget(this->odfFileChooserButton);
+                                                        odtFileName,
+                                                        "ODT " + tr("files") + " (*.odt);;" + tr("Any files") + " (*)");
+    odtFileLayout->addWidget(this->odtFileChooserButton);
 
     this->pdfGroupBox = new QGroupBox(tr("Portable Document Format") +  "(PDF)");
     this->pdfGroupBox->setCheckable(true);
@@ -126,7 +127,7 @@ int ReportDialog::exec()
     {
         ReportDialog::htmlFileEnabled = this->htmlGroupBox->isChecked();
         ReportDialog::markdownFileEnabled = this->markdownGroupBox->isChecked();
-        ReportDialog::odfFileEnabled = this->odfGroupBox->isChecked();
+        ReportDialog::odtFileEnabled = this->odtGroupBox->isChecked();
         ReportDialog::pdfFileEnabled = this->pdfGroupBox->isChecked();
 
         ReportGenerator *reportGenerator = new ReportGenerator(this->modelID);
@@ -139,9 +140,9 @@ int ReportDialog::exec()
         {
             reportGenerator->addExportType(ReportGenerator::Markdown,this->markdownFileChooserButton->getFileName());
         }
-        if (ReportDialog::odfFileEnabled)
+        if (ReportDialog::odtFileEnabled)
         {
-            reportGenerator->addExportType(ReportGenerator::ODF,this->odfFileChooserButton->getFileName());
+            reportGenerator->addExportType(ReportGenerator::ODT,this->odtFileChooserButton->getFileName());
         }
         if (ReportDialog::pdfFileEnabled)
         {

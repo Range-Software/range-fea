@@ -125,7 +125,7 @@ Někdy je potřeba vytvořit zprávu, ve které budou vypočtené výsledky publ
 
 ![Vytvořit zprávu](image-Create_report.png)
 
-Software umí vytvářet zprávy ve více formátech (HTML, Markdown, ODF a PDF), všechny jsou ve výchozím stavu zaškrtnuté. Tentokrát stačí vytvořit pouze dokument **PDF**, proto zrušte zaškrtnutí všech formátů kromě **Portable Document Format(PDF)** a klikněte na tlačítko **Ok**.
+Software umí vytvářet zprávy ve více formátech (HTML, Markdown, ODT a PDF), všechny jsou ve výchozím stavu zaškrtnuté. Tentokrát stačí vytvořit pouze dokument **PDF**, proto zrušte zaškrtnutí všech formátů kromě **Portable Document Format(PDF)** a klikněte na tlačítko **Ok**.
 
 Po vytvoření zprávy se zobrazí zpráva **Documents have been generated.** (Dokumenty byly vytvořeny). Zavřete ji kliknutím na **OK**.
 

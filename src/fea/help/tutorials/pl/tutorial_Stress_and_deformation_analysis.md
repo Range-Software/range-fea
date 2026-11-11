@@ -125,7 +125,7 @@ Czasem trzeba utworzyć raport, aby opublikować obliczone wyniki.
 
 ![Utwórz raport](image-Create_report.png)
 
-Program może tworzyć raporty w wielu formatach (HTML, Markdown, ODF i PDF); wszystkie są domyślnie zaznaczone. Tym razem wystarczy utworzyć tylko dokument **PDF**, więc odznacz wszystkie formaty oprócz **Portable Document Format(PDF)** i kliknij przycisk **Ok**.
+Program może tworzyć raporty w wielu formatach (HTML, Markdown, ODT i PDF); wszystkie są domyślnie zaznaczone. Tym razem wystarczy utworzyć tylko dokument **PDF**, więc odznacz wszystkie formaty oprócz **Portable Document Format(PDF)** i kliknij przycisk **Ok**.
 
 Po utworzeniu raportu zostanie wyświetlony komunikat **Documents have been generated.** (Dokumenty zostały utworzone). Zamknij go, klikając **OK**.
 

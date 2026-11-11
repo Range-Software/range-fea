@@ -1,3 +1,3 @@
 # Utwórz raport
 
-Tworzy dokument raportu. Obsługiwane formaty plików to _html_, _odf_ i _pdf_.
+Tworzy dokument raportu. Obsługiwane formaty plików to _html_, _md_, _odt_ i _pdf_.

@@ -27,12 +27,12 @@ class ReportDialog : public QDialog
         QGroupBox *markdownGroupBox;
         //! Markdown file chooser.
         RFileChooserButton *markdownFileChooserButton;
-        //! ODF file enabled.
-        static bool odfFileEnabled;
-        //! ODF group box.
-        QGroupBox *odfGroupBox;
-        //! ODF file chooser.
-        RFileChooserButton *odfFileChooserButton;
+        //! ODT file enabled.
+        static bool odtFileEnabled;
+        //! ODT group box.
+        QGroupBox *odtGroupBox;
+        //! ODT file chooser.
+        RFileChooserButton *odtFileChooserButton;
         //! PDF file enabled.
         static bool pdfFileEnabled;
         //! PDF group box.

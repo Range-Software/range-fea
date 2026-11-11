@@ -7,9 +7,23 @@
 - A model file whose file format version is newer than supported is still
   loaded, but a warning in the log says that it may not be read correctly
 
+#### Stress analysis
+
+- The log lists the total reaction force of every support after each stress
+  solution, followed by the total reaction and the total applied load. The
+  support reactions are saved with the results in the model file
+
+### Bug fixes
+
+- Model files in the ASCII format (`.ram`) could not be read. Yes/no values were
+  saved as control characters and read back inverted, which made the rest of the
+  file fail to load. They are saved as `0` and `1` now, and files saved by older
+  versions are read with the correct values
+
 ### Submodules
 
 - range-model-lib @ v1.3.0
+- range-solver-lib @ v1.2.1
 
 ## Version 1.3.1
 
