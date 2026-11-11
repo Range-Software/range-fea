@@ -20,7 +20,7 @@ The following command will attempt to download and install all required packages
 ```
 sudo ./src/range-build-tools/prereqs.sh
 ```
-_NOTE: In case your OS does not provide you with Qt version 6.8 or newer download and install it from [https://www.qt.io/download/](https://www.qt.io/download/)._
+_NOTE: In case your OS does not provide you with Qt version 6.12 or newer download and install it from [https://www.qt.io/download/](https://www.qt.io/download/)._
 ## Build
 ```
 cmake -S src -B build-Release && \
