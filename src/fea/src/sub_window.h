@@ -21,6 +21,9 @@ class SubWindow : public QMdiSubWindow
         //! Highlight window if its model is selected in model tree.
         void updateHighlight();
 
+        //! Give the window its style, based on the current application style.
+        void applyWindowStyle();
+
     protected:
 
         //! Model ID.
@@ -96,6 +99,9 @@ class SubWindow : public QMdiSubWindow
 
         //! Toolbar icon size has changed.
         void onToolbarIconSizeChanged(int toolbarIconSize);
+
+        //! Application style or color scheme has been applied.
+        void onStyleApplied();
 
 };
 

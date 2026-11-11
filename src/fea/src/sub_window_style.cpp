@@ -87,8 +87,9 @@ static void drawButtonIcon(QPainter *painter, QStyle::SubControl subControl, con
     }
 }
 
-SubWindowStyle::SubWindowStyle(const QColor &modelColor)
-    : modelColor(modelColor)
+SubWindowStyle::SubWindowStyle(QStyle *baseStyle, const QColor &modelColor)
+    : QProxyStyle(baseStyle)
+    , modelColor(modelColor)
     , highlighted(false)
 {
 }

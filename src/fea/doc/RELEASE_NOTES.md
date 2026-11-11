@@ -215,6 +215,15 @@
 
 ### Bug fixes
 
+- Changing the style or the color scheme while the application runs shrank the
+  tool bar icons to the default size of the style. Tool bars now keep the icon
+  size set in the application settings
+- After the color scheme changed, the model window kept drawing its check boxes
+  and sliders for the previous scheme, the labels of the central tabs kept the
+  previous text color, so a dark scheme left them white on a light background,
+  and text already printed to the application and process output kept the
+  previous colors. The model window also used the desktop style instead of the
+  style chosen in the application settings
 - PDF reports came out wrong when the display scaling was not 100 %: pages were
   drawn too large, so their right part was cut off, the bottom of each page with
   the page footer was lost and content was missing between pages. The page size

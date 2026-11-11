@@ -1,4 +1,6 @@
+#include <QApplication>
 #include <QGridLayout>
+#include <QStyleFactory>
 
 #include "sub_window.h"
 #include "sub_window_style.h"
@@ -27,11 +29,10 @@ void SubWindow::createSubWindow()
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(RIcon::fromFile(Application::windowIconFile()));
 
-    this->subWindowStyle = new SubWindowStyle(Application::instance()->getSession()->getModelColor(this->modelID));
-    this->setStyle(this->subWindowStyle);
-    // Children of this window use the style while they are being destroyed, so it must outlive them.
-    QObject::connect(this,&QObject::destroyed,this->subWindowStyle,&QObject::deleteLater);
-    this->updateHighlight();
+    this->subWindowStyle = nullptr;
+    this->applyWindowStyle();
+    // Qt does not notify a widget with a style of its own about a new application style.
+    QObject::connect(Application::instance(),&RApplication::styleApplied,this,&SubWindow::onStyleApplied);
 
     QWidget *mainWidget = new QWidget(this);
     this->setWidget(mainWidget);
@@ -144,6 +145,26 @@ void SubWindow::createSubWindow()
                      &ApplicationSettings::toolbarIconSizeChanged,
                      this,
                      &SubWindow::onToolbarIconSizeChanged);
+    R_LOG_TRACE_OUT;
+}
+
+void SubWindow::applyWindowStyle()
+{
+    R_LOG_TRACE_IN;
+    // A new instance of the application style, as the proxy style takes over
+    // its base style. Styles like windows11 read the color scheme when they
+    // are created, so it has to be created again whenever the scheme changes.
+    SubWindowStyle *oldStyle = this->subWindowStyle;
+    this->subWindowStyle = new SubWindowStyle(QStyleFactory::create(QApplication::style()->name()),
+                                              Application::instance()->getSession()->getModelColor(this->modelID));
+    this->setStyle(this->subWindowStyle);
+    // Children of this window use the style while they are being destroyed, so it must outlive them.
+    QObject::connect(this,&QObject::destroyed,this->subWindowStyle,&QObject::deleteLater);
+    if (oldStyle)
+    {
+        oldStyle->deleteLater();
+    }
+    this->updateHighlight();
     R_LOG_TRACE_OUT;
 }
 
@@ -289,5 +310,12 @@ void SubWindow::onToolbarIconSizeChanged(int toolbarIconSize)
 {
     R_LOG_TRACE_IN;
     this->toolBar->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
+    R_LOG_TRACE_OUT;
+}
+
+void SubWindow::onStyleApplied()
+{
+    R_LOG_TRACE_IN;
+    this->applyWindowStyle();
     R_LOG_TRACE_OUT;
 }

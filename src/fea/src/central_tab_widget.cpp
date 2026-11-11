@@ -25,6 +25,26 @@ const int CentralTabWidget::processOutputMaxMaxLines = 10000000;
 
 const bool useTabIcons = false;
 
+//! Append text at the end of the browser. Colors are given only to highlight
+//! text, otherwise the text follows the palette, also after the color scheme
+//! changes.
+static void appendText(QTextEdit *browser, const QString &text, const QColor &foreground = QColor(), const QColor &background = QColor())
+{
+    QTextCharFormat charFormat;
+    if (foreground.isValid())
+    {
+        charFormat.setForeground(foreground);
+    }
+    if (background.isValid())
+    {
+        charFormat.setBackground(background);
+    }
+    QTextCursor cursor(browser->document());
+    cursor.movePosition(QTextCursor::End);
+    cursor.insertText(text,charFormat);
+    browser->moveCursor(QTextCursor::End);
+}
+
 CentralTabWidget::CentralTabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
@@ -225,7 +245,9 @@ void CentralTabWidget::setTabTitle(CentralTabWidget::Type tabType, RMessage::Typ
         this->processOutputLastIcon = iconFile;
     }
 
-    QColor tabTextColor = QApplication::palette().text().color();
+    // An invalid color lets the tab follow the palette, also after the color
+    // scheme changes. The palette color at this moment would stay.
+    QColor tabTextColor;
     if (!iconFile.isEmpty())
     {
         // TODO: For unknown reason this hangs if text is printed from QDialog::exec()
@@ -269,11 +291,7 @@ void CentralTabWidget::onInfoPrinted(const RMessage &message)
     int scrollBarValue = sb->value();
     bool scrollBarAtMax = ((sb->maximum() - scrollBarValue) <= 10);
 
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
-    this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
-    this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->applicationOutputBrowser->insertPlainText(RMessage::messageToLogString(message));
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
+    appendText(this->applicationOutputBrowser,RMessage::messageToLogString(message));
     if (scrollBarAtMax)
     {
         scrollBarValue = sb->maximum();
@@ -290,15 +308,7 @@ void CentralTabWidget::onNoticePrinted(const RMessage &message)
 
 void CentralTabWidget::onWarningPrinted(const RMessage &message)
 {
-    QTextCharFormat charFormat = this->applicationOutputBrowser->currentCharFormat();
-
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
-    this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
-    this->applicationOutputBrowser->setTextColor(QColor(170,0,0));
-    this->applicationOutputBrowser->insertPlainText(RMessage::messageToLogString(message));
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
-    this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->applicationOutputBrowser->setCurrentCharFormat(charFormat);
+    appendText(this->applicationOutputBrowser,RMessage::messageToLogString(message),QColor(170,0,0));
     QScrollBar *sb = this->applicationOutputBrowser->verticalScrollBar();
     sb->setValue(sb->maximum());
     this->setTabTitle(CentralTabWidget::ApplicationOutput,RMessage::Type::Warning);
@@ -306,16 +316,7 @@ void CentralTabWidget::onWarningPrinted(const RMessage &message)
 
 void CentralTabWidget::onErrorPrinted(const RMessage &message)
 {
-    QTextCharFormat charFormat = this->applicationOutputBrowser->currentCharFormat();
-
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
-    this->applicationOutputBrowser->setTextBackgroundColor(QColor(170,0,0));
-    this->applicationOutputBrowser->setTextColor(QColor(255,255,255));
-    this->applicationOutputBrowser->insertPlainText(RMessage::messageToLogString(message));
-    this->applicationOutputBrowser->moveCursor(QTextCursor::End);
-    this->applicationOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
-    this->applicationOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->applicationOutputBrowser->setCurrentCharFormat(charFormat);
+    appendText(this->applicationOutputBrowser,RMessage::messageToLogString(message),QColor(255,255,255),QColor(170,0,0));
     QScrollBar *sb = this->applicationOutputBrowser->verticalScrollBar();
     sb->setValue(sb->maximum());
 //    this->setCurrentIndex(this->applicationOutputTabPosition);
@@ -328,11 +329,7 @@ void CentralTabWidget::onProcessReadyStandardOutput(const QString &message)
     int scrollBarValue = sb->value();
     bool scrollBarAtMax = ((sb->maximum() - scrollBarValue) <= 10);
 
-    this->processOutputBrowser->moveCursor(QTextCursor::End);
-    this->processOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
-    this->processOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->processOutputBrowser->insertPlainText(message);
-    this->processOutputBrowser->moveCursor(QTextCursor::End);
+    appendText(this->processOutputBrowser,message);
     if (scrollBarAtMax)
     {
         scrollBarValue = sb->maximum();
@@ -344,16 +341,7 @@ void CentralTabWidget::onProcessReadyStandardOutput(const QString &message)
 
 void CentralTabWidget::onProcessReadyStandardError(const QString &message)
 {
-    QTextCharFormat charFormat = this->processOutputBrowser->currentCharFormat();
-
-    this->processOutputBrowser->moveCursor(QTextCursor::End);
-    this->processOutputBrowser->setTextBackgroundColor(QColor(170,0,0));
-    this->processOutputBrowser->setTextColor(QColor(255,255,255));
-    this->processOutputBrowser->insertPlainText(message);
-    this->processOutputBrowser->moveCursor(QTextCursor::End);
-    this->processOutputBrowser->setTextBackgroundColor(QApplication::palette().base().color());
-    this->processOutputBrowser->setTextColor(QApplication::palette().text().color());
-    this->processOutputBrowser->setCurrentCharFormat(charFormat);
+    appendText(this->processOutputBrowser,message,QColor(255,255,255),QColor(170,0,0));
     QScrollBar *sb = this->processOutputBrowser->verticalScrollBar();
     sb->setValue(sb->maximum());
     this->setCurrentIndex(this->processOutputTabPosition);

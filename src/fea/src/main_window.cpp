@@ -697,6 +697,10 @@ QToolBar *MainWindow::createToolBar(const QString &name, const QString &title)
     QToolBar *toolBar = new QToolBar(this);
     toolBar->setObjectName(name);
     toolBar->setWindowTitle(title);
+    // An icon size the tool bar only inherits from the main window is replaced
+    // by the default one of the style whenever the style or color scheme
+    // changes. Set explicitly, it is kept.
+    toolBar->setIconSize(this->iconSize());
     return toolBar;
 }
 
@@ -1442,5 +1446,11 @@ void MainWindow::onToolbarIconSizeChanged(int toolbarIconSize)
 {
     R_LOG_TRACE;
     this->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
+    // Tool bars have their icon size set explicitly, so they do not follow the
+    // main window.
+    for (QToolBar *toolBar : std::as_const(this->toolBars))
+    {
+        toolBar->setIconSize(QSize(toolbarIconSize,toolbarIconSize));
+    }
     this->ribbonBar->setIconSize(toolbarIconSize);
 }

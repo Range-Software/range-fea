@@ -25,8 +25,11 @@ class SubWindowStyle : public QProxyStyle
 
     public:
 
-        //! Constructor.
-        explicit SubWindowStyle(const QColor &modelColor);
+        //! Constructor. The style takes over the base style. Without one,
+        //! QProxyStyle would use the desktop style as it was when first used,
+        //! not the application style, and keep it after the style or the
+        //! color scheme changes.
+        SubWindowStyle(QStyle *baseStyle, const QColor &modelColor);
 
         //! Set whether the window should be highlighted.
         void setHighlighted(bool highlighted);
