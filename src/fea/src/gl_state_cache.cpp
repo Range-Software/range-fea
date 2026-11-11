@@ -82,6 +82,36 @@ void GLStateCache::initialize()
     this->initialized = true;
 }
 
+void GLStateCache::restoreDefaults()
+{
+    // Go through the setters while the cache still holds this frame's values,
+    // so each state that differs from what initialize() claims is really written.
+    // Keep this list in step with initialize().
+    this->setLineSmooth(GL_FALSE);
+    this->setLighting(GL_FALSE);
+    this->setNormalize(GL_FALSE);
+    this->setDepthTest(GL_FALSE);
+    this->setDepthMask(GL_TRUE);
+    this->setBlend(GL_FALSE);
+    this->setTexture1D(GL_FALSE);
+    this->setTexture2D(GL_FALSE);
+    this->setCullFace(GL_FALSE);
+    if (this->lineStipple)
+    {
+        this->setLineStipple(GL_FALSE);
+    }
+    this->setPolygonOffsetFill(GL_FALSE);
+    this->setCullFaceMode(GL_BACK);
+    this->setDepthFunc(GL_LESS);
+    this->setPointSize(1.0f);
+    this->setLineWidth(1.0f);
+    this->setPolygonOffset(0.0f, 0.0f);
+    this->twoSided = false;
+    this->highlight = false;
+    this->bandCount = 0;
+    this->bandOutline = false;
+}
+
 void GLStateCache::reset()
 {
     this->initialized = false;

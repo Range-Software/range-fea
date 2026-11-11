@@ -82,6 +82,11 @@ class GLStateCache
         //! Initialize cache by reading current OpenGL state (call once per context).
         void initialize();
 
+        //! Write the state initialize() assumes back to the GPU (call at the end of a frame).
+        //! initialize() does not touch the GPU, so whatever a frame leaves enabled has to be
+        //! turned off here, otherwise the next frame's setters would skip the real calls.
+        void restoreDefaults();
+
         //! Reset cache (call when context changes).
         void reset();
 

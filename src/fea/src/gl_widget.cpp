@@ -287,6 +287,9 @@ void GLWidget::paintRender()
 
     RenderMatrixStack::popMatrix();
 
+    // Leave the GPU in the state the next frame's initialize() assumes.
+    GLStateCache::instance().restoreDefaults();
+
     if (RenderBackend::isOpenGL())
     {
         GL_SAFE_CALL(glFlush());
@@ -383,7 +386,15 @@ void GLWidget::drawBackgroundGradient()
     stateCache.setDepthTest(GL_FALSE);
     stateCache.setDepthMask(GL_FALSE);
     stateCache.disableLighting();
+    stateCache.disableTexture1D();
     stateCache.setLineSmooth(GL_TRUE);
+    if (RenderBackend::isOpenGL())
+    {
+        // Disable directly as well: if the cache and the GPU ever disagree, a lit
+        // or textured backdrop turns the white overlay gray.
+        GL_SAFE_CALL(glDisable(GL_LIGHTING));
+        GL_SAFE_CALL(glDisable(GL_TEXTURE_1D));
+    }
 
     GLFunctions::begin(GL_TRIANGLE_FAN);
 
