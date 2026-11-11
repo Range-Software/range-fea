@@ -1,276 +1,272 @@
 ## Version 1.4.0
 
+### Compatibility
+
+- The model file format is raised to **1.5.0**. Models saved by this version cannot
+  be opened correctly by earlier ones; older models open as before. Opening a model
+  saved by a newer version now asks whether to load it anyway
+- **Cloud connections are now verified.** A connection to a host whose certificate is
+  not issued by a trusted authority, or is issued for another host name, is refused.
+  A session whose host uses a private certificate authority needs that authority set
+  as its host *Certificate*, or its new *Verification* setting relaxed (see *Cloud*)
+- Models saved in the ASCII format (`.ram`) by earlier versions could not be opened
+  again. They now open with the correct values
+
+### Highlights
+
+- **Simpler problem setup** - a single *Select problem* dialog builds the task flow
+  for you
+- **Support reactions and result statistics** - check equilibrium and see the
+  minimum, maximum and average of every result in *Model statistics* and reports
+- **Boundary conditions drawn on the model** - supports, loads and walls are shown as
+  symbols in the 3D view
+- **Clearer results** - a redesigned value range with readable units, cleaner stepped
+  color scales, a *Smooth display* option for stresses and a reorganized
+  **Results** tab
+- **Optional ribbon layout** and reorganized tool bars
+- **Better multi-model work** - model colors, window tiling and a *Windows* menu
+- **More reliable reports** - correct PDF output on scaled displays and in the dark
+  style, and proper OpenDocument (`.odt`) reports
+
 ### Improvements
 
 #### Problem selection
 
 - New **Select problem** dialog replaces the *Problem(s) task flow* and *Problem type
-  selector* dialogs. Problem types are selected directly and the task flow is built
-  automatically, in the order the problems need each other's results
-- Maximum iterations and convergence are shown only for selections with a flow or
-  radiation. Flow starts at 2000 iterations, or 20 per time step, and values left at
-  their default follow the time solver
-- The task flow tree remains available under **Customize**
-- Double-clicking a tile selects it and closes the dialog
-- Tiles show the problem types which are required or incompatible, with the reason in
-  the tool tip, instead of warning after the click
-- The dialog opened for a new model can be closed with **Skip for now**, and the
-  **Problem** tab then offers a **Select problem** button
-- After selecting a problem the first tab which needs input is shown
+  selector* dialogs. You pick the problem types and the task flow is built
+  automatically, in the order the problems need each other's results. The task flow
+  tree is still available under **Customize**
+- Problem types are shown as tiles with an icon and a name, and the description as a
+  tool tip. Buttons switch between the tiles and a list; the last view is remembered
+- Tiles show which problem types are required or incompatible, with the reason in the
+  tool tip, instead of warning after the click. Double-clicking a tile selects it and
+  closes the dialog
+- *Maximum iterations* and *Convergence* are shown only when the selection includes a
+  flow or radiation. Flow starts at 2000 iterations, or 20 per time step, and values
+  left at their default follow the time solver
+- For a new model the dialog can be closed with **Skip for now**; the **Problem** tab
+  then offers a **Select problem** button
+- After a problem is selected, the first tab that needs input is shown
 - Incompatible problems, missing required problems and a missing problem selection are
   reported before the solver starts
 
-#### Results tab
+#### Support reactions and result statistics
 
-- Reorganized the **Results** tab into *Show on selected entities*, *Color range* and
-  *Deformation and arrow scale*, with **Graph** and **Remove** at the bottom
-- *Scalar* and *Displacement* are now called *Color map* and *Deformed shape*, and are
-  disabled until entities are selected in the model tree
-- Maximum, minimum and scale take one row each and values show their units. The sliders
-  and power of ten moved under *Fine adjust*, which is remembered
-- The deformation and arrow scale has a logarithmic slider
-- Settings which do not apply to a scalar variable are hidden
+- After a stress solution the log lists the total reaction force of every support
+  (every entity with a *Displacement*, *Normal displacement* or *Roller* condition),
+  the total reaction and the total applied load, so equilibrium can be checked:
+  - reactions are correct on nodes which are both loaded and held
+  - a node held by several supports shares each held direction among them
+  - inertia and damping forces of a dynamic analysis are not included
+- Support reactions are saved with the results; models saved before load without them
+- The **Model statistics** dialog has a new *Results* chapter. For each solved problem
+  type it shows the minimum, maximum and average of every result, with the node or
+  element and entity where the minimum and maximum occur, and the time step and time
+  (or mode and frequency) of the results:
+  - averages are weighted by element volume, area or length, so they do not depend on
+    how fine the mesh is. Each kind of element present gets its own average
+  - vectors are described by their magnitude, and a result which is the same
+    everywhere is shown as one value
+  - element results of the body, such as stress or heat flux, leave out elements
+    without computed values, such as point elements, entities whose material lacks
+    the needed properties, and surfaces without a thickness or lines without a cross
+    area. Boundary results, such as heat radiation, keep the boundary surfaces
+  - stress analysis adds the support reactions, the total applied load and the
+    imbalance between them, with a note on how large it is relative to the load
+  - results which belong to no solved problem type are listed under *Other results*
+  - real values are shown in scientific format, such as `4,000000e-02`
+- The *Results* chapter of generated reports shows the same statistics. Both use one
+  implementation, so they always agree
 
-#### Ribbon layout
+#### Boundary conditions in the 3D view
 
-- New optional ribbon replaces menus and tool bars when **Ribbon layout** is switched on
-  in the **File** menu, the tool bar or the ribbon. The last used layout is remembered
-- Commands are ordered by workflow on the *Geometry*, *Mesh*, *Problem*, *Solve* and
-  *Results* tabs. Cut, iso, stream line and field tools are found under *Results*
-- Buttons on the *Problem* tab open boundary conditions, initial conditions, environment
-  conditions and materials in the panel on the right
-- The ribbon can be collapsed with its arrow or by double-clicking a tab. The collapsed
-  state and the last tab are remembered
-- **Compact ribbon** keeps the same tabs and commands in less vertical space, with smaller
-  buttons in two rows and no group titles. The choice is remembered
+- New *Boundary conditions* option in the entity **Display properties** for points,
+  lines, surfaces and volumes. When on, symbols of the conditions applied to a visible
+  entity are drawn on it, for the current problem type and with values at the current
+  time. Symbols keep their size on screen when zooming:
+  - displacement supports as blue cones, one per constrained direction; normal
+    displacement with a ground bar and roller displacement with rollers
+  - force, pressure and weight as red arrows, fluid inflow and normal velocity as
+    orange arrows, all pointing at the entity. Negative pressure (suction) and
+    negative normal velocity reverse the arrow; weight follows the entity's gravity
+  - walls as a green hatched bar, frictionless walls as a bar with rollers
+  - all other conditions as a text tag with value and units, such as `T = 293.1 K`
+- The option is saved in the model file
+- The conditions being drawn are listed by name in a card in the 3D view
+- The 3D view is redrawn as soon as the problem setup changes, so edited boundary
+  conditions show straight away
 
-#### Tool bars
+#### Results display
 
+- Redesigned value range: a slim legend over the full height of the 3D view which
+  follows the color scheme and covers less of the model:
+  - readable units, such as `328.5 MPa` instead of `3.28452e+08 Pa`. Simple units
+    take an SI prefix, others a common multiplier such as `×10⁶ W/m³`; temperature in
+    K keeps its unit
+  - round tick values between the minimum and maximum, and a smooth color bar
+  - one line with the steady state, time step and time, or mode and frequency
+  - several value ranges share the height of the view
+  - a picked value is shown next to the picked point, with a line to a marker on the
+    color bar
+- Cleaner stepped color scales in the 3D view and the value range:
+  - bands have equal width and crisp edges
+  - lines between bands stay thin at any zoom, use a darker shade of the neighbouring
+    colors instead of black, and fade out where bands get too narrow
+  - value range ticks sit on band edges, showing where the color changes
+  - values at the ends of a scale no longer wrap around to the other end
+- New *Smooth display* option for stresses on the **Results** tab, replacing *Display
+  on nodes* for them. It averages element results at nodes for display only, so it can
+  be turned off at any time:
+  - von Mises, normal and shear stress of volumes are computed from averaged stress
+    components rather than averaged themselves
+  - only elements of the same material, thickness or cross area are averaged
+    together, so real stress jumps between them are kept
+  - averaging lowers peaks, so the value range also shows the range of the original
+    element values
+  - the setting is not saved in the model file
+- Reorganized **Results** tab with sections *Show on selected entities*, *Color range*
+  and *Deformation and arrow scale*, and **Graph** and **Remove** at the bottom:
+  - *Scalar* and *Displacement* are renamed *Color map* and *Deformed shape*, and are
+    disabled until entities are selected in the model tree
+  - maximum, minimum and scale take one row each and show their units. Sliders and
+    the power of ten moved under *Fine adjust*, which is remembered
+  - the deformation and arrow scale has a logarithmic slider
+  - settings which do not apply to a scalar variable are hidden
+
+#### Ribbon layout and tool bars
+
+- New optional **Ribbon layout** replaces menus and tool bars. Switch it on in the
+  **File** menu, the tool bar or the ribbon; the choice is remembered:
+  - commands are ordered by workflow on the *Geometry*, *Mesh*, *Problem*, *Solve* and
+    *Results* tabs. Cut, iso, stream line and field tools are under *Results*
+  - buttons on the *Problem* tab open boundary, initial and environment conditions and
+    materials in the panel on the right
+  - the ribbon can be collapsed with its arrow or by double-clicking a tab
+  - **Compact ribbon** fits the same commands in less height, with smaller buttons in
+    two rows and no group titles
+  - the collapsed state, compact mode and last tab are remembered
 - Tool bars of the classic layout are reorganized into a single row of *File and edit*,
-  *Geometry*, *Mesh*, *Workflow*, *Results* and application buttons. Their positions are
-  reset once after the update
-- Related commands share drop-down buttons. *Draw*, *Boolean* and *Normals* remember the
-  last used command
-- Cut, iso, stream line and field tools are available from the new *Results* tool bar
-- **Kill solver** moved under the drop-down of **Stop solver**. **Close model**, **Quit**
-  and **About** are available from the menus only
+  *Geometry*, *Mesh*, *Workflow*, *Results* and application buttons. Their positions
+  are reset once after the update:
+  - related commands share drop-down buttons; *Draw*, *Boolean* and *Normals* remember
+    the last used command
+  - cut, iso, stream line and field tools are on the new *Results* tool bar
+  - **Kill solver** moved under the drop-down of **Stop solver**. **Close model**,
+    **Quit** and **About** are in the menus only
+
+#### Model windows
+
+- Each model has its own color, shown at the top of its row in the model tree, its
+  window title bar and the **Documents** tab
+- Redesigned model windows with a flat title bar, thin window buttons, a thin outline
+  marking the active window and a background which follows the color scheme
+- The window of a model selected in the model tree, or with part of it selected, is
+  outlined in the model's color
+- New *Tile windows* button below the 3D view when several model windows are open.
+  Clicking it again rotates the windows one position clockwise. Windows are tiled
+  automatically when a model is opened while windows are tiled or one is maximized
+- New *Windows* menu next to *Tile windows* lists the open windows; clicking one
+  maximizes it. The maximized window is marked with a dot
+- Position, size and order of model windows are restored after restarting
+- A new window which is not maximized opens at 60 % of the area, which is also the size
+  it returns to when first restored from maximized
+
+#### 3D view
+
+- Model information, boundary conditions and the value range are shown in cards with
+  the same look. Text which does not fit is shortened
+- Redesigned orientation axis in the lower left corner, with thin labelled arrows in
+  the colors of the global axis; arrows pointing away are drawn fainter
+- Zoom and draw time are shown as one line beside the orientation axis, with the
+  current action above it, in a color contrasting with the background
+- New *Highlight selection* option below the 3D view, on by default, to turn off the
+  highlight of entities selected in the model tree
+- Arrows and boundary condition symbols have the same color on both sides; their back
+  faces are no longer drawn silver
 
 #### Documents tab
 
 - Files of a model are grouped into *Documents*, *Videos* and *Images*
+- Models are separated by a line in the model's color
 - The **Records** tab is shown only when there are records
-- Models in the tree are separated by a line in the color of the model, as in the model
-  tree
-
-#### 3D view
-
-- Position, size and order of model windows are restored after restarting the application
-- New *Boundary conditions* option in the entity **Display properties**, for
-  points, lines, surfaces and volumes. When it is on, symbols of the boundary
-  conditions applied to the entity are drawn on it, as long as the entity is
-  visible. Only conditions of the current problem type are shown, with values at
-  the current time, and the symbols keep their size on screen when zooming:
-  - displacement supports as blue cones, one per constrained direction, normal
-    displacement with a ground bar and roller displacement with rollers
-  - force, pressure and weight as red arrows, fluid inflow and normal velocity as
-    orange arrows; every arrow points at the entity. Negative pressure (suction)
-    and negative normal velocity reverse the arrow, weight follows the entity's
-    gravity setting
-  - walls as a green bar with hatching, frictionless walls as a bar with rollers
-  - all other conditions as a text tag with the value and units, such as
-    `T = 293.1 K`
-- The option is saved in the model file
-- Symbols of the boundary conditions being drawn are listed with their names in the
-  3D view, in a card below the model card or next to it when both do not fit
-- New *Highlight selection* option below the 3D view, on by default, turning off the
-  highlight of entities selected in the model tree
-- The window of a model selected in the model tree, or with a part of it selected, is
-  highlighted with an outline in the color of the model
-- Arrows and boundary condition symbols always have the same color on both sides,
-  their back faces are no longer drawn silver
-- Model information and boundary conditions in the 3D view are shown in cards with
-  the same look as the value range. Text which does not fit in a card is shortened
-- Zoom and model draw time are shown as one line of text beside the orientation axis,
-  with the current action above it, in white or black to contrast with the background
-- The 3D view is redrawn when the problem setup changes, so edited boundary
-  conditions are shown straight away
-- Redesigned value range in the 3D view, now a slim legend over the full height of
-  the view which follows the color scheme and covers less of the model:
-  - values use readable units, such as `328.5 MPa` instead of `3.28452e+08 Pa`. Simple
-    units such as Pa, N, m or s take an SI prefix, other units a common multiplier
-    such as `×10⁶ W/m³`. Temperature in K keeps its unit
-  - round tick values between the minimum and the maximum
-  - a smooth color bar, which is no longer loaded from its file on every redraw
-  - one line with the steady state, time step and time, or mode and frequency
-  - value ranges of several variables share the height of the view
-  - a picked value is shown next to the picked point, with a line to a marker on the
-    color bar
-- Stepped color scales look better in the 3D view and the value range:
-  - bands have equal width and smooth edges
-  - lines between bands keep a constant thin width at any zoom and are a darker shade
-    of the neighbouring colors instead of black. They fade out where bands get too
-    narrow to show them
-  - ticks of the value range are at band edges, showing the value where the color
-    changes
-  - values at the ends of a color scale no longer wrap around to the other end
-- New *Smooth display* option on the **Results** tab for stresses, replacing the
-  *Display on nodes* button for them. It averages element results at nodes for display
-  only, so it can be turned off again at any time:
-  - von Mises, normal and shear stress of volumes are computed from averaged stress
-    components rather than being averaged themselves
-  - elements are averaged only with elements of the same material, thickness or cross
-    area, so real jumps of stress between them are preserved
-  - averaging lowers peak values, so the value range also shows the range of the
-    original element values
-  - the setting is not saved in the model file
-- Redesigned orientation axis in the lower left corner of the 3D view, with thin
-  labelled arrows in the colors of the global axis. Arrows pointing away from the
-  viewer are drawn fainter
-- Redesigned model windows to match the application: a flat title bar with thin
-  window buttons, a thin outline marking the active window, and an area behind the
-  windows which follows the color scheme
-- A new model window which is not maximized opens at 60% of the area, which is also
-  the size it returns to when first restored from maximized
-- Each model has its own color, shown as a line at the top of its row in the model
-  tree and of its window title bar. Models in the model tree are separated by a small
-  gap
-- New *Tile windows* button next to the tabs below the 3D view, shown when several
-  model windows are open. Clicking it again moves the windows one position clockwise
-- Windows are tiled automatically when a model is opened while another window is maximized
-  or the windows are tiled
-- New *Windows* menu next to *Tile windows* lists the open model windows, and clicking one
-  maximizes it. The maximized window is marked with a dot
-
-#### Model files
-
-- Opening a model whose file format is newer than this version supports asks
-  whether to load it anyway, as it may not load correctly. This applies to
-  *Open model*, models given on the command line or restored with the session,
-  *Reload results* and selecting a result record
-- Support reactions are saved with the results, at the end of the model file,
-  whose format stays at 1.5.0; models saved before read without them
-
-#### Support reactions
-
-- After a stress solution the log lists the total reaction force of every support,
-  that is every entity with a *Displacement*, *Normal displacement* or *Roller*
-  boundary condition, followed by the total reaction and the total applied load so
-  that equilibrium can be checked. Reactions are correct on nodes which are both
-  loaded and held, and a node held by several supports shares each held direction
-  among the supports which hold it. Inertia and damping forces of a dynamic
-  analysis are not included
-- The *Results* chapter of generated reports shows the same statistics as the
-  **Model statistics** dialog, grouped by problem type: located minimum and
-  maximum, weighted averages and the support reactions with the imbalance. Both
-  use one implementation, so they always agree
-
-#### Model statistics
-
-- The **Model statistics** dialog has a new *Results* chapter. It shows the time
-  step and time, or the mode and frequency, of the results, and for each solved
-  problem type the minimum, maximum and average of every result it computes, with
-  the node or element and entity where the minimum and maximum occur. Averages are
-  weighted by element volume, area or length, with a separate average for each
-  kind of element present, so they do not depend on how fine the mesh is. Results
-  on nodes are integrated over the elements, which gives their exact average over
-  the body for the linear elements in use. A result without elements to weight it
-  by shows the plain *average of node values* or *of element values*.
-  Vectors are described by their magnitude. Element results of the body, such as
-  stress or heat flux, leave out the elements the solver computes no values on:
-  point elements, entities whose material lacks the properties the problem type
-  needs, and surfaces without a thickness or lines without a cross area, such as
-  the boundary surface of a solid. Boundary results, such as heat radiation, keep
-  the boundary surfaces. A result which is the same everywhere is shown as one
-  value. Stress analysis
-  adds the support reactions, the total applied load and the imbalance between
-  them, with a note on what the imbalance means and how large it is relative to
-  the applied load. All real values in the dialog are shown in scientific format,
-  such as `4,000000e-02` Results which belong to no solved problem type are listed under *Other
-  results*
 
 #### Cloud
 
-- New *Verification* setting of the cloud host in the **Cloud session manager**.
-  *Full verification* (default) checks that the host certificate is issued by a
-  trusted certificate authority and matches the host name. *Trusted certificate only
-  (skip host name)* is meant for a server reached by its IP address: set its
-  certificate authority as the session's host *Certificate* and the host name is not
-  checked. *No verification* accepts any certificate and does not guarantee the
-  identity of the host
-- Cloud requests are faster. A request completes as soon as the reply arrives, where
-  it used to wait up to an extra second, and connections to the cloud are kept open
-  and reused between requests instead of being opened for each one
-- On macOS the private key and the certificate signing request for the cloud are
-  generated with the Apple Security framework instead of the `openssl` tool, and so
-  is the text shown by the private key view. The `openssl` tool is no longer bundled
-  with the application, only the OpenSSL libraries used for TLS connections. The paths
-  of the OpenSSL tool and its configuration are hidden in the application settings.
+- New *Verification* setting of the cloud host in the **Cloud session manager**:
+  - *Full verification* (default) checks that the certificate is issued by a trusted
+    authority and matches the host name
+  - *Trusted certificate only (skip host name)* is for a server reached by its IP
+    address: set its certificate authority as the session's host *Certificate*
+  - *No verification* accepts any certificate and does not guarantee the identity of
+    the host
+- Cloud requests are faster: a request completes as soon as the reply arrives instead
+  of waiting up to an extra second, and connections are kept open and reused
+- On macOS the cloud private key and certificate signing request are generated with
+  the Apple Security framework, and the `openssl` tool is no longer bundled (only the
+  OpenSSL libraries for TLS). Its paths are hidden in the application settings.
   Configure with `-DRANGE_NATIVE_KEY_TOOL=OFF` to keep using the `openssl` tool
-
-#### Problem types
-
-- Problem types are now selected from tiles with an icon and a name, with the
-  description shown as a tooltip. Buttons in the problem type selector switch between
-  the tiles and the original list, and the last used view is remembered
 
 ### Bug fixes
 
-- Changing the style or the color scheme while the application runs shrank the
-  tool bar icons to the default size of the style. Tool bars now keep the icon
-  size set in the application settings
-- After the color scheme changed, the model window kept drawing its check boxes
-  and sliders for the previous scheme, the labels of the central tabs kept the
-  previous text color, so a dark scheme left them white on a light background,
-  and text already printed to the application and process output kept the
-  previous colors. The model window also used the desktop style instead of the
-  style chosen in the application settings
-- PDF reports came out wrong when the display scaling was not 100 %: pages were
-  drawn too large, so their right part was cut off, the bottom of each page with
-  the page footer was lost and content was missing between pages. The page size
-  was taken at the printer resolution while the text was laid out at the screen
-  resolution; both now use the resolution of the PDF page
-- Reports exported to OpenDocument had no title page, header, footer or page
-  setup, every table had a grid and stretched or squeezed columns, text used a
-  different font, and the screenshot ran over the page edge. They now look like
-  the PDF: A4 page with its margins, title page, header with the logo, footer with
-  page numbers, tables sized and placed as printed, and the same font
-- The report format is now called *OpenDocument Text (ODT)*, and the file gets
-  the extension `.odt`. It was offered as ODF with the extension `.odf`, which is
-  for OpenDocument formulas and may open in a formula editor
-- Report files always get the extension of their format: a name without it gets
-  it appended, and `.odf` is replaced by `.odt`
-- The **Documents** tab listed `.odf` files and missed the `.odt` reports
-- The help of *Create report* lists Markdown among the supported formats
-- HTML and Markdown reports referred to a screenshot file which did not exist.
-  The screenshot is now saved next to the report under the name it refers to
-- PDF reports generated with the dark style active had white text on the white
-  page. Reports are now always printed black on white
-- Models saved in the ASCII format (`.ram`) could not be opened again: yes/no
-  settings were saved as control characters and read back inverted, which made
-  the rest of the file fail to load. They are saved as `0` and `1` now, and
-  `.ram` files saved by older versions are read with the correct values
-- Some yes/no settings of models, environment conditions and initial conditions
-  were saved with undefined values. They are now always saved as yes or no
-- Fixed results kept when generating a 3D mesh with *Keep computed results*. Some new
-  nodes on the model boundary got values of unrelated nodes, which showed as spikes in
-  the displaced shape, and surface elements got values of unrelated elements
+#### Models and meshing
+
+- Models saved in the ASCII format (`.ram`) could not be opened again: yes/no settings
+  were saved as control characters and read back inverted, which made the rest of the
+  file fail to load. They are now saved as `0` and `1`, and older `.ram` files are read
+  with the correct values
+- Some yes/no settings of models, environment conditions and initial conditions were
+  saved with undefined values. They are now always saved as yes or no
+- Generating a 3D mesh with *Keep computed results* gave some new boundary nodes the
+  values of unrelated nodes, showing as spikes in the deformed shape, and surface
+  elements the values of unrelated elements
 - Generating a 3D mesh no longer loses points and lines. Lines may be split by the new
-  mesh, and a line lying completely outside of the meshed volume is still removed
+  mesh; a line completely outside the meshed volume is still removed
+
+#### Reports
+
+- PDF reports were wrong when display scaling was not 100 %: pages were too large, so
+  their right part, the page footer and content between pages were lost
+- PDF reports generated in the dark style had white text on a white page. Reports are
+  now always printed black on white
+- Reports exported to OpenDocument had no title page, header, footer or page setup,
+  and tables, fonts and the screenshot were laid out badly. They now look like the
+  PDF: A4 with margins, title page, header with logo, footer with page numbers and the
+  same tables and font
+- The OpenDocument format is now called *OpenDocument Text (ODT)* and saved as `.odt`.
+  It was offered as ODF with the extension `.odf`, which is for formulas and may open
+  in a formula editor. The **Documents** tab now lists `.odt` reports
+- Report files always get the extension of their format; `.odf` is replaced by `.odt`
+- HTML and Markdown reports referred to a screenshot file which did not exist. It is
+  now saved next to the report
+- The help of *Create report* lists Markdown among the supported formats
+
+#### Cloud
+
+- The cloud host certificate was not verified: a host with a certificate from an
+  untrusted authority or for another host name was accepted and only reported as SSL
+  errors in the log. Such connections are now refused
+- Certificate signing requests generated on macOS store non-ASCII subject fields, such
+  as `Žilina`, correctly instead of in a mangled form (`Å½ilina`)
+
+#### User interface
+
+- Arrow heads and cones of boundary condition symbols were drawn black
 - The orientation axis did not follow rotations made while it was hidden, so it could
-  show a wrong orientation after being shown again
-- Arrow heads and cones of boundary condition symbols were drawn black, because their
-  surface normals did not reach the shader
-- The cloud host certificate was not verified, so a connection to a host presenting a
-  certificate from an untrusted authority or for another host name was accepted and
-  only reported as SSL errors in the log. Such connections are now refused. A session
-  whose host uses a private certificate authority needs that authority set as its host
-  *Certificate*, or its *Verification* relaxed
-- Certificate signing requests generated on macOS store subject fields with characters
-  outside ASCII, such as `Žilina`, correctly. The `openssl` tool used before stored
-  them in a mangled form (`Å½ilina`)
+  show a wrong orientation when shown again
+- Changing the style or color scheme while the application runs:
+  - shrank the tool bar icons to the style's default size. They now keep the size set
+    in the application settings
+  - left the model window's check boxes and sliders, the labels of the central tabs
+    and existing output text in the previous scheme's colors, e.g. white text on a
+    light background
+- The model window used the desktop style instead of the style chosen in the
+  application settings
 
 ### Submodules
 
+- range-ai-lib @ v1.2.0
+- range-base-lib @ v1.2.1
+- range-build-tools @ v1.1.1
 - range-cloud-lib @ v1.3.0
 - range-gui-lib @ v1.3.1
 - range-model-lib @ v1.3.0
