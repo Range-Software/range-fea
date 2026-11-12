@@ -1,3 +1,14 @@
+## Version 1.5.0
+
+### Improvements
+
+- **Mesh generator can be selected** in the *Generate 3D mesh* dialog. Next to TetGen
+  there is a new *Range* mesh generator, developed as a part of Range FEA
+  (`range-element-lib`). TetGen remains the default. *TetGen parameters* apply only
+  to TetGen
+
+---
+
 ## Version 1.4.0
 
 ### Compatibility

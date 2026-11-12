@@ -26,3 +26,7 @@
 	path = src/range-ai-lib
 	url = ../range-ai-lib
 	branch = main
+[submodule "range-element-lib"]
+	path = src/range-element-lib
+	url = ../range-element-lib
+	branch = main

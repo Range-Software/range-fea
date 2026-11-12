@@ -18,6 +18,8 @@ class MeshGeneratorDialog : public QDialog
 
         //! Model ID.
         uint modelID;
+        //! Mesh generator combo box.
+        QComboBox *generatorComboBox;
         //! Keep results check box.
         QCheckBox *surfaceIntegrityCheck;
         //! Quality mesh group box.
@@ -78,6 +80,9 @@ class MeshGeneratorDialog : public QDialog
 
         //! Keep results checkbox state changed.
         void onKeepResultsStateChanged(Qt::CheckState);
+
+        //! Mesh generator changed.
+        void onGeneratorChanged(int);
 
         //! Tetgen parameters group box clicked.
         void onTetgenParamsGroupBoxClicked(bool);

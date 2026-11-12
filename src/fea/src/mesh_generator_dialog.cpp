@@ -1,3 +1,4 @@
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
@@ -29,6 +30,20 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     this->setLayout (mainLayout);
+
+    QHBoxLayout *generatorLayout = new QHBoxLayout;
+    mainLayout->addLayout(generatorLayout);
+
+    QLabel *generatorLabel = new QLabel(tr("Mesh generator") + ":");
+    generatorLayout->addWidget(generatorLabel);
+
+    this->generatorComboBox = new QComboBox;
+    generatorLayout->addWidget(this->generatorComboBox,1);
+    for (int i=0;i<int(R_MESH_GENERATOR_N_TYPES);i++)
+    {
+        this->generatorComboBox->addItem(RMeshInput::getGeneratorName(RMeshGeneratorType(i)),QVariant(i));
+    }
+    this->generatorComboBox->setCurrentIndex(this->generatorComboBox->findData(QVariant(int(this->meshInput.getGeneratorType()))));
 
     this->surfaceIntegrityCheck = new QCheckBox(tr("Check surface integrity"));
     mainLayout->addWidget(this->surfaceIntegrityCheck);
@@ -108,6 +123,7 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     this->tetgenParamsGroupBox = new QGroupBox(tr("TetGen parameters"));
     this->tetgenParamsGroupBox->setCheckable(true);
     this->tetgenParamsGroupBox->setChecked(false);
+    this->tetgenParamsGroupBox->setEnabled(this->meshInput.getGeneratorType() == R_MESH_GENERATOR_TETGEN);
     mainLayout->addWidget(this->tetgenParamsGroupBox);
 
     QVBoxLayout *tetgenParamsLayout = new QVBoxLayout;
@@ -128,6 +144,7 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     QObject::connect(buttonBox,&QDialogButtonBox::rejected,this,&QDialog::reject);
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
 
+    QObject::connect(this->generatorComboBox,&QComboBox::currentIndexChanged,this,&MeshGeneratorDialog::onGeneratorChanged);
     QObject::connect(this->surfaceIntegrityCheck,&QCheckBox::checkStateChanged,this,&MeshGeneratorDialog::onSurfaceIntegrityStateChanged);
     QObject::connect(this->qualityMeshGroupBox,&QGroupBox::clicked,this,&MeshGeneratorDialog::onQualityMeshGroupBoxClicked);
     QObject::connect(this->volumeConstraintEdit,&ValueLineEdit::valueChanged,this,&MeshGeneratorDialog::onVolumeConstraintValueChanged);
@@ -173,6 +190,7 @@ int MeshGeneratorDialog::exec()
 
 void MeshGeneratorDialog::updateMeshInput()
 {
+    this->meshInput.setGeneratorType(RMeshGeneratorType(this->generatorComboBox->currentData().toInt()));
     this->meshInput.setSurfaceIntegrityCheck(this->surfaceIntegrityCheck->isChecked());
     this->meshInput.setQualityMesh(this->qualityMeshGroupBox->isChecked());
     this->meshInput.setUseSizeFunction(this->qualityMeshGroupBox->isChecked() && this->meshSizeFunctionGroupBox->isChecked());
@@ -193,7 +211,10 @@ void MeshGeneratorDialog::updateMeshInput()
     }
 
 
-    this->meshInput.setUseTetGenInputParams(this->tetgenParamsGroupBox->isChecked());
+    // TetGen parameters are used only by TetGen.
+    const bool isTetGen = this->meshInput.getGeneratorType() == R_MESH_GENERATOR_TETGEN;
+    this->tetgenParamsGroupBox->setEnabled(isTetGen);
+    this->meshInput.setUseTetGenInputParams(isTetGen && this->tetgenParamsGroupBox->isChecked());
     if (!this->tetgenParamsGroupBox->isChecked())
     {
         // Update TetGen parameters line edit.
@@ -235,6 +256,11 @@ void MeshGeneratorDialog::onReconstructStateChanged(Qt::CheckState)
 }
 
 void MeshGeneratorDialog::onKeepResultsStateChanged(Qt::CheckState)
+{
+    this->updateMeshInput();
+}
+
+void MeshGeneratorDialog::onGeneratorChanged(int)
 {
     this->updateMeshInput();
 }
