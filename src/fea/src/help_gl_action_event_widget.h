@@ -20,7 +20,7 @@ class HelpGLActionEventWidget : public QWidget
     public:
 
         //! Constructor
-        explicit HelpGLActionEventWidget(QWidget *parent = nullptr);
+        explicit HelpGLActionEventWidget(const QString &searchPath, QWidget *parent = nullptr);
 
     private slots:
 

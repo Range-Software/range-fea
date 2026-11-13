@@ -4,6 +4,6 @@
 HelpDialog::HelpDialog(const QString &title, const QMap<QString, QString> &topics, QWidget *parent)
     : RHelpDialog(title,topics,parent)
 {
-    HelpGLActionEventWidget *helpActionsWidget = new HelpGLActionEventWidget;
+    HelpGLActionEventWidget *helpActionsWidget = new HelpGLActionEventWidget(this->findHelpFilePath("3d-area"));
     this->tabWidget->addTab(helpActionsWidget,tr("3D area"));
 }
