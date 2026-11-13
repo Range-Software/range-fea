@@ -107,6 +107,7 @@ qt_add_executable(fea
     src/main.cpp
     src/main_window.cpp
     src/mark_entity_dialog.cpp
+    src/material_library_loader.cpp
     src/material_manager_tree.cpp
     src/material_property_add_dialog.cpp
     src/material_property_edit_dialog.cpp
@@ -296,6 +297,7 @@ qt_add_executable(fea
     src/local_direction_widget.h
     src/main_window.h
     src/mark_entity_dialog.h
+    src/material_library_loader.h
     src/material_manager_tree.h
     src/material_property_add_dialog.h
     src/material_property_edit_dialog.h
@@ -728,3 +730,15 @@ qt_add_translations(fea
         translations/pl.ts
     RESOURCE_PREFIX /i18n/fea
 )
+
+if(RANGE_BUILD_TESTS)
+    find_package(Qt6 REQUIRED COMPONENTS Test)
+    qt_add_executable(tst_material_library_loader
+        tests/tst_material_library_loader.cpp
+        src/material_library_loader.cpp
+        src/material_library_loader.h
+    )
+    target_include_directories(tst_material_library_loader PRIVATE src)
+    target_link_libraries(tst_material_library_loader PRIVATE range-model-lib Qt6::Test)
+    add_test(NAME tst_material_library_loader COMMAND tst_material_library_loader)
+endif()

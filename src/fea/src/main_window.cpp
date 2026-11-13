@@ -1076,6 +1076,8 @@ QWidget *MainWindow::createMaterialTab()
 
     MaterialTree *treeMaterial = new MaterialTree(splitter);
 
+    treeMaterial->setEnabled(false);
+    QObject::connect(treeMaterialList,&MaterialManagerTree::loadingChanged,treeMaterial,&QWidget::setDisabled);
     QObject::connect(treeMaterialList,&MaterialManagerTree::materialSelected,treeMaterial,&MaterialTree::onMaterialSelected);
     QObject::connect(treeMaterial,&MaterialTree::materialChanged,treeMaterialList,&MaterialManagerTree::onMaterialChanged);
 

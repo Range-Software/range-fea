@@ -5,6 +5,9 @@
 #include <QPushButton>
 #include <QMap>
 #include <QTimer>
+#include <QLabel>
+
+class MaterialLibraryLoader;
 
 #include <rml_material.h>
 
@@ -35,6 +38,12 @@ class MaterialManagerTree : public QWidget
         //! being copied) into a single refresh.
         QTimer *directoryChangedTimer;
 
+        MaterialLibraryLoader *materialLoader = nullptr;
+        QLabel *loadingLabel;
+        bool refreshPending = false;
+        bool materialsReady = false;
+        QList<uint> pendingModelIDs;
+
         QTreeWidget *treeWidget;
 
         QPushButton *newButton;
@@ -44,6 +53,7 @@ class MaterialManagerTree : public QWidget
 
         //! Constructor.
         explicit MaterialManagerTree(QWidget *parent = nullptr);
+        ~MaterialManagerTree() override;
 
     protected:
 
@@ -60,7 +70,7 @@ class MaterialManagerTree : public QWidget
         void updateItem(QTreeWidgetItem *item, const RMaterial &material, const QString &filePath, bool setSelected);
 
         //! Return material belonging to given item.
-        //! The material is read from its file and cached if it is not cached yet.
+        //! Lookups use the loaded snapshot and never perform GUI-thread I/O.
         //! If ok is given it is set to false when the material could not be read.
         RMaterial findItemMaterial(QTreeWidgetItem *item, bool *ok = nullptr);
 
@@ -76,12 +86,6 @@ class MaterialManagerTree : public QWidget
         //! Build file path for given material.
         static QString buildFilePath(const RMaterial &material);
 
-        //! Read material from file.
-        //! If the file is not stored in the default format it is converted and
-        //! the former file is removed. In such case filePath is updated to
-        //! point to the converted file.
-        static RMaterial read(QString &filePath);
-
         //! Write material to file.
         static void write(const QString &fileName, const RMaterial &material);
 
@@ -94,6 +98,9 @@ class MaterialManagerTree : public QWidget
 
         //! Material directory has changed.
         void onDirectoryChanged(const QString &path);
+
+        void onMaterialsLoaded();
+        void processPendingModels();
 
         //! Called on entity selection changed.
         void onModelSelectionChanged(uint);
@@ -120,6 +127,8 @@ class MaterialManagerTree : public QWidget
         void onMaterialDelete();
 
     signals:
+
+        void loadingChanged(bool loading);
 
         //! Signal that material selection has changed.
         void materialSelected(const RMaterial &material);

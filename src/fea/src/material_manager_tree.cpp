@@ -3,6 +3,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#include <QSignalBlocker>
+#include <QSet>
+
+#include "material_library_loader.h"
 
 #include <rbl_logger.h>
 
@@ -30,6 +34,9 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
 
     this->treeWidget = new QTreeWidget;
     mainLayout->addWidget(this->treeWidget);
+    this->loadingLabel = new QLabel(tr("Loading materials…"),this);
+    mainLayout->addWidget(this->loadingLabel);
+    this->treeWidget->setEnabled(false);
 
     this->treeWidget->setSelectionMode(QAbstractItemView::SingleSelection);
     this->treeWidget->setSortingEnabled(true);
@@ -50,6 +57,7 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
 
     this->newButton = new QPushButton(newIcon,tr("New"));
     buttonLayout->addWidget(this->newButton);
+    this->newButton->setEnabled(false);
 
     this->deleteButton = new QPushButton(deleteIcon,tr("Delete"));
     this->deleteButton->setDisabled(true);
@@ -79,9 +87,30 @@ MaterialManagerTree::MaterialManagerTree(QWidget *parent)
     fileSystemWatcher->addPath(Application::instance()->getApplicationSettings()->getMaterialsDir());
     QObject::connect(fileSystemWatcher,&QFileSystemWatcher::directoryChanged,this->directoryChangedTimer,qOverload<>(&QTimer::start));
 
-    this->onDirectoryChanged(Application::instance()->getApplicationSettings()->getMaterialsDir());
+    // Start only after construction, once the editor connections exist and the
+    // main window can be displayed.
+    QTimer::singleShot(0,this,[this](){
+        this->onDirectoryChanged(Application::instance()->getApplicationSettings()->getMaterialsDir());
+    });
+    QObject::connect(Application::instance()->getSession(),&Session::modelRemoved,this,[this](uint removed){
+        QList<uint> remaining;
+        for (uint modelID : std::as_const(this->pendingModelIDs))
+        {
+            if (modelID != removed)
+            {
+                remaining.append(modelID > removed ? modelID - 1 : modelID);
+            }
+        }
+        this->pendingModelIDs = remaining;
+    });
 
     R_LOG_TRACE_OUT;
+}
+
+MaterialManagerTree::~MaterialManagerTree()
+{
+    // Explicitly join before QObject destroys the worker and GUI children.
+    delete this->materialLoader;
 }
 
 void MaterialManagerTree::updateCheckStates()
@@ -185,7 +214,7 @@ void MaterialManagerTree::updateItem(QTreeWidgetItem *item, const RMaterial &mat
 
     this->materialCache.insert(filePath,material);
 
-    bool signalsBlockedOld = this->signalsBlocked();
+    bool signalsBlockedOld = this->treeWidget->signalsBlocked();
     this->treeWidget->blockSignals(true);
     item->setText(ColumnType::ColumnName,material.getName());
     item->setData(ColumnType::ColumnName,Qt::UserRole,QVariant(material.getName()));
@@ -226,31 +255,11 @@ RMaterial MaterialManagerTree::findItemMaterial(QTreeWidgetItem *item, bool *ok)
         R_LOG_TRACE_RETURN(iter.value());
     }
 
-    RMaterial material;
-    try
+    if (ok)
     {
-        QString readFilePath(filePath);
-        material = MaterialManagerTree::read(readFilePath);
-        if (readFilePath != filePath)
-        {
-            // The file was converted to the default format while being read.
-            item->setText(ColumnType::ColumnFile,readFilePath);
-            filePath = readFilePath;
-        }
-        this->materialCache.insert(filePath,material);
+        *ok = false;
     }
-    catch (const RError &error)
-    {
-        RLogger::error("Failed to read material file \"%s\". %s\n",
-                       filePath.toUtf8().constData(),
-                       error.getMessage().toUtf8().constData());
-        if (ok)
-        {
-            *ok = false;
-        }
-    }
-
-    R_LOG_TRACE_RETURN(material);
+    R_LOG_TRACE_RETURN(RMaterial());
 }
 
 QStringList MaterialManagerTree::findFiles(const QString &name) const
@@ -300,74 +309,21 @@ int MaterialManagerTree::compareModelMaterial(const RMaterial &material) const
         R_LOG_TRACE_RETURN(-1);
     }
 
-    bool matsDiffer = true;
-    for (QString filePath : std::as_const(fileNames))
+    for (const QString &filePath : std::as_const(fileNames))
     {
-        try
+        const auto materialIter = this->materialCache.constFind(filePath);
+        if (materialIter != this->materialCache.constEnd() && materialIter->propertiesEqual(material))
         {
-            RMaterial cmpMaterial = MaterialManagerTree::read(filePath);
-            if (cmpMaterial.propertiesEqual(material))
-            {
-                matsDiffer = false;
-            }
-        }
-        catch (const RError &error)
-        {
-            RLogger::error("Failed to read material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
+            R_LOG_TRACE_RETURN(0);
         }
     }
-    R_LOG_TRACE_RETURN(int(matsDiffer));
+    R_LOG_TRACE_RETURN(1);
 }
 
 QString MaterialManagerTree::buildFilePath(const RMaterial &material)
 {
     QDir materialsDir(Application::instance()->getApplicationSettings()->getMaterialsDir());
     return materialsDir.filePath(material.getID().toString(QUuid::WithoutBraces) + "." + RMaterial::getDefaultFileExtension());
-}
-
-RMaterial MaterialManagerTree::read(QString &filePath)
-{
-    RMaterial material;
-    material.read(filePath);
-
-    QString suggestedFilePath = MaterialManagerTree::buildFilePath(material);
-    if (filePath != suggestedFilePath)
-    {
-        if (QFileInfo(filePath) != QFileInfo(suggestedFilePath) && QFile::exists(suggestedFilePath))
-        {
-            // The material already exists in the default format, which is the
-            // newer one - the former file is a leftover and must not overwrite it.
-            RLogger::info("Material file \"%s\" is superseded by \"%s\".\n",
-                          filePath.toUtf8().constData(),
-                          suggestedFilePath.toUtf8().constData());
-            material.read(suggestedFilePath);
-        }
-        else
-        {
-            RLogger::info("Converting material file \"%s\" to \"%s\".\n",
-                          filePath.toUtf8().constData(),
-                          suggestedFilePath.toUtf8().constData());
-
-            // Write the material in the default format first so that the material
-            // is never lost in case the conversion fails.
-            MaterialManagerTree::write(suggestedFilePath,material);
-        }
-
-        // Remove the former file only if it is not the file which has just been
-        // written - the paths may differ while pointing to the same file on
-        // case insensitive file systems.
-        if (QFileInfo(filePath) != QFileInfo(suggestedFilePath))
-        {
-            if (!QFile::remove(filePath))
-            {
-                RLogger::error("Failed to remove material file \"%s\".\n",filePath.toUtf8().constData());
-            }
-        }
-
-        filePath = suggestedFilePath;
-    }
-
-    return material;
 }
 
 void MaterialManagerTree::write(const QString &fileName, const RMaterial &material)
@@ -378,6 +334,12 @@ void MaterialManagerTree::write(const QString &fileName, const RMaterial &materi
 void MaterialManagerTree::onMaterialChanged(const RMaterial &material)
 {
     QString filePath = MaterialManagerTree::buildFilePath(material);
+    if (this->materialLoader)
+    {
+        // An edit delivered while a snapshot is being read must not be replaced
+        // by that older snapshot.
+        this->refreshPending = true;
+    }
     // Keep the cache in step with the file right away rather than waiting for
     // the directory watcher to report the write.
     this->materialCache.insert(filePath,material);
@@ -393,77 +355,109 @@ void MaterialManagerTree::onMaterialChanged(const RMaterial &material)
 
 void MaterialManagerTree::onDirectoryChanged(const QString &path)
 {
-    R_LOG_TRACE_IN;
-
-    QFileInfoList fileInfoList = QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot,QDir::Name);
-
-    // This is the authoritative refresh from disk - every item which survives
-    // it goes through updateItem(), which fills the cache in again.
-    this->materialCache.clear();
-
-    for (int i=this->treeWidget->topLevelItemCount()-1; i>=0; i--)
+    this->directoryChangedTimer->stop();
+    if (this->materialLoader)
     {
-        QString fileName = this->treeWidget->topLevelItem(i)->text(ColumnType::ColumnFile);
-        bool fileInList = false;
-        for (auto iter = fileInfoList.cbegin(); iter != fileInfoList.cend(); ++iter)
-        {
-            if (fileName == iter->filePath())
-            {
-                try
-                {
-                    RMaterial material = MaterialManagerTree::read(fileName);
-                    this->updateItem(this->treeWidget->topLevelItem(i), material, fileName, false);
-                    fileInfoList.erase(iter);
-                    fileInList = true;
-                }
-                catch (const RError &error)
-                {
-                    RLogger::error("Failed to read material file \"%s\". %s\n",
-                                   fileName.toUtf8().constData(),
-                                   error.getMessage().toUtf8().constData());
-                }
+        this->refreshPending = true;
+        return;
+    }
 
-                break;
-            }
-        }
-        if (!fileInList)
+    this->materialsReady = false;
+    this->treeWidget->setEnabled(false);
+    this->newButton->setEnabled(false);
+    this->deleteButton->setEnabled(false);
+    this->loadingLabel->setText(tr("Loading materials…"));
+    this->loadingLabel->show();
+    emit this->loadingChanged(true);
+
+    this->materialLoader = new MaterialLibraryLoader(path,this);
+    QObject::connect(this->materialLoader,&MaterialLibraryLoader::progressChanged,this,[this](int completed,int total){
+        this->loadingLabel->setText(tr("Loading materials… %1/%2").arg(completed).arg(total));
+    });
+    QObject::connect(this->materialLoader,&QThread::finished,this,&MaterialManagerTree::onMaterialsLoaded);
+    this->materialLoader->start();
+}
+
+void MaterialManagerTree::onMaterialsLoaded()
+{
+    MaterialLibraryLoader *loader = this->materialLoader;
+    this->materialLoader = nullptr;
+    loader->deleteLater();
+
+    for (const QString &error : std::as_const(loader->errors))
+    {
+        RLogger::error("%s\n",error.toUtf8().constData());
+    }
+    if (this->refreshPending || this->directoryChangedTimer->isActive())
+    {
+        // Serialize refreshes and discard snapshots invalidated while reading.
+        this->refreshPending = false;
+        this->onDirectoryChanged(Application::instance()->getApplicationSettings()->getMaterialsDir());
+        return;
+    }
+
+    const QSignalBlocker blocker(this->treeWidget);
+    this->treeWidget->setSortingEnabled(false);
+    this->materialCache = std::move(loader->materials);
+    this->updateProblemTypeMask();
+    for (int i=this->treeWidget->topLevelItemCount()-1; i>=0; --i)
+    {
+        QTreeWidgetItem *item = this->treeWidget->topLevelItem(i);
+        const auto iter = this->materialCache.constFind(item->text(ColumnType::ColumnFile));
+        if (iter == this->materialCache.constEnd())
         {
-            // takeTopLevelItem() passes the ownership of the item to the caller.
             delete this->treeWidget->takeTopLevelItem(i);
         }
+        else
+        {
+            const RMaterial material(iter.value());
+            const QString filePath(iter.key());
+            this->updateItem(item,material,filePath,false);
+        }
     }
-
-    for (const QFileInfo &fileInfo : std::as_const(fileInfoList))
+    QSet<QString> existingPaths;
+    for (int i=0; i<this->treeWidget->topLevelItemCount(); ++i)
     {
-        QString filePath = fileInfo.filePath();
-        if (this->materialCache.contains(filePath))
-        {
-            // Already added from a former file which was converted to this one.
-            continue;
-        }
-        try
-        {
-            RMaterial material = MaterialManagerTree::read(filePath);
-            if (this->materialCache.contains(filePath))
-            {
-                // Former file was converted to a file which is already in the tree.
-                continue;
-            }
-            QTreeWidgetItem *item = new QTreeWidgetItem(this->treeWidget);
-            this->updateItem(item, material, filePath, false);
-        }
-        catch (const RError &error)
-        {
-            RLogger::error("Failed to read material file \"%s\". %s\n", filePath.toUtf8().constData(), error.getMessage().toUtf8().constData());
-        }
+        existingPaths.insert(this->treeWidget->topLevelItem(i)->text(ColumnType::ColumnFile));
     }
-
-    for (int type=ColumnType::ColumnName;type<ColumnType::NunberOfColumns;type++)
+    for (auto iter = this->materialCache.cbegin(); iter != this->materialCache.cend(); ++iter)
     {
-        this->treeWidget->resizeColumnToContents(type);
+        if (!existingPaths.contains(iter.key()))
+        {
+            const RMaterial material(iter.value());
+            const QString filePath(iter.key());
+            this->updateItem(new QTreeWidgetItem(this->treeWidget),material,filePath,false);
+        }
     }
+    this->treeWidget->setSortingEnabled(true);
     this->updateCheckStates();
-    R_LOG_TRACE_OUT;
+    // Failed reads do not establish that a model material is absent. Keep model
+    // reconciliation queued until a complete snapshot can be loaded.
+    this->materialsReady = loader->errors.isEmpty();
+    this->treeWidget->setEnabled(true);
+    this->newButton->setEnabled(true);
+    this->loadingLabel->setVisible(!loader->errors.isEmpty());
+    this->loadingLabel->setText(tr("Some materials could not be loaded. See the application log."));
+    emit this->loadingChanged(false);
+    this->onItemSelectionChanged();
+
+    // A model can arrive before the initial snapshot. Compare it only against
+    // the complete library, never against a partially loaded tree.
+    QTimer::singleShot(0,this,&MaterialManagerTree::processPendingModels);
+}
+
+void MaterialManagerTree::processPendingModels()
+{
+    if (!this->materialsReady || this->pendingModelIDs.isEmpty())
+    {
+        return;
+    }
+    const uint modelID = this->pendingModelIDs.takeFirst();
+    if (modelID < Application::instance()->getSession()->getNModels())
+    {
+        this->onModelAdded(modelID);
+    }
+    QTimer::singleShot(0,this,&MaterialManagerTree::processPendingModels);
 }
 
 void MaterialManagerTree::onModelSelectionChanged(uint)
@@ -477,6 +471,15 @@ void MaterialManagerTree::onModelSelectionChanged(uint)
 void MaterialManagerTree::onModelAdded(uint modelID)
 {
     R_LOG_TRACE_IN;
+    if (!this->materialsReady)
+    {
+        if (!this->pendingModelIDs.contains(modelID))
+        {
+            this->pendingModelIDs.append(modelID);
+        }
+        R_LOG_TRACE_OUT;
+        return;
+    }
     QMap<QString,RMaterial> unknownMaterials;
     QMap<QString,RMaterial> differentMaterials;
 
