@@ -6,6 +6,25 @@
   there is a new *Range* mesh generator, developed as a part of Range FEA
   (`range-element-lib`). TetGen remains the default. *TetGen parameters* apply only
   to TetGen
+- **Range mesh generation reports progress throughout the operation**, including
+  model conversion, boundary recovery, refinement, optimization and quality checks.
+  Fixed work lists show percentages; adaptive work pulses with pass, processed-cell,
+  queued-cell and added-node counts. Status text and work counts are also written to
+  the log, without the progress percentage
+- **Sliver warnings include counts by element category**, such as surface and volume,
+  alongside the total. Categories with no slivers are omitted
+
+### Bug fixes
+
+- Range mesh generation could repeatedly subdivide a valid planar surface until it
+  reached the minimum split size and failed with a misleading intersection warning.
+  Boundary recovery can now adopt the existing volume mesh's triangulation of a
+  planar patch while preserving its boundary, constrained edges, vertices and surface
+  marker. More failed circumcenter placements can fall back to a centroid. Remaining
+  failures report the actual split rejection, element identifiers, precise coordinates
+  and split limit
+- Switching the main progress bar from pulsing to percentage progress stops the
+  pulse timer. Pulsing phases show their status text without a misleading `0%`
 
 ---
 

@@ -1244,6 +1244,7 @@ void MainWindow::progressBarInitialize(RProgressBar *progressBar, const QString 
     }
     else
     {
+        progressBar->stopPulse();
         progressBar->setRange(0,100);
     }
     progressBar->setMessage(message);

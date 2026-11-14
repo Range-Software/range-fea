@@ -1,4 +1,6 @@
 #include <QString>
+#include <QMap>
+#include <QStringList>
 #include <QRandomGenerator>
 #include <algorithm>
 #include <cmath>
@@ -1185,7 +1187,37 @@ void Model::updateSliverElements(double edgeRatio)
     }
     else
     {
-        RLogger::warning("Number of sliver elements found = %d.\n", ni);
+        QMap<QString,uint> typeCounts;
+        for (uint elementID : this->sliverElements)
+        {
+            const RElementType type = this->getElement(elementID).getType();
+            if (R_ELEMENT_TYPE_IS_POINT(type))
+            {
+                typeCounts["point"]++;
+            }
+            else if (R_ELEMENT_TYPE_IS_LINE(type))
+            {
+                typeCounts["line"]++;
+            }
+            else if (R_ELEMENT_TYPE_IS_SURFACE(type))
+            {
+                typeCounts["surface"]++;
+            }
+            else if (R_ELEMENT_TYPE_IS_VOLUME(type))
+            {
+                typeCounts["volume"]++;
+            }
+            else
+            {
+                typeCounts["other"]++;
+            }
+        }
+        QStringList counts;
+        for (auto it = typeCounts.cbegin(); it != typeCounts.cend(); ++it)
+        {
+            counts.append(QString("%1: %2").arg(it.key()).arg(it.value()));
+        }
+        RLogger::warning("Number of sliver elements found = %d (%s).\n", ni, counts.join(", ").toUtf8().constData());
     }
 }
 
