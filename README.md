@@ -4,7 +4,7 @@ Range FEA is an open-source desktop application for computer-aided engineering u
 
 The application is built on Qt6 and ships with a standalone CLI solver (`fea-solver`) alongside the main GUI (`fea`). Automatic tetrahedral meshing is done by the embedded TetGen library or by the project's own mesh generator (`range-element-lib`).
 
-![Range Software](./doc/RangeFEA-CFD-light.png)
+![Range Software](./doc/RangeFEA-CFD-darwin-light.png)
 
 ## Help and tutorials
 
