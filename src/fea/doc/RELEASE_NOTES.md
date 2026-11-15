@@ -2,6 +2,11 @@
 
 ### Improvements
 
+- **Faster intersection checks and repair** use a spatial search to select nearby
+  element pairs and cache triangle geometry. Parallel searches avoid shared-result
+  contention and update progress in batches. Intersection repair rebuilds its
+  search after each splitting iteration; the log includes candidate counts and
+  timings
 - **Mesh generator can be selected** in the *Generate 3D mesh* dialog. Next to TetGen
   there is a new *Range* mesh generator, developed as a part of Range FEA
   (`range-element-lib`). Range is the default. *TetGen parameters* apply only
