@@ -1271,47 +1271,47 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="75"/>
+        <location filename="../src/central_tab_widget.cpp" line="95"/>
         <source>Tile windows</source>
         <translation>Usporiadať okná vedľa seba</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="51"/>
+        <location filename="../src/central_tab_widget.cpp" line="71"/>
         <source>Max lines</source>
         <translation>Max. riadkov</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="53"/>
+        <location filename="../src/central_tab_widget.cpp" line="73"/>
         <source>Maximum number of lines kept in process output. Oldest lines are removed first.</source>
         <translation>Maximálny počet riadkov uchovaných vo výstupe procesu. Najstaršie riadky sa odstraňujú ako prvé.</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="87"/>
+        <location filename="../src/central_tab_widget.cpp" line="107"/>
         <source>Windows</source>
         <translation>Okná</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="163"/>
+        <location filename="../src/central_tab_widget.cpp" line="183"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="168"/>
+        <location filename="../src/central_tab_widget.cpp" line="188"/>
         <source>Application output</source>
         <translation>Výstup aplikácie</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="174"/>
+        <location filename="../src/central_tab_widget.cpp" line="194"/>
         <source>Process output</source>
         <translation>Výstup procesu</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="180"/>
+        <location filename="../src/central_tab_widget.cpp" line="200"/>
         <source>Pick details</source>
         <translation>Detaily vyznačenia</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="288"/>
+        <location filename="../src/central_tab_widget.cpp" line="306"/>
         <source>Notice</source>
         <translation>Upozornenie</translation>
     </message>
@@ -1504,7 +1504,8 @@
 <context>
     <name>DocumentGenerator</name>
     <message>
-        <location filename="../src/document_generator.cpp" line="291"/>
+        <location filename="../src/document_generator.cpp" line="381"/>
+        <location filename="../src/document_generator.cpp" line="448"/>
         <source>Page</source>
         <translation>Strana</translation>
     </message>
@@ -2339,98 +2340,98 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="684"/>
+        <location filename="../src/gl_widget.cpp" line="695"/>
         <source>Stream line</source>
         <translation>Prúdnica</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="699"/>
+        <location filename="../src/gl_widget.cpp" line="710"/>
         <source>Scale</source>
         <translation>Mierka</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="714"/>
+        <location filename="../src/gl_widget.cpp" line="725"/>
         <source>Rotation</source>
         <translation>Rotácia</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1040"/>
+        <location filename="../src/gl_widget.cpp" line="1051"/>
         <source>Time-step</source>
         <translation>Časový krok</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1045"/>
+        <location filename="../src/gl_widget.cpp" line="1056"/>
         <source>Mode</source>
         <translation>Mód</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <location filename="../src/gl_widget.cpp" line="1061"/>
         <source>Steady state</source>
         <translation>Ustálený stav</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1465"/>
+        <location filename="../src/gl_widget.cpp" line="1476"/>
         <source>Number of sliver elements</source>
         <translation>Počet štíhlych prvkov</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1469"/>
+        <location filename="../src/gl_widget.cpp" line="1480"/>
         <source>Number of intersected elements</source>
         <translation>Počet pretínajúcich sa prvkov</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1473"/>
+        <location filename="../src/gl_widget.cpp" line="1484"/>
         <source>Number of hole elements</source>
         <translation>Počet hraničných prvkov otvorov</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1479"/>
+        <location filename="../src/gl_widget.cpp" line="1490"/>
         <source>Picked entities</source>
         <translation>Označené celky</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1493"/>
+        <location filename="../src/gl_widget.cpp" line="1504"/>
         <source>Hole edge</source>
         <translation>Hrana diery</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1571"/>
-        <location filename="../src/gl_widget.cpp" line="1572"/>
+        <location filename="../src/gl_widget.cpp" line="1582"/>
+        <location filename="../src/gl_widget.cpp" line="1583"/>
         <source>more</source>
         <translation>viac</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1061"/>
+        <location filename="../src/gl_widget.cpp" line="1072"/>
         <source>Smoothed. Element range: %1 to %2</source>
         <translation>Vyhladené. Rozsah prvkov: %1 až %2</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1599"/>
+        <location filename="../src/gl_widget.cpp" line="1610"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmienky</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1791"/>
+        <location filename="../src/gl_widget.cpp" line="1802"/>
         <source>Action</source>
         <translation>Akcia</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1794"/>
+        <location filename="../src/gl_widget.cpp" line="1805"/>
         <source>Zoom</source>
         <translation>Priblíženie</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1795"/>
+        <location filename="../src/gl_widget.cpp" line="1806"/>
         <source>Model draw time</source>
         <translation>Doba vykreslenia modelu</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3005"/>
+        <location filename="../src/gl_widget.cpp" line="3016"/>
         <source>Image files</source>
         <translation>Obrázkové súbory</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3022"/>
+        <location filename="../src/gl_widget.cpp" line="3033"/>
         <source>Save screenshot as</source>
         <translation>Uložiť snímok obrazovky ako</translation>
     </message>
@@ -2769,7 +2770,7 @@
     <message>
         <location filename="../src/main_window.cpp" line="139"/>
         <location filename="../src/main_window.cpp" line="580"/>
-        <location filename="../src/main_window.cpp" line="817"/>
+        <location filename="../src/main_window.cpp" line="821"/>
         <source>Problem</source>
         <translation>Úloha</translation>
     </message>
@@ -2790,13 +2791,13 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="151"/>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Material</source>
         <translation>Materiál</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="154"/>
-        <location filename="../src/main_window.cpp" line="858"/>
+        <location filename="../src/main_window.cpp" line="862"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
@@ -2812,7 +2813,7 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="361"/>
-        <location filename="../src/main_window.cpp" line="742"/>
+        <location filename="../src/main_window.cpp" line="746"/>
         <source>File</source>
         <translation>Súbor</translation>
     </message>
@@ -2833,25 +2834,25 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="474"/>
-        <location filename="../src/main_window.cpp" line="756"/>
+        <location filename="../src/main_window.cpp" line="760"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="479"/>
-        <location filename="../src/main_window.cpp" line="758"/>
+        <location filename="../src/main_window.cpp" line="762"/>
         <source>Draw</source>
         <translation>Kresliť</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="499"/>
-        <location filename="../src/main_window.cpp" line="760"/>
+        <location filename="../src/main_window.cpp" line="764"/>
         <source>Line</source>
         <translation>Čiara</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="504"/>
-        <location filename="../src/main_window.cpp" line="791"/>
+        <location filename="../src/main_window.cpp" line="795"/>
         <source>Surface</source>
         <translation>Povrch</translation>
     </message>
@@ -2867,31 +2868,31 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="530"/>
-        <location filename="../src/main_window.cpp" line="861"/>
+        <location filename="../src/main_window.cpp" line="865"/>
         <source>Cut</source>
         <translation>Rez</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="536"/>
-        <location filename="../src/main_window.cpp" line="862"/>
+        <location filename="../src/main_window.cpp" line="866"/>
         <source>Iso</source>
         <translation>Iso</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="542"/>
-        <location filename="../src/main_window.cpp" line="863"/>
+        <location filename="../src/main_window.cpp" line="867"/>
         <source>Stream line</source>
         <translation>Prúdnica</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="548"/>
-        <location filename="../src/main_window.cpp" line="864"/>
+        <location filename="../src/main_window.cpp" line="868"/>
         <source>Scalar field</source>
         <translation>Skalárne pole</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="554"/>
-        <location filename="../src/main_window.cpp" line="865"/>
+        <location filename="../src/main_window.cpp" line="869"/>
         <source>Vector field</source>
         <translation>Vektorové pole</translation>
     </message>
@@ -2926,301 +2927,301 @@
         <translation>Panel výsledkov</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="759"/>
+        <location filename="../src/main_window.cpp" line="763"/>
         <source>Point</source>
         <translation>Bod</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="761"/>
+        <location filename="../src/main_window.cpp" line="765"/>
         <source>Triangle</source>
         <translation>Trojuholník</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="762"/>
+        <location filename="../src/main_window.cpp" line="766"/>
         <source>Quadrilateral</source>
         <translation>Štvoruholník</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="763"/>
+        <location filename="../src/main_window.cpp" line="767"/>
         <source>Circle</source>
         <translation>Kružnica</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="764"/>
+        <location filename="../src/main_window.cpp" line="768"/>
         <source>Ellipse</source>
         <translation>Elipsa</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="765"/>
+        <location filename="../src/main_window.cpp" line="769"/>
         <source>Tetrahedron</source>
         <translation>Tetrahedrón</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="766"/>
+        <location filename="../src/main_window.cpp" line="770"/>
         <source>Hexahedron</source>
         <translation>Hexahedrón</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="767"/>
+        <location filename="../src/main_window.cpp" line="771"/>
         <source>Cylinder</source>
         <translation>Valec</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="768"/>
+        <location filename="../src/main_window.cpp" line="772"/>
         <source>Sphere</source>
         <translation>Guľa</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="769"/>
+        <location filename="../src/main_window.cpp" line="773"/>
         <source>RAW object</source>
         <translation>Objekt RAW</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="771"/>
+        <location filename="../src/main_window.cpp" line="775"/>
         <source>Boolean</source>
         <translation>Booleovské operácie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="776"/>
+        <location filename="../src/main_window.cpp" line="780"/>
         <source>Modify</source>
         <translation>Upraviť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="777"/>
+        <location filename="../src/main_window.cpp" line="781"/>
         <source>Transform</source>
         <translation>Transformovať</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="779"/>
+        <location filename="../src/main_window.cpp" line="783"/>
         <source>Entities</source>
         <translation>Entity</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="780"/>
+        <location filename="../src/main_window.cpp" line="784"/>
         <source>Line from edges</source>
         <translation>Čiara z hrán</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="781"/>
-        <location filename="../src/main_window.cpp" line="806"/>
+        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="810"/>
         <source>Merge</source>
         <translation>Zlúčiť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="782"/>
-        <location filename="../src/main_window.cpp" line="808"/>
-        <location filename="../src/main_window.cpp" line="813"/>
+        <location filename="../src/main_window.cpp" line="786"/>
+        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="817"/>
         <source>Remove</source>
         <translation>Odstrániť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="789"/>
         <source>Mesh</source>
         <translation>Sieť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="787"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>Generate</source>
         <translation>Generovať</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="788"/>
+        <location filename="../src/main_window.cpp" line="792"/>
         <source>Tetrahedra</source>
         <translation>Tetrahedróny</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="793"/>
         <source>Coarsen</source>
         <translation>Znížiť jemnosť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="792"/>
+        <location filename="../src/main_window.cpp" line="796"/>
         <source>Mark</source>
         <translation>Označiť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="799"/>
         <source>Sync normals</source>
         <translation>Synchronizovať normály</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="798"/>
+        <location filename="../src/main_window.cpp" line="802"/>
         <source>Check and repair</source>
         <translation>Kontrola a oprava</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="799"/>
+        <location filename="../src/main_window.cpp" line="803"/>
         <source>Find intersected</source>
         <translation>Nájsť pretínajúce sa</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="800"/>
+        <location filename="../src/main_window.cpp" line="804"/>
         <source>Break intersected</source>
         <translation>Rozbiť pretnuté</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="801"/>
+        <location filename="../src/main_window.cpp" line="805"/>
         <source>Find slivers</source>
         <translation>Nájsť trieskové</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="802"/>
+        <location filename="../src/main_window.cpp" line="806"/>
         <source>Fix slivers</source>
         <translation>Opraviť trieskové</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="804"/>
+        <location filename="../src/main_window.cpp" line="808"/>
         <source>Nodes</source>
         <translation>Uzly</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="805"/>
+        <location filename="../src/main_window.cpp" line="809"/>
         <source>Merge near</source>
         <translation>Zlúčiť blízke</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="807"/>
+        <location filename="../src/main_window.cpp" line="811"/>
         <source>Move</source>
         <translation>Presunúť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="809"/>
+        <location filename="../src/main_window.cpp" line="813"/>
         <source>Remove and close hole</source>
         <translation>Odstrániť a zavrieť dieru</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="811"/>
+        <location filename="../src/main_window.cpp" line="815"/>
         <source>Elements</source>
         <translation>Prvky</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="816"/>
         <source>Create</source>
         <translation>Vytvoriť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="819"/>
+        <location filename="../src/main_window.cpp" line="823"/>
         <source>Setup</source>
         <translation>Nastavenie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="821"/>
+        <location filename="../src/main_window.cpp" line="825"/>
         <source>Matrix solver</source>
         <translation>Maticový riešič</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="822"/>
+        <location filename="../src/main_window.cpp" line="826"/>
         <source>Monitoring points</source>
         <translation>Monitorovacie body</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="832"/>
+        <location filename="../src/main_window.cpp" line="836"/>
         <source>Conditions</source>
         <translation>Podmienky</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Boundary</source>
         <translation>Okrajové</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Show boundary conditions.</source>
         <translation>Zobraziť okrajové podmienky.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Initial</source>
         <translation>Počiatočné</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Show initial conditions.</source>
         <translation>Zobraziť počiatočné podmienky.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Environment</source>
         <translation>Environmentálne</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Show environment conditions.</source>
         <translation>Zobraziť environmentálne podmienky.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Show materials.</source>
         <translation>Zobraziť materiály.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="838"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Reset</source>
         <translation>Obnoviť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="842"/>
+        <location filename="../src/main_window.cpp" line="846"/>
         <source>Solve</source>
         <translation>Riešiť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="844"/>
+        <location filename="../src/main_window.cpp" line="848"/>
         <source>Run</source>
         <translation>Spustenie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="845"/>
+        <location filename="../src/main_window.cpp" line="849"/>
         <source>Start</source>
         <translation>Spustiť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="846"/>
+        <location filename="../src/main_window.cpp" line="850"/>
         <source>Stop</source>
         <translation>Zastaviť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="847"/>
+        <location filename="../src/main_window.cpp" line="851"/>
         <source>Kill</source>
         <translation>Zabiť</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="849"/>
+        <location filename="../src/main_window.cpp" line="853"/>
         <source>Monitor</source>
         <translation>Sledovanie</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="850"/>
+        <location filename="../src/main_window.cpp" line="854"/>
         <source>Convergence</source>
         <translation>Konvergencia</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="851"/>
+        <location filename="../src/main_window.cpp" line="855"/>
         <source>Solver log</source>
         <translation>Log riešiča</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="853"/>
+        <location filename="../src/main_window.cpp" line="857"/>
         <source>Data</source>
         <translation>Dáta</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="860"/>
+        <location filename="../src/main_window.cpp" line="864"/>
         <source>Visualize</source>
         <translation>Vizualizácia</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="867"/>
+        <location filename="../src/main_window.cpp" line="871"/>
         <source>Graphs</source>
         <translation>Grafy</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="871"/>
+        <location filename="../src/main_window.cpp" line="875"/>
         <source>Statistics</source>
         <translation>Štatistika</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="415"/>
-        <location filename="../src/main_window.cpp" line="814"/>
+        <location filename="../src/main_window.cpp" line="818"/>
         <source>Special tools</source>
         <translation>Špeciálne nástroje</translation>
     </message>
@@ -3231,24 +3232,24 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="597"/>
-        <location filename="../src/main_window.cpp" line="870"/>
+        <location filename="../src/main_window.cpp" line="874"/>
         <source>Report</source>
         <translation>Výkaz</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="433"/>
-        <location filename="../src/main_window.cpp" line="747"/>
+        <location filename="../src/main_window.cpp" line="751"/>
         <source>Cloud</source>
         <translation>Cloud</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="444"/>
-        <location filename="../src/main_window.cpp" line="751"/>
+        <location filename="../src/main_window.cpp" line="755"/>
         <source>Help</source>
         <translation>Pomocník</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="1193"/>
+        <location filename="../src/main_window.cpp" line="1199"/>
         <source>If you quit now solver will continue executing in the background.</source>
         <translation>V prípade ukončenia programu riešič bude bežať na pozadí.</translation>
     </message>
@@ -3316,44 +3317,74 @@
     </message>
 </context>
 <context>
+    <name>MaterialLibraryLoader</name>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="102"/>
+        <location filename="../src/material_library_loader.cpp" line="106"/>
+        <source>Failed to read material file &quot;%1&quot;. %2</source>
+        <translation>Nepodarilo sa načítať súbor materiálu &quot;%1&quot;. %2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="121"/>
+        <source>Failed to load the material library.</source>
+        <translation>Nepodarilo sa načítať knižnicu materiálov.</translation>
+    </message>
+</context>
+<context>
     <name>MaterialManagerTree</name>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="41"/>
+        <location filename="../src/material_manager_tree.cpp" line="37"/>
+        <location filename="../src/material_manager_tree.cpp" line="369"/>
+        <source>Loading materials…</source>
+        <translation>Načítavanie materiálov…</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="48"/>
         <source>Name</source>
         <translation>Názov</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="42"/>
+        <location filename="../src/material_manager_tree.cpp" line="49"/>
         <source>File</source>
         <translation>Súbor</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="51"/>
+        <location filename="../src/material_manager_tree.cpp" line="58"/>
         <source>New</source>
         <translation>Nový</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="54"/>
+        <location filename="../src/material_manager_tree.cpp" line="62"/>
         <source>Delete</source>
         <translation>Zmazať</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="626"/>
+        <location filename="../src/material_manager_tree.cpp" line="375"/>
+        <source>Loading materials… %1/%2</source>
+        <translation>Načítavanie materiálov… %1/%2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="440"/>
+        <source>Some materials could not be loaded. See the application log.</source>
+        <translation>Niektoré materiály sa nepodarilo načítať. Podrobnosti nájdete v protokole aplikácie.</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="629"/>
         <source>Imported</source>
         <translation>Importovaný</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="842"/>
+        <location filename="../src/material_manager_tree.cpp" line="845"/>
         <source>New material</source>
         <translation>Nový material</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="865"/>
+        <location filename="../src/material_manager_tree.cpp" line="868"/>
         <source>Are you sure you want to delete selected material?</source>
         <translation>Naozaj zmazať vybraný materiál?</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="868"/>
+        <location filename="../src/material_manager_tree.cpp" line="871"/>
         <source>Remove material</source>
         <translation>Odstrániť materiál</translation>
     </message>
@@ -3579,67 +3610,92 @@
 <context>
     <name>MeshGeneratorDialog</name>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="25"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="31"/>
         <source>Generate 3D mesh</source>
         <translation>Vygenerovať 3D sieť</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="33"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <source>Mesh generator</source>
+        <translation>Generátor siete</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="57"/>
+        <source>Element order</source>
+        <translation>Rád prvkov</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="62"/>
+        <source>Linear (first order)</source>
+        <translation>Lineárne (prvý rád)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="63"/>
+        <source>Quadratic (second order)</source>
+        <translation>Kvadratické (druhý rád)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="64"/>
+        <source>Quadratic elements have an additional node in the middle of each edge.</source>
+        <translation>Kvadratické prvky majú navyše uzol v strede každej hrany.</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="67"/>
         <source>Check surface integrity</source>
         <translation>Overiť celistvosť povrchu</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="37"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="71"/>
         <source>Reconstruct mesh (reuse current nodes)</source>
         <translation>Znovu vygenerovať sieť (zachovať existujúce uzly)</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="76"/>
         <source>Keep computed results</source>
         <translation>Ponechať vypočítané výsledky</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="47"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="81"/>
         <source>Quality mesh</source>
         <translation>Kvalitná sieť</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="55"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="89"/>
         <source>Maximum element volume</source>
         <translation>Maximálny objem prvku</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="65"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="99"/>
         <source>Generate mesh size function</source>
         <translation>Vygenerovať funkciu veľkosti siete</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="74"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
         <source>Source variable</source>
         <translation>Zdrojová premenná</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="88"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
         <source>Minimum edge length</source>
         <translation>Minimálna dĺžka hrany</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="98"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="132"/>
         <source>Maximum edge length</source>
         <translation>Maximálna dĺžka hrany</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="142"/>
         <source>TetGen parameters</source>
         <translation>TetGen parametre</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="125"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="160"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -4102,306 +4158,103 @@
 <context>
     <name>ModelStatisticsDialog</name>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="18"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="19"/>
         <source>Model statistics</source>
         <translation>Štatistika modelu</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="35"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="36"/>
         <source>Close</source>
         <translation>Zatvoriť</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="55"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
         <source>Number of nodes</source>
         <translation>Počet uzlov</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="57"/>
         <source>Number of elements</source>
         <translation>Počet prvkov</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="60"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="61"/>
         <source>Node distance statistics</source>
         <translation>Štatistika vzdialeností medzi uzlami</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="62"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
         <source>Maximum</source>
         <translation>Maximum</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
         <source>Average</source>
         <translation>Priemer</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <source>Median</source>
         <translation>Medián</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <location filename="../src/model_statistics_dialog.cpp" line="67"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="68"/>
         <source>Percentile</source>
         <translation>Percentil</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="69"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="70"/>
         <source>Geometry statistics</source>
         <translation>Štatistika geometrie</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="87"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
         <source>Line length</source>
         <translation>Dĺžka čiary</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
         <source>Surface area</source>
         <translation>Obsah povrchu</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="90"/>
         <source>Total volume</source>
         <translation>Celkový objem</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="93"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="94"/>
         <source>Model center</source>
         <translation>Stred modelu</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="97"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
         <source>Model limits</source>
         <translation>Limity modelu</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="99"/>
         <source>Model size</source>
         <translation>Veľkosť modelu</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="112"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="118"/>
         <source>No results are available.</source>
         <translation>Nie sú k dispozícii žiadne výsledky.</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
-        <source>Support reactions</source>
-        <translation>Reakcie podpier</translation>
-    </message>
-</context>
-<context>
-    <name>ResultsStatistics</name>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average</source>
-        <translation>Plošne vážený priemer</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average magnitude</source>
-        <translation>Plošne vážená priemerná veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average</source>
-        <translation>Priemer</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average magnitude</source>
-        <translation>Priemerná veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average magnitude of element values</source>
-        <translation>Priemerná veľkosť hodnôt prvkov</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average magnitude of node values</source>
-        <translation>Priemerná veľkosť hodnôt v uzloch</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average of element values</source>
-        <translation>Priemer hodnôt prvkov</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average of node values</source>
-        <translation>Priemer hodnôt v uzloch</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="28"/>
-        <source>Computational time</source>
-        <translation>Výpočtový čas</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant magnitude</source>
-        <translation>Konštantná veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant value</source>
-        <translation>Konštantná hodnota</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="388"/>
-        <source>Element</source>
-        <translation>Prvok</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="34"/>
-        <source>Frequency</source>
-        <translation>Frekvencia</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="502"/>
-        <source>Here it is %1 % of the total applied load.</source>
-        <translation>Tu je to %1 % celkového pôsobiaceho zaťaženia.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="485"/>
-        <source>Imbalance</source>
-        <translation>Nerovnováha</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="496"/>
-        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
-        <translation>Nerovnováha je súčet celkovej reakcie a celkového pôsobiaceho zaťaženia, v rovnováhe je nulová.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="498"/>
-        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
-        <translation>V dynamickej analýze obsahuje aj zotrvačné a tlmiace sily.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="494"/>
-        <source>Inertia and damping forces are not included.</source>
-        <translation>Zotrvačné a tlmiace sily nie sú zahrnuté.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average</source>
-        <translation>Dĺžkovo vážený priemer</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average magnitude</source>
-        <translation>Dĺžkovo vážená priemerná veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum</source>
-        <translation>Maximum</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum magnitude</source>
-        <translation>Maximálna veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum</source>
-        <translation>Minimum</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum magnitude</source>
-        <translation>Minimálna veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="33"/>
-        <source>Mode</source>
-        <translation>Mód</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="383"/>
-        <source>Node</source>
-        <translation>Uzol</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="105"/>
-        <source>Other results</source>
-        <translation>Ostatné výsledky</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="467"/>
-        <source>Support</source>
-        <translation>Podpera</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="27"/>
-        <source>Time step</source>
-        <translation>Časový krok</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="484"/>
-        <source>Total applied load</source>
-        <translation>Celkové pôsobiace zaťaženie</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="483"/>
-        <source>Total reaction</source>
-        <translation>Celková reakcia</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average</source>
-        <translation>Objemovo vážený priemer</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average magnitude</source>
-        <translation>Objemovo vážená priemerná veľkosť</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="499"/>
-        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
-        <translation>Zvyšok pochádza z tolerancie konvergencie maticového riešiča.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="156"/>
-        <source>line</source>
-        <translation>čiara</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="154"/>
-        <source>point</source>
-        <translation>bod</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="158"/>
-        <source>surface</source>
-        <translation>plocha</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="160"/>
-        <source>volume</source>
-        <translation>objem</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="359"/>
-        <source>No results are available.</source>
-        <translation>Nie sú k dispozícii žiadne výsledky.</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="441"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="166"/>
         <source>Support reactions</source>
         <translation>Reakcie podpier</translation>
     </message>
@@ -5207,64 +5060,64 @@
         <translation>Súbor</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="48"/>
+        <location filename="../src/report_dialog.cpp" line="49"/>
         <source>HyperText Markup Language</source>
         <translation>HyperText Markup Language</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>files</source>
         <translation>súbory</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="63"/>
+        <location filename="../src/report_dialog.cpp" line="64"/>
         <source>Markdown</source>
         <translation>Markdown</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="78"/>
+        <location filename="../src/report_dialog.cpp" line="79"/>
         <source>OpenDocument Text</source>
         <translation>Text OpenDocument</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="93"/>
+        <location filename="../src/report_dialog.cpp" line="94"/>
         <source>Portable Document Format</source>
         <translation>Portable Document Format</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="114"/>
+        <location filename="../src/report_dialog.cpp" line="115"/>
         <source>Ok</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="56"/>
-        <location filename="../src/report_dialog.cpp" line="71"/>
-        <location filename="../src/report_dialog.cpp" line="86"/>
-        <location filename="../src/report_dialog.cpp" line="101"/>
+        <location filename="../src/report_dialog.cpp" line="57"/>
+        <location filename="../src/report_dialog.cpp" line="72"/>
+        <location filename="../src/report_dialog.cpp" line="87"/>
+        <location filename="../src/report_dialog.cpp" line="102"/>
         <source>Report file</source>
         <translation>Súbor reportu</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="58"/>
-        <location filename="../src/report_dialog.cpp" line="73"/>
-        <location filename="../src/report_dialog.cpp" line="88"/>
-        <location filename="../src/report_dialog.cpp" line="103"/>
+        <location filename="../src/report_dialog.cpp" line="59"/>
+        <location filename="../src/report_dialog.cpp" line="74"/>
+        <location filename="../src/report_dialog.cpp" line="89"/>
+        <location filename="../src/report_dialog.cpp" line="104"/>
         <source>Select file</source>
         <translation>Vybrať súbor</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>Any files</source>
         <translation>Všetky súbory</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="111"/>
+        <location filename="../src/report_dialog.cpp" line="112"/>
         <source>Cancel</source>
         <translation>Zrušiť</translation>
     </message>
@@ -5272,150 +5125,287 @@
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../src/report_generator.cpp" line="83"/>
+        <location filename="../src/report_generator.cpp" line="86"/>
         <source>Model</source>
         <translation>Model</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="84"/>
+        <location filename="../src/report_generator.cpp" line="87"/>
         <source>Mesh details</source>
         <translation>Detaily siete</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="95"/>
+        <location filename="../src/report_generator.cpp" line="98"/>
         <source>Number of nodes</source>
         <translation>Počet uzlov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="100"/>
+        <location filename="../src/report_generator.cpp" line="103"/>
         <source>Number of elements</source>
         <translation>Počet prvkov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="105"/>
+        <location filename="../src/report_generator.cpp" line="108"/>
         <source>Number of point entities</source>
         <translation>Počet bodových celkov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="110"/>
+        <location filename="../src/report_generator.cpp" line="113"/>
         <source>Number of line entities</source>
         <translation>Počet čiarových celkov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="115"/>
+        <location filename="../src/report_generator.cpp" line="118"/>
         <source>Number of surface entities</source>
         <translation>Počet povrchových celkov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="120"/>
+        <location filename="../src/report_generator.cpp" line="123"/>
         <source>Number of volume entities</source>
         <translation>Počet objemových celkov</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="134"/>
+        <location filename="../src/report_generator.cpp" line="137"/>
         <source>Problem</source>
         <translation>Úloha</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="148"/>
+        <location filename="../src/report_generator.cpp" line="151"/>
         <source>Boundary conditions</source>
         <translation>Okrajové podmienky</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="199"/>
+        <location filename="../src/report_generator.cpp" line="202"/>
         <source>Initial conditions</source>
         <translation>Počiatočné podmienky</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="250"/>
+        <location filename="../src/report_generator.cpp" line="253"/>
         <source>Environment conditions</source>
         <translation>Environmentálne podmienky</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="300"/>
+        <location filename="../src/report_generator.cpp" line="303"/>
         <source>Materials</source>
         <translation>Materiály</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="353"/>
+        <location filename="../src/report_generator.cpp" line="356"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="355"/>
-        <source>Time-solver</source>
-        <translation>Riešič v čase</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="360"/>
-        <source>Current time step</source>
-        <translation>Súčasný časový krok</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="362"/>
-        <source>Current computational time</source>
-        <translation>Súčasný výpočtový čas</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="369"/>
-        <source>Current mode</source>
-        <translation>Súčasný mód</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="371"/>
-        <source>Current frequency</source>
-        <translation>Súčasná frekvencia</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="414"/>
-        <source>Variable type</source>
-        <translation>Typ premennej</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="420"/>
-        <source>Units</source>
-        <translation>Jednotky</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="426"/>
-        <source>Minimum</source>
-        <translation>Minimum</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="432"/>
-        <source>Maximum</source>
-        <translation>Maximum</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="438"/>
-        <source>Average</source>
-        <translation>Priemer</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="444"/>
-        <source>Median</source>
-        <translation>Medián</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="389"/>
-        <source>Variables</source>
-        <translation>Premenné</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="57"/>
+        <location filename="../src/report_generator.cpp" line="60"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="450"/>
-        <location filename="../src/report_generator.cpp" line="456"/>
-        <source>Percentile</source>
-        <translation>Percentil</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="465"/>
+        <location filename="../src/report_generator.cpp" line="425"/>
         <source>Screenshot</source>
         <translation>Snímok obrazovky</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Plošne vážený priemer</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Plošne vážená priemerná veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Priemer</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Priemerná veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Priemerná veľkosť hodnôt prvkov</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Priemerná veľkosť hodnôt v uzloch</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Priemer hodnôt prvkov</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Priemer hodnôt v uzloch</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Výpočtový čas</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Konštantná veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Konštantná hodnota</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Prvok</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Frekvencia</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Tu je to %1 % celkového pôsobiaceho zaťaženia.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Nerovnováha</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Nerovnováha je súčet celkovej reakcie a celkového pôsobiaceho zaťaženia, v rovnováhe je nulová.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>V dynamickej analýze obsahuje aj zotrvačné a tlmiace sily.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Zotrvačné a tlmiace sily nie sú zahrnuté.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Dĺžkovo vážený priemer</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Dĺžkovo vážená priemerná veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Maximum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Maximálna veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Minimum</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Minimálna veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Mód</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Uzol</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Ostatné výsledky</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Podpera</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Časový krok</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Celkové pôsobiace zaťaženie</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Celková reakcia</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Objemovo vážený priemer</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Objemovo vážená priemerná veľkosť</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Zvyšok pochádza z tolerancie konvergencie maticového riešiča.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>čiara</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>bod</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>plocha</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>objem</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="362"/>
+        <source>No results are available.</source>
+        <translation>Nie sú k dispozícii žiadne výsledky.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="456"/>
+        <source>Support reactions</source>
+        <translation>Reakcie podpier</translation>
     </message>
 </context>
 <context>
@@ -5764,59 +5754,59 @@ Priemerovanie znižuje špičkové hodnoty, porovnajte ich s rozsahom prvkov uve
 <context>
     <name>SubWindow</name>
     <message>
-        <location filename="../src/sub_window.cpp" line="52"/>
+        <location filename="../src/sub_window.cpp" line="53"/>
         <source>Sub window toolbar</source>
         <translation>Panel nástrojov podradeného okna</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="58"/>
+        <location filename="../src/sub_window.cpp" line="59"/>
         <source>Reset to original view.</source>
         <translation>Obnoviť pôvodný náhľad.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="65"/>
+        <location filename="../src/sub_window.cpp" line="66"/>
         <source>Reset to X plane.</source>
         <translation>Obnoviť na rovinu X.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="72"/>
+        <location filename="../src/sub_window.cpp" line="73"/>
         <source>Reset to Y plane.</source>
         <translation>Obnoviť na rovinu Y.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="79"/>
+        <location filename="../src/sub_window.cpp" line="80"/>
         <source>Reset to Z plane.</source>
         <translation>Obnoviť na rovinu Z.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="88"/>
+        <location filename="../src/sub_window.cpp" line="89"/>
         <source>Screenshot.</source>
         <translation>Snímka obrazovky</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="98"/>
+        <location filename="../src/sub_window.cpp" line="99"/>
         <source>Highlight selection</source>
         <translation>Zvýrazniť výber</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="99"/>
+        <location filename="../src/sub_window.cpp" line="100"/>
         <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
         <translation>Ak je zaškrtnuté, entity vybrané v strome modelu sú zvýraznené v 3D zobrazení.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="105"/>
+        <location filename="../src/sub_window.cpp" line="106"/>
         <source>Same face color</source>
         <translation>Rovnaká farba strán</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="106"/>
+        <location filename="../src/sub_window.cpp" line="107"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Ak je zaškrtnuté, obe strany plošných prvkov majú rovnakú farbu.
 Ak nie je zaškrtnuté, zadná strana je zobrazená inou farbou.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="116"/>
+        <location filename="../src/sub_window.cpp" line="117"/>
         <source>Display preferences.</source>
         <translation>Nastavenie zobrazenia</translation>
     </message>

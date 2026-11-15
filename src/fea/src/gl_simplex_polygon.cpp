@@ -171,16 +171,38 @@ void GLSimplexPolygon::drawNormal(const std::vector<RNode> &nodes1, const std::v
         GLStateCache::instance().setTwoSided(this->twoSidedFace);
     }
 
-    GLFunctions::begin(GL_TRIANGLE_FAN);
-    for (uint i=0;i<nn;i++)
+    if (nn == 6)
     {
-        if (useTexture)
+        // Second order triangle, its nodes go round its edges through their middle nodes
+        // (see GLElement). It is split into four triangles, so that values there are shown.
+        static const uint triangles[4][3] = {{0,1,5},{1,2,3},{5,3,4},{1,3,5}};
+        GLFunctions::begin(GL_TRIANGLES);
+        for (const auto &triangle : triangles)
         {
-            GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
+            for (uint node : triangle)
+            {
+                if (useTexture)
+                {
+                    GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[node]));
+                }
+                GLObject::glVertexNode(nodes1[node]);
+            }
         }
-        GLObject::glVertexNode(nodes1[i]);
+        GLFunctions::end();
     }
-    GLFunctions::end();
+    else
+    {
+        GLFunctions::begin(GL_TRIANGLE_FAN);
+        for (uint i=0;i<nn;i++)
+        {
+            if (useTexture)
+            {
+                GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[i]));
+            }
+            GLObject::glVertexNode(nodes1[i]);
+        }
+        GLFunctions::end();
+    }
 
     if (volumeElement)
     {

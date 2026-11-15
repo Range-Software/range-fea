@@ -33348,7 +33348,9 @@ void tetgenmesh::highorder()
   }
 
   // Initialize the 'highordertable'.
-  point *highordertable = new point[tetrahedrons->items * 6];
+  // The table is read again when elements, faces and edges are written, so it
+  //   is kept until the mesh is destroyed.
+  highordertable = new point[tetrahedrons->items * 6];
   if (highordertable == (point *) NULL) {
     terminatetetgen(this, 1);
   }
@@ -33418,8 +33420,6 @@ void tetgenmesh::highorder()
     } // i
     tetloop.tet = tetrahedrontraverse();
   }
-
-  delete [] highordertable;
 }
 
 //============================================================================//
@@ -33493,7 +33493,11 @@ void tetgenmesh::numberedges()
         if (ishulledge) meshhulledges++;
       }
     }
-    infect(worktet);
+    // The flag is kept in the slot which highorder() uses for the list of
+    //   extra nodes. Setting it would damage the pointer to the list.
+    if (b->order != 2) {
+      infect(worktet);
+    }
     worktet.tet = tetrahedrontraverse();
   }
 }

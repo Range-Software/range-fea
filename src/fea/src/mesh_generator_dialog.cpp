@@ -22,6 +22,11 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     const Model &rModel = Application::instance()->getSession()->getModel(this->modelID);
 
     this->meshInput = rModel.getMeshInput();
+    if (rModel.getNVolumes() > 0)
+    {
+        // A mesh which is there already is generated again with elements of the same order by default.
+        this->meshInput.setElementOrder(rModel.findElementOrder());
+    }
 
     this->setWindowTitle(tr("Generate 3D mesh"));
 
@@ -44,6 +49,20 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
         this->generatorComboBox->addItem(RMeshInput::getGeneratorName(RMeshGeneratorType(i)),QVariant(i));
     }
     this->generatorComboBox->setCurrentIndex(this->generatorComboBox->findData(QVariant(int(this->meshInput.getGeneratorType()))));
+
+    // Order of elements is an option of both generators.
+    QHBoxLayout *elementOrderLayout = new QHBoxLayout;
+    mainLayout->addLayout(elementOrderLayout);
+
+    QLabel *elementOrderLabel = new QLabel(tr("Element order") + ":");
+    elementOrderLayout->addWidget(elementOrderLabel);
+
+    this->elementOrderComboBox = new QComboBox;
+    elementOrderLayout->addWidget(this->elementOrderComboBox,1);
+    this->elementOrderComboBox->addItem(tr("Linear (first order)"),QVariant(1));
+    this->elementOrderComboBox->addItem(tr("Quadratic (second order)"),QVariant(2));
+    this->elementOrderComboBox->setToolTip(tr("Quadratic elements have an additional node in the middle of each edge."));
+    this->elementOrderComboBox->setCurrentIndex(this->elementOrderComboBox->findData(QVariant(int(this->meshInput.getElementOrder()))));
 
     this->surfaceIntegrityCheck = new QCheckBox(tr("Check surface integrity"));
     mainLayout->addWidget(this->surfaceIntegrityCheck);
@@ -145,6 +164,7 @@ MeshGeneratorDialog::MeshGeneratorDialog(uint modelID, QWidget *parent) :
     QObject::connect(buttonBox,&QDialogButtonBox::accepted,this,&QDialog::accept);
 
     QObject::connect(this->generatorComboBox,&QComboBox::currentIndexChanged,this,&MeshGeneratorDialog::onGeneratorChanged);
+    QObject::connect(this->elementOrderComboBox,&QComboBox::currentIndexChanged,this,&MeshGeneratorDialog::onElementOrderChanged);
     QObject::connect(this->surfaceIntegrityCheck,&QCheckBox::checkStateChanged,this,&MeshGeneratorDialog::onSurfaceIntegrityStateChanged);
     QObject::connect(this->qualityMeshGroupBox,&QGroupBox::clicked,this,&MeshGeneratorDialog::onQualityMeshGroupBoxClicked);
     QObject::connect(this->volumeConstraintEdit,&ValueLineEdit::valueChanged,this,&MeshGeneratorDialog::onVolumeConstraintValueChanged);
@@ -191,6 +211,7 @@ int MeshGeneratorDialog::exec()
 void MeshGeneratorDialog::updateMeshInput()
 {
     this->meshInput.setGeneratorType(RMeshGeneratorType(this->generatorComboBox->currentData().toInt()));
+    this->meshInput.setElementOrder(uint(this->elementOrderComboBox->currentData().toInt()));
     this->meshInput.setSurfaceIntegrityCheck(this->surfaceIntegrityCheck->isChecked());
     this->meshInput.setQualityMesh(this->qualityMeshGroupBox->isChecked());
     this->meshInput.setUseSizeFunction(this->qualityMeshGroupBox->isChecked() && this->meshSizeFunctionGroupBox->isChecked());
@@ -261,6 +282,11 @@ void MeshGeneratorDialog::onKeepResultsStateChanged(Qt::CheckState)
 }
 
 void MeshGeneratorDialog::onGeneratorChanged(int)
+{
+    this->updateMeshInput();
+}
+
+void MeshGeneratorDialog::onElementOrderChanged(int)
 {
     this->updateMeshInput();
 }
