@@ -1424,6 +1424,7 @@ public:
 
   // The infinite vertex.
   point dummypoint;
+  point *highordertable; // Extra nodes of second-order tetrahedra (-o2).
   // The recently visited tetrahedron, subface.
   triface recenttet;
   face recentsh;
@@ -2258,6 +2259,7 @@ public:
     tetrahedrons = subfaces = subsegs = points = NULL;
     tet2segpool = tet2subpool = NULL;
     dummypoint = NULL;
+    highordertable = NULL;
 
     badtetrahedrons = badsubfacs = badsubsegs = NULL;
     split_segments_pool = split_subfaces_pool = NULL;
@@ -2455,6 +2457,10 @@ public:
 
   ~tetgenmesh()
   {
+    // Tetrahedra refer to this table until the mesh is written to the output.
+    if (highordertable != NULL) {
+      delete [] highordertable;
+    }
     freememory();
   } // ~tetgenmesh()
 

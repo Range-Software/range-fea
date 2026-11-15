@@ -4,18 +4,52 @@
 #include "gl_simplex_polygon.h"
 #include "gl_simplex_tetrahedra.h"
 
-void GLElement::findTextureCoordinates(std::vector<double> &values) const
+//! Return positions of element nodes in the order they are passed to a simplex for drawing.
+//! A second order tetrahedron is drawn with all its nodes, a second order triangle as a polygon
+//! going round its edges through their middle nodes. A second order line is drawn as a straight one.
+static std::vector<uint> findDisplayNodes(RElementType type)
 {
+    switch (type)
+    {
+        case R_ELEMENT_TETRA2:
+            return {0,1,2,3,4,5,6,7,8,9};
+        case R_ELEMENT_TRI2:
+            return {0,3,1,4,2,5};
+        default:
+        {
+            std::vector<uint> positions(RElement::getNCornerNodes(type));
+            for (uint i=0;i<positions.size();i++)
+            {
+                positions[i] = i;
+            }
+            return positions;
+        }
+    }
+}
+
+void GLElement::findTextureCoordinates(std::vector<double> &values, bool displayNodes) const
+{
+    // Values of all element nodes.
+    std::vector<double> nodeValues;
     if (!this->pSmoothedScalarVariable)
     {
-        this->findScalarNodeValues(this->elementID,*this->pScalarVariable,values);
-        return;
+        this->findScalarNodeValues(this->elementID,*this->pScalarVariable,nodeValues);
+    }
+    else
+    {
+        nodeValues.resize(this->size());
+        for (uint i=0;i<this->size();i++)
+        {
+            nodeValues[i] = this->findTextureCoordinate(this->pSmoothedScalarVariable->getValue(this->elementID,i));
+        }
     }
 
-    values.resize(this->size());
-    for (uint i=0;i<this->size();i++)
+    // Values of the nodes which are drawn: all of those passed by precompute(), corner nodes otherwise.
+    const std::vector<uint> positions = displayNodes ? findDisplayNodes(this->getType()) : findDisplayNodes(RElement::getLinearType(this->getType()));
+    values.resize(positions.size());
+    for (uint i=0;i<positions.size();i++)
     {
-        values[i] = this->findTextureCoordinate(this->pSmoothedScalarVariable->getValue(this->elementID,i));
+        values[i] = positions[i] < nodeValues.size() ? nodeValues[positions[i]] : 0.0;
     }
 }
 
@@ -94,7 +128,9 @@ GLElementPrecomputedData GLElement::precompute() const
         return data;
     }
 
-    data.type = this->getType();
+    // Second order elements are drawn by the simplex of the first order one, which is given
+    // all nodes of the element (see findDisplayNodes()). Their edges are straight.
+    data.type = RElement::getLinearType(this->getType());
     data.twoSidedFace = this->twoSidedFace;
     data.pointVolume = this->pointVolume;
     data.lineCrossArea = this->lineCrossArea;
@@ -102,11 +138,12 @@ GLElementPrecomputedData GLElement::precompute() const
     data.color = this->color;
 
     // Fetch node positions
-    uint nn = this->size();
+    const std::vector<uint> positions = findDisplayNodes(this->getType());
+    uint nn = uint(positions.size());
     data.nodes.resize(nn);
     for (uint i = 0; i < nn; i++)
     {
-        data.nodes[i] = this->pModel->getNode(this->getNodeId(i)).toVector();
+        data.nodes[i] = this->pModel->getNode(this->getNodeId(positions[i])).toVector();
     }
 
     // Apply displacement
@@ -114,12 +151,12 @@ GLElementPrecomputedData GLElement::precompute() const
     {
         std::vector<RR3Vector> dispValues;
         this->findDisplacementNodeValues(this->elementID, *this->pDisplacementVariable, dispValues);
-        if (dispValues.size() == nn)
+        if (dispValues.size() == this->size())
         {
             for (uint i = 0; i < nn; i++)
             {
                 RNode n(data.nodes[i]);
-                n.move(dispValues[i]);
+                n.move(dispValues[positions[i]]);
                 data.nodes[i] = n.toVector();
             }
         }
@@ -128,7 +165,7 @@ GLElementPrecomputedData GLElement::precompute() const
     // Scalar texture coordinates
     if (this->pScalarVariable)
     {
-        this->findTextureCoordinates(data.textureCoords);
+        this->findTextureCoordinates(data.textureCoords,true);
     }
 
     // Visible faces (tetrahedra only)
@@ -227,7 +264,7 @@ void GLElement::draw()
     {
         return;
     }
-    switch (this->getType())
+    switch (RElement::getLinearType(this->getType()))
     {
         case R_ELEMENT_POINT:
             this->drawPoint();

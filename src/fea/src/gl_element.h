@@ -56,7 +56,8 @@ class GLElement : public GLElementBase, public RElement
         void _init(const GLElement *pGlElement = nullptr);
 
         //! Find texture coordinates of element nodes.
-        void findTextureCoordinates(std::vector<double> &values) const;
+        //! Find texture coordinates of corner nodes, or of all nodes which precompute() draws if displayNodes is set.
+        void findTextureCoordinates(std::vector<double> &values, bool displayNodes = false) const;
 
     public:
 

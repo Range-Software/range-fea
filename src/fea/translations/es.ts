@@ -1271,47 +1271,47 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="75"/>
+        <location filename="../src/central_tab_widget.cpp" line="95"/>
         <source>Tile windows</source>
         <translation>Organizar ventanas en mosaico</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="51"/>
+        <location filename="../src/central_tab_widget.cpp" line="71"/>
         <source>Max lines</source>
         <translation>Líneas máximas</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="53"/>
+        <location filename="../src/central_tab_widget.cpp" line="73"/>
         <source>Maximum number of lines kept in process output. Oldest lines are removed first.</source>
         <translation>Número máximo de líneas que se conservan en la salida del proceso. Las líneas más antiguas se eliminan primero.</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="87"/>
+        <location filename="../src/central_tab_widget.cpp" line="107"/>
         <source>Windows</source>
         <translation>Ventanas</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="163"/>
+        <location filename="../src/central_tab_widget.cpp" line="183"/>
         <source>Model</source>
         <translation>Modelo</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="168"/>
+        <location filename="../src/central_tab_widget.cpp" line="188"/>
         <source>Application output</source>
         <translation>Salida de la aplicación</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="174"/>
+        <location filename="../src/central_tab_widget.cpp" line="194"/>
         <source>Process output</source>
         <translation>Salida del proceso</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="180"/>
+        <location filename="../src/central_tab_widget.cpp" line="200"/>
         <source>Pick details</source>
         <translation>Detalles de la selección</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="288"/>
+        <location filename="../src/central_tab_widget.cpp" line="306"/>
         <source>Notice</source>
         <translation>Aviso</translation>
     </message>
@@ -1504,7 +1504,8 @@
 <context>
     <name>DocumentGenerator</name>
     <message>
-        <location filename="../src/document_generator.cpp" line="291"/>
+        <location filename="../src/document_generator.cpp" line="381"/>
+        <location filename="../src/document_generator.cpp" line="448"/>
         <source>Page</source>
         <translation>Página</translation>
     </message>
@@ -2339,98 +2340,98 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="684"/>
+        <location filename="../src/gl_widget.cpp" line="695"/>
         <source>Stream line</source>
         <translation>Línea de corriente</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="699"/>
+        <location filename="../src/gl_widget.cpp" line="710"/>
         <source>Scale</source>
         <translation>Escala</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="714"/>
+        <location filename="../src/gl_widget.cpp" line="725"/>
         <source>Rotation</source>
         <translation>Rotación</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1040"/>
+        <location filename="../src/gl_widget.cpp" line="1051"/>
         <source>Time-step</source>
         <translation>Paso de tiempo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1045"/>
+        <location filename="../src/gl_widget.cpp" line="1056"/>
         <source>Mode</source>
         <translation>Modo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <location filename="../src/gl_widget.cpp" line="1061"/>
         <source>Steady state</source>
         <translation>Estado estacionario</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1465"/>
+        <location filename="../src/gl_widget.cpp" line="1476"/>
         <source>Number of sliver elements</source>
         <translation>Número de elementos degenerados</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1469"/>
+        <location filename="../src/gl_widget.cpp" line="1480"/>
         <source>Number of intersected elements</source>
         <translation>Número de elementos intersecados</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1473"/>
+        <location filename="../src/gl_widget.cpp" line="1484"/>
         <source>Number of hole elements</source>
         <translation>Número de elementos de agujero</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1479"/>
+        <location filename="../src/gl_widget.cpp" line="1490"/>
         <source>Picked entities</source>
         <translation>Entidades señaladas</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1493"/>
+        <location filename="../src/gl_widget.cpp" line="1504"/>
         <source>Hole edge</source>
         <translation>Arista del agujero</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1571"/>
-        <location filename="../src/gl_widget.cpp" line="1572"/>
+        <location filename="../src/gl_widget.cpp" line="1582"/>
+        <location filename="../src/gl_widget.cpp" line="1583"/>
         <source>more</source>
         <translation>más</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1061"/>
+        <location filename="../src/gl_widget.cpp" line="1072"/>
         <source>Smoothed. Element range: %1 to %2</source>
         <translation>Suavizado. Rango de elementos: %1 a %2</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1599"/>
+        <location filename="../src/gl_widget.cpp" line="1610"/>
         <source>Boundary conditions</source>
         <translation>Condiciones de contorno</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1791"/>
+        <location filename="../src/gl_widget.cpp" line="1802"/>
         <source>Action</source>
         <translation>Acción</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1794"/>
+        <location filename="../src/gl_widget.cpp" line="1805"/>
         <source>Zoom</source>
         <translation>Zoom</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1795"/>
+        <location filename="../src/gl_widget.cpp" line="1806"/>
         <source>Model draw time</source>
         <translation>Tiempo de dibujo del modelo</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3005"/>
+        <location filename="../src/gl_widget.cpp" line="3016"/>
         <source>Image files</source>
         <translation>Archivos de imagen</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3022"/>
+        <location filename="../src/gl_widget.cpp" line="3033"/>
         <source>Save screenshot as</source>
         <translation>Guardar captura de pantalla como</translation>
     </message>
@@ -2769,7 +2770,7 @@
     <message>
         <location filename="../src/main_window.cpp" line="139"/>
         <location filename="../src/main_window.cpp" line="580"/>
-        <location filename="../src/main_window.cpp" line="817"/>
+        <location filename="../src/main_window.cpp" line="821"/>
         <source>Problem</source>
         <translation>Problema</translation>
     </message>
@@ -2790,13 +2791,13 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="151"/>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="154"/>
-        <location filename="../src/main_window.cpp" line="858"/>
+        <location filename="../src/main_window.cpp" line="862"/>
         <source>Results</source>
         <translation>Resultados</translation>
     </message>
@@ -2812,7 +2813,7 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="361"/>
-        <location filename="../src/main_window.cpp" line="742"/>
+        <location filename="../src/main_window.cpp" line="746"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
@@ -2833,25 +2834,25 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="474"/>
-        <location filename="../src/main_window.cpp" line="756"/>
+        <location filename="../src/main_window.cpp" line="760"/>
         <source>Geometry</source>
         <translation>Geometría</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="479"/>
-        <location filename="../src/main_window.cpp" line="758"/>
+        <location filename="../src/main_window.cpp" line="762"/>
         <source>Draw</source>
         <translation>Dibujar</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="499"/>
-        <location filename="../src/main_window.cpp" line="760"/>
+        <location filename="../src/main_window.cpp" line="764"/>
         <source>Line</source>
         <translation>Línea</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="504"/>
-        <location filename="../src/main_window.cpp" line="791"/>
+        <location filename="../src/main_window.cpp" line="795"/>
         <source>Surface</source>
         <translation>Superficie</translation>
     </message>
@@ -2867,31 +2868,31 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="530"/>
-        <location filename="../src/main_window.cpp" line="861"/>
+        <location filename="../src/main_window.cpp" line="865"/>
         <source>Cut</source>
         <translation>Corte</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="536"/>
-        <location filename="../src/main_window.cpp" line="862"/>
+        <location filename="../src/main_window.cpp" line="866"/>
         <source>Iso</source>
         <translation>Iso</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="542"/>
-        <location filename="../src/main_window.cpp" line="863"/>
+        <location filename="../src/main_window.cpp" line="867"/>
         <source>Stream line</source>
         <translation>Línea de corriente</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="548"/>
-        <location filename="../src/main_window.cpp" line="864"/>
+        <location filename="../src/main_window.cpp" line="868"/>
         <source>Scalar field</source>
         <translation>Campo escalar</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="554"/>
-        <location filename="../src/main_window.cpp" line="865"/>
+        <location filename="../src/main_window.cpp" line="869"/>
         <source>Vector field</source>
         <translation>Campo vectorial</translation>
     </message>
@@ -2926,301 +2927,301 @@
         <translation>Barra de resultados</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="759"/>
+        <location filename="../src/main_window.cpp" line="763"/>
         <source>Point</source>
         <translation>Punto</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="761"/>
+        <location filename="../src/main_window.cpp" line="765"/>
         <source>Triangle</source>
         <translation>Triángulo</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="762"/>
+        <location filename="../src/main_window.cpp" line="766"/>
         <source>Quadrilateral</source>
         <translation>Cuadrilátero</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="763"/>
+        <location filename="../src/main_window.cpp" line="767"/>
         <source>Circle</source>
         <translation>Círculo</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="764"/>
+        <location filename="../src/main_window.cpp" line="768"/>
         <source>Ellipse</source>
         <translation>Elipse</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="765"/>
+        <location filename="../src/main_window.cpp" line="769"/>
         <source>Tetrahedron</source>
         <translation>Tetraedro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="766"/>
+        <location filename="../src/main_window.cpp" line="770"/>
         <source>Hexahedron</source>
         <translation>Hexaedro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="767"/>
+        <location filename="../src/main_window.cpp" line="771"/>
         <source>Cylinder</source>
         <translation>Cilindro</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="768"/>
+        <location filename="../src/main_window.cpp" line="772"/>
         <source>Sphere</source>
         <translation>Esfera</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="769"/>
+        <location filename="../src/main_window.cpp" line="773"/>
         <source>RAW object</source>
         <translation>Objeto RAW</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="771"/>
+        <location filename="../src/main_window.cpp" line="775"/>
         <source>Boolean</source>
         <translation>Operaciones booleanas</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="776"/>
+        <location filename="../src/main_window.cpp" line="780"/>
         <source>Modify</source>
         <translation>Modificar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="777"/>
+        <location filename="../src/main_window.cpp" line="781"/>
         <source>Transform</source>
         <translation>Transformar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="779"/>
+        <location filename="../src/main_window.cpp" line="783"/>
         <source>Entities</source>
         <translation>Entidades</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="780"/>
+        <location filename="../src/main_window.cpp" line="784"/>
         <source>Line from edges</source>
         <translation>Línea desde aristas</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="781"/>
-        <location filename="../src/main_window.cpp" line="806"/>
+        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="810"/>
         <source>Merge</source>
         <translation>Fusionar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="782"/>
-        <location filename="../src/main_window.cpp" line="808"/>
-        <location filename="../src/main_window.cpp" line="813"/>
+        <location filename="../src/main_window.cpp" line="786"/>
+        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="817"/>
         <source>Remove</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="789"/>
         <source>Mesh</source>
         <translation>Malla</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="787"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>Generate</source>
         <translation>Generar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="788"/>
+        <location filename="../src/main_window.cpp" line="792"/>
         <source>Tetrahedra</source>
         <translation>Tetraedros</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="793"/>
         <source>Coarsen</source>
         <translation>Simplificar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="792"/>
+        <location filename="../src/main_window.cpp" line="796"/>
         <source>Mark</source>
         <translation>Marcar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="799"/>
         <source>Sync normals</source>
         <translation>Sincronizar normales</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="798"/>
+        <location filename="../src/main_window.cpp" line="802"/>
         <source>Check and repair</source>
         <translation>Comprobar y corregir</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="799"/>
+        <location filename="../src/main_window.cpp" line="803"/>
         <source>Find intersected</source>
         <translation>Buscar intersecados</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="800"/>
+        <location filename="../src/main_window.cpp" line="804"/>
         <source>Break intersected</source>
         <translation>Dividir intersecados</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="801"/>
+        <location filename="../src/main_window.cpp" line="805"/>
         <source>Find slivers</source>
         <translation>Buscar degenerados</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="802"/>
+        <location filename="../src/main_window.cpp" line="806"/>
         <source>Fix slivers</source>
         <translation>Corregir degenerados</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="804"/>
+        <location filename="../src/main_window.cpp" line="808"/>
         <source>Nodes</source>
         <translation>Nodos</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="805"/>
+        <location filename="../src/main_window.cpp" line="809"/>
         <source>Merge near</source>
         <translation>Fusionar cercanos</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="807"/>
+        <location filename="../src/main_window.cpp" line="811"/>
         <source>Move</source>
         <translation>Mover</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="809"/>
+        <location filename="../src/main_window.cpp" line="813"/>
         <source>Remove and close hole</source>
         <translation>Eliminar y cerrar agujero</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="811"/>
+        <location filename="../src/main_window.cpp" line="815"/>
         <source>Elements</source>
         <translation>Elementos</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="816"/>
         <source>Create</source>
         <translation>Crear</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="819"/>
+        <location filename="../src/main_window.cpp" line="823"/>
         <source>Setup</source>
         <translation>Configuración</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="821"/>
+        <location filename="../src/main_window.cpp" line="825"/>
         <source>Matrix solver</source>
         <translation>Solver matricial</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="822"/>
+        <location filename="../src/main_window.cpp" line="826"/>
         <source>Monitoring points</source>
         <translation>Puntos de monitorización</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="832"/>
+        <location filename="../src/main_window.cpp" line="836"/>
         <source>Conditions</source>
         <translation>Condiciones</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Boundary</source>
         <translation>De contorno</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Show boundary conditions.</source>
         <translation>Mostrar las condiciones de contorno.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Initial</source>
         <translation>Iniciales</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Show initial conditions.</source>
         <translation>Mostrar las condiciones iniciales.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Environment</source>
         <translation>De entorno</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Show environment conditions.</source>
         <translation>Mostrar las condiciones de entorno.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Show materials.</source>
         <translation>Mostrar los materiales.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="838"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Reset</source>
         <translation>Restablecer</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="842"/>
+        <location filename="../src/main_window.cpp" line="846"/>
         <source>Solve</source>
         <translation>Resolver</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="844"/>
+        <location filename="../src/main_window.cpp" line="848"/>
         <source>Run</source>
         <translation>Ejecutar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="845"/>
+        <location filename="../src/main_window.cpp" line="849"/>
         <source>Start</source>
         <translation>Iniciar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="846"/>
+        <location filename="../src/main_window.cpp" line="850"/>
         <source>Stop</source>
         <translation>Detener</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="847"/>
+        <location filename="../src/main_window.cpp" line="851"/>
         <source>Kill</source>
         <translation>Forzar terminación</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="849"/>
+        <location filename="../src/main_window.cpp" line="853"/>
         <source>Monitor</source>
         <translation>Supervisión</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="850"/>
+        <location filename="../src/main_window.cpp" line="854"/>
         <source>Convergence</source>
         <translation>Convergencia</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="851"/>
+        <location filename="../src/main_window.cpp" line="855"/>
         <source>Solver log</source>
         <translation>Registro del solver</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="853"/>
+        <location filename="../src/main_window.cpp" line="857"/>
         <source>Data</source>
         <translation>Datos</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="860"/>
+        <location filename="../src/main_window.cpp" line="864"/>
         <source>Visualize</source>
         <translation>Visualizar</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="867"/>
+        <location filename="../src/main_window.cpp" line="871"/>
         <source>Graphs</source>
         <translation>Gráficos</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="871"/>
+        <location filename="../src/main_window.cpp" line="875"/>
         <source>Statistics</source>
         <translation>Estadísticas</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="415"/>
-        <location filename="../src/main_window.cpp" line="814"/>
+        <location filename="../src/main_window.cpp" line="818"/>
         <source>Special tools</source>
         <translation>Herramientas especiales</translation>
     </message>
@@ -3231,24 +3232,24 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="597"/>
-        <location filename="../src/main_window.cpp" line="870"/>
+        <location filename="../src/main_window.cpp" line="874"/>
         <source>Report</source>
         <translation>Informe</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="433"/>
-        <location filename="../src/main_window.cpp" line="747"/>
+        <location filename="../src/main_window.cpp" line="751"/>
         <source>Cloud</source>
         <translation>Nube</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="444"/>
-        <location filename="../src/main_window.cpp" line="751"/>
+        <location filename="../src/main_window.cpp" line="755"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="1193"/>
+        <location filename="../src/main_window.cpp" line="1199"/>
         <source>If you quit now solver will continue executing in the background.</source>
         <translation>Si sale ahora, el solver seguirá ejecutándose en segundo plano.</translation>
     </message>
@@ -3316,44 +3317,74 @@
     </message>
 </context>
 <context>
+    <name>MaterialLibraryLoader</name>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="102"/>
+        <location filename="../src/material_library_loader.cpp" line="106"/>
+        <source>Failed to read material file &quot;%1&quot;. %2</source>
+        <translation>No se pudo leer el archivo de material &quot;%1&quot;. %2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="121"/>
+        <source>Failed to load the material library.</source>
+        <translation>No se pudo cargar la biblioteca de materiales.</translation>
+    </message>
+</context>
+<context>
     <name>MaterialManagerTree</name>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="41"/>
+        <location filename="../src/material_manager_tree.cpp" line="37"/>
+        <location filename="../src/material_manager_tree.cpp" line="369"/>
+        <source>Loading materials…</source>
+        <translation>Cargando materiales…</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="48"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="42"/>
+        <location filename="../src/material_manager_tree.cpp" line="49"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="51"/>
+        <location filename="../src/material_manager_tree.cpp" line="58"/>
         <source>New</source>
         <translation>Nuevo</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="54"/>
+        <location filename="../src/material_manager_tree.cpp" line="62"/>
         <source>Delete</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="626"/>
+        <location filename="../src/material_manager_tree.cpp" line="375"/>
+        <source>Loading materials… %1/%2</source>
+        <translation>Cargando materiales… %1/%2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="440"/>
+        <source>Some materials could not be loaded. See the application log.</source>
+        <translation>No se pudieron cargar algunos materiales. Consulte el registro de la aplicación.</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="629"/>
         <source>Imported</source>
         <translation>Importado</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="842"/>
+        <location filename="../src/material_manager_tree.cpp" line="845"/>
         <source>New material</source>
         <translation>Nuevo material</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="865"/>
+        <location filename="../src/material_manager_tree.cpp" line="868"/>
         <source>Are you sure you want to delete selected material?</source>
         <translation>¿Está seguro de que desea eliminar el material seleccionado?</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="868"/>
+        <location filename="../src/material_manager_tree.cpp" line="871"/>
         <source>Remove material</source>
         <translation>Quitar material</translation>
     </message>
@@ -3579,67 +3610,92 @@
 <context>
     <name>MeshGeneratorDialog</name>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="25"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="31"/>
         <source>Generate 3D mesh</source>
         <translation>Generar malla 3D</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="33"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <source>Mesh generator</source>
+        <translation>Generador de malla</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="57"/>
+        <source>Element order</source>
+        <translation>Orden de los elementos</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="62"/>
+        <source>Linear (first order)</source>
+        <translation>Lineal (primer orden)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="63"/>
+        <source>Quadratic (second order)</source>
+        <translation>Cuadrático (segundo orden)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="64"/>
+        <source>Quadratic elements have an additional node in the middle of each edge.</source>
+        <translation>Los elementos cuadráticos tienen un nodo adicional en el centro de cada arista.</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="67"/>
         <source>Check surface integrity</source>
         <translation>Comprobar la integridad de la superficie</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="37"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="71"/>
         <source>Reconstruct mesh (reuse current nodes)</source>
         <translation>Reconstruir la malla (reutilizar los nodos actuales)</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="76"/>
         <source>Keep computed results</source>
         <translation>Conservar los resultados calculados</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="47"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="81"/>
         <source>Quality mesh</source>
         <translation>Malla de calidad</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="55"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="89"/>
         <source>Maximum element volume</source>
         <translation>Volumen máximo del elemento</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="65"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="99"/>
         <source>Generate mesh size function</source>
         <translation>Generar función de tamaño de malla</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="74"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
         <source>Source variable</source>
         <translation>Variable de origen</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="88"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
         <source>Minimum edge length</source>
         <translation>Longitud mínima de arista</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="98"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="132"/>
         <source>Maximum edge length</source>
         <translation>Longitud máxima de arista</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="142"/>
         <source>TetGen parameters</source>
         <translation>Parámetros de TetGen</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="125"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="160"/>
         <source>OK</source>
         <translation>Aceptar</translation>
     </message>
@@ -4101,306 +4157,103 @@
 <context>
     <name>ModelStatisticsDialog</name>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="18"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="19"/>
         <source>Model statistics</source>
         <translation>Estadísticas del modelo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="35"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="36"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="55"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
         <source>Number of nodes</source>
         <translation>Número de nodos</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="57"/>
         <source>Number of elements</source>
         <translation>Número de elementos</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="60"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="61"/>
         <source>Node distance statistics</source>
         <translation>Estadísticas de distancia entre nodos</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="62"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
         <source>Minimum</source>
         <translation>Mínimo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
         <source>Maximum</source>
         <translation>Máximo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
         <source>Average</source>
         <translation>Promedio</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <source>Median</source>
         <translation>Mediana</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <location filename="../src/model_statistics_dialog.cpp" line="67"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="68"/>
         <source>Percentile</source>
         <translation>Percentil</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="69"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="70"/>
         <source>Geometry statistics</source>
         <translation>Estadísticas de la geometría</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="87"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
         <source>Line length</source>
         <translation>Longitud de líneas</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
         <source>Surface area</source>
         <translation>Área de superficies</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="90"/>
         <source>Total volume</source>
         <translation>Volumen total</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="93"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="94"/>
         <source>Model center</source>
         <translation>Centro del modelo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="97"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
         <source>Model limits</source>
         <translation>Límites del modelo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="99"/>
         <source>Model size</source>
         <translation>Tamaño del modelo</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="112"/>
         <source>Results</source>
         <translation>Resultados</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="118"/>
         <source>No results are available.</source>
         <translation>No hay resultados disponibles.</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
-        <source>Support reactions</source>
-        <translation>Reacciones en los apoyos</translation>
-    </message>
-</context>
-<context>
-    <name>ResultsStatistics</name>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average</source>
-        <translation>Media ponderada por área</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average magnitude</source>
-        <translation>Magnitud media ponderada por área</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average</source>
-        <translation>Promedio</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average magnitude</source>
-        <translation>Magnitud media</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average magnitude of element values</source>
-        <translation>Magnitud media de los valores de los elementos</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average magnitude of node values</source>
-        <translation>Magnitud media de los valores nodales</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average of element values</source>
-        <translation>Media de los valores de los elementos</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average of node values</source>
-        <translation>Media de los valores nodales</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="28"/>
-        <source>Computational time</source>
-        <translation>Tiempo de cálculo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant magnitude</source>
-        <translation>Magnitud constante</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant value</source>
-        <translation>Valor constante</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="388"/>
-        <source>Element</source>
-        <translation>Elemento</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="34"/>
-        <source>Frequency</source>
-        <translation>Frecuencia</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="502"/>
-        <source>Here it is %1 % of the total applied load.</source>
-        <translation>Aquí es el %1 % de la carga aplicada total.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="485"/>
-        <source>Imbalance</source>
-        <translation>Desequilibrio</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="496"/>
-        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
-        <translation>El desequilibrio es la suma de la reacción total y la carga aplicada total, en equilibrio es cero.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="498"/>
-        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
-        <translation>En un análisis dinámico también contiene las fuerzas de inercia y de amortiguamiento.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="494"/>
-        <source>Inertia and damping forces are not included.</source>
-        <translation>No se incluyen las fuerzas de inercia ni de amortiguamiento.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average</source>
-        <translation>Media ponderada por longitud</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average magnitude</source>
-        <translation>Magnitud media ponderada por longitud</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum</source>
-        <translation>Máximo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum magnitude</source>
-        <translation>Magnitud máxima</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum</source>
-        <translation>Mínimo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum magnitude</source>
-        <translation>Magnitud mínima</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="33"/>
-        <source>Mode</source>
-        <translation>Modo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="383"/>
-        <source>Node</source>
-        <translation>Nodo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="105"/>
-        <source>Other results</source>
-        <translation>Otros resultados</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="467"/>
-        <source>Support</source>
-        <translation>Apoyo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="27"/>
-        <source>Time step</source>
-        <translation>Paso de tiempo</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="484"/>
-        <source>Total applied load</source>
-        <translation>Carga aplicada total</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="483"/>
-        <source>Total reaction</source>
-        <translation>Reacción total</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average</source>
-        <translation>Media ponderada por volumen</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average magnitude</source>
-        <translation>Magnitud media ponderada por volumen</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="499"/>
-        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
-        <translation>El resto procede de la tolerancia de convergencia del solucionador matricial.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="156"/>
-        <source>line</source>
-        <translation>línea</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="154"/>
-        <source>point</source>
-        <translation>punto</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="158"/>
-        <source>surface</source>
-        <translation>superficie</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="160"/>
-        <source>volume</source>
-        <translation>volumen</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="359"/>
-        <source>No results are available.</source>
-        <translation>No hay resultados disponibles.</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="441"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="166"/>
         <source>Support reactions</source>
         <translation>Reacciones en los apoyos</translation>
     </message>
@@ -5206,64 +5059,64 @@
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="48"/>
+        <location filename="../src/report_dialog.cpp" line="49"/>
         <source>HyperText Markup Language</source>
         <translation>HyperText Markup Language</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>files</source>
         <translation>archivos</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="63"/>
+        <location filename="../src/report_dialog.cpp" line="64"/>
         <source>Markdown</source>
         <translation>Markdown</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="78"/>
+        <location filename="../src/report_dialog.cpp" line="79"/>
         <source>OpenDocument Text</source>
         <translation>Texto OpenDocument</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="93"/>
+        <location filename="../src/report_dialog.cpp" line="94"/>
         <source>Portable Document Format</source>
         <translation>Portable Document Format</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="114"/>
+        <location filename="../src/report_dialog.cpp" line="115"/>
         <source>Ok</source>
         <translation>Aceptar</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="56"/>
-        <location filename="../src/report_dialog.cpp" line="71"/>
-        <location filename="../src/report_dialog.cpp" line="86"/>
-        <location filename="../src/report_dialog.cpp" line="101"/>
+        <location filename="../src/report_dialog.cpp" line="57"/>
+        <location filename="../src/report_dialog.cpp" line="72"/>
+        <location filename="../src/report_dialog.cpp" line="87"/>
+        <location filename="../src/report_dialog.cpp" line="102"/>
         <source>Report file</source>
         <translation>Archivo del informe</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="58"/>
-        <location filename="../src/report_dialog.cpp" line="73"/>
-        <location filename="../src/report_dialog.cpp" line="88"/>
-        <location filename="../src/report_dialog.cpp" line="103"/>
+        <location filename="../src/report_dialog.cpp" line="59"/>
+        <location filename="../src/report_dialog.cpp" line="74"/>
+        <location filename="../src/report_dialog.cpp" line="89"/>
+        <location filename="../src/report_dialog.cpp" line="104"/>
         <source>Select file</source>
         <translation>Seleccionar archivo</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>Any files</source>
         <translation>Cualquier archivo</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="111"/>
+        <location filename="../src/report_dialog.cpp" line="112"/>
         <source>Cancel</source>
         <translation>Cancelar</translation>
     </message>
@@ -5271,150 +5124,287 @@
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../src/report_generator.cpp" line="83"/>
+        <location filename="../src/report_generator.cpp" line="86"/>
         <source>Model</source>
         <translation>Modelo</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="84"/>
+        <location filename="../src/report_generator.cpp" line="87"/>
         <source>Mesh details</source>
         <translation>Detalles de la malla</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="95"/>
+        <location filename="../src/report_generator.cpp" line="98"/>
         <source>Number of nodes</source>
         <translation>Número de nodos</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="100"/>
+        <location filename="../src/report_generator.cpp" line="103"/>
         <source>Number of elements</source>
         <translation>Número de elementos</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="105"/>
+        <location filename="../src/report_generator.cpp" line="108"/>
         <source>Number of point entities</source>
         <translation>Número de entidades de punto</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="110"/>
+        <location filename="../src/report_generator.cpp" line="113"/>
         <source>Number of line entities</source>
         <translation>Número de entidades de línea</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="115"/>
+        <location filename="../src/report_generator.cpp" line="118"/>
         <source>Number of surface entities</source>
         <translation>Número de entidades de superficie</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="120"/>
+        <location filename="../src/report_generator.cpp" line="123"/>
         <source>Number of volume entities</source>
         <translation>Número de entidades de volumen</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="134"/>
+        <location filename="../src/report_generator.cpp" line="137"/>
         <source>Problem</source>
         <translation>Problema</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="148"/>
+        <location filename="../src/report_generator.cpp" line="151"/>
         <source>Boundary conditions</source>
         <translation>Condiciones de contorno</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="199"/>
+        <location filename="../src/report_generator.cpp" line="202"/>
         <source>Initial conditions</source>
         <translation>Condiciones iniciales</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="250"/>
+        <location filename="../src/report_generator.cpp" line="253"/>
         <source>Environment conditions</source>
         <translation>Condiciones de entorno</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="300"/>
+        <location filename="../src/report_generator.cpp" line="303"/>
         <source>Materials</source>
         <translation>Materiales</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="353"/>
+        <location filename="../src/report_generator.cpp" line="356"/>
         <source>Results</source>
         <translation>Resultados</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="355"/>
-        <source>Time-solver</source>
-        <translation>Solver temporal</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="360"/>
-        <source>Current time step</source>
-        <translation>Paso de tiempo actual</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="362"/>
-        <source>Current computational time</source>
-        <translation>Tiempo de cálculo actual</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="369"/>
-        <source>Current mode</source>
-        <translation>Modo actual</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="371"/>
-        <source>Current frequency</source>
-        <translation>Frecuencia actual</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="414"/>
-        <source>Variable type</source>
-        <translation>Tipo de variable</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="420"/>
-        <source>Units</source>
-        <translation>Unidades</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="426"/>
-        <source>Minimum</source>
-        <translation>Mínimo</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="432"/>
-        <source>Maximum</source>
-        <translation>Máximo</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="438"/>
-        <source>Average</source>
-        <translation>Promedio</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="444"/>
-        <source>Median</source>
-        <translation>Mediana</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="389"/>
-        <source>Variables</source>
-        <translation>Variables</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="57"/>
+        <location filename="../src/report_generator.cpp" line="60"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="450"/>
-        <location filename="../src/report_generator.cpp" line="456"/>
-        <source>Percentile</source>
-        <translation>Percentil</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="465"/>
+        <location filename="../src/report_generator.cpp" line="425"/>
         <source>Screenshot</source>
         <translation>Captura de pantalla</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Media ponderada por área</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Magnitud media ponderada por área</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Promedio</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Magnitud media</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Magnitud media de los valores de los elementos</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Magnitud media de los valores nodales</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Media de los valores de los elementos</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Media de los valores nodales</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Tiempo de cálculo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Magnitud constante</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Valor constante</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Elemento</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Frecuencia</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Aquí es el %1 % de la carga aplicada total.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Desequilibrio</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>El desequilibrio es la suma de la reacción total y la carga aplicada total, en equilibrio es cero.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>En un análisis dinámico también contiene las fuerzas de inercia y de amortiguamiento.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>No se incluyen las fuerzas de inercia ni de amortiguamiento.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Media ponderada por longitud</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Magnitud media ponderada por longitud</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Máximo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Magnitud máxima</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Mínimo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Magnitud mínima</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Modo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Nodo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Otros resultados</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Apoyo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Paso de tiempo</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Carga aplicada total</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Reacción total</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Media ponderada por volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Magnitud media ponderada por volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>El resto procede de la tolerancia de convergencia del solucionador matricial.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>línea</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>punto</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>superficie</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>volumen</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="362"/>
+        <source>No results are available.</source>
+        <translation>No hay resultados disponibles.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="456"/>
+        <source>Support reactions</source>
+        <translation>Reacciones en los apoyos</translation>
     </message>
 </context>
 <context>
@@ -5763,59 +5753,59 @@ El promedio reduce los valores máximos, compárelos con el rango de elementos m
 <context>
     <name>SubWindow</name>
     <message>
-        <location filename="../src/sub_window.cpp" line="52"/>
+        <location filename="../src/sub_window.cpp" line="53"/>
         <source>Sub window toolbar</source>
         <translation>Barra de herramientas de la subventana</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="58"/>
+        <location filename="../src/sub_window.cpp" line="59"/>
         <source>Reset to original view.</source>
         <translation>Restablecer la vista original.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="65"/>
+        <location filename="../src/sub_window.cpp" line="66"/>
         <source>Reset to X plane.</source>
         <translation>Restablecer al plano X.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="72"/>
+        <location filename="../src/sub_window.cpp" line="73"/>
         <source>Reset to Y plane.</source>
         <translation>Restablecer al plano Y.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="79"/>
+        <location filename="../src/sub_window.cpp" line="80"/>
         <source>Reset to Z plane.</source>
         <translation>Restablecer al plano Z.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="88"/>
+        <location filename="../src/sub_window.cpp" line="89"/>
         <source>Screenshot.</source>
         <translation>Captura de pantalla.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="98"/>
+        <location filename="../src/sub_window.cpp" line="99"/>
         <source>Highlight selection</source>
         <translation>Resaltar selección</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="99"/>
+        <location filename="../src/sub_window.cpp" line="100"/>
         <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
         <translation>Si está marcado, las entidades seleccionadas en el árbol del modelo se resaltan en la vista 3D.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="105"/>
+        <location filename="../src/sub_window.cpp" line="106"/>
         <source>Same face color</source>
         <translation>Mismo color en ambas caras</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="106"/>
+        <location filename="../src/sub_window.cpp" line="107"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Si está marcado, ambas caras de los elementos de superficie comparten el mismo color.
 Si no está marcado, la cara posterior se muestra en otro color.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="116"/>
+        <location filename="../src/sub_window.cpp" line="117"/>
         <source>Display preferences.</source>
         <translation>Propiedades de visualización.</translation>
     </message>

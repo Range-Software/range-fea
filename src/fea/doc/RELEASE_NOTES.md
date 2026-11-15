@@ -4,7 +4,7 @@
 
 - **Mesh generator can be selected** in the *Generate 3D mesh* dialog. Next to TetGen
   there is a new *Range* mesh generator, developed as a part of Range FEA
-  (`range-element-lib`). TetGen remains the default. *TetGen parameters* apply only
+  (`range-element-lib`). Range is the default. *TetGen parameters* apply only
   to TetGen
 - **Range mesh generation reports progress throughout the operation**, including
   model conversion, boundary recovery, refinement, optimization and quality checks.

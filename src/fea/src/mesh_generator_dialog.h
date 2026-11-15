@@ -20,6 +20,8 @@ class MeshGeneratorDialog : public QDialog
         uint modelID;
         //! Mesh generator combo box.
         QComboBox *generatorComboBox;
+        //! Order of generated elements combo box.
+        QComboBox *elementOrderComboBox;
         //! Keep results check box.
         QCheckBox *surfaceIntegrityCheck;
         //! Quality mesh group box.
@@ -83,6 +85,9 @@ class MeshGeneratorDialog : public QDialog
 
         //! Mesh generator changed.
         void onGeneratorChanged(int);
+
+        //! Order of generated elements changed.
+        void onElementOrderChanged(int);
 
         //! Tetgen parameters group box clicked.
         void onTetgenParamsGroupBoxClicked(bool);

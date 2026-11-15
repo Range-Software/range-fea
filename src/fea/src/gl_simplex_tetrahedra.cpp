@@ -58,6 +58,27 @@ bool GLSimplexTetrahedra::nodeIsVisible(uint node) const
     return (this->visibleFaces & ~(1u << node)) != 0;
 }
 
+namespace
+{
+    //! Corner nodes of each face, the face is opposite to the node missing in it.
+    const uint faceNodes[4][3] = {{1,2,3},{0,3,2},{0,1,3},{0,2,1}};
+
+    //! Position of the node in the middle of an edge of a second order tetrahedron
+    //! (edges 0-1, 1-2, 2-0, 0-3, 1-3, 2-3).
+    uint findMidNode(uint node1, uint node2)
+    {
+        static const uint edges[6][2] = {{0,1},{1,2},{2,0},{0,3},{1,3},{2,3}};
+        for (uint i=0;i<6;i++)
+        {
+            if ((edges[i][0] == node1 && edges[i][1] == node2) || (edges[i][0] == node2 && edges[i][1] == node1))
+            {
+                return 4 + i;
+            }
+        }
+        return 0;
+    }
+}
+
 void GLSimplexTetrahedra::initialize()
 {
 
@@ -151,6 +172,40 @@ void GLSimplexTetrahedra::drawNormal(bool useTexture)
     cullState = GLStateCache::instance().getCullFace();
     GLStateCache::instance().setCullFace(GL_FALSE);
 
+    if (this->nodes.size() == 10)
+    {
+        // Second order tetrahedron - each face is split into four triangles by the nodes in the
+        // middle of its edges, so that values there are shown.
+        GLFunctions::begin(GL_TRIANGLES);
+        for (uint face=0;face<4;face++)
+        {
+            if (!this->faceIsVisible(face))
+            {
+                continue;
+            }
+            const uint a = faceNodes[face][0], b = faceNodes[face][1], c = faceNodes[face][2];
+            const uint ab = findMidNode(a,b), bc = findMidNode(b,c), ca = findMidNode(c,a);
+            const uint triangles[4][3] = {{a,ab,ca},{ab,b,bc},{ca,bc,c},{ab,bc,ca}};
+            GLObject::glNormalVector(RR3Vector(RTriangle(RNode(this->nodes[a]),RNode(this->nodes[b]),RNode(this->nodes[c])).getNormal()));
+            for (const auto &triangle : triangles)
+            {
+                for (uint node : triangle)
+                {
+                    if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[node]));
+                    GLObject::glVertexNode(this->nodes[node]);
+                }
+            }
+        }
+        GLFunctions::end();
+
+        if (useTexture)
+        {
+            GLStateCache::instance().disableTexture1D();
+        }
+        GLStateCache::instance().setCullFace(cullState);
+        return;
+    }
+
     GLFunctions::begin(GL_TRIANGLES);
     // 021
     if (this->faceIsVisible(3))
@@ -217,6 +272,36 @@ void GLSimplexTetrahedra::drawWired(bool useTexture)
         GLStateCache::instance().enableTexture1D();
     }
 
+    if (this->nodes.size() == 10)
+    {
+        // Second order tetrahedron - each edge goes through the node in its middle.
+        static const uint edges[6][2] = {{0,1},{1,2},{2,0},{0,3},{1,3},{2,3}};
+        GLFunctions::begin(GL_LINES);
+        for (uint i=0;i<6;i++)
+        {
+            if (!this->edgeIsVisible(edges[i][0],edges[i][1]))
+            {
+                continue;
+            }
+            const uint path[3] = {edges[i][0],4+i,edges[i][1]};
+            for (uint j=0;j<2;j++)
+            {
+                for (uint k=j;k<j+2;k++)
+                {
+                    if (useTexture) GLFunctions::texCoord1f(GLfloat(this->nodeTextureCoordinates[path[k]]));
+                    GLObject::glVertexNode(this->nodes[path[k]]);
+                }
+            }
+        }
+        GLFunctions::end();
+
+        if (useTexture)
+        {
+            GLStateCache::instance().disableTexture1D();
+        }
+        return;
+    }
+
     GLFunctions::begin(GL_LINES);
     // 01
     if (this->edgeIsVisible(0,1))
@@ -278,9 +363,12 @@ void GLSimplexTetrahedra::drawNodes()
 {
     uint nn = uint(this->nodes.size());
 
+    static const uint edges[6][2] = {{0,1},{1,2},{2,0},{0,3},{1,3},{2,3}};
     for (uint i=0;i<nn;i++)
     {
-        if (this->nodeIsVisible(i))
+        // A node in the middle of an edge is visible with its edge.
+        const bool visible = i < 4 ? this->nodeIsVisible(i) : (i < 10 && this->edgeIsVisible(edges[i-4][0],edges[i-4][1]));
+        if (visible)
         {
             GLFunctions::begin(GL_POINTS);
             GLObject::glVertexNode(this->nodes[i]);

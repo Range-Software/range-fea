@@ -3001,7 +3001,7 @@ bool Model::elementIsOnEdge(uint elementID) const
 uint Model::findVolumeElementVisibleFaces(uint elementID, const std::vector<bool> &elementIsInGroup) const
 {
     const RElement &element = this->getElement(elementID);
-    if (element.getType() != R_ELEMENT_TETRA1)
+    if (RElement::getLinearType(element.getType()) != R_ELEMENT_TETRA1)
     {
         return 0xF;
     }
@@ -4367,8 +4367,10 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
 
             if (RR3Vector::angle(cn,nn) >= radAngle)
             {
+                // An edge is shared if both of its corner nodes are.
+                // Second order elements share also a node in the middle of it.
                 std::vector<uint> sNodeIDs;
-                for (uint k=0;k<cElement.size();k++)
+                for (uint k=0;k<RElement::getNCornerNodes(cElement.getType());k++)
                 {
                     if (nElement.hasNodeId(cElement.getNodeId(k)))
                     {
@@ -4380,6 +4382,18 @@ QVector<RElement> Model::findEdgeElements(double separationAngle) const
                     RElement e(R_ELEMENT_TRUSS1);
                     e.setNodeId(0,sNodeIDs[0]);
                     e.setNodeId(1,sNodeIDs[1]);
+                    if (RElement::getOrder(cElement.getType()) == 2)
+                    {
+                        // The edge with its node in the middle.
+                        for (const RElement &rEdge : cElement.generateEdgeElements())
+                        {
+                            if (rEdge.hasNodeId(sNodeIDs[0]) && rEdge.hasNodeId(sNodeIDs[1]))
+                            {
+                                e = rEdge;
+                                break;
+                            }
+                        }
+                    }
                     segments.append(e);
                 }
             }

@@ -1271,47 +1271,47 @@
 <context>
     <name>CentralTabWidget</name>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="75"/>
+        <location filename="../src/central_tab_widget.cpp" line="95"/>
         <source>Tile windows</source>
         <translation>Розташувати вікна поруч</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="51"/>
+        <location filename="../src/central_tab_widget.cpp" line="71"/>
         <source>Max lines</source>
         <translation>Максимальна кількість рядків</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="53"/>
+        <location filename="../src/central_tab_widget.cpp" line="73"/>
         <source>Maximum number of lines kept in process output. Oldest lines are removed first.</source>
         <translation>Максимальна кількість рядків, що зберігаються у виводі процесу. Першими видаляються найстаріші рядки.</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="87"/>
+        <location filename="../src/central_tab_widget.cpp" line="107"/>
         <source>Windows</source>
         <translation>Вікна</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="163"/>
+        <location filename="../src/central_tab_widget.cpp" line="183"/>
         <source>Model</source>
         <translation>Модель</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="168"/>
+        <location filename="../src/central_tab_widget.cpp" line="188"/>
         <source>Application output</source>
         <translation>Вивід програми</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="174"/>
+        <location filename="../src/central_tab_widget.cpp" line="194"/>
         <source>Process output</source>
         <translation>Вивід процесу</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="180"/>
+        <location filename="../src/central_tab_widget.cpp" line="200"/>
         <source>Pick details</source>
         <translation>Виберіть деталі</translation>
     </message>
     <message>
-        <location filename="../src/central_tab_widget.cpp" line="288"/>
+        <location filename="../src/central_tab_widget.cpp" line="306"/>
         <source>Notice</source>
         <translation>Примітка</translation>
     </message>
@@ -1504,7 +1504,8 @@
 <context>
     <name>DocumentGenerator</name>
     <message>
-        <location filename="../src/document_generator.cpp" line="291"/>
+        <location filename="../src/document_generator.cpp" line="381"/>
+        <location filename="../src/document_generator.cpp" line="448"/>
         <source>Page</source>
         <translation>Сторінка</translation>
     </message>
@@ -2339,98 +2340,98 @@
 <context>
     <name>GLWidget</name>
     <message>
-        <location filename="../src/gl_widget.cpp" line="684"/>
+        <location filename="../src/gl_widget.cpp" line="695"/>
         <source>Stream line</source>
         <translation>Лінія потоку</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="699"/>
+        <location filename="../src/gl_widget.cpp" line="710"/>
         <source>Scale</source>
         <translation>Масштаб</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="714"/>
+        <location filename="../src/gl_widget.cpp" line="725"/>
         <source>Rotation</source>
         <translation>Обертання</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1040"/>
+        <location filename="../src/gl_widget.cpp" line="1051"/>
         <source>Time-step</source>
         <translation>Крок часу</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1045"/>
+        <location filename="../src/gl_widget.cpp" line="1056"/>
         <source>Mode</source>
         <translation>Форма коливань</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1050"/>
+        <location filename="../src/gl_widget.cpp" line="1061"/>
         <source>Steady state</source>
         <translation>Стаціонарний стан</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1465"/>
+        <location filename="../src/gl_widget.cpp" line="1476"/>
         <source>Number of sliver elements</source>
         <translation>Кількість вироджених елементів</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1469"/>
+        <location filename="../src/gl_widget.cpp" line="1480"/>
         <source>Number of intersected elements</source>
         <translation>Кількість елементів, що перетинаються</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1473"/>
+        <location filename="../src/gl_widget.cpp" line="1484"/>
         <source>Number of hole elements</source>
         <translation>Кількість отворів</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1479"/>
+        <location filename="../src/gl_widget.cpp" line="1490"/>
         <source>Picked entities</source>
         <translation>Вибрані сутності</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1493"/>
+        <location filename="../src/gl_widget.cpp" line="1504"/>
         <source>Hole edge</source>
         <translation>Край отвору</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1571"/>
-        <location filename="../src/gl_widget.cpp" line="1572"/>
+        <location filename="../src/gl_widget.cpp" line="1582"/>
+        <location filename="../src/gl_widget.cpp" line="1583"/>
         <source>more</source>
         <translation>більше</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1061"/>
+        <location filename="../src/gl_widget.cpp" line="1072"/>
         <source>Smoothed. Element range: %1 to %2</source>
         <translation>Згладжено. Діапазон елементів: від %1 до %2</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1599"/>
+        <location filename="../src/gl_widget.cpp" line="1610"/>
         <source>Boundary conditions</source>
         <translation>Граничні умови</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1791"/>
+        <location filename="../src/gl_widget.cpp" line="1802"/>
         <source>Action</source>
         <translation>Дія</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1794"/>
+        <location filename="../src/gl_widget.cpp" line="1805"/>
         <source>Zoom</source>
         <translation>Збільшити</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="1795"/>
+        <location filename="../src/gl_widget.cpp" line="1806"/>
         <source>Model draw time</source>
         <translation>Час малювання моделі</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3005"/>
+        <location filename="../src/gl_widget.cpp" line="3016"/>
         <source>Image files</source>
         <translation>Файли зображень</translation>
     </message>
     <message>
-        <location filename="../src/gl_widget.cpp" line="3022"/>
+        <location filename="../src/gl_widget.cpp" line="3033"/>
         <source>Save screenshot as</source>
         <translation>Зберегти знімок екрана як</translation>
     </message>
@@ -2769,7 +2770,7 @@
     <message>
         <location filename="../src/main_window.cpp" line="139"/>
         <location filename="../src/main_window.cpp" line="580"/>
-        <location filename="../src/main_window.cpp" line="817"/>
+        <location filename="../src/main_window.cpp" line="821"/>
         <source>Problem</source>
         <translation>Задача</translation>
     </message>
@@ -2790,13 +2791,13 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="151"/>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Material</source>
         <translation>Матеріал</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="154"/>
-        <location filename="../src/main_window.cpp" line="858"/>
+        <location filename="../src/main_window.cpp" line="862"/>
         <source>Results</source>
         <translation>Результати</translation>
     </message>
@@ -2812,7 +2813,7 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="361"/>
-        <location filename="../src/main_window.cpp" line="742"/>
+        <location filename="../src/main_window.cpp" line="746"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
@@ -2833,25 +2834,25 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="474"/>
-        <location filename="../src/main_window.cpp" line="756"/>
+        <location filename="../src/main_window.cpp" line="760"/>
         <source>Geometry</source>
         <translation>Геометрія</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="479"/>
-        <location filename="../src/main_window.cpp" line="758"/>
+        <location filename="../src/main_window.cpp" line="762"/>
         <source>Draw</source>
         <translation>Побудова</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="499"/>
-        <location filename="../src/main_window.cpp" line="760"/>
+        <location filename="../src/main_window.cpp" line="764"/>
         <source>Line</source>
         <translation>Лінія</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="504"/>
-        <location filename="../src/main_window.cpp" line="791"/>
+        <location filename="../src/main_window.cpp" line="795"/>
         <source>Surface</source>
         <translation>Поверхня</translation>
     </message>
@@ -2867,31 +2868,31 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="530"/>
-        <location filename="../src/main_window.cpp" line="861"/>
+        <location filename="../src/main_window.cpp" line="865"/>
         <source>Cut</source>
         <translation>Переріз</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="536"/>
-        <location filename="../src/main_window.cpp" line="862"/>
+        <location filename="../src/main_window.cpp" line="866"/>
         <source>Iso</source>
         <translation>Iso</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="542"/>
-        <location filename="../src/main_window.cpp" line="863"/>
+        <location filename="../src/main_window.cpp" line="867"/>
         <source>Stream line</source>
         <translation>Лінія потоку</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="548"/>
-        <location filename="../src/main_window.cpp" line="864"/>
+        <location filename="../src/main_window.cpp" line="868"/>
         <source>Scalar field</source>
         <translation>Скалярне поле</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="554"/>
-        <location filename="../src/main_window.cpp" line="865"/>
+        <location filename="../src/main_window.cpp" line="869"/>
         <source>Vector field</source>
         <translation>Векторне поле</translation>
     </message>
@@ -2926,301 +2927,301 @@
         <translation>Панель результатів</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="759"/>
+        <location filename="../src/main_window.cpp" line="763"/>
         <source>Point</source>
         <translation>Точка</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="761"/>
+        <location filename="../src/main_window.cpp" line="765"/>
         <source>Triangle</source>
         <translation>Трикутник</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="762"/>
+        <location filename="../src/main_window.cpp" line="766"/>
         <source>Quadrilateral</source>
         <translation>Чотирикутник</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="763"/>
+        <location filename="../src/main_window.cpp" line="767"/>
         <source>Circle</source>
         <translation>Коло</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="764"/>
+        <location filename="../src/main_window.cpp" line="768"/>
         <source>Ellipse</source>
         <translation>Еліпс</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="765"/>
+        <location filename="../src/main_window.cpp" line="769"/>
         <source>Tetrahedron</source>
         <translation>Тетраедр</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="766"/>
+        <location filename="../src/main_window.cpp" line="770"/>
         <source>Hexahedron</source>
         <translation>Гексаедр</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="767"/>
+        <location filename="../src/main_window.cpp" line="771"/>
         <source>Cylinder</source>
         <translation>Циліндр</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="768"/>
+        <location filename="../src/main_window.cpp" line="772"/>
         <source>Sphere</source>
         <translation>Сфера</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="769"/>
+        <location filename="../src/main_window.cpp" line="773"/>
         <source>RAW object</source>
         <translation>Об’єкт RAW</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="771"/>
+        <location filename="../src/main_window.cpp" line="775"/>
         <source>Boolean</source>
         <translation>Булеві операції</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="776"/>
+        <location filename="../src/main_window.cpp" line="780"/>
         <source>Modify</source>
         <translation>Змінити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="777"/>
+        <location filename="../src/main_window.cpp" line="781"/>
         <source>Transform</source>
         <translation>Перетворити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="779"/>
+        <location filename="../src/main_window.cpp" line="783"/>
         <source>Entities</source>
         <translation>Сутності</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="780"/>
+        <location filename="../src/main_window.cpp" line="784"/>
         <source>Line from edges</source>
         <translation>Лінія з ребер</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="781"/>
-        <location filename="../src/main_window.cpp" line="806"/>
+        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="810"/>
         <source>Merge</source>
         <translation>Об’єднати</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="782"/>
-        <location filename="../src/main_window.cpp" line="808"/>
-        <location filename="../src/main_window.cpp" line="813"/>
+        <location filename="../src/main_window.cpp" line="786"/>
+        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="817"/>
         <source>Remove</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="785"/>
+        <location filename="../src/main_window.cpp" line="789"/>
         <source>Mesh</source>
         <translation>Сітка</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="787"/>
+        <location filename="../src/main_window.cpp" line="791"/>
         <source>Generate</source>
         <translation>Згенерувати</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="788"/>
+        <location filename="../src/main_window.cpp" line="792"/>
         <source>Tetrahedra</source>
         <translation>Тетраедри</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="789"/>
+        <location filename="../src/main_window.cpp" line="793"/>
         <source>Coarsen</source>
         <translation>Огрубити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="792"/>
+        <location filename="../src/main_window.cpp" line="796"/>
         <source>Mark</source>
         <translation>Позначити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="795"/>
+        <location filename="../src/main_window.cpp" line="799"/>
         <source>Sync normals</source>
         <translation>Синхронізувати нормалі</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="798"/>
+        <location filename="../src/main_window.cpp" line="802"/>
         <source>Check and repair</source>
         <translation>Перевірка й виправлення</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="799"/>
+        <location filename="../src/main_window.cpp" line="803"/>
         <source>Find intersected</source>
         <translation>Знайти ті, що перетинаються</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="800"/>
+        <location filename="../src/main_window.cpp" line="804"/>
         <source>Break intersected</source>
         <translation>Розбити ті, що перетинаються</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="801"/>
+        <location filename="../src/main_window.cpp" line="805"/>
         <source>Find slivers</source>
         <translation>Знайти вироджені</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="802"/>
+        <location filename="../src/main_window.cpp" line="806"/>
         <source>Fix slivers</source>
         <translation>Виправити вироджені</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="804"/>
+        <location filename="../src/main_window.cpp" line="808"/>
         <source>Nodes</source>
         <translation>Вузли</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="805"/>
+        <location filename="../src/main_window.cpp" line="809"/>
         <source>Merge near</source>
         <translation>Об’єднати близькі</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="807"/>
+        <location filename="../src/main_window.cpp" line="811"/>
         <source>Move</source>
         <translation>Перемістити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="809"/>
+        <location filename="../src/main_window.cpp" line="813"/>
         <source>Remove and close hole</source>
         <translation>Видалити й закрити отвір</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="811"/>
+        <location filename="../src/main_window.cpp" line="815"/>
         <source>Elements</source>
         <translation>Елементи</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="812"/>
+        <location filename="../src/main_window.cpp" line="816"/>
         <source>Create</source>
         <translation>Створити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="819"/>
+        <location filename="../src/main_window.cpp" line="823"/>
         <source>Setup</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="821"/>
+        <location filename="../src/main_window.cpp" line="825"/>
         <source>Matrix solver</source>
         <translation>Матричний розв’язувач</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="822"/>
+        <location filename="../src/main_window.cpp" line="826"/>
         <source>Monitoring points</source>
         <translation>Пункти моніторингу</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="832"/>
+        <location filename="../src/main_window.cpp" line="836"/>
         <source>Conditions</source>
         <translation>Умови</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Boundary</source>
         <translation>Граничні</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="833"/>
+        <location filename="../src/main_window.cpp" line="837"/>
         <source>Show boundary conditions.</source>
         <translation>Показати граничні умови.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Initial</source>
         <translation>Початкові</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="834"/>
+        <location filename="../src/main_window.cpp" line="838"/>
         <source>Show initial conditions.</source>
         <translation>Показати початкові умови.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Environment</source>
         <translation>Середовища</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="835"/>
+        <location filename="../src/main_window.cpp" line="839"/>
         <source>Show environment conditions.</source>
         <translation>Показати умови навколишнього середовища.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="836"/>
+        <location filename="../src/main_window.cpp" line="840"/>
         <source>Show materials.</source>
         <translation>Показати матеріали.</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="838"/>
+        <location filename="../src/main_window.cpp" line="842"/>
         <source>Reset</source>
         <translation>Скинути</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="842"/>
+        <location filename="../src/main_window.cpp" line="846"/>
         <source>Solve</source>
         <translation>Розв’язати</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="844"/>
+        <location filename="../src/main_window.cpp" line="848"/>
         <source>Run</source>
         <translation>Запуск</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="845"/>
+        <location filename="../src/main_window.cpp" line="849"/>
         <source>Start</source>
         <translation>Запустити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="846"/>
+        <location filename="../src/main_window.cpp" line="850"/>
         <source>Stop</source>
         <translation>Зупинити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="847"/>
+        <location filename="../src/main_window.cpp" line="851"/>
         <source>Kill</source>
         <translation>Примусово завершити</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="849"/>
+        <location filename="../src/main_window.cpp" line="853"/>
         <source>Monitor</source>
         <translation>Моніторинг</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="850"/>
+        <location filename="../src/main_window.cpp" line="854"/>
         <source>Convergence</source>
         <translation>Збіжність</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="851"/>
+        <location filename="../src/main_window.cpp" line="855"/>
         <source>Solver log</source>
         <translation>Журнал розв’язувача</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="853"/>
+        <location filename="../src/main_window.cpp" line="857"/>
         <source>Data</source>
         <translation>Дані</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="860"/>
+        <location filename="../src/main_window.cpp" line="864"/>
         <source>Visualize</source>
         <translation>Візуалізація</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="867"/>
+        <location filename="../src/main_window.cpp" line="871"/>
         <source>Graphs</source>
         <translation>Графіки</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="871"/>
+        <location filename="../src/main_window.cpp" line="875"/>
         <source>Statistics</source>
         <translation>Статистика</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="415"/>
-        <location filename="../src/main_window.cpp" line="814"/>
+        <location filename="../src/main_window.cpp" line="818"/>
         <source>Special tools</source>
         <translation>Спеціальні інструменти</translation>
     </message>
@@ -3231,24 +3232,24 @@
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="597"/>
-        <location filename="../src/main_window.cpp" line="870"/>
+        <location filename="../src/main_window.cpp" line="874"/>
         <source>Report</source>
         <translation>Звіт</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="433"/>
-        <location filename="../src/main_window.cpp" line="747"/>
+        <location filename="../src/main_window.cpp" line="751"/>
         <source>Cloud</source>
         <translation>Хмара</translation>
     </message>
     <message>
         <location filename="../src/main_window.cpp" line="444"/>
-        <location filename="../src/main_window.cpp" line="751"/>
+        <location filename="../src/main_window.cpp" line="755"/>
         <source>Help</source>
         <translation>Довідка</translation>
     </message>
     <message>
-        <location filename="../src/main_window.cpp" line="1193"/>
+        <location filename="../src/main_window.cpp" line="1199"/>
         <source>If you quit now solver will continue executing in the background.</source>
         <translation>Якщо ви вийдете зараз, розв’язувач продовжить виконуватися у фоновому режимі.</translation>
     </message>
@@ -3316,44 +3317,74 @@
     </message>
 </context>
 <context>
+    <name>MaterialLibraryLoader</name>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="102"/>
+        <location filename="../src/material_library_loader.cpp" line="106"/>
+        <source>Failed to read material file &quot;%1&quot;. %2</source>
+        <translation>Не вдалося прочитати файл матеріалу &quot;%1&quot;. %2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_library_loader.cpp" line="121"/>
+        <source>Failed to load the material library.</source>
+        <translation>Не вдалося завантажити бібліотеку матеріалів.</translation>
+    </message>
+</context>
+<context>
     <name>MaterialManagerTree</name>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="41"/>
+        <location filename="../src/material_manager_tree.cpp" line="37"/>
+        <location filename="../src/material_manager_tree.cpp" line="369"/>
+        <source>Loading materials…</source>
+        <translation>Завантаження матеріалів…</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="48"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="42"/>
+        <location filename="../src/material_manager_tree.cpp" line="49"/>
         <source>File</source>
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="51"/>
+        <location filename="../src/material_manager_tree.cpp" line="58"/>
         <source>New</source>
         <translation>Новий</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="54"/>
+        <location filename="../src/material_manager_tree.cpp" line="62"/>
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="626"/>
+        <location filename="../src/material_manager_tree.cpp" line="375"/>
+        <source>Loading materials… %1/%2</source>
+        <translation>Завантаження матеріалів… %1/%2</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="440"/>
+        <source>Some materials could not be loaded. See the application log.</source>
+        <translation>Деякі матеріали не вдалося завантажити. Див. журнал програми.</translation>
+    </message>
+    <message>
+        <location filename="../src/material_manager_tree.cpp" line="629"/>
         <source>Imported</source>
         <translation>Імпортований</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="842"/>
+        <location filename="../src/material_manager_tree.cpp" line="845"/>
         <source>New material</source>
         <translation>Новий матеріал</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="865"/>
+        <location filename="../src/material_manager_tree.cpp" line="868"/>
         <source>Are you sure you want to delete selected material?</source>
         <translation>Ви впевнені, що хочете видалити вибраний матеріал?</translation>
     </message>
     <message>
-        <location filename="../src/material_manager_tree.cpp" line="868"/>
+        <location filename="../src/material_manager_tree.cpp" line="871"/>
         <source>Remove material</source>
         <translation>Видаліть матеріал</translation>
     </message>
@@ -3579,67 +3610,92 @@
 <context>
     <name>MeshGeneratorDialog</name>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="25"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="31"/>
         <source>Generate 3D mesh</source>
         <translation>Створіть 3D-сітку</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="33"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <source>Mesh generator</source>
+        <translation>Генератор сітки</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="57"/>
+        <source>Element order</source>
+        <translation>Порядок елементів</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="62"/>
+        <source>Linear (first order)</source>
+        <translation>Лінійні (перший порядок)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="63"/>
+        <source>Quadratic (second order)</source>
+        <translation>Квадратичні (другий порядок)</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="64"/>
+        <source>Quadratic elements have an additional node in the middle of each edge.</source>
+        <translation>Квадратичні елементи мають додатковий вузол посередині кожного ребра.</translation>
+    </message>
+    <message>
+        <location filename="../src/mesh_generator_dialog.cpp" line="67"/>
         <source>Check surface integrity</source>
         <translation>Перевірте цілісність поверхні</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="37"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="71"/>
         <source>Reconstruct mesh (reuse current nodes)</source>
         <translation>Реконструювати сітку (повторне використання поточних вузлів)</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="42"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="76"/>
         <source>Keep computed results</source>
         <translation>Зберігайте обчислені результати</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="47"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="81"/>
         <source>Quality mesh</source>
         <translation>Якісна сітка</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="55"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="89"/>
         <source>Maximum element volume</source>
         <translation>Максимальний об’єм елемента</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="65"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="99"/>
         <source>Generate mesh size function</source>
         <translation>Створення функції розміру сітки</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="74"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
         <source>Source variable</source>
         <translation>Вихідна змінна</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="88"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
         <source>Minimum edge length</source>
         <translation>Мінімальна довжина ребра</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="98"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="132"/>
         <source>Maximum edge length</source>
         <translation>Максимальна довжина ребра</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="108"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="142"/>
         <source>TetGen parameters</source>
         <translation>Параметри TetGen</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="122"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="157"/>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
-        <location filename="../src/mesh_generator_dialog.cpp" line="125"/>
+        <location filename="../src/mesh_generator_dialog.cpp" line="160"/>
         <source>OK</source>
         <translation>Гаразд</translation>
     </message>
@@ -4102,306 +4158,103 @@
 <context>
     <name>ModelStatisticsDialog</name>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="18"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="19"/>
         <source>Model statistics</source>
         <translation>Статистика моделі</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="35"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="36"/>
         <source>Close</source>
         <translation>Закрити</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="55"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
         <source>Number of nodes</source>
         <translation>Кількість вузлів</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="56"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="57"/>
         <source>Number of elements</source>
         <translation>Кількість елементів</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="60"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="61"/>
         <source>Node distance statistics</source>
         <translation>Статистика відстані вузла</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="62"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
         <source>Minimum</source>
         <translation>Мінімум</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="63"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
         <source>Maximum</source>
         <translation>Максимум</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="64"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
         <source>Average</source>
         <translation>Середній</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="65"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <source>Median</source>
         <translation>Медіана</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="66"/>
         <location filename="../src/model_statistics_dialog.cpp" line="67"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="68"/>
         <source>Percentile</source>
         <translation>Процентиль</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="69"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="70"/>
         <source>Geometry statistics</source>
         <translation>Геометрична статистика</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="87"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
         <source>Line length</source>
         <translation>Довжина лінії</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="88"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
         <source>Surface area</source>
         <translation>Площа поверхні</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="89"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="90"/>
         <source>Total volume</source>
         <translation>Загальний об’єм</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="93"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="94"/>
         <source>Model center</source>
         <translation>Центр моделі</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="97"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
         <source>Model limits</source>
         <translation>Межі моделі</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="98"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="99"/>
         <source>Model size</source>
         <translation>Розмір моделі</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="116"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="112"/>
         <source>Results</source>
         <translation>Результати</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="120"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="118"/>
         <source>No results are available.</source>
         <translation>Результати відсутні.</translation>
     </message>
     <message>
-        <location filename="../src/model_statistics_dialog.cpp" line="343"/>
-        <source>Support reactions</source>
-        <translation>Реакції опор</translation>
-    </message>
-</context>
-<context>
-    <name>ResultsStatistics</name>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average</source>
-        <translation>Середнє, зважене за площею</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="423"/>
-        <source>Area-weighted average magnitude</source>
-        <translation>Середня величина, зважена за площею</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average</source>
-        <translation>Середній</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="451"/>
-        <source>Average magnitude</source>
-        <translation>Середня величина</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average magnitude of element values</source>
-        <translation>Середня величина значень елементів</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average magnitude of node values</source>
-        <translation>Середня величина вузлових значень</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="445"/>
-        <source>Average of element values</source>
-        <translation>Середнє значень елементів</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="441"/>
-        <source>Average of node values</source>
-        <translation>Середнє вузлових значень</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="28"/>
-        <source>Computational time</source>
-        <translation>Розрахунковий час</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant magnitude</source>
-        <translation>Стала величина</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="412"/>
-        <source>Constant value</source>
-        <translation>Стале значення</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="388"/>
-        <source>Element</source>
-        <translation>Елемент</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="34"/>
-        <source>Frequency</source>
-        <translation>Частота</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="502"/>
-        <source>Here it is %1 % of the total applied load.</source>
-        <translation>Тут це %1 % сумарного прикладеного навантаження.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="485"/>
-        <source>Imbalance</source>
-        <translation>Незбалансованість</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="496"/>
-        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
-        <translation>Незбалансованість — це сума сумарної реакції та сумарного прикладеного навантаження, у рівновазі вона дорівнює нулю.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="498"/>
-        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
-        <translation>У динамічному аналізі вона містить також сили інерції та демпфування.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="494"/>
-        <source>Inertia and damping forces are not included.</source>
-        <translation>Сили інерції та демпфування не враховано.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average</source>
-        <translation>Середнє, зважене за довжиною</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="422"/>
-        <source>Length-weighted average magnitude</source>
-        <translation>Середня величина, зважена за довжиною</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum</source>
-        <translation>Максимум</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="416"/>
-        <source>Maximum magnitude</source>
-        <translation>Максимальна величина</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum</source>
-        <translation>Мінімум</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="415"/>
-        <source>Minimum magnitude</source>
-        <translation>Мінімальна величина</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="33"/>
-        <source>Mode</source>
-        <translation>Мода</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="383"/>
-        <source>Node</source>
-        <translation>Вузол</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="105"/>
-        <source>Other results</source>
-        <translation>Інші результати</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="467"/>
-        <source>Support</source>
-        <translation>Опора</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="27"/>
-        <source>Time step</source>
-        <translation>Часовий крок</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="484"/>
-        <source>Total applied load</source>
-        <translation>Сумарне прикладене навантаження</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="483"/>
-        <source>Total reaction</source>
-        <translation>Сумарна реакція</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average</source>
-        <translation>Середнє, зважене за об&apos;ємом</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="424"/>
-        <source>Volume-weighted average magnitude</source>
-        <translation>Середня величина, зважена за об&apos;ємом</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="499"/>
-        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
-        <translation>Залишок зумовлений допуском збіжності матричного розв&apos;язувача.</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="156"/>
-        <source>line</source>
-        <translation>лінія</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="154"/>
-        <source>point</source>
-        <translation>точка</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="158"/>
-        <source>surface</source>
-        <translation>поверхня</translation>
-    </message>
-    <message>
-        <location filename="../src/results_statistics.cpp" line="160"/>
-        <source>volume</source>
-        <translation>об&apos;єм</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="359"/>
-        <source>No results are available.</source>
-        <translation>Результати відсутні.</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="441"/>
+        <location filename="../src/model_statistics_dialog.cpp" line="166"/>
         <source>Support reactions</source>
         <translation>Реакції опор</translation>
     </message>
@@ -5207,64 +5060,64 @@
         <translation>Файл</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="48"/>
+        <location filename="../src/report_dialog.cpp" line="49"/>
         <source>HyperText Markup Language</source>
         <translation>Мова розмітки гіпертексту</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>files</source>
         <translation>файлів</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="63"/>
+        <location filename="../src/report_dialog.cpp" line="64"/>
         <source>Markdown</source>
         <translation>Markdown</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="78"/>
+        <location filename="../src/report_dialog.cpp" line="79"/>
         <source>OpenDocument Text</source>
         <translation>Текст OpenDocument</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="93"/>
+        <location filename="../src/report_dialog.cpp" line="94"/>
         <source>Portable Document Format</source>
         <translation>Портативний формат документів</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="114"/>
+        <location filename="../src/report_dialog.cpp" line="115"/>
         <source>Ok</source>
         <translation>Добре</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="56"/>
-        <location filename="../src/report_dialog.cpp" line="71"/>
-        <location filename="../src/report_dialog.cpp" line="86"/>
-        <location filename="../src/report_dialog.cpp" line="101"/>
+        <location filename="../src/report_dialog.cpp" line="57"/>
+        <location filename="../src/report_dialog.cpp" line="72"/>
+        <location filename="../src/report_dialog.cpp" line="87"/>
+        <location filename="../src/report_dialog.cpp" line="102"/>
         <source>Report file</source>
         <translation>Файл звіту</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="58"/>
-        <location filename="../src/report_dialog.cpp" line="73"/>
-        <location filename="../src/report_dialog.cpp" line="88"/>
-        <location filename="../src/report_dialog.cpp" line="103"/>
+        <location filename="../src/report_dialog.cpp" line="59"/>
+        <location filename="../src/report_dialog.cpp" line="74"/>
+        <location filename="../src/report_dialog.cpp" line="89"/>
+        <location filename="../src/report_dialog.cpp" line="104"/>
         <source>Select file</source>
         <translation>Виберіть файл</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="60"/>
-        <location filename="../src/report_dialog.cpp" line="75"/>
-        <location filename="../src/report_dialog.cpp" line="90"/>
-        <location filename="../src/report_dialog.cpp" line="105"/>
+        <location filename="../src/report_dialog.cpp" line="61"/>
+        <location filename="../src/report_dialog.cpp" line="76"/>
+        <location filename="../src/report_dialog.cpp" line="91"/>
+        <location filename="../src/report_dialog.cpp" line="106"/>
         <source>Any files</source>
         <translation>Будь-які файли</translation>
     </message>
     <message>
-        <location filename="../src/report_dialog.cpp" line="111"/>
+        <location filename="../src/report_dialog.cpp" line="112"/>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
@@ -5272,150 +5125,287 @@
 <context>
     <name>ReportGenerator</name>
     <message>
-        <location filename="../src/report_generator.cpp" line="83"/>
+        <location filename="../src/report_generator.cpp" line="86"/>
         <source>Model</source>
         <translation>Модель</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="84"/>
+        <location filename="../src/report_generator.cpp" line="87"/>
         <source>Mesh details</source>
         <translation>Відомості про сітку</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="95"/>
+        <location filename="../src/report_generator.cpp" line="98"/>
         <source>Number of nodes</source>
         <translation>Кількість вузлів</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="100"/>
+        <location filename="../src/report_generator.cpp" line="103"/>
         <source>Number of elements</source>
         <translation>Кількість елементів</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="105"/>
+        <location filename="../src/report_generator.cpp" line="108"/>
         <source>Number of point entities</source>
         <translation>Кількість точкових сутностей</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="110"/>
+        <location filename="../src/report_generator.cpp" line="113"/>
         <source>Number of line entities</source>
         <translation>Кількість лінійних сутностей</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="115"/>
+        <location filename="../src/report_generator.cpp" line="118"/>
         <source>Number of surface entities</source>
         <translation>Кількість поверхневих сутностей</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="120"/>
+        <location filename="../src/report_generator.cpp" line="123"/>
         <source>Number of volume entities</source>
         <translation>Кількість об’ємних сутностей</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="134"/>
+        <location filename="../src/report_generator.cpp" line="137"/>
         <source>Problem</source>
         <translation>Задача</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="148"/>
+        <location filename="../src/report_generator.cpp" line="151"/>
         <source>Boundary conditions</source>
         <translation>Граничні умови</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="199"/>
+        <location filename="../src/report_generator.cpp" line="202"/>
         <source>Initial conditions</source>
         <translation>Початкові умови</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="250"/>
+        <location filename="../src/report_generator.cpp" line="253"/>
         <source>Environment conditions</source>
         <translation>Умови навколишнього середовища</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="300"/>
+        <location filename="../src/report_generator.cpp" line="303"/>
         <source>Materials</source>
         <translation>Матеріали</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="353"/>
+        <location filename="../src/report_generator.cpp" line="356"/>
         <source>Results</source>
         <translation>Результати</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="355"/>
-        <source>Time-solver</source>
-        <translation>Розв’язування в часі</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="360"/>
-        <source>Current time step</source>
-        <translation>Поточний часовий крок</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="362"/>
-        <source>Current computational time</source>
-        <translation>Поточний час обчислень</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="369"/>
-        <source>Current mode</source>
-        <translation>Поточна форма коливань</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="371"/>
-        <source>Current frequency</source>
-        <translation>Поточна частота</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="414"/>
-        <source>Variable type</source>
-        <translation>Тип змінної</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="420"/>
-        <source>Units</source>
-        <translation>Одиниці</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="426"/>
-        <source>Minimum</source>
-        <translation>Мінімум</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="432"/>
-        <source>Maximum</source>
-        <translation>Максимум</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="438"/>
-        <source>Average</source>
-        <translation>Середній</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="444"/>
-        <source>Median</source>
-        <translation>Медіана</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="389"/>
-        <source>Variables</source>
-        <translation>Змінні</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="57"/>
+        <location filename="../src/report_generator.cpp" line="60"/>
         <source>Author</source>
         <translation>Автор</translation>
     </message>
     <message>
-        <location filename="../src/report_generator.cpp" line="450"/>
-        <location filename="../src/report_generator.cpp" line="456"/>
-        <source>Percentile</source>
-        <translation>Процентиль</translation>
-    </message>
-    <message>
-        <location filename="../src/report_generator.cpp" line="465"/>
+        <location filename="../src/report_generator.cpp" line="425"/>
         <source>Screenshot</source>
         <translation>Скріншот</translation>
+    </message>
+</context>
+<context>
+    <name>ResultsStatistics</name>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average</source>
+        <translation>Середнє, зважене за площею</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="423"/>
+        <source>Area-weighted average magnitude</source>
+        <translation>Середня величина, зважена за площею</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average</source>
+        <translation>Середній</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="451"/>
+        <source>Average magnitude</source>
+        <translation>Середня величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average magnitude of element values</source>
+        <translation>Середня величина значень елементів</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average magnitude of node values</source>
+        <translation>Середня величина вузлових значень</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="445"/>
+        <source>Average of element values</source>
+        <translation>Середнє значень елементів</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="441"/>
+        <source>Average of node values</source>
+        <translation>Середнє вузлових значень</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="28"/>
+        <source>Computational time</source>
+        <translation>Розрахунковий час</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant magnitude</source>
+        <translation>Стала величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="412"/>
+        <source>Constant value</source>
+        <translation>Стале значення</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="388"/>
+        <source>Element</source>
+        <translation>Елемент</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="34"/>
+        <source>Frequency</source>
+        <translation>Частота</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="502"/>
+        <source>Here it is %1 % of the total applied load.</source>
+        <translation>Тут це %1 % сумарного прикладеного навантаження.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="485"/>
+        <source>Imbalance</source>
+        <translation>Незбалансованість</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="496"/>
+        <source>Imbalance is the sum of the total reaction and the total applied load, in equilibrium it is zero.</source>
+        <translation>Незбалансованість — це сума сумарної реакції та сумарного прикладеного навантаження, у рівновазі вона дорівнює нулю.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="498"/>
+        <source>In a dynamic analysis it holds the inertia and damping forces as well.</source>
+        <translation>У динамічному аналізі вона містить також сили інерції та демпфування.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="494"/>
+        <source>Inertia and damping forces are not included.</source>
+        <translation>Сили інерції та демпфування не враховано.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average</source>
+        <translation>Середнє, зважене за довжиною</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="422"/>
+        <source>Length-weighted average magnitude</source>
+        <translation>Середня величина, зважена за довжиною</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum</source>
+        <translation>Максимум</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="416"/>
+        <source>Maximum magnitude</source>
+        <translation>Максимальна величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum</source>
+        <translation>Мінімум</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="415"/>
+        <source>Minimum magnitude</source>
+        <translation>Мінімальна величина</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="33"/>
+        <source>Mode</source>
+        <translation>Мода</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="383"/>
+        <source>Node</source>
+        <translation>Вузол</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="105"/>
+        <source>Other results</source>
+        <translation>Інші результати</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="467"/>
+        <source>Support</source>
+        <translation>Опора</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="27"/>
+        <source>Time step</source>
+        <translation>Часовий крок</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="484"/>
+        <source>Total applied load</source>
+        <translation>Сумарне прикладене навантаження</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="483"/>
+        <source>Total reaction</source>
+        <translation>Сумарна реакція</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average</source>
+        <translation>Середнє, зважене за об&apos;ємом</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="424"/>
+        <source>Volume-weighted average magnitude</source>
+        <translation>Середня величина, зважена за об&apos;ємом</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="499"/>
+        <source>What remains comes from the convergence tolerance of the matrix solver.</source>
+        <translation>Залишок зумовлений допуском збіжності матричного розв&apos;язувача.</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="156"/>
+        <source>line</source>
+        <translation>лінія</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="154"/>
+        <source>point</source>
+        <translation>точка</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="158"/>
+        <source>surface</source>
+        <translation>поверхня</translation>
+    </message>
+    <message>
+        <location filename="../src/results_statistics.cpp" line="160"/>
+        <source>volume</source>
+        <translation>об&apos;єм</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="362"/>
+        <source>No results are available.</source>
+        <translation>Результати відсутні.</translation>
+    </message>
+    <message>
+        <location filename="../src/report_generator.cpp" line="456"/>
+        <source>Support reactions</source>
+        <translation>Реакції опор</translation>
     </message>
 </context>
 <context>
@@ -5764,59 +5754,59 @@ Averaging lowers peak values, compare them with the element range shown in the v
 <context>
     <name>SubWindow</name>
     <message>
-        <location filename="../src/sub_window.cpp" line="52"/>
+        <location filename="../src/sub_window.cpp" line="53"/>
         <source>Sub window toolbar</source>
         <translation>Панель інструментів підвікна</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="58"/>
+        <location filename="../src/sub_window.cpp" line="59"/>
         <source>Reset to original view.</source>
         <translation>Відновити початковий вигляд.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="65"/>
+        <location filename="../src/sub_window.cpp" line="66"/>
         <source>Reset to X plane.</source>
         <translation>Скинути до площини X.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="72"/>
+        <location filename="../src/sub_window.cpp" line="73"/>
         <source>Reset to Y plane.</source>
         <translation>Скинути до площини Y.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="79"/>
+        <location filename="../src/sub_window.cpp" line="80"/>
         <source>Reset to Z plane.</source>
         <translation>Скинути до площини Z.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="88"/>
+        <location filename="../src/sub_window.cpp" line="89"/>
         <source>Screenshot.</source>
         <translation>Скріншот.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="98"/>
+        <location filename="../src/sub_window.cpp" line="99"/>
         <source>Highlight selection</source>
         <translation>Підсвічувати вибране</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="99"/>
+        <location filename="../src/sub_window.cpp" line="100"/>
         <source>When checked, entities selected in the model tree are highlighted in the 3D view.</source>
         <translation>Якщо позначено, сутності, вибрані в дереві моделі, підсвічуються у 3D-поданні.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="105"/>
+        <location filename="../src/sub_window.cpp" line="106"/>
         <source>Same face color</source>
         <translation>Однаковий колір граней</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="106"/>
+        <location filename="../src/sub_window.cpp" line="107"/>
         <source>When checked, both sides of surface elements share the same color.
 When unchecked, the back side is shown in a different color.</source>
         <translation>Якщо позначено, обидві сторони елементів поверхні мають однаковий колір.
 Якщо не позначено, тильна сторона буде показана іншим кольором.</translation>
     </message>
     <message>
-        <location filename="../src/sub_window.cpp" line="116"/>
+        <location filename="../src/sub_window.cpp" line="117"/>
         <source>Display preferences.</source>
         <translation>Показати налаштування.</translation>
     </message>
