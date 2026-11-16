@@ -59,6 +59,25 @@ CentralTabWidget::CentralTabWidget(QWidget *parent)
     this->applicationOutputBrowser = new RTextBrowser(true);
     this->processOutputBrowser = new RTextBrowser(true);
 
+    // Oldest lines are removed first once the application output exceeds the maximum number of lines.
+    int applicationOutputMaxLines = int(Application::instance()->getApplicationSettings()->getApplicationOutputMaxLines());
+    applicationOutputMaxLines = std::clamp(applicationOutputMaxLines,CentralTabWidget::processOutputMinMaxLines,CentralTabWidget::processOutputMaxMaxLines);
+    this->applicationOutputBrowser->document()->setMaximumBlockCount(applicationOutputMaxLines);
+
+    QSpinBox *applicationOutputMaxLinesSpin = new QSpinBox;
+    applicationOutputMaxLinesSpin->setRange(CentralTabWidget::processOutputMinMaxLines,CentralTabWidget::processOutputMaxMaxLines);
+    applicationOutputMaxLinesSpin->setSingleStep(1000);
+    applicationOutputMaxLinesSpin->setValue(applicationOutputMaxLines);
+    applicationOutputMaxLinesSpin->setPrefix(tr("Max lines") + ": ");
+    applicationOutputMaxLinesSpin->setKeyboardTracking(false);
+    applicationOutputMaxLinesSpin->setToolTip(tr("Maximum number of lines kept in application output. Oldest lines are removed first."));
+    this->applicationOutputBrowser->addCornerWidget(applicationOutputMaxLinesSpin);
+
+    QObject::connect(applicationOutputMaxLinesSpin,&QSpinBox::valueChanged,this,[this](int value){
+        this->applicationOutputBrowser->document()->setMaximumBlockCount(value);
+        Application::instance()->getApplicationSettings()->setApplicationOutputMaxLines(uint(value));
+    });
+
     // Oldest lines are removed first once the process output exceeds the maximum number of lines.
     int processOutputMaxLines = int(Application::instance()->getApplicationSettings()->getProcessOutputMaxLines());
     processOutputMaxLines = std::clamp(processOutputMaxLines,CentralTabWidget::processOutputMinMaxLines,CentralTabWidget::processOutputMaxMaxLines);

@@ -13,6 +13,7 @@ const QString ApplicationSettings::sessionFileNameKey = "session/fileName";
 const QString ApplicationSettings::nThreadsKey = "application/nThreads";
 const QString ApplicationSettings::nHistoryRecordsKey = "application/nHistoryRecords";
 const QString ApplicationSettings::processOutputMaxLinesKey = "application/processOutputMaxLines";
+const QString ApplicationSettings::applicationOutputMaxLinesKey = "application/applicationOutputMaxLines";
 const QString ApplicationSettings::solverPathKey = "application/solverPath";
 const QString ApplicationSettings::renderBackendKey = "application/renderBackend";
 const QString ApplicationSettings::rhiApiKey = "application/rhiApi";
@@ -97,6 +98,16 @@ uint ApplicationSettings::getProcessOutputMaxLines() const
 void ApplicationSettings::setProcessOutputMaxLines(uint processOutputMaxLines)
 {
     this->setValue(ApplicationSettings::processOutputMaxLinesKey, processOutputMaxLines);
+}
+
+uint ApplicationSettings::getApplicationOutputMaxLines() const
+{
+    return this->value(ApplicationSettings::applicationOutputMaxLinesKey,ApplicationSettings::getDefaultApplicationOutputMaxLines()).toUInt();
+}
+
+void ApplicationSettings::setApplicationOutputMaxLines(uint applicationOutputMaxLines)
+{
+    this->setValue(ApplicationSettings::applicationOutputMaxLinesKey, applicationOutputMaxLines);
 }
 
 RenderBackend::Type ApplicationSettings::getRenderBackend() const
@@ -210,6 +221,11 @@ uint ApplicationSettings::getDefaultNHistoryRecords()
 }
 
 uint ApplicationSettings::getDefaultProcessOutputMaxLines()
+{
+    return 1000;
+}
+
+uint ApplicationSettings::getDefaultApplicationOutputMaxLines()
 {
     return 1000;
 }
