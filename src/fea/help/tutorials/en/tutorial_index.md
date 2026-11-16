@@ -7,3 +7,4 @@ Step-by-step guides describing how to use the software.
 3. [Stress and deformation analysis](tutorial_Stress_and_deformation_analysis.md)
 4. [Contaminant dispersion in fluids](tutorial_Contaminant_dispersion_in_fluids.md)
 5. [Multiphysics](tutorial_Multiphysics.md)
+6. [Electro-statics and magneto-statics](tutorial_Electrostatics_and_magnetostatics.md)

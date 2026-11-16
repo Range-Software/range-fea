@@ -20,6 +20,10 @@
         {
             "title": "5. Multiphysics",
             "file":  "tutorial_Multiphysics.md"
+        },
+        {
+            "title": "6. Electro-statics and magneto-statics",
+            "file":  "tutorial_Electrostatics_and_magnetostatics.md"
         }
     ]
 }
