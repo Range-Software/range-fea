@@ -36,6 +36,10 @@
         {
             "title": "9. Flow through porous media",
             "file":  "theory_potential.md"
+        },
+        {
+            "title": "10. Range mesh generator",
+            "file":  "theory_range_mesh.md"
         }
     ]
 }

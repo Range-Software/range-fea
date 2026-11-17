@@ -2,6 +2,10 @@
 
 ### Improvements
 
+- **English Range mesh generator theory manual** explains the algorithms, quality
+  controls, statistics and limitations, with a unit-cube tutorial and a C++ library
+  example. Available in the theory help and linked from the mesh-generation help
+
 - **Faster intersection checks and repair** use a spatial search to select nearby
   element pairs and cache triangle geometry. Parallel searches avoid shared-result
   contention and update progress in batches. Intersection repair rebuilds its
