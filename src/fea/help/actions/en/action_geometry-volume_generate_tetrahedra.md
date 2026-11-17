@@ -37,7 +37,7 @@ example, see the [Range Mesh Generator - Theory Manual and User Guide](../../the
 - **Keep computed results** - all computed results will be mapped/interpolated to new nodes and elements.
 - **Quality mesh** - generate 3D mesh to conform with quality criteria.
     - **Maximum element volume** - maximum volume of each generated element. No element should have higher volume than specified.
-    - **Generate mesh size function** - should be used to refine mesh in places where differences in results are found.
+    - **Generate mesh size function** - refine where the selected result changes rapidly per unit distance, including changes in vector direction. Constant or negligible-gradient regions use the maximum requested size. The maximum element volume and quality criteria still apply; use a coarse volume limit or `0` to let the size field control resolution.
 - **TetGen parameters** - parameters passed to TetGen mesh generator. Not available for the Range mesh generator.
 
 Following picture shows difference on mesh resolution when adaptive meshing is used.

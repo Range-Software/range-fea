@@ -411,7 +411,7 @@ interfaces, or features which recovery cannot resolve.
 | Quality mesh | Enable size/quality refinement and final optimization; boundary recovery and initial repair still occur when it is off |
 | Maximum element volume | A positive requested upper volume; `0` disables that individual criterion |
 | Generate mesh size function | Build a spatially varying desired scale from an existing result variable |
-| Source variable | The result whose normalized variation across element nodes drives the size field |
+| Source variable | The result whose spatial gradient drives the size field, including direction changes of vector results |
 | Minimum edge length | Lower desired size-field value, assigned to high-variation locations |
 | Maximum edge length | Upper desired size-field value, assigned to low-variation locations |
 
@@ -419,7 +419,32 @@ The size-field controls require an existing variable and are used only while
 **Quality mesh** and **Generate mesh size function** are both enabled. The size
 function is not generated simply by reopening the dialog: it is an explicit
 option. Choose positive lengths with the minimum no greater than the maximum.
-A constant source variable does not supply a useful refinement pattern.
+The size field follows **change per unit distance**, rather than the value or
+magnitude of the selected result. For each element, the indicator is the largest
+pairwise directional change
+
+```
+g_element = max( |u_j - u_i| / |x_j - x_i| )
+```
+
+where the numerator is the Euclidean norm of component differences for vector
+results. A velocity field changing direction can therefore request refinement
+even at constant speed. Element results are first interpolated to nodes.
+Each node receives the largest indicator of its incident elements.
+
+Zero gradients and gradients no greater than `0.001` times the strongest gradient
+use **Maximum edge length**. Differences at floating-point roundoff scale are
+ignored. Stronger gradients decrease the requested size toward **Minimum edge
+length**; the dialog saturates at half the strongest gradient. The comparison is
+relative within the selected field, not an absolute threshold in temperature,
+pressure or another variable's units. A uniformly nonzero gradient requests a
+uniform size. A constant field requests the largest size everywhere.
+
+The size field does not remove existing nodes or disable other refinement
+criteria. To avoid a small global volume limit forcing refinement in flat regions,
+set **Maximum element volume** to `0`, or choose a suitably coarse limit, and set
+**Maximum edge length** to the desired coarse scale. Element-quality constraints
+and boundary recovery can still require local refinement.
 
 The current application defaults include a radius/edge limit of `1.6`, a
 maximum volume of `0.1 m^3`, linear elements, and quality meshing enabled. The

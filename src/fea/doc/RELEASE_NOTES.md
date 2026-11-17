@@ -2,6 +2,10 @@
 
 ### Improvements
 
+- **Result-driven mesh refinement follows spatial gradients**, including vector
+  direction changes. Constant and negligible-gradient regions use the largest
+  requested mesh size; global volume and element-quality limits still apply
+
 - **English Range mesh generator theory manual** explains the algorithms, quality
   controls, statistics and limitations, with a unit-cube tutorial and a C++ library
   example. Available in the theory help and linked from the mesh-generation help
