@@ -57,6 +57,7 @@ void ActionList::processAvailability()
     this->getAction(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_SURFACE_COARSEN)->setEnabled(false);
+    this->getAction(Action::ACTION_GEOMETRY_SURFACE_RECONSTRUCT)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT)->setEnabled(false);
     this->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE)->setEnabled(false);
@@ -142,6 +143,7 @@ void ActionList::processAvailability()
         this->getAction(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS)->setEnabled(Session::selectedModelsHasEntities(R_ENTITY_GROUP_SURFACE));
         this->getAction(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_SURFACE_COARSEN)->setEnabled(Session::selectedModelsHasEntities(R_ENTITY_GROUP_SURFACE));
+        this->getAction(Action::ACTION_GEOMETRY_SURFACE_RECONSTRUCT)->setEnabled(Session::selectedModelsHasEntities(R_ENTITY_GROUP_SURFACE));
         this->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_CREATE)->setEnabled(true);
         this->getAction(Action::ACTION_GEOMETRY_VECTOR_FIELD_EDIT)->setEnabled(Session::selectedModelsHasEntitySelected(R_ENTITY_GROUP_VECTOR_FIELD));
         this->getAction(Action::ACTION_GEOMETRY_SCALAR_FIELD_CREATE)->setEnabled(true);

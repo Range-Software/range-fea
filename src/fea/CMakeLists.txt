@@ -152,6 +152,7 @@ qt_add_executable(fea
     src/problem_tree.cpp
     src/push_button.cpp
     src/radiation_setup_widget.cpp
+    src/reconstruct_surface_dialog.cpp
     src/render_backend.cpp
     src/render_matrix_stack.cpp
     src/render_overlay_widget.cpp
@@ -342,6 +343,7 @@ qt_add_executable(fea
     src/problem_tree.h
     src/push_button.h
     src/radiation_setup_widget.h
+    src/reconstruct_surface_dialog.h
     src/render_backend.h
     src/render_matrix_stack.h
     src/render_overlay_widget.h
@@ -638,6 +640,7 @@ fea_add_icon_resources(icons-geometry "/icons/geometry"
         pixmaps/range-entity_surface_sync_normals.svg
         pixmaps/range-entity_surface_close_hole.svg
         pixmaps/range-entity_surface_coarsen.svg
+        pixmaps/range-entity_surface_reconstruct.svg
         pixmaps/range-entity_surface_find_intersected.svg
         pixmaps/range-entity_surface_break_intersected.svg
         pixmaps/range-entity_surface_bool_operation.svg

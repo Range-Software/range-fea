@@ -216,6 +216,9 @@ class Model : public RModel
         //! Coarsen surface elements.
         uint coarsenSurfaceElements(const std::vector<uint> surfaceIDs, double edgeLength, double elementArea);
 
+        //! Reconstruct (retriangulate) surfaces.
+        RSurfaceReconstructor::Statistics reconstructSurfaces(const std::vector<uint> &surfaceIDs, const RSurfaceReconstructor::Options &options);
+
         //! Tetrahedralize surface.
         uint tetrahedralizeSurface(const std::vector<uint> surfaceIDs);
 

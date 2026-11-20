@@ -100,6 +100,7 @@ class Action : public RAction
             ACTION_GEOMETRY_SURFACE_SYNC_NORMALS,
             ACTION_GEOMETRY_SURFACE_CLOSE_HOLE,
             ACTION_GEOMETRY_SURFACE_COARSEN,
+            ACTION_GEOMETRY_SURFACE_RECONSTRUCT,
             ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA,
             ACTION_GEOMETRY_VECTOR_FIELD_CREATE,
             ACTION_GEOMETRY_VECTOR_FIELD_EDIT,
@@ -359,6 +360,9 @@ class Action : public RAction
 
         //! Coarsen surface elements.
         void onGeometrySurfaceCoarsen();
+
+        //! Reconstruct surface.
+        void onGeometrySurfaceReconstruct();
 
         //! Create vector field.
         void onGeometryVectorFieldCreate();

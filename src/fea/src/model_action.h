@@ -126,6 +126,9 @@ class ModelAction : public RJob
         //! Coarsen surface.
         void coarsenSurface(const ModelActionInput &modelActionInput);
 
+        //! Reconstruct surface.
+        void reconstructSurface(const ModelActionInput &modelActionInput);
+
         //! Tetrahedralize surface.
         void tetrahedralizeSurface(const ModelActionInput &modelActionInput);
 

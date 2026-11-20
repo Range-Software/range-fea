@@ -510,6 +510,7 @@ void MainWindow::createMenus()
     menuGeometrySurface->addSeparator();
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_COARSEN));
+    menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_SURFACE_RECONSTRUCT));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS));
     menuGeometrySurface->addAction(this->actionList->getAction(Action::ACTION_GEOMETRY_BREAK_INTERSECTED_ELEMENTS));
     QMenu *menuGeometryBoolOperations = new QMenu(menuGeometrySurface);
@@ -670,6 +671,7 @@ void MainWindow::createToolBars()
                                                                   action(Action::ACTION_GEOMETRY_SURFACE_SYNC_NORMALS)},true);
     meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_CLOSE_HOLE));
     meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_COARSEN));
+    meshToolBar->addAction(action(Action::ACTION_GEOMETRY_SURFACE_RECONSTRUCT));
     meshToolBar->addSeparator();
     // Finding has to come before repairing, so these always start with finding.
     this->addToolBarSplitButton(meshToolBar,"intersectedSplitButton",{action(Action::ACTION_GEOMETRY_FIND_INTERSECTED_ELEMENTS),
@@ -791,6 +793,7 @@ void MainWindow::createRibbon()
     group = this->ribbonBar->addGroup(meshPage,tr("Generate"));
     group->addLargeAction(action(Action::ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA),tr("Tetrahedra"));
     group->addLargeAction(action(Action::ACTION_GEOMETRY_SURFACE_COARSEN),tr("Coarsen"));
+    group->addLargeAction(action(Action::ACTION_GEOMETRY_SURFACE_RECONSTRUCT),tr("Reconstruct"));
 
     group = this->ribbonBar->addGroup(meshPage,tr("Surface"));
     group->addSmallAction(action(Action::ACTION_GEOMETRY_SURFACE_MARK),tr("Mark"));

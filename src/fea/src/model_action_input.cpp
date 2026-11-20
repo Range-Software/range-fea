@@ -18,6 +18,7 @@ void ModelActionInput::_init(const ModelActionInput *pModelActionInput)
         this->edgeRatio = pModelActionInput->edgeRatio;
         this->edgeLength = pModelActionInput->edgeLength;
         this->elementArea = pModelActionInput->elementArea;
+        this->reconstructOptions = pModelActionInput->reconstructOptions;
         this->tolerance = pModelActionInput->tolerance;
         this->geometryTransformInput = pModelActionInput->geometryTransformInput;
         this->variableType = pModelActionInput->variableType;
@@ -128,6 +129,11 @@ double ModelActionInput::getEdgeLength() const
 double ModelActionInput::getElementArea() const
 {
     return this->elementArea;
+}
+
+const RSurfaceReconstructor::Options &ModelActionInput::getReconstructOptions() const
+{
+    return this->reconstructOptions;
 }
 
 double ModelActionInput::getTolerance() const
@@ -327,6 +333,13 @@ void ModelActionInput::setCoarsenSurface(const QList<SessionEntityID> &entityIDs
     this->entityIDs = entityIDs;
     this->edgeLength = edgeLength;
     this->elementArea = elementArea;
+}
+
+void ModelActionInput::setReconstructSurface(const QList<SessionEntityID> &entityIDs, const RSurfaceReconstructor::Options &options)
+{
+    this->type = MODEL_ACTION_RECONSTRUCT_SURFACE;
+    this->entityIDs = entityIDs;
+    this->reconstructOptions = options;
 }
 
 void ModelActionInput::setTetrahedralizeSurface(const QList<SessionEntityID> &entityIDs)

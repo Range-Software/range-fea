@@ -159,6 +159,10 @@ void ModelAction::executeAction(const ModelActionInput &modelActionInput)
                 Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Coarsen surface"));
                 this->coarsenSurface(modelActionInput);
                 break;
+            case MODEL_ACTION_RECONSTRUCT_SURFACE:
+                Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Reconstruct surface"));
+                this->reconstructSurface(modelActionInput);
+                break;
             case MODEL_ACTION_TETRAHEDRALIZE_SURFACE:
                 Application::instance()->getSession()->storeCurentModelVersion(modelActionInput.getModelID(),tr("Tetrahedralize surface"));
                 this->tetrahedralizeSurface(modelActionInput);
@@ -797,6 +801,59 @@ void ModelAction::coarsenSurface(const ModelActionInput &modelActionInput)
                                                   modelActionInput.getEdgeLength(),
                                                   modelActionInput.getElementArea());
     RLogger::info("Number of deleted surface elements = %u.\n",nDeleted);
+
+    RLogger::unindent();
+
+    Application::instance()->getSession()->setModelChanged(modelActionInput.getModelID());
+}
+
+void ModelAction::reconstructSurface(const ModelActionInput &modelActionInput)
+{
+    uint modelID = modelActionInput.getModelID();
+
+    Model &rModel = Application::instance()->getSession()->getModel(modelID);
+
+    RLogger::info("Reconstructing surface\n");
+    RLogger::indent();
+
+    const QList<SessionEntityID> &entityIDs = modelActionInput.getEntityIDs();
+
+    std::vector<uint> surfaceIDs;
+    for (int i=0;i<entityIDs.size();i++)
+    {
+        if (entityIDs.at(i).getType() == R_ENTITY_GROUP_SURFACE)
+        {
+            surfaceIDs.push_back(entityIDs.at(i).getEid());
+        }
+    }
+
+    RSurfaceReconstructor::Statistics statistics;
+    try
+    {
+        statistics = rModel.reconstructSurfaces(surfaceIDs,modelActionInput.getReconstructOptions());
+    }
+    catch (...)
+    {
+        RLogger::unindent();
+        throw;
+    }
+
+    RLogger::info("Number of surface elements: %u -> %u\n",statistics.nInputTriangles,statistics.nOutputTriangles);
+    RLogger::info("Number of removed nodes: %u\n",statistics.nRemovedNodes);
+    RLogger::info("Merged planar regions: %u (failed: %u)\n",statistics.nRetriangulatedRegions,statistics.nFailedRegions);
+    RLogger::info("Collapsed edges: %u, flipped edges: %u\n",statistics.nCollapsedEdges,statistics.nFlippedEdges);
+    if (modelActionInput.getReconstructOptions().delaunay)
+    {
+        RLogger::info("Delaunay triangulation - flipped edges: %u\n",statistics.nDelaunayFlips);
+    }
+    if (modelActionInput.getReconstructOptions().refine)
+    {
+        RLogger::info("Quality mesh - inserted nodes: %u, smoothed nodes: %u\n",statistics.nInsertedNodes,statistics.nSmoothedNodes);
+    }
+    if (statistics.nFrozenTriangles > 0)
+    {
+        RLogger::info("Elements kept unchanged to avoid self-intersections: %u\n",statistics.nFrozenTriangles);
+    }
 
     RLogger::unindent();
 

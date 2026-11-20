@@ -2,6 +2,7 @@
 #define MODEL_ACTION_INPUT_H
 
 #include <rml_element.h>
+#include <rml_surface_reconstructor.h>
 
 #include "geometry_transform_input.h"
 #include "pick_list.h"
@@ -40,6 +41,7 @@ typedef enum _ModelActionType
     MODEL_ACTION_SWAP_SURFACE_NORMALS,
     MODEL_ACTION_SYNC_SURFACE_NORMALS,
     MODEL_ACTION_COARSEN_SURFACE,
+    MODEL_ACTION_RECONSTRUCT_SURFACE,
     MODEL_ACTION_TETRAHEDRALIZE_SURFACE,
     MODEL_ACTION_CONSOLIDATE,
     MODEL_ACTION_GEOMETRY_TRANSFORM,
@@ -81,6 +83,8 @@ class ModelActionInput
         double edgeLength;
         //! Element area.
         double elementArea;
+        //! Surface reconstruction options.
+        RSurfaceReconstructor::Options reconstructOptions;
         //! Tomerance.
         double tolerance;
         //! Geometry transform input.
@@ -148,6 +152,9 @@ class ModelActionInput
 
         //! Return element area.
         double getElementArea() const;
+
+        //! Return surface reconstruction options.
+        const RSurfaceReconstructor::Options &getReconstructOptions() const;
 
         //! Return tolerance.
         double getTolerance() const;
@@ -250,6 +257,9 @@ class ModelActionInput
 
         //! Set coarsen surface.
         void setCoarsenSurface(const QList<SessionEntityID> &entityIDs, double edgeLength, double elementArea);
+
+        //! Set reconstruct surface.
+        void setReconstructSurface(const QList<SessionEntityID> &entityIDs, const RSurfaceReconstructor::Options &options);
 
         //! Set tetrahedralize surface.
         void setTetrahedralizeSurface(const QList<SessionEntityID> &entityIDs);

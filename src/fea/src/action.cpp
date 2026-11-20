@@ -31,6 +31,7 @@
 #include "drop_results_dialog.h"
 #include "new_model_dialog.h"
 #include "coarsen_surface_dialog.h"
+#include "reconstruct_surface_dialog.h"
 #include "cut_dialog.h"
 #include "iso_dialog.h"
 #include "find_sliver_elements_dialog.h"
@@ -155,6 +156,7 @@ QString Action::getName(Type type)
         case ACTION_GEOMETRY_SURFACE_SYNC_NORMALS:            return "geometry-surface_sync_normals";
         case ACTION_GEOMETRY_SURFACE_CLOSE_HOLE:              return "geometry-surface_close_hole";
         case ACTION_GEOMETRY_SURFACE_COARSEN:                 return "geometry-surface_coarsen";
+        case ACTION_GEOMETRY_SURFACE_RECONSTRUCT:             return "geometry-surface_reconstruct";
         case ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA:      return "geometry-volume_generate_tetrahedra";
         case ACTION_GEOMETRY_VECTOR_FIELD_CREATE:             return "geometry-vector_field_create";
         case ACTION_GEOMETRY_VECTOR_FIELD_EDIT:               return "geometry-vector_field_edit";
@@ -289,6 +291,7 @@ QList<RAction::Definition> Action::generateActionDefinitionList()
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_SURFACE_SYNC_NORMALS, tr("Synchronize normals"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_sync_normals.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometrySurfaceSyncNormals));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_SURFACE_CLOSE_HOLE, tr("Close hole"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_close_hole.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometrySurfaceCloseHole));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_SURFACE_COARSEN, tr("Coarsen surface"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_coarsen.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometrySurfaceCoarsen));
+    Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_SURFACE_RECONSTRUCT, tr("Reconstruct surface"), "", "", ":/icons/geometry/pixmaps/range-entity_surface_reconstruct.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometrySurfaceReconstruct));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_VOLUME_GENERATE_TETRAHEDRA, tr("Generate tetrahedral mesh"), "", "Ctrl+G", ":/icons/geometry/pixmaps/range-generate_volume_mesh.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryGenerateTetrahedra));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_VECTOR_FIELD_CREATE, tr("Create vector field"), "", "", ":/icons/geometry/pixmaps/range-entity_vector_field_create.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryVectorFieldCreate));
     Action::regDef(actionDef, ACTION_GROUP_GEOMETRY, ACTION_GEOMETRY_VECTOR_FIELD_EDIT, tr("Edit vector field"), "", "", ":/icons/geometry/pixmaps/range-entity_vector_field_edit.svg",static_cast<PointerToMemberTrigger>(&Action::onGeometryVectorFieldEdit));
@@ -1625,6 +1628,34 @@ void Action::onGeometrySurfaceCoarsen()
 
         CoarsenSurfaceDialog coarsenSurfaceDialog(selectedModelIDs[i],entityIDs,Application::instance()->getMainWindow());
         coarsenSurfaceDialog.exec();
+    }
+    R_LOG_TRACE_OUT;
+}
+
+void Action::onGeometrySurfaceReconstruct()
+{
+    R_LOG_TRACE_IN;
+    QList<SessionEntityID> selectedEntityIDs = Application::instance()->getSession()->getSelectedEntityIDs();
+    QList<uint> selectedModelIDs = Application::instance()->getSession()->getSelectedModelIDs();
+
+    for (int i=0;i<selectedModelIDs.size();i++)
+    {
+        QList<SessionEntityID> entityIDs;
+
+        for (int j=0;j<selectedEntityIDs.size();j++)
+        {
+            if (selectedEntityIDs.at(j).getMid() == selectedModelIDs.at(i) && selectedEntityIDs.at(j).getType() == R_ENTITY_GROUP_SURFACE)
+            {
+                entityIDs.push_back(selectedEntityIDs.at(j));
+            }
+        }
+        if (entityIDs.isEmpty())
+        {
+            continue;
+        }
+
+        ReconstructSurfaceDialog reconstructSurfaceDialog(selectedModelIDs[i],entityIDs,Application::instance()->getMainWindow());
+        reconstructSurfaceDialog.exec();
     }
     R_LOG_TRACE_OUT;
 }

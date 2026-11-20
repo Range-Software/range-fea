@@ -1016,6 +1016,16 @@ uint Model::coarsenSurfaceElements(const std::vector<uint> surfaceIDs, double ed
     return nDeleted;
 }
 
+RSurfaceReconstructor::Statistics Model::reconstructSurfaces(const std::vector<uint> &surfaceIDs, const RSurfaceReconstructor::Options &options)
+{
+    RSurfaceReconstructor::Statistics statistics = this->RModel::reconstructSurfaces(surfaceIDs,options);
+
+    this->invalidateConsolidationCache();
+    this->consolidate(Model::ConsolidateActionAll);
+
+    return statistics;
+}
+
 uint Model::tetrahedralizeSurface(const std::vector<uint> surfaceIDs)
 {
     uint nGenerated = this->RModel::tetrahedralizeSurface(surfaceIDs);
